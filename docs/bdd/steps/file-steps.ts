@@ -176,36 +176,30 @@ Given(
 // Cucumber's `{string}` expression would greedily capture each quoted token
 // and call the step with N arguments; a regex binds the whole JSON array
 // as a single capture group so we can parse it once.
-Given(
-  /^the config allowList is (\[.*\])$/,
-  async function (this: OFMWorld, listJson: string) {
-    if (!this.vaultDir) await this.initVault();
-    const list = JSON.parse(listJson) as string[];
-    const cfg = {
-      callouts: {
-        allowList: list,
-        caseSensitive: false,
-        requireTitle: false,
-        allowFold: true,
-      },
-    };
-    await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
-  },
-);
+Given(/^the config allowList is (\[.*\])$/, async function (this: OFMWorld, listJson: string) {
+  if (!this.vaultDir) await this.initVault();
+  const list = JSON.parse(listJson) as string[];
+  const cfg = {
+    callouts: {
+      allowList: list,
+      caseSensitive: false,
+      requireTitle: false,
+      allowFold: true,
+    },
+  };
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+});
 
-Given(
-  "the config allowList includes {string}",
-  async function (this: OFMWorld, extra: string) {
-    if (!this.vaultDir) await this.initVault();
-    const defaults = ["NOTE", "WARNING", "TIP", "IMPORTANT", "CAUTION"];
-    const cfg = {
-      callouts: {
-        allowList: [...defaults, extra],
-        caseSensitive: false,
-        requireTitle: false,
-        allowFold: true,
-      },
-    };
-    await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
-  },
-);
+Given("the config allowList includes {string}", async function (this: OFMWorld, extra: string) {
+  if (!this.vaultDir) await this.initVault();
+  const defaults = ["NOTE", "WARNING", "TIP", "IMPORTANT", "CAUTION"];
+  const cfg = {
+    callouts: {
+      allowList: [...defaults, extra],
+      caseSensitive: false,
+      requireTitle: false,
+      allowFold: true,
+    },
+  };
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+});

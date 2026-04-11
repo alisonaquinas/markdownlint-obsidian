@@ -15,17 +15,21 @@ import type { FileExistenceChecker } from "../../domain/fs/FileExistenceChecker.
  * across an entire lint run. One instance is built per CLI invocation in
  * `cli/main.ts` and threaded through {@link RuleParams.fsCheck}.
  */
+function resolveWithinRoot(vaultRoot: string, relative: string): string | null {
+  if (typeof vaultRoot !== "string" || vaultRoot.length === 0) return null;
+  if (typeof relative !== "string" || relative.length === 0) return null;
+  const normalized = relative.replace(/\\/g, "/");
+  const rootResolved = path.resolve(vaultRoot);
+  const absolute = path.resolve(rootResolved, normalized);
+  const withinRoot = absolute === rootResolved || absolute.startsWith(rootResolved + path.sep);
+  return withinRoot ? absolute : null;
+}
+
 export function makeNodeFsExistenceChecker(): FileExistenceChecker {
   return {
     async exists(vaultRoot: string, relative: string): Promise<boolean> {
-      if (typeof vaultRoot !== "string" || vaultRoot.length === 0) return false;
-      if (typeof relative !== "string" || relative.length === 0) return false;
-      const normalized = relative.replace(/\\/g, "/");
-      const absolute = path.resolve(vaultRoot, normalized);
-      const rootResolved = path.resolve(vaultRoot);
-      const withinRoot =
-        absolute === rootResolved || absolute.startsWith(rootResolved + path.sep);
-      if (!withinRoot) return false;
+      const absolute = resolveWithinRoot(vaultRoot, relative);
+      if (absolute === null) return false;
       try {
         await fs.access(absolute);
         return true;

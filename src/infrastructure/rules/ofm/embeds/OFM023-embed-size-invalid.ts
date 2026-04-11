@@ -1,4 +1,20 @@
-import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
+import type { EmbedNode } from "../../../../domain/parsing/EmbedNode.js";
+
+function checkAxis(
+  embed: EmbedNode,
+  actual: number | null,
+  cap: number | null,
+  axis: "width" | "height",
+  onError: OnErrorCallback,
+): void {
+  if (cap === null || actual === null || actual <= cap) return;
+  onError({
+    line: embed.position.line,
+    column: embed.position.column,
+    message: `Embed ${axis} ${actual} exceeds max${axis[0]!.toUpperCase()}${axis.slice(1)} ${cap}`,
+  });
+}
 
 /**
  * OFM023 — embed-size-invalid.
@@ -21,20 +37,8 @@ export const OFM023Rule: OFMRule = {
     const { maxWidth, maxHeight } = config.embeds;
     if (maxWidth === null && maxHeight === null) return;
     for (const embed of parsed.embeds) {
-      if (maxWidth !== null && embed.width !== null && embed.width > maxWidth) {
-        onError({
-          line: embed.position.line,
-          column: embed.position.column,
-          message: `Embed width ${embed.width} exceeds maxWidth ${maxWidth}`,
-        });
-      }
-      if (maxHeight !== null && embed.height !== null && embed.height > maxHeight) {
-        onError({
-          line: embed.position.line,
-          column: embed.position.column,
-          message: `Embed height ${embed.height} exceeds maxHeight ${maxHeight}`,
-        });
-      }
+      checkAxis(embed, embed.width, maxWidth, "width", onError);
+      checkAxis(embed, embed.height, maxHeight, "height", onError);
     }
   },
 };

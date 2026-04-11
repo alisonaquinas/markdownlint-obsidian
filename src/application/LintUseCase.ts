@@ -69,23 +69,20 @@ async function runRule(
   fsCheck: FileExistenceChecker,
   errors: LintError[],
 ): Promise<void> {
-  await rule.run(
-    { filePath: parsed.filePath, parsed, config, vault, fsCheck },
-    (partial) => {
-      errors.push(
-        makeLintError({
-          ruleCode: rule.names[0] ?? "UNKNOWN",
-          ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-          severity: rule.severity,
-          line: partial.line,
-          column: partial.column,
-          message: partial.message,
-          fixable: rule.fixable,
-          ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
-        }),
-      );
-    },
-  );
+  await rule.run({ filePath: parsed.filePath, parsed, config, vault, fsCheck }, (partial) => {
+    errors.push(
+      makeLintError({
+        ruleCode: rule.names[0] ?? "UNKNOWN",
+        ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+        severity: rule.severity,
+        line: partial.line,
+        column: partial.column,
+        message: partial.message,
+        fixable: rule.fixable,
+        ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
+      }),
+    );
+  });
 }
 
 function buildParserError(err: unknown): LintError {
