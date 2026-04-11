@@ -40,6 +40,7 @@ export function makeParseResult(fields: ParseResult): ParseResult {
   }
   return Object.freeze({
     ...fields,
+    frontmatter: Object.freeze({ ...fields.frontmatter }),
     tokens: Object.freeze([...fields.tokens]),
     wikilinks: Object.freeze([...fields.wikilinks]),
     embeds: Object.freeze([...fields.embeds]),

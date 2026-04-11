@@ -15,6 +15,11 @@ Then(
   },
 );
 
+Then("error {word} is reported", function (this: OFMWorld, code: string) {
+  const output = (this.cliResult?.stdout ?? "") + (this.cliResult?.stderr ?? "");
+  assert.ok(output.includes(code), `expected output to contain "${code}"`);
+});
+
 After(async function (this: OFMWorld) {
   await this.cleanup();
 });

@@ -1,3 +1,4 @@
+@smoke
 Feature: Frontmatter linting
 
   Scenario: Missing required key reports OFM080

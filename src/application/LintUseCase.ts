@@ -4,6 +4,7 @@ import { makeLintError } from "../domain/linting/LintError.js";
 import { makeLintResult, type LintResult } from "../domain/linting/LintResult.js";
 import type { RuleRegistry } from "../domain/linting/RuleRegistry.js";
 import type { Parser } from "../domain/parsing/Parser.js";
+import type { ParseResult } from "../domain/parsing/ParseResult.js";
 import type { OFMRule } from "../domain/linting/OFMRule.js";
 
 export interface LintDependencies {
@@ -34,7 +35,7 @@ export async function runLint(
       const raw = await deps.readFile(filePath);
       const parsed = deps.parser.parse(filePath, raw);
       for (const rule of iterateActiveRules(registry, config)) {
-        runRule(rule, parsed, errors);
+        runRule(rule, parsed, config, errors);
       }
     } catch (err) {
       errors.push(buildParserError(err));
@@ -54,14 +55,13 @@ function iterateActiveRules(registry: RuleRegistry, config: LinterConfig): reado
   });
 }
 
-function runRule(rule: OFMRule, parsed: unknown, errors: LintError[]): void {
-  const params = {
-    filePath: (parsed as { filePath: string }).filePath,
-    lines: (parsed as { lines: readonly string[] }).lines,
-    frontmatter: (parsed as { frontmatter: Record<string, unknown> }).frontmatter,
-    tokens: [...(parsed as { tokens: readonly unknown[] }).tokens],
-  };
-  rule.run(params, (partial) => {
+function runRule(
+  rule: OFMRule,
+  parsed: ParseResult,
+  config: LinterConfig,
+  errors: LintError[],
+): void {
+  rule.run({ filePath: parsed.filePath, parsed, config }, (partial) => {
     errors.push(
       makeLintError({
         ruleCode: rule.names[0] ?? "UNKNOWN",
@@ -71,6 +71,7 @@ function runRule(rule: OFMRule, parsed: unknown, errors: LintError[]): void {
         column: partial.column,
         message: partial.message,
         fixable: rule.fixable,
+        ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
       }),
     );
   });

@@ -7,6 +7,7 @@ const KNOWN_KEYS: ReadonlySet<string> = new Set([
   "wikilinks",
   "callouts",
   "frontmatter",
+  "tags",
   // markdownlint-cli2 compatible keys
   "config",
   "rules",
