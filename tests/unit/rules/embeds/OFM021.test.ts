@@ -36,4 +36,15 @@ describe("OFM021 invalid-embed-syntax", () => {
     const errors = await runRuleOnSource(OFM021Rule, "![[]] and ![[]]\n");
     expect(errors).toHaveLength(2);
   });
+
+  it("skips matches inside a fenced code block", async () => {
+    const src = "```md\n![[]]\n```\n";
+    const errors = await runRuleOnSource(OFM021Rule, src);
+    expect(errors).toEqual([]);
+  });
+
+  it("skips matches inside inline code spans", async () => {
+    const errors = await runRuleOnSource(OFM021Rule, "See `![[]]` for example.\n");
+    expect(errors).toEqual([]);
+  });
 });

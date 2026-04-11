@@ -22,6 +22,17 @@ import { OFM004Rule } from "./wikilinks/OFM004-ambiguous-target.js";
 import { OFM005Rule } from "./wikilinks/OFM005-case-mismatch.js";
 import { OFM006Rule } from "./wikilinks/OFM006-empty-heading.js";
 import { OFM007Rule } from "./wikilinks/OFM007-block-ref-in-body.js";
+import { OFM020Rule } from "./embeds/OFM020-broken-embed.js";
+import { OFM021Rule } from "./embeds/OFM021-invalid-embed-syntax.js";
+import { OFM022Rule } from "./embeds/OFM022-embed-target-missing.js";
+import { OFM023Rule } from "./embeds/OFM023-embed-size-invalid.js";
+import { OFM024Rule } from "./embeds/OFM024-disallowed-embed-extension.js";
+import { OFM025Rule } from "./embeds/OFM025-embed-size-on-non-image.js";
+import { OFM040Rule } from "./callouts/OFM040-unknown-callout-type.js";
+import { OFM041Rule } from "./callouts/OFM041-malformed-callout.js";
+import { OFM042Rule } from "./callouts/OFM042-empty-callout.js";
+import { OFM043Rule } from "./callouts/OFM043-callout-in-list.js";
+import { OFM044Rule } from "./callouts/OFM044-callout-fold-disabled.js";
 
 const ALL = [
   frontmatterParseErrorRule,
@@ -47,6 +58,17 @@ const ALL = [
   OFM005Rule,
   OFM006Rule,
   OFM007Rule,
+  OFM020Rule,
+  OFM021Rule,
+  OFM022Rule,
+  OFM023Rule,
+  OFM024Rule,
+  OFM025Rule,
+  OFM040Rule,
+  OFM041Rule,
+  OFM042Rule,
+  OFM043Rule,
+  OFM044Rule,
 ];
 
 /** Register every built-in OFM rule with a RuleRegistry. */

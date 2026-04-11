@@ -9,6 +9,9 @@ const LOOKS_LIKE_HEADER = /^>\s*\[/;
 // a well-formed callout header (possibly with a fold marker and title).
 const STRICT_HEADER = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\][+-]?(\s.*)?$/;
 
+// Opening or closing fence line (```, ~~~, or longer).
+const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
+
 /**
  * OFM041 — malformed-callout.
  *
@@ -19,9 +22,8 @@ const STRICT_HEADER = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\][+-]?(\s.*)?$/;
  * Well-formed callouts are silently skipped; lines that don't look like
  * headers at all (regular quote blocks) are also skipped.
  *
- * This is a quality-of-life rule — the malformed lines would otherwise
- * render as opaque quote blocks with no indication that the author meant
- * a callout.
+ * Fenced code blocks are tracked and skipped so example markdown inside
+ * documentation doesn't trip the rule.
  */
 export const OFM041Rule: OFMRule = {
   names: ["OFM041", "malformed-callout"],
@@ -30,7 +32,19 @@ export const OFM041Rule: OFMRule = {
   severity: "error",
   fixable: false,
   run({ parsed }, onError) {
+    let fence: string | null = null;
     parsed.lines.forEach((line, i) => {
+      const fenceMatch = line.match(FENCE_PATTERN);
+      if (fence !== null) {
+        if (fenceMatch !== null && line.trim().startsWith(fence)) {
+          fence = null;
+        }
+        return;
+      }
+      if (fenceMatch !== null) {
+        fence = fenceMatch[2] ?? null;
+        return;
+      }
       if (!LOOKS_LIKE_HEADER.test(line)) return;
       if (STRICT_HEADER.test(line)) return;
       onError({

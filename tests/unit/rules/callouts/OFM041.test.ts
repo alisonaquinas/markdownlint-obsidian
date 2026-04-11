@@ -33,4 +33,10 @@ describe("OFM041 malformed-callout", () => {
     const errors = await runRuleOnSource(OFM041Rule, "> [ NOTE ] Title\n");
     expect(errors).toHaveLength(1);
   });
+
+  it("skips malformed patterns inside a fenced code block", async () => {
+    const src = "```md\n> [!NOTE]Title\n```\n";
+    const errors = await runRuleOnSource(OFM041Rule, src);
+    expect(errors).toEqual([]);
+  });
 });
