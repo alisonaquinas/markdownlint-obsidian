@@ -30,6 +30,7 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
     denyList: Object.freeze([]),
   }),
   rules: Object.freeze({
+    OFM062: Object.freeze({ enabled: false }),
     OFM066: Object.freeze({ enabled: false }),
     OFM082: Object.freeze({ enabled: false }),
   }),

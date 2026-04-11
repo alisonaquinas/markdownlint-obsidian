@@ -16,7 +16,11 @@ describe("DEFAULT_CONFIG (phase 3)", () => {
     expect(DEFAULT_CONFIG.frontmatter.allowUnknown).toBe(true);
   });
 
-  it("disables OFM066 and OFM082 by default", () => {
+  it("disables OFM062, OFM066 and OFM082 by default", () => {
+    // OFM062 (empty-tag) is too noisy in raw prose to enable broadly;
+    // OFM066 (frontmatter-tag-not-in-body) and OFM082 (unknown-top-level-key)
+    // are both opt-in style rules.
+    expect(DEFAULT_CONFIG.rules.OFM062?.enabled).toBe(false);
     expect(DEFAULT_CONFIG.rules.OFM066?.enabled).toBe(false);
     expect(DEFAULT_CONFIG.rules.OFM082?.enabled).toBe(false);
   });

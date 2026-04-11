@@ -1178,10 +1178,15 @@ export const OFM066Rule: OFMRule = {
 };
 ```
 
-Mark `OFM066` disabled by default in `defaults.ts`:
+Mark `OFM066` disabled by default in `defaults.ts`. **Phase 3 amendment:** OFM062
+is also disabled by default — its `# ` token detection over-fires on prose
+markdown (e.g. quoted strings inside code-prose), so it joins OFM066/OFM082 as
+opt-in. The unit tests bypass the registry and exercise the rule directly via
+`runRuleOnSource`, so coverage is unaffected.
 
 ```ts
 rules: Object.freeze({
+  OFM062: Object.freeze({ enabled: false }),
   OFM066: Object.freeze({ enabled: false }),
   OFM082: Object.freeze({ enabled: false }),
 }),
