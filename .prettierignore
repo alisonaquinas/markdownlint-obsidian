@@ -3,3 +3,11 @@ dist/
 coverage/
 reports/
 package-lock.json
+
+# Markdown is linted by markdownlint-cli2 and markdownlint-obsidian (docs/).
+# Do not format .md with prettier — it rewrites semantic whitespace and breaks
+# Obsidian wikilinks/embeds/callouts.
+*.md
+
+# JSONC files support trailing commas and comments; prettier removes them.
+*.jsonc

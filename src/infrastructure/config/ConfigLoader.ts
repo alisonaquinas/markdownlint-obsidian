@@ -27,10 +27,9 @@ const CONFIG_FILES: readonly string[] = [
  */
 export async function loadConfig(startDir: string): Promise<LinterConfig> {
   const layers = await collectConfigLayers(startDir);
-  const merged = layers.reduce<Record<string, unknown>>(
-    (acc, layer) => ({ ...acc, ...layer }),
-    { ...DEFAULT_CONFIG } as Record<string, unknown>,
-  );
+  const merged = layers.reduce<Record<string, unknown>>((acc, layer) => ({ ...acc, ...layer }), {
+    ...DEFAULT_CONFIG,
+  } as Record<string, unknown>);
   validateConfig(merged);
   return merged as LinterConfig;
 }
@@ -42,7 +41,6 @@ async function collectConfigLayers(startDir: string): Promise<Record<string, unk
   for (;;) {
     for (const name of CONFIG_FILES) {
       const filePath = path.join(dir, name);
-      // eslint-disable-next-line no-await-in-loop -- sequential on purpose to preserve precedence
       const layer = await tryReadJsonc(filePath);
       if (layer !== null) layers.unshift(layer);
     }

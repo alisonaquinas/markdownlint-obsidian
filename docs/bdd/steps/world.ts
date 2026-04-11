@@ -20,9 +20,7 @@ export interface CLIResult {
 }
 
 const BIN_PATH = path.resolve("bin/markdownlint-obsidian.js");
-const TSX_LOADER_URL = pathToFileURL(
-  path.resolve("node_modules/tsx/dist/loader.mjs"),
-).href;
+const TSX_LOADER_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
 
 export class OFMWorld extends World {
   vaultDir: string = "";

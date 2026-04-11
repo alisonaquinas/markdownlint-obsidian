@@ -15,9 +15,7 @@ export function formatDefault(results: readonly LintResult[]): string {
 
   for (const result of results) {
     for (const err of result.errors) {
-      lines.push(
-        `${result.filePath}:${err.line}:${err.column} ${err.ruleCode} ${err.message}`,
-      );
+      lines.push(`${result.filePath}:${err.line}:${err.column} ${err.ruleCode} ${err.message}`);
     }
   }
 
