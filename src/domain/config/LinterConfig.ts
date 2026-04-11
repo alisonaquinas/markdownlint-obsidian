@@ -6,9 +6,31 @@ export interface WikilinkConfig {
   readonly allowAlias: boolean;
 }
 
-/** Allowed callout types, matching Obsidian's `> [!NOTE]` syntax. */
+/**
+ * Callout-family options. `allowList` drives OFM040; the remaining flags
+ * control OFM042 (`requireTitle`) and OFM044 (`allowFold`). `caseSensitive`
+ * determines whether `> [!note]` and `> [!NOTE]` are treated as the same
+ * entry when matching against `allowList`.
+ */
 export interface CalloutConfig {
   readonly allowList: readonly string[];
+  readonly caseSensitive: boolean;
+  readonly requireTitle: boolean;
+  readonly allowFold: boolean;
+}
+
+/**
+ * Embed-family options. `allowedExtensions` is the closed set of file
+ * extensions permitted as embed targets (OFM024). `maxWidth` and `maxHeight`
+ * cap the sizing hints on an embed (OFM023); `null` disables the limit.
+ * `allowRemote` reserved for future OFM02x rules that distinguish vault-local
+ * assets from URLs.
+ */
+export interface EmbedConfig {
+  readonly allowedExtensions: readonly string[];
+  readonly maxWidth: number | null;
+  readonly maxHeight: number | null;
+  readonly allowRemote: boolean;
 }
 
 /**
@@ -48,6 +70,7 @@ export interface LinterConfig {
   readonly resolve: boolean;
   readonly wikilinks: WikilinkConfig;
   readonly callouts: CalloutConfig;
+  readonly embeds: EmbedConfig;
   readonly frontmatter: FrontmatterConfig;
   readonly tags: TagConfig;
   readonly rules: Readonly<Record<string, RuleConfig>>;
