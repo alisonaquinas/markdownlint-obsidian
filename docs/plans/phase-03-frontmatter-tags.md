@@ -747,6 +747,12 @@ export const OFM084Rule: OFMRule = {
 
 - [ ] **OFM085 duplicate-key** (scan `parsed.frontmatterRaw`)
 
+> **Implementation note (Phase 3 amendment):** gray-matter / js-yaml is strict
+> about duplicate top-level keys and throws OFM902 *before* OFM085 ever
+> runs. The rule remains in the registry as a forward-compat net for any
+> future tolerant parser; the unit test exercises it by synthesizing a
+> `ParseResult` directly with a hand-crafted `frontmatterRaw`.
+
 ```ts
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
