@@ -28,43 +28,190 @@
 
 ---
 
-## Architecture
+## Architecture Policy
+
+These are enforced gates, not guidelines. All policies are verified in CI. Reading order: TDD → SOLID → File/Complexity → High Coherence → Low Coupling → Linting/Tooling → TSDoc → Type Safety → DDD Layer Structure.
+
+### Test-Driven Development
+
+All production code enters through failing tests (red → green → refactor). Four test levels:
+
+| Level | Speed | Scope |
+|---|---|---|
+| Unit | <1 ms | Single function/class, no I/O |
+| Component | Fast | Module boundary, no filesystem |
+| Integration | Seconds | Real files, real vault fixtures |
+| BDD / Acceptance | CI-gated | Full CLI process, feature scenarios |
+
+Tool: **vitest**. Property-based tests via **fast-check**. No mocks for domain logic — use real fixture files.
+
+### SOLID Principles (TypeScript)
+
+- **SRP** — one reason to change per module; each file exports one public class or function set
+- **OCP** — use TypeScript `interface` and strategy pattern at extension points (formatters, rules, resolvers)
+- **LSP** — no special-case call sites; subtypes fully honour their contracts
+- **ISP** — narrow, role-focused interfaces; no god-interfaces
+- **DIP** — domain layer depends only on abstractions; infrastructure implements them. Domain code never imports filesystem, markdown-it, or CLI libraries directly.
+
+### File and Complexity Policy
+
+| Limit | Value | Enforcement |
+|---|---|---|
+| Cyclomatic complexity | 7 per function | `eslint complexity` rule |
+| File length (soft) | 200 lines | ESLint `max-lines` |
+| Function length | 30 lines | ESLint `max-lines-per-function` |
+| Public exports per file | 1 class or cohesive set | Code review |
+
+### High Coherence
+
+- One bounded context per package (`linting`, `vault`, `config`)
+- One domain concept per module
+- Dependency direction is acyclic: `domain` ← `application` ← `infrastructure` ← `cli`
+
+### Low Coupling
+
+- Dependencies are explicit, narrow, stable, and acyclic
+- Domain never imports infrastructure (`fs`, `path`, `markdown-it`)
+- Cross-boundary contracts defined as TypeScript interfaces
+- No module-level mutable state; no implicit I/O at import time
+
+### Linting and Tooling
+
+| Tool | Purpose |
+|---|---|
+| `tsc --strict` | Type safety (replaces mypy) |
+| `eslint` | Lint rules including complexity, max-lines, import order |
+| `prettier` | Formatting |
+| `vitest` | Test runner |
+| `vitest --coverage` (c8) | 90%+ coverage for domain/application layers, 80%+ for infrastructure |
+| `markdownlint-cli2` | Vanilla markdown files (CLAUDE.md, AGENTS.md, etc.) |
+| `markdownlint-obsidian` | OFM files in `docs/` (dogfood) |
+
+Warnings are errors. Every suppression (`// eslint-disable`, `// @ts-ignore`) requires an explanatory comment.
+
+### TSDoc Comments
+
+Every exported symbol has a TSDoc comment: one-line summary + `@param`, `@returns`, `@throws` where applicable. First line is imperative mood. No invented guarantees or stale examples.
+
+### Type Safety
+
+TypeScript strict mode (`strict: true` in `tsconfig.json`) plus:
+
+```jsonc
+{
+  "noUncheckedIndexedAccess": true,
+  "exactOptionalPropertyTypes": true,
+  "noImplicitReturns": true,
+  "noFallthroughCasesInSwitch": true
+}
+```
+
+Value objects use `readonly` properties. Domain types never use `any`. `unknown` is preferred at system boundaries (file I/O, config parsing). Every `// @ts-ignore` or `as` cast requires a bracket code and explanation.
+
+---
+
+## Architecture — Source Layout (DDD Layers)
+
+The source tree follows a strict Domain-Driven Design layering. Dependencies flow inward only: `cli` → `infrastructure` → `application` → `domain`.
 
 ```
-markdownlint-obsidian
-├── CLI entry point          bin/markdownlint-obsidian.js
-│   ├── Parse argv (globs, --fix, --config, --format, --help)
-│   ├── Load config (hierarchical, cascades through dirs)
-│   └── Invoke core engine
+src/
 │
-├── Core engine              src/engine.ts
-│   ├── File discovery       glob + gitignore integration
-│   ├── Vault root detection walk up for .obsidian/, fall back to git root
-│   ├── Config resolution    per-directory cascade, merge with defaults
-│   ├── Concurrent linting   async per-file, pooled
-│   └── Result aggregation   collect errors → formatters → exit code
+├── domain/                        # Pure domain — zero I/O, zero framework deps
+│   ├── linting/                   # Linting bounded context
+│   │   ├── LintError.ts           # Value object: error code, line, col, message, severity
+│   │   ├── LintResult.ts          # Value object: per-file result set
+│   │   ├── OFMRule.ts             # Interface: rule contract
+│   │   ├── RuleRegistry.ts        # Domain service: register + look up rules
+│   │   └── RuleParams.ts          # Value object: what a rule receives
+│   ├── vault/                     # Vault bounded context
+│   │   ├── VaultPath.ts           # Value object: typed, normalized vault-relative path
+│   │   ├── VaultIndex.ts          # Domain service: file index + wikilink resolution
+│   │   └── WikilinkNode.ts        # Value object: parsed wikilink structure
+│   └── config/                    # Config bounded context
+│       ├── LinterConfig.ts        # Value object: merged, validated config
+│       └── RuleConfig.ts          # Value object: per-rule enable/disable + options
 │
-├── Parser                   src/parser.ts
-│   ├── markdown-it instance with OFM plugins loaded
-│   └── Produces token stream + AST for rules
+├── application/                   # Orchestration — coordinates domain services
+│   ├── LintUseCase.ts             # Use case: given files + config, produce results
+│   ├── FixUseCase.ts              # Use case: apply auto-fixes and write back
+│   └── VaultBootstrap.ts          # Use case: detect vault root, build VaultIndex
 │
-├── Rule system              src/rules/
-│   ├── markdownlint rules   MD001–MD049 imported from markdownlint library
-│   ├── Built-in OFM rules   OFM001–OFM199 (wikilinks, embeds, callouts, tags, frontmatter…)
-│   └── Custom rules API     same shape as markdownlint-cli2 for familiarity
+├── infrastructure/                # I/O, parsing, external library adapters
+│   ├── parser/
+│   │   ├── MarkdownItParser.ts    # Adapter: markdown-it + OFM plugins → ParseResult
+│   │   └── FrontmatterParser.ts   # Adapter: gray-matter → frontmatter object
+│   ├── rules/
+│   │   ├── ofm/                   # Built-in OFM rules (OFM001–OFM199)
+│   │   │   ├── wikilinks/
+│   │   │   ├── embeds/
+│   │   │   ├── callouts/
+│   │   │   ├── tags/
+│   │   │   ├── frontmatter/
+│   │   │   ├── block-references/
+│   │   │   └── highlights/
+│   │   └── standard/              # markdownlint MD001–MD049 adapters
+│   ├── config/
+│   │   ├── ConfigLoader.ts        # Walks dir tree, merges config files
+│   │   └── ConfigValidator.ts     # Validates merged config against schema
+│   ├── formatters/
+│   │   ├── DefaultFormatter.ts
+│   │   ├── JsonFormatter.ts
+│   │   ├── JUnitFormatter.ts
+│   │   └── SarifFormatter.ts
+│   └── vault/
+│       ├── VaultDetector.ts       # Walks up for .obsidian/, falls back to git root
+│       └── FileIndexBuilder.ts    # Scans vault root, builds VaultIndex
 │
-├── Vault context            src/vault.ts
-│   ├── Build file index     all .md paths under vault root
-│   ├── Resolve wikilinks    fuzzy match (Obsidian's own resolution logic)
-│   └── Cache per-run        built once, shared across all file lints
-│
-└── Output formatters        src/formatters/
-    ├── default              text, file:line:col rule message
-    ├── json                 machine-readable
-    ├── junit                CI test reporting
-    ├── sarif                GitHub code scanning / VS Code Problems
-    └── (pluggable)          same API as markdownlint-cli2 formatters
+└── cli/                           # Entry point only — arg parsing, process exit
+    ├── main.ts
+    └── args.ts
 ```
+
+---
+
+## BDD Layer
+
+Acceptance-level behaviour is specified in Gherkin and executed by **cucumber-js** against the real CLI binary.
+
+```
+bdd/
+├── features/                      # Gherkin .feature files — one per OFM feature area
+│   ├── wikilinks.feature
+│   ├── embeds.feature
+│   ├── callouts.feature
+│   ├── tags.feature
+│   ├── frontmatter.feature
+│   ├── block-references.feature
+│   ├── highlights.feature
+│   ├── vault-detection.feature
+│   ├── config-cascade.feature
+│   └── ci-exit-codes.feature
+│
+└── steps/                         # Step definitions (TypeScript)
+    ├── world.ts                   # Shared World: temp vault, CLI runner, result capture
+    ├── file-steps.ts              # Given: file with content / vault structure
+    ├── cli-steps.ts               # When: run CLI with args
+    └── assertion-steps.ts         # Then: exit code, error codes, line numbers
+```
+
+**Scenario example (`wikilinks.feature`):**
+```gherkin
+Feature: Wikilink resolution
+
+  Scenario: Broken wikilink is an error by default
+    Given a vault with file "notes/index.md" containing "[[missing-page]]"
+    When I run markdownlint-obsidian on "notes/index.md"
+    Then the exit code is 1
+    And error OFM001 is reported on line 1
+
+  Scenario: Resolution can be disabled
+    Given a vault with file "notes/index.md" containing "[[missing-page]]"
+    When I run markdownlint-obsidian on "notes/index.md" with "--no-resolve"
+    Then the exit code is 0
+```
+
+BDD scenarios are the source of truth for observable CLI behaviour. Unit and integration tests cover implementation details; BDD scenarios cover user-facing contracts.
 
 ---
 
@@ -249,6 +396,34 @@ docs/
 ├── index.md                    # Wiki catalog — every page listed with one-line summary
 ├── log.md                      # Append-only chronological record of wiki changes
 │
+├── ddd/                        # Domain-Driven Design layer (design docs)
+│   ├── ubiquitous-language.md  # Canonical glossary — all code uses these terms
+│   ├── bounded-contexts.md     # Context map: linting / vault / config
+│   ├── linting/
+│   │   └── domain-model.md     # LintError, LintResult, Rule, RuleRegistry
+│   ├── vault/
+│   │   └── domain-model.md     # VaultIndex, VaultPath, WikilinkNode
+│   └── config/
+│       └── domain-model.md     # LinterConfig, RuleConfig, cascade logic
+│
+├── bdd/                        # Behaviour-Driven Design layer (feature specs)
+│   ├── features/               # Gherkin .feature files — source of truth for CLI behaviour
+│   │   ├── wikilinks.feature
+│   │   ├── embeds.feature
+│   │   ├── callouts.feature
+│   │   ├── tags.feature
+│   │   ├── frontmatter.feature
+│   │   ├── block-references.feature
+│   │   ├── highlights.feature
+│   │   ├── vault-detection.feature
+│   │   ├── config-cascade.feature
+│   │   └── ci-exit-codes.feature
+│   └── steps/                  # cucumber-js step definitions (TypeScript)
+│       ├── world.ts             # Shared World: temp vault, CLI runner, result capture
+│       ├── file-steps.ts
+│       ├── cli-steps.ts
+│       └── assertion-steps.ts
+│
 ├── overview/
 │   ├── project-vision.md
 │   ├── architecture.md
@@ -273,10 +448,14 @@ docs/
 │   ├── custom-rules.md
 │   └── obsidian-plugin.md
 │
-└── adr/
-    ├── ADR001-option-b-standalone.md
-    ├── ADR002-wikilink-resolution-default-on.md
-    └── ADR003-markdownlint-as-dependency.md
+├── adr/
+│   ├── ADR001-option-b-standalone.md
+│   ├── ADR002-wikilink-resolution-default-on.md
+│   └── ADR003-markdownlint-as-dependency.md
+│
+└── superpowers/
+    └── specs/
+        └── 2026-04-11-markdownlint-obsidian-design.md
 ```
 
 **Wiki conventions:**
@@ -284,6 +463,8 @@ docs/
 - Rule pages include frontmatter: `tags`, `rule-code`, `severity`, `fixable`, `area`
 - `index.md` and `log.md` maintained per `llm-wiki.md` pattern — LLM updates both on every docs change
 - `.obsidian-linter.jsonc` at `docs/` level configures the dogfood linting run
+- `docs/ddd/` owns the ubiquitous language — all other docs and code defer to its terms
+- `docs/bdd/features/` is the source of truth for observable CLI behaviour; unit/integration tests cover implementation details
 
 ---
 
@@ -292,6 +473,7 @@ docs/
 ```
 tests/
 ├── unit/
+│   ├── domain/         # Value objects, domain services — pure logic, no I/O
 │   ├── rules/          # One test file per rule — valid[] and invalid[] fixtures
 │   ├── parser/         # Token/AST output for OFM syntax edge cases
 │   ├── vault/          # Vault index build, wikilink resolution logic
@@ -302,7 +484,9 @@ tests/
 │   ├── fixtures/       # Synthetic vault directories with known errors
 │   └── dogfood/        # Run linter against docs/ — must exit 0 on clean docs
 │
-└── snapshots/          # Output formatter snapshots
+├── snapshots/          # Output formatter snapshots (default, json, sarif, junit)
+│
+└── (bdd/ at repo root — see BDD Layer section)
 ```
 
 **Key principles:**
@@ -311,6 +495,7 @@ tests/
 - Vault resolution tested with real fixture vaults (synthetic `.obsidian/` directories)
 - Formatter output pinned as snapshots
 - No filesystem mocking — real temp files and fixture directories throughout
+- BDD acceptance scenarios are the source of truth for observable CLI behaviour
 
 ---
 
@@ -320,12 +505,13 @@ Detailed phase breakdown lives in `docs/overview/roadmap.md`.
 
 | Phase | Scope |
 |---|---|
-| 1 | Project scaffold, CLI skeleton, config loader, file discovery, default/json formatters |
-| 2 | Parser pipeline, frontmatter rules (OFM080–099), tag rules (OFM060–079) |
-| 3 | Wikilink rules + vault resolution (OFM001–019) |
-| 4 | Embed rules (OFM020–039), callout rules (OFM040–059) |
-| 5 | Block reference rules (OFM100–119), highlight/comment rules (OFM120–139) |
-| 6 | markdownlint MD001–MD049 integration, default config baseline |
-| 7 | Additional formatters (junit, sarif), GitHub Action, pre-commit hook, Docker image |
-| 8 | Auto-fix support for fixable rules |
-| 9 | Custom rules API documentation and examples |
+| 1 | Project scaffold: DDD layer skeleton, BDD harness, eslint/tsc/prettier/vitest, CLI stub, config loader, file discovery, default/json formatters |
+| 2 | Parser pipeline (markdown-it + OFM plugins), ParseResult domain types, first BDD feature (frontmatter) |
+| 3 | Frontmatter rules OFM080–099, tag rules OFM060–079 |
+| 4 | Wikilink rules + vault resolution OFM001–019, vault-detection BDD feature |
+| 5 | Embed rules OFM020–039, callout rules OFM040–059 |
+| 6 | Block reference rules OFM100–119, highlight/comment rules OFM120–139 |
+| 7 | markdownlint MD001–MD049 integration, default config baseline, OFM-conflicting rules enumerated and documented |
+| 8 | Additional formatters (junit, sarif), GitHub Action, pre-commit hook, Docker image |
+| 9 | Auto-fix support for fixable rules |
+| 10 | Custom rules API documentation and examples |
