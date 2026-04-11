@@ -14,7 +14,11 @@ export interface CLIArgs {
   readonly format: boolean;
   readonly noGlobs: boolean;
   readonly vaultRoot?: string;
-  readonly noResolve: boolean;
+  /**
+   * Commander maps `--no-resolve` to `resolve: false`. Left `undefined`
+   * when the flag is not supplied so config-level `resolve` can win.
+   */
+  readonly resolve?: boolean;
   readonly outputFormatter: string;
 }
 
