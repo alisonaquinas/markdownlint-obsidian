@@ -1,0 +1,38 @@
+import { minimatch } from "minimatch";
+import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+
+/**
+ * OFM120 — disallowed-highlight.
+ *
+ * Config-driven: reports every `==highlight==` when `config.highlights.allow`
+ * is `false`. `allowedGlobs` is a per-glob escape hatch — a path matching any
+ * listed glob is exempt, which lets teams ban highlights everywhere except
+ * (e.g.) `notes/daily/**`.
+ *
+ * Default config keeps the rule disabled (`rules.OFM120.enabled: false`) so
+ * vaults that embrace highlights do not need an opt-out; flip
+ * `highlights.allow` to `false` in `.obsidian-linter.jsonc` to turn it on.
+ *
+ * @see docs/rules/highlights/OFM120.md
+ */
+export const OFM120Rule: OFMRule = {
+  names: ["OFM120", "disallowed-highlight"],
+  description: "Highlight `==text==` is disabled by config in this file",
+  tags: ["highlights"],
+  severity: "error",
+  fixable: false,
+  run({ parsed, config }, onError) {
+    if (config.highlights.allow) return;
+    const allowedHere = config.highlights.allowedGlobs.some((glob) =>
+      minimatch(parsed.filePath, glob),
+    );
+    if (allowedHere) return;
+    for (const h of parsed.highlights) {
+      onError({
+        line: h.position.line,
+        column: h.position.column,
+        message: "Highlight `==...==` is disallowed by config",
+      });
+    }
+  },
+};
