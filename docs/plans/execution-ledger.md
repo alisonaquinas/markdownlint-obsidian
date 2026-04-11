@@ -17,6 +17,7 @@ Running log of the subagent-driven roadmap execution. One row per phase attempt,
 | Phase | Branch | Start | End | Commits | Merge | CI | Notes |
 |---|---|---|---|---|---|---|---|
 | 1 | `feature/phase-01-scaffold` | 2026-04-11 19:24 UTC | 2026-04-11 20:17 UTC | 20 (19 subagent + 1 CI fix) | `174fe57` (`--no-ff` into develop) | ✅ run 24290734462 | Reviewer flagged broken tsx loader in CI dogfood step; fixed via new `test:dogfood` npm script. Node.js 20 actions deprecation warning logged (non-blocking). |
+| 2 | `feature/phase-02-parser` | 2026-04-11 20:20 UTC | 2026-04-11 20:59 UTC | 21 | `64d32f3` (PR #1 via GitHub `--merge`) | ✅ runs 24291230976 (PR) + 24291487981 (develop post-merge) | Subagent substituted `regex.matchAll` for `regex.exec` preemptively to dodge the Write hook. Reviewer approved with 4 non-blocking suggestions: (1) `LintUseCase.runRule` should take typed `ParseResult`, (2) freeze `ParseResult.frontmatter`, (3) add factory-function TSDoc, (4) `BlockRefExtractor`/`CalloutExtractor` check col 1 only. Deferred to future cleanup. |
 
 ## Known non-blocking warnings
 
