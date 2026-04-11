@@ -11,10 +11,30 @@ export interface CalloutConfig {
   readonly allowList: readonly string[];
 }
 
-/** Frontmatter validation options. */
+/**
+ * Frontmatter validation options.
+ *
+ * `required` is the set of dotted keys that must exist in every file's
+ * frontmatter. `dateFields` is the subset that must additionally parse as
+ * ISO-8601. `typeMap` declares an expected JSON type for each named key
+ * (used by OFM082 and OFM083). `allowUnknown=false` makes OFM082 fail on
+ * any key not present in `typeMap`.
+ */
 export interface FrontmatterConfig {
   readonly required: readonly string[];
   readonly dateFields: readonly string[];
+  readonly typeMap: Readonly<
+    Record<string, "string" | "number" | "boolean" | "array" | "date">
+  >;
+  readonly allowUnknown: boolean;
+}
+
+/** Tag validation options. */
+export interface TagConfig {
+  readonly maxDepth: number;
+  readonly caseSensitive: boolean;
+  readonly allowList: readonly string[] | null;
+  readonly denyList: readonly string[];
 }
 
 /**
@@ -31,6 +51,7 @@ export interface LinterConfig {
   readonly wikilinks: WikilinkConfig;
   readonly callouts: CalloutConfig;
   readonly frontmatter: FrontmatterConfig;
+  readonly tags: TagConfig;
   readonly rules: Readonly<Record<string, RuleConfig>>;
   readonly customRules: readonly string[];
   readonly globs: readonly string[];
