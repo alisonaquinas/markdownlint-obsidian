@@ -19,3 +19,11 @@ Given(
     await this.writeFile(relPath, content);
   },
 );
+
+Given(
+  "a file {string} containing:",
+  async function (this: OFMWorld, relPath: string, content: string) {
+    if (!this.vaultDir) await this.initVault();
+    await this.writeFile(relPath, content);
+  },
+);
