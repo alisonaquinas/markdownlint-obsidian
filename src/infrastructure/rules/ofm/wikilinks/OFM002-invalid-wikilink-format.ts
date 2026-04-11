@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { buildCodeRegionMap } from "../../../parser/ofm/CodeRegionMap.js";
 
 /**
  * OFM002 — invalid-wikilink-format.
@@ -10,14 +11,14 @@ import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
  *   2. Unclosed wikilink: a line starting a wikilink that never closes.
  *   3. Nested wikilink: `[[ ... [[` on the same line.
  *
- * Code fences and inline code are intentionally *not* excluded yet — this
- * matches markdownlint's behaviour for malformed-link rules and keeps the
- * implementation simple. Phase 9 autofix prep can revisit this.
+ * Matches inside fenced code blocks or inline code are ignored — this
+ * mirrors the wikilink extractor's behaviour and prevents false positives on
+ * documentation that *describes* malformed syntax inside code fences.
  *
  * @see docs/rules/wikilinks/OFM002.md
  */
 const EMPTY_RE = /\[\[\s*\]\]/g;
-const NESTED_RE = /\[\[[^\]]*\[\[/;
+const NESTED_RE = /\[\[[^\]]*\[\[/g;
 
 export const OFM002Rule: OFMRule = {
   names: ["OFM002", "invalid-wikilink-format"],
@@ -26,21 +27,24 @@ export const OFM002Rule: OFMRule = {
   severity: "error",
   fixable: false,
   run({ parsed }, onError) {
+    const codeMap = buildCodeRegionMap(parsed.lines);
+
     parsed.lines.forEach((line, i) => {
       const lineNumber = i + 1;
 
       for (const m of line.matchAll(EMPTY_RE)) {
+        const column = (m.index ?? 0) + 1;
+        if (codeMap.isInCode(lineNumber, column)) continue;
         onError({
           line: lineNumber,
-          column: (m.index ?? 0) + 1,
+          column,
           message: "Empty wikilink `[[]]`",
         });
       }
 
-      // Unclosed: a `[[` without a matching `]]` on the same line.
-      // We check the last occurrence of `[[` and ensure a `]]` follows it.
+      // Unclosed: the last `[[` on the line has no matching `]]` after it.
       const lastOpen = line.lastIndexOf("[[");
-      if (lastOpen !== -1) {
+      if (lastOpen !== -1 && !codeMap.isInCode(lineNumber, lastOpen + 1)) {
         const afterOpen = line.slice(lastOpen);
         if (!afterOpen.includes("]]")) {
           onError({
@@ -51,12 +55,15 @@ export const OFM002Rule: OFMRule = {
         }
       }
 
-      if (NESTED_RE.test(line)) {
+      for (const m of line.matchAll(NESTED_RE)) {
+        const column = (m.index ?? 0) + 1;
+        if (codeMap.isInCode(lineNumber, column)) continue;
         onError({
           line: lineNumber,
-          column: 1,
+          column,
           message: "Nested wikilink `[[ ... [[`",
         });
+        break; // one report per line is plenty
       }
     });
   },

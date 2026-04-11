@@ -33,6 +33,9 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
     OFM062: Object.freeze({ enabled: false }),
     OFM066: Object.freeze({ enabled: false }),
     OFM082: Object.freeze({ enabled: false }),
+    // OFM003 (self-link) is disabled by default; self-links are commonly
+    // intentional (sidebars, navigation blocks).
+    OFM003: Object.freeze({ enabled: false }),
   }),
   customRules: Object.freeze([]),
   globs: Object.freeze(["**/*.md"]),

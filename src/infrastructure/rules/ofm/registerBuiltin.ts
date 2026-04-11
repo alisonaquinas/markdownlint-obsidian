@@ -15,6 +15,13 @@ import { OFM063Rule } from "./tags/OFM063-trailing-slash.js";
 import { OFM064Rule } from "./tags/OFM064-duplicate-tag.js";
 import { OFM065Rule } from "./tags/OFM065-mixed-case-tag.js";
 import { OFM066Rule } from "./tags/OFM066-frontmatter-tag-not-in-body.js";
+import { OFM001Rule } from "./wikilinks/OFM001-broken-wikilink.js";
+import { OFM002Rule } from "./wikilinks/OFM002-invalid-wikilink-format.js";
+import { OFM003Rule } from "./wikilinks/OFM003-self-link.js";
+import { OFM004Rule } from "./wikilinks/OFM004-ambiguous-target.js";
+import { OFM005Rule } from "./wikilinks/OFM005-case-mismatch.js";
+import { OFM006Rule } from "./wikilinks/OFM006-empty-heading.js";
+import { OFM007Rule } from "./wikilinks/OFM007-block-ref-in-body.js";
 
 const ALL = [
   frontmatterParseErrorRule,
@@ -33,6 +40,13 @@ const ALL = [
   OFM064Rule,
   OFM065Rule,
   OFM066Rule,
+  OFM001Rule,
+  OFM002Rule,
+  OFM003Rule,
+  OFM004Rule,
+  OFM005Rule,
+  OFM006Rule,
+  OFM007Rule,
 ];
 
 /** Register every built-in OFM rule with a RuleRegistry. */
