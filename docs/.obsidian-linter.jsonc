@@ -1,0 +1,8 @@
+{
+  // Dogfood: lint docs/ with markdownlint-obsidian
+  // No OFM rules active yet (Phase 2+). This file wires up the config.
+  "vaultRoot": "../",
+  "resolve": false,
+  "globs": ["**/*.md"],
+  "ignores": ["superpowers/**"]
+}

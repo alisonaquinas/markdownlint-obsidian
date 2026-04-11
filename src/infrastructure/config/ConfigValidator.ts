@@ -1,17 +1,27 @@
 import type { LinterConfig } from "../../domain/config/LinterConfig.js";
 
 const KNOWN_KEYS: ReadonlySet<string> = new Set([
+  // markdownlint-obsidian extensions
   "vaultRoot",
   "resolve",
   "wikilinks",
   "callouts",
   "frontmatter",
+  // markdownlint-cli2 compatible keys
+  "config",
   "rules",
   "customRules",
   "globs",
   "ignores",
   "fix",
   "outputFormatter",
+  "outputFormatters",
+  "gitignore",
+  "noBanner",
+  "noInlineConfig",
+  "noProgress",
+  "showFound",
+  "modulePaths",
 ]);
 
 /**
