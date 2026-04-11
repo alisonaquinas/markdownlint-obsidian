@@ -5,6 +5,7 @@ import { makeMarkdownItParser } from "../../../../src/infrastructure/parser/Mark
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
 import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
+import type { BlockRefIndex } from "../../../../src/domain/vault/BlockRefIndex.js";
 import type { FileExistenceChecker } from "../../../../src/domain/fs/FileExistenceChecker.js";
 
 /**
@@ -40,6 +41,9 @@ const DEFAULT_FS_CHECK: FileExistenceChecker = {
  * @param vault - Optional stub vault index (null disables wikilink resolution).
  * @param fsCheck - Optional stub file existence checker. Defaults to one
  *                  that returns `false` for every probe.
+ * @param blockRefIndex - Optional stub {@link BlockRefIndex}. Defaults to
+ *                        `null`, matching the `config.resolve === false`
+ *                        branch so existing tests stay green.
  * @returns LintError instances emitted by the rule, in emission order.
  */
 export async function runRuleOnSource(
@@ -48,6 +52,7 @@ export async function runRuleOnSource(
   overrides: Partial<LinterConfig> = {},
   vault: VaultIndex | null = null,
   fsCheck: FileExistenceChecker = DEFAULT_FS_CHECK,
+  blockRefIndex: BlockRefIndex | null = null,
 ): Promise<LintError[]> {
   const parser = makeMarkdownItParser();
   let parsed;
@@ -70,20 +75,23 @@ export async function runRuleOnSource(
 
   const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
   const errors: LintError[] = [];
-  await rule.run({ filePath: parsed.filePath, parsed, config, vault, fsCheck }, (partial) => {
-    errors.push(
-      makeLintError({
-        ruleCode: rule.names[0] ?? "UNKNOWN",
-        ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-        severity: rule.severity,
-        line: partial.line,
-        column: partial.column,
-        message: partial.message,
-        fixable: rule.fixable,
-        ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
-      }),
-    );
-  });
+  await rule.run(
+    { filePath: parsed.filePath, parsed, config, vault, fsCheck, blockRefIndex },
+    (partial) => {
+      errors.push(
+        makeLintError({
+          ruleCode: rule.names[0] ?? "UNKNOWN",
+          ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+          severity: rule.severity,
+          line: partial.line,
+          column: partial.column,
+          message: partial.message,
+          fixable: rule.fixable,
+          ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
+        }),
+      );
+    },
+  );
 
   return errors;
 }

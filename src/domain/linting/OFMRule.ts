@@ -2,6 +2,7 @@ import type { LintError } from "./LintError.js";
 import type { ParseResult } from "../parsing/ParseResult.js";
 import type { LinterConfig } from "../config/LinterConfig.js";
 import type { VaultIndex } from "../vault/VaultIndex.js";
+import type { BlockRefIndex } from "../vault/BlockRefIndex.js";
 import type { FileExistenceChecker } from "../fs/FileExistenceChecker.js";
 
 /**
@@ -10,12 +11,14 @@ import type { FileExistenceChecker } from "../fs/FileExistenceChecker.js";
  * Phase 4+ contract: every rule receives the full {@link ParseResult} (so it
  * can read frontmatter, lines, tokens, and any extracted OFM node arrays),
  * the active {@link LinterConfig} for option lookup, an optional
- * {@link VaultIndex} for wikilink resolution, and a {@link FileExistenceChecker}
- * for probing non-markdown assets (Phase 5). `vault` is `null` when
- * `config.resolve === false`; rules that need it must guard on that case.
- * `fsCheck` is always present — infrastructure supplies a stub that always
- * returns `false` when no real filesystem is available. Rules must not mutate
- * any of these fields.
+ * {@link VaultIndex} for wikilink resolution, a {@link FileExistenceChecker}
+ * for probing non-markdown assets (Phase 5), and an optional
+ * {@link BlockRefIndex} (Phase 6) so rules can answer cross-file block-id
+ * lookups without re-parsing every file. `vault` and `blockRefIndex` are
+ * both `null` when `config.resolve === false`; rules that need either must
+ * guard on that case. `fsCheck` is always present — infrastructure supplies
+ * a stub that always returns `false` when no real filesystem is available.
+ * Rules must not mutate any of these fields.
  */
 export interface RuleParams {
   readonly filePath: string;
@@ -23,6 +26,7 @@ export interface RuleParams {
   readonly config: LinterConfig;
   readonly vault: VaultIndex | null;
   readonly fsCheck: FileExistenceChecker;
+  readonly blockRefIndex: BlockRefIndex | null;
 }
 
 /**
