@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit + integration tests
+        run: npm run test
+
+      - name: BDD acceptance tests
+        run: npm run test:bdd
+
+      - name: Dogfood docs/
+        run: node --import "file://$(pwd)/node_modules/tsx/dist/loader.mjs" ../bin/markdownlint-obsidian.js "**/*.md"
+        working-directory: docs
