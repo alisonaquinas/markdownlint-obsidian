@@ -1,0 +1,218 @@
+# ──────────────────────────────────────────────────────────────────
+# markdownlint-obsidian — .gitattributes
+#
+# Goals:
+#   1. Force LF line endings for every text file (prevents the CRLF
+#      warnings we saw when committing on Windows + matches the
+#      Unix-flavoured tooling chain: node, bash, CI runners).
+#   2. Mark non-text assets as binary so Git stops trying to diff them.
+#   3. Route heavy binary formats through Git LFS.
+#   4. Exclude dev-only files from `git archive` exports.
+# ──────────────────────────────────────────────────────────────────
+
+# ── Default: auto-detect text, normalize to LF ───────────────────
+* text=auto eol=lf
+
+# ── Source code ──────────────────────────────────────────────────
+*.ts        text diff=typescript
+*.tsx       text diff=typescript
+*.mts       text diff=typescript
+*.cts       text diff=typescript
+*.js        text diff=javascript
+*.jsx       text diff=javascript
+*.mjs       text diff=javascript
+*.cjs       text diff=javascript
+
+# ── Config / data formats ────────────────────────────────────────
+*.json      text
+*.jsonc     text
+*.json5     text
+*.yml       text
+*.yaml      text
+*.toml      text
+*.xml       text
+*.ini       text
+*.conf      text
+*.env       text
+.editorconfig text
+.npmrc      text
+.nvmrc      text
+.node-version text
+
+# ── Markdown / docs ──────────────────────────────────────────────
+*.md        text diff=markdown
+*.markdown  text diff=markdown
+*.mdx       text diff=markdown
+*.rst       text
+*.txt       text
+*.adoc      text
+*.asciidoc  text
+
+# ── Gherkin / test specs ─────────────────────────────────────────
+*.feature   text
+*.snap      text
+
+# ── Web / styling ────────────────────────────────────────────────
+*.html      text diff=html
+*.htm       text diff=html
+*.css       text diff=css
+*.scss      text diff=css
+*.sass      text diff=css
+*.less      text diff=css
+*.svg       text
+
+# ── Shell / Dockerfiles ──────────────────────────────────────────
+*.sh        text eol=lf
+*.bash      text eol=lf
+Dockerfile  text eol=lf
+Dockerfile.* text eol=lf
+*.dockerfile text eol=lf
+docker-compose*.yml text eol=lf
+.dockerignore text eol=lf
+
+# ── Windows-only files must keep CRLF ────────────────────────────
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+*.ps1       text eol=crlf
+*.psm1      text eol=crlf
+
+# ── Lockfiles — text but never try to merge ──────────────────────
+package-lock.json    text -diff merge=ours
+yarn.lock            text -diff merge=ours
+pnpm-lock.yaml       text -diff merge=ours
+
+# ══════════════════════════════════════════════════════════════════
+# Binary assets — disable textual diff, keep in-tree (small files)
+# ══════════════════════════════════════════════════════════════════
+
+# Icons, favicons, small UI assets
+*.ico       binary
+*.icns      binary
+*.cur       binary
+
+# Small images (general-purpose bin tracking — large copies go to LFS below)
+*.svg       text
+*.bmp       binary
+
+# Fonts — most font files are small enough for normal git
+*.eot       binary
+
+# Office docs that occasionally appear in repos
+*.xlsx      binary
+*.docx      binary
+*.pptx      binary
+
+# ══════════════════════════════════════════════════════════════════
+# Git LFS — heavy binaries routed out of the regular object store
+#
+# Contributors need `git lfs install` the first time they clone.
+# End-users consuming the npm package never touch LFS.
+# ══════════════════════════════════════════════════════════════════
+
+# ── Raster images (screenshots, attachments, fixture images) ─────
+*.png       filter=lfs diff=lfs merge=lfs -text
+*.jpg       filter=lfs diff=lfs merge=lfs -text
+*.jpeg      filter=lfs diff=lfs merge=lfs -text
+*.gif       filter=lfs diff=lfs merge=lfs -text
+*.webp      filter=lfs diff=lfs merge=lfs -text
+*.tiff      filter=lfs diff=lfs merge=lfs -text
+*.tif       filter=lfs diff=lfs merge=lfs -text
+*.heic      filter=lfs diff=lfs merge=lfs -text
+*.heif      filter=lfs diff=lfs merge=lfs -text
+*.avif      filter=lfs diff=lfs merge=lfs -text
+
+# ── Source art (always large) ────────────────────────────────────
+*.psd       filter=lfs diff=lfs merge=lfs -text
+*.psb       filter=lfs diff=lfs merge=lfs -text
+*.ai        filter=lfs diff=lfs merge=lfs -text
+*.sketch    filter=lfs diff=lfs merge=lfs -text
+*.fig       filter=lfs diff=lfs merge=lfs -text
+*.xcf       filter=lfs diff=lfs merge=lfs -text
+*.xd        filter=lfs diff=lfs merge=lfs -text
+*.afdesign  filter=lfs diff=lfs merge=lfs -text
+*.afphoto   filter=lfs diff=lfs merge=lfs -text
+
+# ── Video ────────────────────────────────────────────────────────
+*.mp4       filter=lfs diff=lfs merge=lfs -text
+*.m4v       filter=lfs diff=lfs merge=lfs -text
+*.mov       filter=lfs diff=lfs merge=lfs -text
+*.webm      filter=lfs diff=lfs merge=lfs -text
+*.mkv       filter=lfs diff=lfs merge=lfs -text
+*.avi       filter=lfs diff=lfs merge=lfs -text
+*.wmv       filter=lfs diff=lfs merge=lfs -text
+*.flv       filter=lfs diff=lfs merge=lfs -text
+
+# ── Audio ────────────────────────────────────────────────────────
+*.mp3       filter=lfs diff=lfs merge=lfs -text
+*.wav       filter=lfs diff=lfs merge=lfs -text
+*.flac      filter=lfs diff=lfs merge=lfs -text
+*.ogg       filter=lfs diff=lfs merge=lfs -text
+*.oga       filter=lfs diff=lfs merge=lfs -text
+*.opus      filter=lfs diff=lfs merge=lfs -text
+*.m4a       filter=lfs diff=lfs merge=lfs -text
+*.aac       filter=lfs diff=lfs merge=lfs -text
+
+# ── Documents / publishing formats ───────────────────────────────
+*.pdf       filter=lfs diff=lfs merge=lfs -text
+*.epub      filter=lfs diff=lfs merge=lfs -text
+*.mobi      filter=lfs diff=lfs merge=lfs -text
+
+# ── Archives ─────────────────────────────────────────────────────
+*.zip       filter=lfs diff=lfs merge=lfs -text
+*.tar       filter=lfs diff=lfs merge=lfs -text
+*.tar.gz    filter=lfs diff=lfs merge=lfs -text
+*.tgz       filter=lfs diff=lfs merge=lfs -text
+*.tar.bz2   filter=lfs diff=lfs merge=lfs -text
+*.tar.xz    filter=lfs diff=lfs merge=lfs -text
+*.7z        filter=lfs diff=lfs merge=lfs -text
+*.rar       filter=lfs diff=lfs merge=lfs -text
+*.gz        filter=lfs diff=lfs merge=lfs -text
+*.bz2       filter=lfs diff=lfs merge=lfs -text
+*.xz        filter=lfs diff=lfs merge=lfs -text
+*.zst       filter=lfs diff=lfs merge=lfs -text
+
+# ── Fonts (large families like variable fonts) ───────────────────
+*.ttf       filter=lfs diff=lfs merge=lfs -text
+*.otf       filter=lfs diff=lfs merge=lfs -text
+*.woff      filter=lfs diff=lfs merge=lfs -text
+*.woff2     filter=lfs diff=lfs merge=lfs -text
+
+# ── 3D / Game / Binary blobs (rare but future-proof) ─────────────
+*.blend     filter=lfs diff=lfs merge=lfs -text
+*.fbx       filter=lfs diff=lfs merge=lfs -text
+*.glb       filter=lfs diff=lfs merge=lfs -text
+*.gltf      filter=lfs diff=lfs merge=lfs -text
+*.obj       filter=lfs diff=lfs merge=lfs -text
+*.bin       filter=lfs diff=lfs merge=lfs -text
+*.dat       filter=lfs diff=lfs merge=lfs -text
+*.iso       filter=lfs diff=lfs merge=lfs -text
+*.dmg       filter=lfs diff=lfs merge=lfs -text
+
+# ══════════════════════════════════════════════════════════════════
+# `git archive` export rules — keep the published tarball lean
+# ══════════════════════════════════════════════════════════════════
+.gitattributes    export-ignore
+.gitignore        export-ignore
+.github/          export-ignore
+.vscode/          export-ignore
+.idea/            export-ignore
+tests/            export-ignore
+docs/bdd/         export-ignore
+docs/plans/       export-ignore
+docs/superpowers/ export-ignore
+*.test.ts         export-ignore
+*.test.js         export-ignore
+cucumber.json     export-ignore
+vitest.config.ts  export-ignore
+eslint.config.js  export-ignore
+.prettierrc.json  export-ignore
+.editorconfig     export-ignore
+
+# ══════════════════════════════════════════════════════════════════
+# Linguist overrides for GitHub language statistics
+# ══════════════════════════════════════════════════════════════════
+docs/**           linguist-documentation
+tests/**          linguist-documentation=false
+tests/fixtures/** linguist-generated
+action/dist/**    linguist-generated
+*.snap            linguist-generated

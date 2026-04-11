@@ -1,0 +1,168 @@
+# ──────────────────────────────────────────────────────────────────
+# markdownlint-obsidian — .gitignore
+# ──────────────────────────────────────────────────────────────────
+
+# ── Node / npm ────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnp.*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.npm/
+.node_repl_history
+.npmrc.local
+*.tgz
+
+# ── TypeScript / build output ─────────────────────────────────────
+dist/
+build/
+lib/
+out/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# GitHub Action bundle is INTENTIONALLY committed for distribution.
+# The CI drift-check in .github/workflows/ci.yml verifies it stays in sync.
+!action/dist/
+!action/dist/**
+
+# ── Test / coverage output ────────────────────────────────────────
+coverage/
+.nyc_output/
+.vitest/
+.vitest-cache/
+reports/
+junit.xml
+test-results/
+*.lcov
+
+# Cucumber reports referenced by Phase 1 cucumber.json
+reports/cucumber.json
+
+# ── Tooling caches ────────────────────────────────────────────────
+.eslintcache
+.stylelintcache
+.prettiercache
+.cache/
+.parcel-cache/
+.turbo/
+.swc/
+
+# ── Environment / secrets ─────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.pem
+*.key
+secrets.json
+
+# ── Log files ─────────────────────────────────────────────────────
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ── Temp / scratch ────────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+.scratch/
+
+# ── OS artifacts ──────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# ── Editors / IDEs ────────────────────────────────────────────────
+# VS Code — allow shared settings/extensions, ignore personal state
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Vim / Emacs
+*.swp
+*.swo
+*.swn
+*~
+\#*\#
+.\#*
+
+# Sublime
+*.sublime-workspace
+*.sublime-project
+
+# ── Docker / runtime ──────────────────────────────────────────────
+.docker/
+docker-compose.override.yml
+
+# ── Obsidian ──────────────────────────────────────────────────────
+# Ignore the root-level .obsidian directory (local editor state only;
+# this repo is not itself a vault). The dogfood vault lives in docs/
+# and may have its own committed .obsidian/ config for vault detection.
+/.obsidian/
+
+# Obsidian workspace state should never be committed, anywhere in the tree
+**/.obsidian/workspace.json
+**/.obsidian/workspace-mobile.json
+**/.obsidian/workspace.json.bak
+**/.obsidian/cache
+**/.obsidian/graph.json
+**/.obsidian/appearance.json
+
+# Obsidian plugin runtime data
+**/.obsidian/plugins/**/data.json
+
+# ── Local override files ──────────────────────────────────────────
+.markdownlint-obsidian.local.jsonc
+.obsidian-linter.local.jsonc
+*.local.json
+*.local.jsonc
+
+# ── Certificates / signing ────────────────────────────────────────
+*.p12
+*.pfx
+*.keystore
