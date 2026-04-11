@@ -12,6 +12,7 @@ import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuilti
 import { bootstrapVault } from "../application/VaultBootstrap.js";
 import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
 import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
+import { makeNodeFsExistenceChecker } from "../infrastructure/fs/NodeFsExistenceChecker.js";
 
 interface ParsedOptions {
   readonly fix: boolean;
@@ -133,6 +134,7 @@ async function runPipeline(
     parser: makeMarkdownItParser(),
     readFile: readMarkdownFile,
     vault: bootstrapResult.vault,
+    fsCheck: makeNodeFsExistenceChecker(),
   });
 
   const output = getFormatter(opts.outputFormatter)(results);

@@ -5,6 +5,19 @@ import { makeMarkdownItParser } from "../../../../src/infrastructure/parser/Mark
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
 import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
+import type { FileExistenceChecker } from "../../../../src/domain/fs/FileExistenceChecker.js";
+
+/**
+ * Default stub {@link FileExistenceChecker} used whenever a rule under test
+ * does not supply its own. It reports that nothing exists; rules that need
+ * specific files to resolve must pass a custom checker via the `fsCheck`
+ * override.
+ */
+const DEFAULT_FS_CHECK: FileExistenceChecker = {
+  async exists(): Promise<boolean> {
+    return false;
+  },
+};
 
 /**
  * Parse `source`, run `rule` once against the parsed result, and collect
@@ -13,12 +26,20 @@ import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
  * Config defaults to `DEFAULT_CONFIG`; pass `overrides` to patch specific
  * branches for a single test. `vault` defaults to `null` so every pre-Phase-4
  * test stays green without modification. Phase 4 rule tests pass a stub
- * {@link VaultIndex} when they need resolution.
+ * {@link VaultIndex} when they need resolution. Phase 5 rule tests may pass
+ * a custom {@link FileExistenceChecker} when they need filesystem probes
+ * (OFM022); the default checker always reports "not found".
+ *
+ * `rule.run` may be synchronous or asynchronous; this helper awaits the
+ * return value either way, so Phase 5 async rules work without per-test
+ * plumbing.
  *
  * @param rule - The rule under test.
  * @param source - Markdown source string (frontmatter optional).
  * @param overrides - Partial config patch merged over `DEFAULT_CONFIG`.
  * @param vault - Optional stub vault index (null disables wikilink resolution).
+ * @param fsCheck - Optional stub file existence checker. Defaults to one
+ *                  that returns `false` for every probe.
  * @returns LintError instances emitted by the rule, in emission order.
  */
 export async function runRuleOnSource(
@@ -26,6 +47,7 @@ export async function runRuleOnSource(
   source: string,
   overrides: Partial<LinterConfig> = {},
   vault: VaultIndex | null = null,
+  fsCheck: FileExistenceChecker = DEFAULT_FS_CHECK,
 ): Promise<LintError[]> {
   const parser = makeMarkdownItParser();
   let parsed;
@@ -48,7 +70,7 @@ export async function runRuleOnSource(
 
   const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
   const errors: LintError[] = [];
-  rule.run({ filePath: parsed.filePath, parsed, config, vault }, (partial) => {
+  await rule.run({ filePath: parsed.filePath, parsed, config, vault, fsCheck }, (partial) => {
     errors.push(
       makeLintError({
         ruleCode: rule.names[0] ?? "UNKNOWN",

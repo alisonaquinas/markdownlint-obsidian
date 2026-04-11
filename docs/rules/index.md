@@ -20,6 +20,27 @@ frontmatter, and `OFM9xx` for parser/system errors.
 | [[rules/wikilinks/OFM006]] | empty-wikilink-heading       | error    | enabled  | no      |
 | [[rules/wikilinks/OFM007]] | wikilink-block-ref           | warning  | enabled  | no      |
 
+## Embeds (OFM020-OFM039)
+
+| Code   | Name                              | Severity | Default  | Fixable |
+| ------ | --------------------------------- | -------- | -------- | ------- |
+| [[rules/embeds/OFM020]] | broken-embed                    | error    | enabled  | no      |
+| [[rules/embeds/OFM021]] | invalid-embed-syntax            | error    | enabled  | no      |
+| [[rules/embeds/OFM022]] | embed-target-missing            | error    | enabled  | no      |
+| [[rules/embeds/OFM023]] | embed-size-invalid              | warning  | enabled  | no      |
+| [[rules/embeds/OFM024]] | disallowed-embed-extension      | error    | enabled  | no      |
+| [[rules/embeds/OFM025]] | embed-size-on-non-image         | warning  | enabled  | yes (Phase 9) |
+
+## Callouts (OFM040-OFM059)
+
+| Code   | Name                              | Severity | Default  | Fixable |
+| ------ | --------------------------------- | -------- | -------- | ------- |
+| [[rules/callouts/OFM040]] | unknown-callout-type          | error    | enabled  | no      |
+| [[rules/callouts/OFM041]] | malformed-callout             | error    | enabled  | no      |
+| [[rules/callouts/OFM042]] | empty-callout                 | warning  | enabled  | no      |
+| [[rules/callouts/OFM043]] | callout-in-list               | warning  | enabled  | no      |
+| [[rules/callouts/OFM044]] | callout-fold-disabled         | warning  | enabled  | yes (Phase 9) |
+
 ## Frontmatter (OFM080–OFM099)
 
 | Code   | Name                              | Severity | Default  | Fixable |

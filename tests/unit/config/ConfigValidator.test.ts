@@ -11,4 +11,9 @@ describe("ConfigValidator", () => {
     const bad = { ...DEFAULT_CONFIG, unknownKey: true } as unknown;
     expect(() => validateConfig(bad)).toThrow("OFM901");
   });
+
+  it("accepts an `embeds` top-level key (Phase 5)", () => {
+    const raw = { embeds: { allowedExtensions: ["png"] } } as unknown;
+    expect(() => validateConfig(raw)).not.toThrow();
+  });
 });

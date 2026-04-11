@@ -11,7 +11,11 @@ const BIN = path.resolve("bin/markdownlint-obsidian.js");
 const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
 const NODE_ARGS = ["--import", TSX_URL, BIN];
 
-describe("CLI", () => {
+// CLI spawns share the same runner parallelism budget as the wikilink and
+// embed integration tests. On Windows the cold-start plus loader import can
+// blow past the default 5s timeout under load, so we give every case the
+// same generous window we use for the other integration suites.
+describe("CLI", { timeout: 20000 }, () => {
   it("--help exits 0 and prints usage", async () => {
     const { stdout } = await execAsync("node", [...NODE_ARGS, "--help"]);
     expect(stdout).toContain("markdownlint-obsidian");
