@@ -1,0 +1,38 @@
+import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+
+// `==a ==b== c==` — three pairs of `==` separated by non-`=` characters on
+// a single line. The pattern cannot tell "nested" apart from "two adjacent
+// highlights on one line" (`==a== and ==b==`), so it fires on both. The
+// rule trades that precision for a one-line check; authors who use two
+// highlights per sentence can disable OFM123 or add an inline suppression.
+const NESTED = /==[^=\n]*==[^=\n]*==/;
+
+/**
+ * OFM123 — nested-highlight.
+ *
+ * Reports every line that contains three `==` marker pairs. The pattern
+ * fires on both nested attempts (`==a ==b== c==`) and two separate
+ * highlights on one line (`==a== and ==b==`); the latter is treated as a
+ * style smell under the same rule. Teams that rely on multiple highlights
+ * per line should disable the rule via `rules.OFM123.enabled: false`.
+ *
+ * @see docs/rules/highlights/OFM123.md
+ */
+export const OFM123Rule: OFMRule = {
+  names: ["OFM123", "nested-highlight"],
+  description: "Highlights cannot be nested",
+  tags: ["highlights", "syntax"],
+  severity: "error",
+  fixable: false,
+  run({ parsed }, onError) {
+    parsed.lines.forEach((line, i) => {
+      if (NESTED.test(line)) {
+        onError({
+          line: i + 1,
+          column: 1,
+          message: "Nested highlight detected",
+        });
+      }
+    });
+  },
+};
