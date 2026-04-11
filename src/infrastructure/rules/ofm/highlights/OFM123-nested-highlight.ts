@@ -8,6 +8,14 @@ import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 const NESTED = /==[^=\n]*==[^=\n]*==/;
 
 /**
+ * Strip inline backtick code so `===` operators inside prose don't count.
+ * Mirrors the helper in OFM122.
+ */
+function stripInlineCode(line: string): string {
+  return line.replace(/`[^`\n]*`/g, "");
+}
+
+/**
  * OFM123 — nested-highlight.
  *
  * Reports every line that contains three `==` marker pairs. The pattern
@@ -26,7 +34,8 @@ export const OFM123Rule: OFMRule = {
   fixable: false,
   run({ parsed }, onError) {
     parsed.lines.forEach((line, i) => {
-      if (NESTED.test(line)) {
+      const scanned = stripInlineCode(line);
+      if (NESTED.test(scanned)) {
         onError({
           line: i + 1,
           column: 1,

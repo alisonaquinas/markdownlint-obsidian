@@ -27,17 +27,28 @@ function updateFence(line: string, fence: string | null): FenceResult {
 }
 
 /**
+ * Strip matched backtick-delimited inline code spans from a line. Nested
+ * backticks (`` `a\`b` ``) are uncommon in prose; we use the simple case of
+ * paired single backticks. Content between the delimiters is replaced with
+ * empty strings so downstream `==` counting ignores operators that sit
+ * inside documentation-style inline code.
+ */
+function stripInlineCode(line: string): string {
+  return line.replace(/`[^`\n]*`/g, "");
+}
+
+/**
  * OFM122 — malformed-highlight.
  *
  * Reports lines with an odd number of `==` markers outside fenced code.
  * Each well-formed `==highlight==` span contributes two markers, so an odd
  * count is a reliable signal of an unterminated highlight.
  *
- * Known false-positive surface: lines containing `===` (triple-equals) in
- * prose — e.g. JavaScript identity-check snippets written in inline code.
- * Fenced code blocks are filtered out to shrink that surface; the rule
- * accepts the inline-code false-positive risk in exchange for a simple
- * implementation.
+ * Inline backtick code is stripped before counting so prose that references
+ * JavaScript's `===` operator does not trip the rule. Fenced code blocks
+ * are also skipped. The rule deliberately does not understand
+ * `markdown-it`-level inline-code positions; the backtick pre-pass is
+ * precise enough for documentation-style writing.
  *
  * @see docs/rules/highlights/OFM122.md
  */
@@ -53,7 +64,8 @@ export const OFM122Rule: OFMRule = {
       const step = updateFence(line, fence);
       fence = step.fence;
       if (step.skip) return;
-      const markers = line.match(/==/g);
+      const scanned = stripInlineCode(line);
+      const markers = scanned.match(/==/g);
       if (markers !== null && markers.length % 2 !== 0) {
         onError({
           line: i + 1,
