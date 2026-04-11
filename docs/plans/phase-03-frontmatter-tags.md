@@ -244,8 +244,14 @@ git commit -m "test(rules): add runRuleOnSource helper"
 **Files:**
 - Modify: `src/domain/linting/OFMRule.ts`
 - Modify: `src/application/LintUseCase.ts`
+- Modify: `src/domain/parsing/ParseResult.ts` (Phase-2 review fix #2: freeze `frontmatter`)
 
 The Phase 2 `RuleParams` only had `filePath`, `lines`, `frontmatter`, `tokens`. Rules now need the full `ParseResult` plus `LinterConfig`. Expand the contract once; every subsequent rule uses the same shape.
+
+**Phase-2 review follow-ups folded in here:**
+
+1. `runRule` in `LintUseCase.ts` is rewritten anyway, so type its `parsed` parameter as `ParseResult` and drop the four `as` casts (review suggestion #1).
+2. `makeParseResult` in `ParseResult.ts` should freeze `frontmatter` for symmetry with the array fields (review suggestion #2).
 
 - [ ] **Update `OFMRule.ts`**
 
@@ -274,14 +280,17 @@ export interface OFMRule {
 }
 ```
 
-- [ ] **Update `LintUseCase.ts`** to build `{ filePath, parsed, config }` per rule call and thread `config` through the main loop.
+- [ ] **Update `LintUseCase.ts`** to build `{ filePath, parsed, config }` per rule call and thread `config` through the main loop. Type `parsed` as `ParseResult`; no `as` casts.
+
+- [ ] **Update `ParseResult.ts`** — `makeParseResult` returns `frontmatter: Object.freeze({ ...fields.frontmatter })`.
 
 - [ ] **Run Phase 2 tests** — should still pass.
 
 - [ ] **Commit**
 
 ```bash
-git add src/domain/linting/OFMRule.ts src/application/LintUseCase.ts tests/unit/rules/helpers/
+git add src/domain/linting/OFMRule.ts src/application/LintUseCase.ts \
+        src/domain/parsing/ParseResult.ts tests/unit/rules/helpers/
 git commit -m "refactor(rules): expand RuleParams with full ParseResult and LinterConfig"
 ```
 
@@ -1436,7 +1445,10 @@ git commit -m "test(rules): frontmatter + tags integration tests"
 
 **Files:**
 - Modify: `docs/bdd/steps/file-steps.ts`
-- Create: `docs/bdd/features/tags.feature`
+- Modify: `docs/bdd/features/frontmatter.feature` (add `@smoke` tags so `npm run test:bdd` exercises them)
+- Create: `docs/bdd/features/tags.feature` (also tagged `@smoke`)
+
+> Note: `npm run test:bdd` runs `--tags @smoke`, so any new scenarios that need to run inside `npm run test:all` must be tagged `@smoke`.
 
 - [ ] **Add missing step definitions** to `docs/bdd/steps/file-steps.ts`:
 
