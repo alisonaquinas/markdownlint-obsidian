@@ -1,17 +1,19 @@
 import type { LintError } from "./LintError.js";
+import type { ParseResult } from "../parsing/ParseResult.js";
+import type { LinterConfig } from "../config/LinterConfig.js";
 
 /**
  * Per-file inputs supplied to {@link OFMRule.run}.
  *
- * `tokens` is intentionally typed as `unknown[]` at this layer — the parser
- * adapter (infrastructure) is the only code allowed to refine it. Domain code
- * must not reach into Markdown-It internals.
+ * Phase 3+ contract: every rule receives the full {@link ParseResult} (so it
+ * can read frontmatter, lines, tokens, and any extracted OFM node arrays) plus
+ * the active {@link LinterConfig} for option lookup. Rules must not mutate
+ * either field.
  */
 export interface RuleParams {
   readonly filePath: string;
-  readonly lines: readonly string[];
-  readonly frontmatter: Record<string, unknown>;
-  readonly tokens: unknown[];
+  readonly parsed: ParseResult;
+  readonly config: LinterConfig;
 }
 
 /**
@@ -20,7 +22,7 @@ export interface RuleParams {
  * rule authors only specify the per-violation fields.
  */
 export type OnErrorCallback = (
-  error: Omit<LintError, "ruleCode" | "ruleName" | "severity" | "fixable">,
+  error: Pick<LintError, "line" | "column" | "message"> & { fix?: LintError["fix"] },
 ) => void;
 
 /**
