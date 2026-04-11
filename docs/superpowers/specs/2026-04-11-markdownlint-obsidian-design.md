@@ -71,7 +71,7 @@ Tool: **vitest**. Property-based tests via **fast-check**. No mocks for domain l
 ### Low Coupling
 
 - Dependencies are explicit, narrow, stable, and acyclic
-- Domain never imports infrastructure (`fs`, `path`, `markdown-it`)
+- Domain never imports IO or framework libraries (`node:fs`, `node:fs/promises`, `node:child_process`, `node:net`, `node:http`, `markdown-it`, `gray-matter`, `globby`, `commander`). Pure-stdlib string utilities (`node:path`, `node:url`, `node:querystring`) are allowed when used for format-only normalisation — see [[adr/ADR005-node-path-in-domain]].
 - Cross-boundary contracts defined as TypeScript interfaces
 - No module-level mutable state; no implicit I/O at import time
 
