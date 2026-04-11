@@ -4,10 +4,7 @@ import type { VaultIndex } from "../domain/vault/VaultIndex.js";
 
 export interface BootstrapDeps {
   readonly detector: VaultDetector;
-  readonly buildIndex: (
-    root: string,
-    opts: { caseSensitive: boolean },
-  ) => Promise<VaultIndex>;
+  readonly buildIndex: (root: string, opts: { caseSensitive: boolean }) => Promise<VaultIndex>;
 }
 
 /**

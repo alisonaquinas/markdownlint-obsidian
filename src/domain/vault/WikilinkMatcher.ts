@@ -42,17 +42,21 @@ export function matchWikilink(
     if (ci !== undefined) return { kind: "resolved", path: ci, strategy: "case-insensitive" };
   }
 
+  return matchByStem(normalizedTarget, files, options);
+}
+
+function matchByStem(
+  normalizedTarget: string,
+  files: readonly VaultPath[],
+  options: MatchOptions,
+): MatchResult {
   const byStem = files.filter((f) =>
     options.caseSensitive
       ? f.stem === normalizedTarget
       : f.stem.toLowerCase() === normalizedTarget.toLowerCase(),
   );
-  if (byStem.length === 1) {
-    return { kind: "resolved", path: byStem[0]!, strategy: "basename" };
-  }
-  if (byStem.length > 1) {
-    return { kind: "ambiguous", candidates: byStem };
-  }
+  if (byStem.length === 1) return { kind: "resolved", path: byStem[0]!, strategy: "basename" };
+  if (byStem.length > 1) return { kind: "ambiguous", candidates: byStem };
   return { kind: "not-found" };
 }
 

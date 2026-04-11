@@ -51,19 +51,22 @@ describe("OFM085 duplicate-frontmatter-key", () => {
     });
 
     const errors: LintError[] = [];
-    OFM085Rule.run({ filePath: "synthetic.md", parsed, config: DEFAULT_CONFIG }, (partial) => {
-      errors.push(
-        makeLintError({
-          ruleCode: "OFM085",
-          ruleName: "duplicate-frontmatter-key",
-          severity: "error",
-          line: partial.line,
-          column: partial.column,
-          message: partial.message,
-          fixable: false,
-        }),
-      );
-    });
+    OFM085Rule.run(
+      { filePath: "synthetic.md", parsed, config: DEFAULT_CONFIG, vault: null },
+      (partial) => {
+        errors.push(
+          makeLintError({
+            ruleCode: "OFM085",
+            ruleName: "duplicate-frontmatter-key",
+            severity: "error",
+            line: partial.line,
+            column: partial.column,
+            message: partial.message,
+            fixable: false,
+          }),
+        );
+      },
+    );
 
     expect(errors).toHaveLength(1);
     expect(errors[0]?.line).toBe(3);

@@ -74,15 +74,7 @@ export class OFMWorld extends World {
    * the feature file continue to resolve.
    */
   async runCLI(globs: string, extraArgs: string[] = []): Promise<void> {
-    let cwd = this.vaultDir;
-    let effectiveGlob = globs;
-    if (this.cliCwdSubdir !== null) {
-      cwd = path.join(this.vaultDir, this.cliCwdSubdir);
-      const prefix = this.cliCwdSubdir.replace(/[/\\]$/, "");
-      if (prefix.length > 0 && effectiveGlob.startsWith(`${prefix}/`)) {
-        effectiveGlob = effectiveGlob.slice(prefix.length + 1);
-      }
-    }
+    const { cwd, effectiveGlob } = this.resolveCwdAndGlob(globs);
     const nodeArgs = ["--import", TSX_LOADER_URL, BIN_PATH, ...extraArgs, effectiveGlob];
     try {
       const { stdout, stderr } = await execFileAsync("node", nodeArgs, { cwd });
@@ -95,6 +87,17 @@ export class OFMWorld extends World {
         stderr: e.stderr ?? "",
       };
     }
+  }
+
+  private resolveCwdAndGlob(globs: string): { cwd: string; effectiveGlob: string } {
+    if (this.cliCwdSubdir === null) {
+      return { cwd: this.vaultDir, effectiveGlob: globs };
+    }
+    const cwd = path.join(this.vaultDir, this.cliCwdSubdir);
+    const prefix = this.cliCwdSubdir.replace(/[/\\]$/, "");
+    const effectiveGlob =
+      prefix.length > 0 && globs.startsWith(`${prefix}/`) ? globs.slice(prefix.length + 1) : globs;
+    return { cwd, effectiveGlob };
   }
 
   /** Clean up temp vault after scenario. */

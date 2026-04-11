@@ -91,10 +91,27 @@ function parseArgv(program: Command, argv: string[]): ParseResult {
  * `--no-resolve` — participate. Anything else stays on the config value.
  */
 function applyCliOverrides(config: LinterConfig, opts: ParsedOptions): LinterConfig {
-  const patch: Partial<LinterConfig> = {};
+  const patch: { vaultRoot?: string; resolve?: boolean } = {};
   if (opts.vaultRoot !== undefined) patch.vaultRoot = opts.vaultRoot;
   if (opts.resolve === false) patch.resolve = false;
   return Object.freeze({ ...config, ...patch });
+}
+
+async function bootstrapVaultOrExit(
+  cwd: string,
+  config: LinterConfig,
+): Promise<{ vault: Awaited<ReturnType<typeof bootstrapVault>> } | { exitCode: number }> {
+  try {
+    const vault = await bootstrapVault(cwd, config, {
+      detector: makeNodeFsVaultDetector(),
+      buildIndex: buildFileIndex,
+    });
+    return { vault };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${message}\n`);
+    return { exitCode: EXIT_CODES.TOOL_FAILURE };
+  }
 }
 
 async function runPipeline(
@@ -108,30 +125,17 @@ async function runPipeline(
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
   registerBuiltinRules(registry);
-  const parser = makeMarkdownItParser();
 
-  let vault;
-  try {
-    vault = await bootstrapVault(cwd, config, {
-      detector: makeNodeFsVaultDetector(),
-      buildIndex: buildFileIndex,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`${message}\n`);
-    return EXIT_CODES.TOOL_FAILURE;
-  }
+  const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
+  if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
 
   const results = await runLint(files, config, registry, {
-    parser,
+    parser: makeMarkdownItParser(),
     readFile: readMarkdownFile,
-    vault,
+    vault: bootstrapResult.vault,
   });
 
-  const formatter = getFormatter(opts.outputFormatter);
-  const output = formatter(results);
+  const output = getFormatter(opts.outputFormatter)(results);
   if (output) process.stdout.write(output + "\n");
-
-  const hasErrors = results.some((r) => r.hasErrors);
-  return hasErrors ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
+  return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }

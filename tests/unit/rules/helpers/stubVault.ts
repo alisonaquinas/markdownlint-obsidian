@@ -2,6 +2,7 @@ import * as path from "node:path";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";
 import { matchWikilink } from "../../../../src/domain/vault/WikilinkMatcher.js";
 import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
+import type { WikilinkNode } from "../../../../src/domain/parsing/WikilinkNode.js";
 
 /**
  * Build a tiny in-memory {@link VaultIndex} for unit tests.
@@ -22,6 +23,7 @@ export function stubVault(
     root,
     all: () => paths,
     has: (rel: string) => byRelative.has(rel),
-    resolve: (link) => matchWikilink(link.target, paths, { caseSensitive }),
+    resolve: (link: Pick<WikilinkNode, "target">) =>
+      matchWikilink(link.target, paths, { caseSensitive }),
   });
 }

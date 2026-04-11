@@ -1,5 +1,5 @@
-import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
-import { buildCodeRegionMap } from "../../../parser/ofm/CodeRegionMap.js";
+import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
+import { buildCodeRegionMap, type CodeRegionMap } from "../../../parser/ofm/CodeRegionMap.js";
 
 /**
  * OFM002 — invalid-wikilink-format.
@@ -28,43 +28,63 @@ export const OFM002Rule: OFMRule = {
   fixable: false,
   run({ parsed }, onError) {
     const codeMap = buildCodeRegionMap(parsed.lines);
-
     parsed.lines.forEach((line, i) => {
-      const lineNumber = i + 1;
-
-      for (const m of line.matchAll(EMPTY_RE)) {
-        const column = (m.index ?? 0) + 1;
-        if (codeMap.isInCode(lineNumber, column)) continue;
-        onError({
-          line: lineNumber,
-          column,
-          message: "Empty wikilink `[[]]`",
-        });
-      }
-
-      // Unclosed: the last `[[` on the line has no matching `]]` after it.
-      const lastOpen = line.lastIndexOf("[[");
-      if (lastOpen !== -1 && !codeMap.isInCode(lineNumber, lastOpen + 1)) {
-        const afterOpen = line.slice(lastOpen);
-        if (!afterOpen.includes("]]")) {
-          onError({
-            line: lineNumber,
-            column: lastOpen + 1,
-            message: "Unclosed wikilink — missing `]]`",
-          });
-        }
-      }
-
-      for (const m of line.matchAll(NESTED_RE)) {
-        const column = (m.index ?? 0) + 1;
-        if (codeMap.isInCode(lineNumber, column)) continue;
-        onError({
-          line: lineNumber,
-          column,
-          message: "Nested wikilink `[[ ... [[`",
-        });
-        break; // one report per line is plenty
-      }
+      checkLine(line, i + 1, codeMap, onError);
     });
   },
 };
+
+function checkLine(
+  line: string,
+  lineNumber: number,
+  codeMap: CodeRegionMap,
+  onError: OnErrorCallback,
+): void {
+  reportEmpty(line, lineNumber, codeMap, onError);
+  reportUnclosed(line, lineNumber, codeMap, onError);
+  reportNested(line, lineNumber, codeMap, onError);
+}
+
+function reportEmpty(
+  line: string,
+  lineNumber: number,
+  codeMap: CodeRegionMap,
+  onError: OnErrorCallback,
+): void {
+  for (const m of line.matchAll(EMPTY_RE)) {
+    const column = (m.index ?? 0) + 1;
+    if (codeMap.isInCode(lineNumber, column)) continue;
+    onError({ line: lineNumber, column, message: "Empty wikilink `[[]]`" });
+  }
+}
+
+function reportUnclosed(
+  line: string,
+  lineNumber: number,
+  codeMap: CodeRegionMap,
+  onError: OnErrorCallback,
+): void {
+  const lastOpen = line.lastIndexOf("[[");
+  if (lastOpen === -1) return;
+  if (codeMap.isInCode(lineNumber, lastOpen + 1)) return;
+  if (line.slice(lastOpen).includes("]]")) return;
+  onError({
+    line: lineNumber,
+    column: lastOpen + 1,
+    message: "Unclosed wikilink — missing `]]`",
+  });
+}
+
+function reportNested(
+  line: string,
+  lineNumber: number,
+  codeMap: CodeRegionMap,
+  onError: OnErrorCallback,
+): void {
+  for (const m of line.matchAll(NESTED_RE)) {
+    const column = (m.index ?? 0) + 1;
+    if (codeMap.isInCode(lineNumber, column)) continue;
+    onError({ line: lineNumber, column, message: "Nested wikilink `[[ ... [[`" });
+    return; // one report per line is plenty
+  }
+}

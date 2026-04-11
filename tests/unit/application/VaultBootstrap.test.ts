@@ -55,9 +55,7 @@ describe("bootstrapVault", () => {
       detect: vi.fn().mockRejectedValue(new Error("OFM900: no vault root found")),
     };
     const buildIndex = vi.fn();
-    await expect(bootstrapVault("/start", cfg, { detector, buildIndex })).rejects.toThrow(
-      /OFM900/,
-    );
+    await expect(bootstrapVault("/start", cfg, { detector, buildIndex })).rejects.toThrow(/OFM900/);
     expect(buildIndex).not.toHaveBeenCalled();
   });
 

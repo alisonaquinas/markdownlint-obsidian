@@ -3,6 +3,8 @@ import * as path from "node:path";
 import { OFM003Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { stubVault } from "../helpers/stubVault.js";
+import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
+import type { MatchResult } from "../../../../src/domain/vault/WikilinkMatcher.js";
 
 describe("OFM003 self-link", () => {
   it("warns when link resolves to current file", async () => {
@@ -12,9 +14,9 @@ describe("OFM003 self-link", () => {
     // monkey-patch the vault so that the resolved absolute path matches
     // path.resolve("test.md") (the parser's filePath).
     const real = vault.resolve.bind(vault);
-    const patched = {
+    const patched: VaultIndex = {
       ...vault,
-      resolve: (link: { target: string }) => {
+      resolve: (link: { target: string }): MatchResult => {
         const r = real(link);
         if (r.kind === "resolved") {
           return {

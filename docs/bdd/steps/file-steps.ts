@@ -9,13 +9,10 @@ Given("a vault with a file {string}", async function (this: OFMWorld, relPath: s
 
 // ---- Phase 4 wikilink + vault-detection steps ----------------------------
 
-Given(
-  "a file {string}",
-  async function (this: OFMWorld, relPath: string) {
-    if (!this.vaultDir) await this.initVault();
-    await this.writeFile(relPath, `# ${path.basename(relPath, ".md")}\n`);
-  },
-);
+Given("a file {string}", async function (this: OFMWorld, relPath: string) {
+  if (!this.vaultDir) await this.initVault();
+  await this.writeFile(relPath, `# ${path.basename(relPath, ".md")}\n`);
+});
 
 Given(
   "a directory tree with {string} at {string}",
