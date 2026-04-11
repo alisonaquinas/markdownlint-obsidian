@@ -22,17 +22,18 @@ export async function buildFileIndex(
   vaultRoot: string,
   options: BuildOptions,
 ): Promise<VaultIndex> {
+  const resolvedRoot = path.resolve(vaultRoot);
   const absolutes = await globby(["**/*.md"], {
-    cwd: vaultRoot,
+    cwd: resolvedRoot,
     absolute: true,
     gitignore: true,
     ignore: [...(options.ignores ?? []), "**/.obsidian/**", "**/node_modules/**"],
   });
-  const paths: VaultPath[] = absolutes.map((abs) => makeVaultPath(vaultRoot, abs));
+  const paths: VaultPath[] = absolutes.map((abs) => makeVaultPath(resolvedRoot, abs));
   const byRelative = new Set(paths.map((p) => p.relative));
 
   return Object.freeze({
-    root: path.resolve(vaultRoot),
+    root: resolvedRoot,
     all: () => paths,
     has: (relative: string) => byRelative.has(relative),
     resolve: (link: Pick<WikilinkNode, "target">): MatchResult =>

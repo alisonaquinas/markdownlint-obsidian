@@ -1,5 +1,13 @@
 {
-  // Lint vanilla markdown files (not docs/ — those use markdownlint-obsidian)
+  // Lint vanilla markdown files (not docs/ — those use markdownlint-obsidian).
+  //
+  // vaultRoot is set to docs/ so that when markdownlint-obsidian's dogfood
+  // run (`test:dogfood`, which hits `docs/**/*.md`) loads this config, its
+  // wikilink resolver treats docs/ as the vault. Every wikilink in the
+  // docs/ tree is written relative to docs/, so this keeps dogfood green
+  // without teaching the config loader to walk downward.
+  "vaultRoot": "./docs",
+  "resolve": true,
   "globs": ["**/*.md", "!docs/**", "!node_modules/**"],
   "config": {
     "default": true,

@@ -1,8 +1,11 @@
 {
-  // Dogfood: lint docs/ with markdownlint-obsidian
-  // No OFM rules active yet (Phase 2+). This file wires up the config.
-  "vaultRoot": "../",
-  "resolve": false,
+  // Dogfood: lint docs/ with markdownlint-obsidian.
+  // Phase 4 flips resolve:true so wikilink rules OFM001-007 run against
+  // the docs tree. vaultRoot points at docs/ itself (not the repo root)
+  // so wikilinks written relative to docs/ (e.g. [[plans/phase-01]]) resolve
+  // cleanly via the exact-match strategy.
+  "vaultRoot": "./",
+  "resolve": true,
   "globs": ["**/*.md"],
   "ignores": ["superpowers/**"]
 }
