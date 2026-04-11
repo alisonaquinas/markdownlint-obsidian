@@ -44,6 +44,7 @@ describe("tag rules integration", { timeout: 15000 }, () => {
     const r = await spawnCli(["**/*.md"], tmp);
     // OFM064 is a warning -> exitCode logic counts errors only, so warnings
     // should not bump exit to 1.
+    expect(r.exitCode).toBe(0);
     expect(r.stdout).toContain("OFM064");
   });
 });

@@ -1,19 +1,23 @@
 import type { LintError } from "./LintError.js";
 import type { ParseResult } from "../parsing/ParseResult.js";
 import type { LinterConfig } from "../config/LinterConfig.js";
+import type { VaultIndex } from "../vault/VaultIndex.js";
 
 /**
  * Per-file inputs supplied to {@link OFMRule.run}.
  *
- * Phase 3+ contract: every rule receives the full {@link ParseResult} (so it
- * can read frontmatter, lines, tokens, and any extracted OFM node arrays) plus
- * the active {@link LinterConfig} for option lookup. Rules must not mutate
- * either field.
+ * Phase 4+ contract: every rule receives the full {@link ParseResult} (so it
+ * can read frontmatter, lines, tokens, and any extracted OFM node arrays),
+ * the active {@link LinterConfig} for option lookup, and an optional
+ * {@link VaultIndex} for wikilink resolution. `vault` is `null` when
+ * `config.resolve === false`; rules that need it must guard on that case.
+ * Rules must not mutate any of these fields.
  */
 export interface RuleParams {
   readonly filePath: string;
   readonly parsed: ParseResult;
   readonly config: LinterConfig;
+  readonly vault: VaultIndex | null;
 }
 
 /**
