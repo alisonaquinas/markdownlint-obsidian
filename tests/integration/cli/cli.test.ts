@@ -25,6 +25,9 @@ describe("CLI", () => {
 
   it("clean directory exits 0 with no output", async () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    // Phase 4 requires a vault root; mark the temp dir as one so the
+    // detector succeeds without escaping the temp tree.
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
       const { stdout } = await execAsync("node", [...NODE_ARGS, "**/*.md"], { cwd: tmp });

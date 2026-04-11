@@ -9,12 +9,21 @@ import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
 import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
+import { bootstrapVault } from "../application/VaultBootstrap.js";
+import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
+import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
 
 interface ParsedOptions {
   readonly fix: boolean;
   readonly format: boolean;
   readonly vaultRoot?: string;
-  readonly noResolve: boolean;
+  /**
+   * Commander maps `--no-resolve` to `resolve: false` and leaves the default
+   * at `true`. This is a tri-state in practice: `undefined` means the flag
+   * was never touched (fall back to config), `false` means `--no-resolve`
+   * was supplied.
+   */
+  readonly resolve?: boolean;
   readonly outputFormatter: string;
   readonly config?: string;
 }
@@ -75,26 +84,58 @@ function parseArgv(program: Command, argv: string[]): ParseResult {
   }
 }
 
+/**
+ * Apply CLI-flag overrides to a loaded {@link LinterConfig}.
+ *
+ * Only the explicit flags we promise to thread — `--vault-root` and
+ * `--no-resolve` — participate. Anything else stays on the config value.
+ */
+function applyCliOverrides(config: LinterConfig, opts: ParsedOptions): LinterConfig {
+  const patch: { vaultRoot?: string; resolve?: boolean } = {};
+  if (opts.vaultRoot !== undefined) patch.vaultRoot = opts.vaultRoot;
+  if (opts.resolve === false) patch.resolve = false;
+  return Object.freeze({ ...config, ...patch });
+}
+
+async function bootstrapVaultOrExit(
+  cwd: string,
+  config: LinterConfig,
+): Promise<{ vault: Awaited<ReturnType<typeof bootstrapVault>> } | { exitCode: number }> {
+  try {
+    const vault = await bootstrapVault(cwd, config, {
+      detector: makeNodeFsVaultDetector(),
+      buildIndex: buildFileIndex,
+    });
+    return { vault };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${message}\n`);
+    return { exitCode: EXIT_CODES.TOOL_FAILURE };
+  }
+}
+
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
-  config: LinterConfig,
+  rawConfig: LinterConfig,
   cwd: string,
 ): Promise<number> {
+  const config = applyCliOverrides(rawConfig, opts);
   const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
   registerBuiltinRules(registry);
-  const parser = makeMarkdownItParser();
+
+  const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
+  if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
+
   const results = await runLint(files, config, registry, {
-    parser,
+    parser: makeMarkdownItParser(),
     readFile: readMarkdownFile,
+    vault: bootstrapResult.vault,
   });
 
-  const formatter = getFormatter(opts.outputFormatter);
-  const output = formatter(results);
+  const output = getFormatter(opts.outputFormatter)(results);
   if (output) process.stdout.write(output + "\n");
-
-  const hasErrors = results.some((r) => r.hasErrors);
-  return hasErrors ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
+  return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }

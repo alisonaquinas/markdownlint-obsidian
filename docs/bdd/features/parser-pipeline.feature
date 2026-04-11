@@ -15,7 +15,8 @@ Feature: Parser pipeline smoke
 
   @smoke
   Scenario: Clean file with OFM content parses cleanly
-    Given a file "notes/ok.md" containing:
+    Given a vault with a file "notes/target.md"
+    And a file "notes/ok.md" containing:
       """
       # Hi
 
