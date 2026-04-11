@@ -7,11 +7,13 @@ import type { Parser } from "../domain/parsing/Parser.js";
 import type { ParseResult } from "../domain/parsing/ParseResult.js";
 import type { OFMRule } from "../domain/linting/OFMRule.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";
+import type { FileExistenceChecker } from "../domain/fs/FileExistenceChecker.js";
 
 export interface LintDependencies {
   readonly parser: Parser;
   readonly readFile: (absolutePath: string) => Promise<string>;
   readonly vault?: VaultIndex | null;
+  readonly fsCheck: FileExistenceChecker;
 }
 
 /**
@@ -32,13 +34,14 @@ export async function runLint(
 ): Promise<LintResult[]> {
   const results: LintResult[] = [];
   const vault = deps.vault ?? null;
+  const fsCheck = deps.fsCheck;
   for (const filePath of filePaths) {
     const errors: LintError[] = [];
     try {
       const raw = await deps.readFile(filePath);
       const parsed = deps.parser.parse(filePath, raw);
       for (const rule of iterateActiveRules(registry, config)) {
-        runRule(rule, parsed, config, vault, errors);
+        await runRule(rule, parsed, config, vault, fsCheck, errors);
       }
     } catch (err) {
       errors.push(buildParserError(err));
@@ -58,27 +61,31 @@ function iterateActiveRules(registry: RuleRegistry, config: LinterConfig): reado
   });
 }
 
-function runRule(
+async function runRule(
   rule: OFMRule,
   parsed: ParseResult,
   config: LinterConfig,
   vault: VaultIndex | null,
+  fsCheck: FileExistenceChecker,
   errors: LintError[],
-): void {
-  rule.run({ filePath: parsed.filePath, parsed, config, vault }, (partial) => {
-    errors.push(
-      makeLintError({
-        ruleCode: rule.names[0] ?? "UNKNOWN",
-        ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-        severity: rule.severity,
-        line: partial.line,
-        column: partial.column,
-        message: partial.message,
-        fixable: rule.fixable,
-        ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
-      }),
-    );
-  });
+): Promise<void> {
+  await rule.run(
+    { filePath: parsed.filePath, parsed, config, vault, fsCheck },
+    (partial) => {
+      errors.push(
+        makeLintError({
+          ruleCode: rule.names[0] ?? "UNKNOWN",
+          ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+          severity: rule.severity,
+          line: partial.line,
+          column: partial.column,
+          message: partial.message,
+          fixable: rule.fixable,
+          ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
+        }),
+      );
+    },
+  );
 }
 
 function buildParserError(err: unknown): LintError {

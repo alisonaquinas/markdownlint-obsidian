@@ -9,6 +9,9 @@ import { makeRuleRegistry } from "../../../src/domain/linting/RuleRegistry.js";
 import { registerBuiltinRules } from "../../../src/infrastructure/rules/ofm/registerBuiltin.js";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";
+import type { FileExistenceChecker } from "../../../src/domain/fs/FileExistenceChecker.js";
+
+const stubFsCheck: FileExistenceChecker = { exists: async () => false };
 
 let tmpDir: string;
 beforeEach(async () => {
@@ -30,6 +33,7 @@ describe("LintUseCase (parser-wired)", () => {
     const results = await runLint([file], DEFAULT_CONFIG, registry, {
       parser,
       readFile: readMarkdownFile,
+      fsCheck: stubFsCheck,
     });
     expect(results).toHaveLength(1);
     expect(results[0]?.hasErrors).toBe(false);
@@ -46,6 +50,7 @@ describe("LintUseCase (parser-wired)", () => {
     const results = await runLint([file], DEFAULT_CONFIG, registry, {
       parser,
       readFile: readMarkdownFile,
+      fsCheck: stubFsCheck,
     });
     expect(results[0]?.errors[0]?.ruleCode).toBe("OFM902");
     expect(results[0]?.hasErrors).toBe(true);

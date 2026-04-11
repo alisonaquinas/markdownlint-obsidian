@@ -51,8 +51,15 @@ describe("OFM085 duplicate-frontmatter-key", () => {
     });
 
     const errors: LintError[] = [];
+    const stubFsCheck = { exists: async (): Promise<boolean> => false };
     OFM085Rule.run(
-      { filePath: "synthetic.md", parsed, config: DEFAULT_CONFIG, vault: null },
+      {
+        filePath: "synthetic.md",
+        parsed,
+        config: DEFAULT_CONFIG,
+        vault: null,
+        fsCheck: stubFsCheck,
+      },
       (partial) => {
         errors.push(
           makeLintError({
