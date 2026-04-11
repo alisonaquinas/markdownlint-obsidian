@@ -110,7 +110,7 @@ reports/                                  Created in Task 14 (gitignored)
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:bdd": "cucumber-js",
+    "test:bdd": "node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js --tags @smoke",
     "test:all": "npm run typecheck && npm run lint && npm run test && npm run test:bdd",
     "prepublishOnly": "npm run build && npm run test:all"
   },
@@ -126,8 +126,8 @@ reports/                                  Created in Task 14 (gitignored)
     "@cucumber/cucumber": "^10.0.0",
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^2.0.0",
     "eslint": "^9.0.0",
     "fast-check": "^3.0.0",
@@ -1180,27 +1180,30 @@ git commit -m "feat: add LintUseCase stub"
 
 - [ ] **Write failing integration tests**
 
-`tests/integration/cli/cli.test.ts`:
+`tests/integration/cli/cli.test.ts` — note the `--import` prefix pointing at the absolute tsx loader path so the shipped-as-TS source can run under `node` without a build step:
 ```ts
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
+const NODE_ARGS = ["--import", TSX_URL, BIN];
 
 describe("CLI", () => {
   it("--help exits 0 and prints usage", async () => {
-    const { stdout } = await execAsync("node", [BIN, "--help"]);
+    const { stdout } = await execAsync("node", [...NODE_ARGS, "--help"]);
     expect(stdout).toContain("markdownlint-obsidian");
     expect(stdout).toContain("--fix");
   });
 
   it("--version exits 0 and prints semver", async () => {
-    const { stdout } = await execAsync("node", [BIN, "--version"]);
+    const { stdout } = await execAsync("node", [...NODE_ARGS, "--version"]);
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
@@ -1208,7 +1211,7 @@ describe("CLI", () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
-      const { stdout } = await execAsync("node", [BIN, "**/*.md"], { cwd: tmp });
+      const { stdout } = await execAsync("node", [...NODE_ARGS, "**/*.md"], { cwd: tmp });
       expect(stdout.trim()).toBe("");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });
@@ -1308,14 +1311,22 @@ export async function main(argv: string[]): Promise<number> {
 }
 ```
 
+- [ ] **Install tsx as a dev dep** (also used by cucumber-js in Task 14)
+
+```bash
+npm install --save-dev tsx
+```
+
 - [ ] **Create `bin/markdownlint-obsidian.js`**
 
 ```js
-#!/usr/bin/env node
-import { main } from "../src/cli/main.js";
+#!/usr/bin/env -S node --import tsx
+import { main } from "../src/cli/main.ts";
 const code = await main(process.argv);
 process.exit(code);
 ```
+
+The bin file is imported as a TS module via `tsx`. On Unix the shebang provides the loader for `./bin/markdownlint-obsidian.js`. On Windows (and in tests) callers invoke it as `node --import <abs-path>/node_modules/tsx/dist/loader.mjs bin/markdownlint-obsidian.js` — the absolute loader path is necessary because `--import tsx` resolves relative to cwd, not the bin script.
 
 - [ ] **Run — expect PASS**
 
@@ -1409,13 +1420,13 @@ export class OFMWorld extends World {
 setWorldConstructor(OFMWorld);
 ```
 
-- [ ] **Install tsx for TypeScript ESM support in cucumber-js**
+- [ ] **Install tsx for TypeScript ESM support in cucumber-js** (already installed in Task 13 for the CLI bin — skip if present)
 
 ```bash
 npm install --save-dev tsx
 ```
 
-`tsx` handles TypeScript ESM natively without extra loader configuration — preferred over `ts-node/esm` for ESM projects.
+`tsx` handles TypeScript ESM natively without extra loader configuration — preferred over `ts-node/esm` for ESM projects. Note: both the CLI integration tests and the BDD world spawn `node --import <abs-path-to-tsx/dist/loader.mjs> bin/markdownlint-obsidian.js` so that the shipped-as-TS source can be executed without a build step.
 
 - [ ] **Create `reports/` directory and gitignore it** (must exist before cucumber.json references it)
 
@@ -1431,13 +1442,12 @@ echo "reports/" >> .gitignore
   "default": {
     "paths": ["docs/bdd/features/**/*.feature"],
     "import": ["docs/bdd/steps/**/*.ts"],
-    "loader": ["tsx"],
     "format": ["progress-bar", "json:reports/cucumber.json"]
   }
 }
 ```
 
-Note: use `import` (not `require`) and `loader` (not `requireModule`) for ESM + cucumber-js 10.
+Note: use `import` (not `require`) for ESM + cucumber-js 10. Do NOT put `"loader": ["tsx"]` in the config — cucumber-js wires that to the deprecated `--loader` flag which tsx rejects on Node 20+. Instead, update the `test:bdd` npm script to launch cucumber-js via `node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js` so tsx is registered before cucumber-js reads step files.
 
 - [ ] **Implement `docs/bdd/steps/file-steps.ts`**
 
@@ -1512,10 +1522,10 @@ The feature file already exists from the DDD/BDD scaffold commit. Add `@smoke` t
 - [ ] **Run the `@smoke` BDD scenario**
 
 ```bash
-npm run test:bdd -- --tags "@smoke"
+npm run test:bdd
 ```
 
-Expected: 1 scenario, 1 passing.
+Expected: 1 scenario, 1 passing. The `test:bdd` script hard-codes `--tags @smoke` for Phase 1 so `test:all` stays green even though the other feature files (wikilinks, callouts, frontmatter, etc.) describe Phase 2+ behaviour. Later phases will expand the tag filter or drop it entirely.
 
 - [ ] **Commit**
 

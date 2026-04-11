@@ -1,5 +1,6 @@
 Feature: CI exit codes
 
+  @smoke
   Scenario: Clean vault exits 0
     Given a vault with no lint errors
     When I run markdownlint-obsidian on "**/*.md"

@@ -1,0 +1,8 @@
+{
+  // Lint vanilla markdown files (not docs/ — those use markdownlint-obsidian)
+  "globs": ["**/*.md", "!docs/**", "!node_modules/**"],
+  "config": {
+    "default": true,
+    "MD013": false
+  }
+}
