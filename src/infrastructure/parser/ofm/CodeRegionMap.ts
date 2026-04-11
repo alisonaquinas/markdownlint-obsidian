@@ -17,40 +17,48 @@ interface InlineSpan {
   readonly end: number;
 }
 
+interface ScanState {
+  readonly blockLines: Set<number>;
+  readonly inline: InlineSpan[];
+  fence: string | null;
+}
+
 export function buildCodeRegionMap(lines: readonly string[]): CodeRegionMap {
-  const blockLines = new Set<number>();
-  const inline: InlineSpan[] = [];
-  let fence: string | null = null;
+  const state: ScanState = {
+    blockLines: new Set<number>(),
+    inline: [],
+    fence: null,
+  };
 
   for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i] ?? "";
-    const match = line.match(FENCE_PATTERN);
-    if (fence) {
-      blockLines.add(i + 1);
-      if (match && line.trim().startsWith(fence)) {
-        fence = null;
-      }
-      continue;
-    }
-    if (match) {
-      fence = match[2] ?? null;
-      blockLines.add(i + 1);
-      continue;
-    }
-    collectInlineSpans(line, i + 1, inline);
+    scanLine(lines[i] ?? "", i + 1, state);
   }
 
   return {
-    isInCode(line, column) {
-      if (blockLines.has(line)) return true;
-      for (const span of inline) {
-        if (span.line === line && column >= span.start && column <= span.end) {
-          return true;
-        }
-      }
-      return false;
+    isInCode(line, column): boolean {
+      if (state.blockLines.has(line)) return true;
+      return state.inline.some(
+        (span) => span.line === line && column >= span.start && column <= span.end,
+      );
     },
   };
+}
+
+function scanLine(line: string, lineNumber: number, state: ScanState): void {
+  const match = line.match(FENCE_PATTERN);
+  if (state.fence !== null) {
+    state.blockLines.add(lineNumber);
+    if (match !== null && line.trim().startsWith(state.fence)) {
+      state.fence = null;
+    }
+    return;
+  }
+  if (match !== null) {
+    state.fence = match[2] ?? null;
+    state.blockLines.add(lineNumber);
+    return;
+  }
+  collectInlineSpans(line, lineNumber, state.inline);
 }
 
 function collectInlineSpans(line: string, lineNumber: number, out: InlineSpan[]): void {

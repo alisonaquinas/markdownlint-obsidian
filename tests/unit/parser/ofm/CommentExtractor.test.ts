@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { extractComments } from "../../../../src/infrastructure/parser/ofm/CommentExtractor.js";
 
-function run(src: string) {
+function run(src: string): ReturnType<typeof extractComments> {
   return extractComments(src.split("\n"));
 }
 

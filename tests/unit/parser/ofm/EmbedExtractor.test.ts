@@ -3,7 +3,7 @@ import { extractEmbeds } from "../../../../src/infrastructure/parser/ofm/EmbedEx
 import { extractWikilinks } from "../../../../src/infrastructure/parser/ofm/WikilinkExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 
-function run(src: string) {
+function run(src: string): ReturnType<typeof extractEmbeds> {
   const lines = src.split("\n");
   const map = buildCodeRegionMap(lines);
   return extractEmbeds(extractWikilinks(lines, map));

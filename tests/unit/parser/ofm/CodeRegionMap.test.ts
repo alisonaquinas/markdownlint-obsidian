@@ -3,13 +3,7 @@ import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/Co
 
 describe("CodeRegionMap", () => {
   it("marks fenced block lines as code", () => {
-    const lines = [
-      "text",
-      "```",
-      "inside",
-      "```",
-      "after",
-    ];
+    const lines = ["text", "```", "inside", "```", "after"];
     const map = buildCodeRegionMap(lines);
     expect(map.isInCode(1, 1)).toBe(false);
     expect(map.isInCode(2, 1)).toBe(true);

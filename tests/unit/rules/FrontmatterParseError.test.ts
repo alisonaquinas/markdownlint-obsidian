@@ -9,12 +9,9 @@ describe("OFM902 frontmatter-parse-error", () => {
   });
 
   it("is registered via registerBuiltin", async () => {
-    const { makeRuleRegistry } = await import(
-      "../../../src/domain/linting/RuleRegistry.js"
-    );
-    const { registerBuiltinRules } = await import(
-      "../../../src/infrastructure/rules/ofm/registerBuiltin.js"
-    );
+    const { makeRuleRegistry } = await import("../../../src/domain/linting/RuleRegistry.js");
+    const { registerBuiltinRules } =
+      await import("../../../src/infrastructure/rules/ofm/registerBuiltin.js");
     const reg = makeRuleRegistry();
     registerBuiltinRules(reg);
     expect(reg.get("OFM902")).toBeDefined();

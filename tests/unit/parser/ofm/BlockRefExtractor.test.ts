@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { extractBlockRefs } from "../../../../src/infrastructure/parser/ofm/BlockRefExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 
-function run(src: string) {
+function run(src: string): ReturnType<typeof extractBlockRefs> {
   const lines = src.split("\n");
   return extractBlockRefs(lines, buildCodeRegionMap(lines));
 }

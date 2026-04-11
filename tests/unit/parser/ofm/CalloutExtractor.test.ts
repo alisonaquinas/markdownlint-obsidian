@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { extractCallouts } from "../../../../src/infrastructure/parser/ofm/CalloutExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 
-function run(src: string) {
+function run(src: string): ReturnType<typeof extractCallouts> {
   const lines = src.split("\n");
   return extractCallouts(lines, buildCodeRegionMap(lines));
 }

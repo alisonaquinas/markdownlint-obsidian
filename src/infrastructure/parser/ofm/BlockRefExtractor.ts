@@ -10,18 +10,21 @@ export function extractBlockRefs(
 ): readonly BlockRefNode[] {
   const out: BlockRefNode[] = [];
   for (let i = 0; i < lines.length; i += 1) {
-    const lineNumber = i + 1;
-    if (codeMap.isInCode(lineNumber, 1)) continue;
-    const match = (lines[i] ?? "").match(BLOCK_REF_PATTERN);
-    if (match === null) continue;
-    const id = match[1] ?? "";
-    const column = ((match.index ?? 0) + (match[0]?.length ?? 0)) - id.length;
-    out.push(
-      makeBlockRefNode({
-        blockId: id,
-        position: makeSourcePosition(lineNumber, column),
-      }),
-    );
+    const node = parseLine(lines[i] ?? "", i + 1, codeMap);
+    if (node !== null) out.push(node);
   }
   return out;
+}
+
+function parseLine(line: string, lineNumber: number, codeMap: CodeRegionMap): BlockRefNode | null {
+  if (codeMap.isInCode(lineNumber, 1)) return null;
+  const match = line.match(BLOCK_REF_PATTERN);
+  if (match === null) return null;
+  const id = match[1] ?? "";
+  const matchText = match[0] ?? "";
+  const column = (match.index ?? 0) + matchText.length - id.length;
+  return makeBlockRefNode({
+    blockId: id,
+    position: makeSourcePosition(lineNumber, column),
+  });
 }

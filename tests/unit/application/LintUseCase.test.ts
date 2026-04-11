@@ -20,12 +20,10 @@ describe("LintUseCase", () => {
   it("returns one clean result per file (no rules registered)", async () => {
     const registry = makeRuleRegistry();
     const parser = makeMarkdownItParser();
-    const results = await runLint(
-      ["a.md", "b.md"],
-      DEFAULT_CONFIG,
-      registry,
-      { parser, readFile: stubReadFile },
-    );
+    const results = await runLint(["a.md", "b.md"], DEFAULT_CONFIG, registry, {
+      parser,
+      readFile: stubReadFile,
+    });
     expect(results).toHaveLength(2);
     expect(results.every((r) => r.hasErrors === false)).toBe(true);
   });

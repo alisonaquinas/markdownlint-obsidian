@@ -27,12 +27,10 @@ describe("LintUseCase (parser-wired)", () => {
     const registry = makeRuleRegistry();
     registerBuiltinRules(registry);
 
-    const results = await runLint(
-      [file],
-      DEFAULT_CONFIG,
-      registry,
-      { parser, readFile: readMarkdownFile },
-    );
+    const results = await runLint([file], DEFAULT_CONFIG, registry, {
+      parser,
+      readFile: readMarkdownFile,
+    });
     expect(results).toHaveLength(1);
     expect(results[0]?.hasErrors).toBe(false);
   });
@@ -45,12 +43,10 @@ describe("LintUseCase (parser-wired)", () => {
     const registry = makeRuleRegistry();
     registerBuiltinRules(registry);
 
-    const results = await runLint(
-      [file],
-      DEFAULT_CONFIG,
-      registry,
-      { parser, readFile: readMarkdownFile },
-    );
+    const results = await runLint([file], DEFAULT_CONFIG, registry, {
+      parser,
+      readFile: readMarkdownFile,
+    });
     expect(results[0]?.errors[0]?.ruleCode).toBe("OFM902");
     expect(results[0]?.hasErrors).toBe(true);
   });

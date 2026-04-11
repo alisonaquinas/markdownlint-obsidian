@@ -44,10 +44,7 @@ export async function runLint(
   return results;
 }
 
-function iterateActiveRules(
-  registry: RuleRegistry,
-  config: LinterConfig,
-): readonly OFMRule[] {
+function iterateActiveRules(registry: RuleRegistry, config: LinterConfig): readonly OFMRule[] {
   return registry.all().filter((rule) => {
     for (const name of rule.names) {
       const cfg = config.rules[name];

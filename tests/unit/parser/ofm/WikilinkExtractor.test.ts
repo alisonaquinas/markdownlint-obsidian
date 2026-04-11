@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { extractWikilinks } from "../../../../src/infrastructure/parser/ofm/WikilinkExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 
-function extract(src: string) {
+function extract(src: string): ReturnType<typeof extractWikilinks> {
   const lines = src.split("\n");
   return extractWikilinks(lines, buildCodeRegionMap(lines));
 }
@@ -31,12 +31,7 @@ describe("WikilinkExtractor", () => {
   });
 
   it("skips wikilinks inside code fences", () => {
-    const src = [
-      "```",
-      "[[ignored]]",
-      "```",
-      "[[real]]",
-    ].join("\n");
+    const src = ["```", "[[ignored]]", "```", "[[real]]"].join("\n");
     const out = extract(src);
     expect(out).toHaveLength(1);
     expect(out[0]?.target).toBe("real");

@@ -12,9 +12,7 @@ describe("full parse integration", () => {
     const src = await readMarkdownFile(path.join(FIXTURES, "all-ofm-nodes.md"));
     const r = parser.parse("all-ofm-nodes.md", src);
 
-    expect(r.frontmatter).toEqual(
-      expect.objectContaining({ tags: ["fixture"] }),
-    );
+    expect(r.frontmatter).toEqual(expect.objectContaining({ tags: ["fixture"] }));
     expect(r.wikilinks.length).toBeGreaterThanOrEqual(2);
     expect(r.embeds).toHaveLength(1);
     expect(r.tags.length).toBeGreaterThanOrEqual(2);

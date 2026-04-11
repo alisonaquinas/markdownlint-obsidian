@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { extractHighlights } from "../../../../src/infrastructure/parser/ofm/HighlightExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 
-function run(src: string) {
+function run(src: string): ReturnType<typeof extractHighlights> {
   const lines = src.split("\n");
   return extractHighlights(lines, buildCodeRegionMap(lines));
 }

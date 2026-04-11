@@ -14,24 +14,29 @@ export interface FrontmatterParseOutput {
  */
 export function parseFrontmatter(source: string): FrontmatterParseOutput {
   try {
-    // gray-matter mutates a cached `File` object when called with the same
-    // raw string twice, sometimes leaving `matter` undefined on subsequent
-    // invocations. Passing a fresh object avoids the cache reuse.
-    const parsed = matter({ content: source });
-    const data = (parsed.data ?? {}) as Record<string, unknown>;
-    // gray-matter's `matter` field contains the frontmatter body text,
-    // typically prefixed with a leading newline (`\n<body>`). We trim the
-    // leading newline so downstream consumers see just the YAML payload and
-    // line counting yields the expected line count.
-    const rawMatter = parsed.matter ?? "";
-    const trimmedMatter = rawMatter.startsWith("\n") ? rawMatter.slice(1) : rawMatter;
-    const rawFrontmatter = trimmedMatter.length > 0 ? trimmedMatter : null;
-    const bodyStartLine = rawFrontmatter === null ? 1 : countLines(rawFrontmatter) + 3;
-    return { data, rawFrontmatter, bodyStartLine };
+    return parseInternal(source);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     throw new Error(`OFM902: frontmatter parse error — ${message}`);
   }
+}
+
+function parseInternal(source: string): FrontmatterParseOutput {
+  // gray-matter mutates a cached `File` object when called with the same
+  // raw string twice, sometimes leaving `matter` undefined on subsequent
+  // invocations. Passing a fresh object avoids the cache reuse.
+  const parsed = matter({ content: source });
+  const data = (parsed.data ?? {}) as Record<string, unknown>;
+  const rawFrontmatter = normalizeMatter(parsed.matter);
+  const bodyStartLine = rawFrontmatter === null ? 1 : countLines(rawFrontmatter) + 3;
+  return { data, rawFrontmatter, bodyStartLine };
+}
+
+function normalizeMatter(rawMatter: string | undefined): string | null {
+  const value = rawMatter ?? "";
+  // gray-matter's `matter` field is typically prefixed with a leading newline.
+  const trimmed = value.startsWith("\n") ? value.slice(1) : value;
+  return trimmed.length > 0 ? trimmed : null;
 }
 
 function countLines(text: string): number {

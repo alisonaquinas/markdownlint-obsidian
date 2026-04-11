@@ -17,35 +17,36 @@ import { extractComments } from "./ofm/CommentExtractor.js";
  */
 export function makeMarkdownItParser(): Parser {
   const md = new MarkdownIt({ html: true, linkify: false });
-
   return {
     parse(filePath: string, content: string): ParseResult {
-      const { data, rawFrontmatter, bodyStartLine } = parseFrontmatter(content);
-      const body = rawFrontmatter === null ? content : stripFrontmatter(content);
-      const lines = body.split(/\r?\n/);
-      const codeMap = buildCodeRegionMap(lines);
-      const wikilinks = extractWikilinks(lines, codeMap);
-      const embeds = extractEmbeds(wikilinks);
-      const tokens = md.parse(body, {});
-
-      return makeParseResult({
-        filePath,
-        frontmatter: data,
-        frontmatterRaw: rawFrontmatter,
-        frontmatterEndLine: rawFrontmatter === null ? 0 : bodyStartLine - 1,
-        tokens,
-        wikilinks,
-        embeds,
-        callouts: extractCallouts(lines, codeMap),
-        tags: extractTags(lines, codeMap),
-        blockRefs: extractBlockRefs(lines, codeMap),
-        highlights: extractHighlights(lines, codeMap),
-        comments: extractComments(lines),
-        raw: body,
-        lines,
-      });
+      return parseOne(md, filePath, content);
     },
   };
+}
+
+function parseOne(md: MarkdownIt, filePath: string, content: string): ParseResult {
+  const { data, rawFrontmatter, bodyStartLine } = parseFrontmatter(content);
+  const body = rawFrontmatter === null ? content : stripFrontmatter(content);
+  const lines = body.split(/\r?\n/);
+  const codeMap = buildCodeRegionMap(lines);
+  const wikilinks = extractWikilinks(lines, codeMap);
+
+  return makeParseResult({
+    filePath,
+    frontmatter: data,
+    frontmatterRaw: rawFrontmatter,
+    frontmatterEndLine: rawFrontmatter === null ? 0 : bodyStartLine - 1,
+    tokens: md.parse(body, {}),
+    wikilinks,
+    embeds: extractEmbeds(wikilinks),
+    callouts: extractCallouts(lines, codeMap),
+    tags: extractTags(lines, codeMap),
+    blockRefs: extractBlockRefs(lines, codeMap),
+    highlights: extractHighlights(lines, codeMap),
+    comments: extractComments(lines),
+    raw: body,
+    lines,
+  });
 }
 
 function stripFrontmatter(content: string): string {
