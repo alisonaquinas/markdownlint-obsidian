@@ -58,6 +58,46 @@ export interface TagConfig {
 }
 
 /**
+ * Block-reference validation (Phase 6, rules OFM100–OFM104).
+ *
+ * `idPattern` is an ECMAScript regex string. Block ids must match it;
+ * the default `^[A-Za-z0-9-]{1,32}$` is identical to Obsidian's behaviour.
+ * `requireUnique` toggles OFM101: when `false`, the rule is a no-op even
+ * if it is enabled in `rules`. Cross-file lookups via {@link BlockRefIndex}
+ * are not gated here — they follow `config.resolve` the same as wikilinks.
+ */
+export interface BlockRefConfig {
+  readonly idPattern: string;
+  readonly requireUnique: boolean;
+}
+
+/**
+ * Highlight (`==text==`) gating (Phase 6, rules OFM120–OFM124).
+ *
+ * `allow` is the top-level switch. When `false`, OFM120 reports every
+ * highlight outside any `allowedGlobs` entry. `allowedGlobs` is a list of
+ * POSIX globs (minimatch syntax) matched against the
+ * {@link ParseResult.filePath}; an empty list means "everywhere" when
+ * `allow` is `true`, or "nowhere" when `allow` is `false`.
+ */
+export interface HighlightConfig {
+  readonly allow: boolean;
+  readonly allowedGlobs: readonly string[];
+}
+
+/**
+ * Obsidian comment (`%%text%%`) gating (Phase 6, rule OFM121).
+ *
+ * `allow` toggles OFM121 entirely. `disallowMultiline` keeps single-line
+ * comments while banning multi-line ones — useful for vaults that accept
+ * inline annotations but want prose comments kept in frontmatter.
+ */
+export interface CommentConfig {
+  readonly allow: boolean;
+  readonly disallowMultiline: boolean;
+}
+
+/**
  * Fully merged, validated configuration for one lint run.
  *
  * Instances are immutable and produced by the config loader after cascading
@@ -73,6 +113,9 @@ export interface LinterConfig {
   readonly embeds: EmbedConfig;
   readonly frontmatter: FrontmatterConfig;
   readonly tags: TagConfig;
+  readonly blockRefs: BlockRefConfig;
+  readonly highlights: HighlightConfig;
+  readonly comments: CommentConfig;
   readonly rules: Readonly<Record<string, RuleConfig>>;
   readonly customRules: readonly string[];
   readonly globs: readonly string[];

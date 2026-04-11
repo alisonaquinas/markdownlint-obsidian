@@ -16,4 +16,13 @@ describe("ConfigValidator", () => {
     const raw = { embeds: { allowedExtensions: ["png"] } } as unknown;
     expect(() => validateConfig(raw)).not.toThrow();
   });
+
+  it("accepts Phase 6 `blockRefs`, `highlights`, `comments` keys", () => {
+    const raw = {
+      blockRefs: { idPattern: "^[a-z]+$", requireUnique: true },
+      highlights: { allow: false, allowedGlobs: [] },
+      comments: { allow: true, disallowMultiline: true },
+    } as unknown;
+    expect(() => validateConfig(raw)).not.toThrow();
+  });
 });

@@ -9,6 +9,9 @@ const KNOWN_KEYS: ReadonlySet<string> = new Set([
   "embeds",
   "frontmatter",
   "tags",
+  "blockRefs",
+  "highlights",
+  "comments",
   // markdownlint-cli2 compatible keys
   "config",
   "rules",
