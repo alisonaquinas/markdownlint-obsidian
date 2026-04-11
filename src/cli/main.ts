@@ -6,6 +6,9 @@ import { makeRuleRegistry } from "../domain/linting/RuleRegistry.js";
 import { runLint } from "../application/LintUseCase.js";
 import { getFormatter } from "../infrastructure/formatters/FormatterRegistry.js";
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
+import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
+import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
+import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
 
 interface ParsedOptions {
   readonly fix: boolean;
@@ -81,7 +84,12 @@ async function runPipeline(
   const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
-  const results = await runLint(files, config, registry);
+  registerBuiltinRules(registry);
+  const parser = makeMarkdownItParser();
+  const results = await runLint(files, config, registry, {
+    parser,
+    readFile: readMarkdownFile,
+  });
 
   const formatter = getFormatter(opts.outputFormatter);
   const output = formatter(results);
