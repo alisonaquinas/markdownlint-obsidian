@@ -41,6 +41,26 @@ frontmatter, and `OFM9xx` for parser/system errors.
 | [[rules/callouts/OFM043]] | callout-in-list               | warning  | enabled  | no      |
 | [[rules/callouts/OFM044]] | callout-fold-disabled         | warning  | enabled  | yes (Phase 9) |
 
+## Block references (OFM100-OFM119)
+
+| Code   | Name                              | Severity | Default  | Fixable |
+| ------ | --------------------------------- | -------- | -------- | ------- |
+| [[rules/block-references/OFM100]] | invalid-block-ref      | error    | enabled  | no      |
+| [[rules/block-references/OFM101]] | duplicate-block-id     | error    | enabled  | no      |
+| [[rules/block-references/OFM102]] | broken-block-link      | error    | enabled  | no      |
+| [[rules/block-references/OFM103]] | block-ref-on-heading   | warning  | enabled  | no      |
+| [[rules/block-references/OFM104]] | block-id-case          | warning  | enabled  | yes (Phase 9) |
+
+## Highlights and comments (OFM120-OFM139)
+
+| Code   | Name                              | Severity | Default  | Fixable |
+| ------ | --------------------------------- | -------- | -------- | ------- |
+| [[rules/highlights/OFM120]] | disallowed-highlight        | error    | disabled | no      |
+| [[rules/highlights/OFM121]] | disallowed-comment          | error    | disabled | no      |
+| [[rules/highlights/OFM122]] | malformed-highlight         | error    | enabled  | no      |
+| [[rules/highlights/OFM123]] | nested-highlight            | error    | enabled  | no      |
+| [[rules/highlights/OFM124]] | empty-highlight             | warning  | enabled  | yes (Phase 9) |
+
 ## Frontmatter (OFM080–OFM099)
 
 | Code   | Name                              | Severity | Default  | Fixable |
