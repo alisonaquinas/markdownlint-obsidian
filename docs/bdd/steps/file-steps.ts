@@ -7,6 +7,64 @@ Given("a vault with a file {string}", async function (this: OFMWorld, relPath: s
   await this.writeFile(relPath, `# ${path.basename(relPath, ".md")}\n`);
 });
 
+// ---- Phase 4 wikilink + vault-detection steps ----------------------------
+
+Given(
+  "a file {string}",
+  async function (this: OFMWorld, relPath: string) {
+    if (!this.vaultDir) await this.initVault();
+    await this.writeFile(relPath, `# ${path.basename(relPath, ".md")}\n`);
+  },
+);
+
+Given(
+  "a directory tree with {string} at {string}",
+  async function (this: OFMWorld, marker: string, relSubdir: string) {
+    if (marker !== ".obsidian/") {
+      throw new Error(`unsupported marker: ${marker}`);
+    }
+    if (!this.vaultDir) await this.initBareDir();
+    await this.markObsidianVault(relSubdir);
+    // Subsequent CLI calls should run from inside the declared subdir
+    // so vault detection walks up and finds the newly created .obsidian/.
+    this.cliCwdSubdir = relSubdir;
+  },
+);
+
+Given(
+  "a git repo root at {string} with no {string} directory",
+  async function (this: OFMWorld, relSubdir: string, absentMarker: string) {
+    if (absentMarker !== ".obsidian/") {
+      throw new Error(`unsupported absent marker: ${absentMarker}`);
+    }
+    if (!this.vaultDir) await this.initBareDir();
+    await this.markGitRepo(relSubdir);
+    this.cliCwdSubdir = relSubdir;
+  },
+);
+
+Given(
+  "a directory with no {string} and no git repo",
+  async function (this: OFMWorld, absentMarker: string) {
+    if (absentMarker !== ".obsidian/") {
+      throw new Error(`unsupported absent marker: ${absentMarker}`);
+    }
+    if (!this.vaultDir) await this.initBareDir();
+    // No markers created; vault detection should throw OFM900 unless an
+    // ancestor of the temp dir happens to contain .git/ (the assertion
+    // tolerates that via a conditional check in the feature's Then step).
+  },
+);
+
+Given(
+  "a config file setting vaultRoot to {string}",
+  async function (this: OFMWorld, vaultRootPath: string) {
+    if (!this.vaultDir) await this.initVault();
+    const cfg = { vaultRoot: path.resolve(this.vaultDir, vaultRootPath), resolve: true };
+    await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+  },
+);
+
 Given("a vault with no lint errors", async function (this: OFMWorld) {
   await this.initVault();
   await this.writeFile("notes/clean.md", "# Clean\n");

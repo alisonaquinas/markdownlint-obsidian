@@ -1,3 +1,4 @@
+@smoke
 Feature: Vault root detection
 
   Scenario: Detects vault root via .obsidian/ directory
