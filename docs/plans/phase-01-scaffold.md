@@ -110,7 +110,7 @@ reports/                                  Created in Task 14 (gitignored)
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:bdd": "cucumber-js",
+    "test:bdd": "node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js",
     "test:all": "npm run typecheck && npm run lint && npm run test && npm run test:bdd",
     "prepublishOnly": "npm run build && npm run test:all"
   },
@@ -1442,13 +1442,12 @@ echo "reports/" >> .gitignore
   "default": {
     "paths": ["docs/bdd/features/**/*.feature"],
     "import": ["docs/bdd/steps/**/*.ts"],
-    "loader": ["tsx"],
     "format": ["progress-bar", "json:reports/cucumber.json"]
   }
 }
 ```
 
-Note: use `import` (not `require`) and `loader` (not `requireModule`) for ESM + cucumber-js 10.
+Note: use `import` (not `require`) for ESM + cucumber-js 10. Do NOT put `"loader": ["tsx"]` in the config — cucumber-js wires that to the deprecated `--loader` flag which tsx rejects on Node 20+. Instead, update the `test:bdd` npm script to launch cucumber-js via `node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js` so tsx is registered before cucumber-js reads step files.
 
 - [ ] **Implement `docs/bdd/steps/file-steps.ts`**
 

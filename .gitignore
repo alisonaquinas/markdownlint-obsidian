@@ -166,3 +166,4 @@ docker-compose.override.yml
 *.p12
 *.pfx
 *.keystore
+reports/
