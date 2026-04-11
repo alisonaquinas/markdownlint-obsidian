@@ -5,37 +5,26 @@ import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.j
 
 describe("OFM064 duplicate-tag", () => {
   it("passes when each tag occurs once", async () => {
-    const errors = await runRuleOnSource(
-      OFM064Rule,
-      "Body with #project and #area tags.",
-    );
+    const errors = await runRuleOnSource(OFM064Rule, "Body with #project and #area tags.");
     expect(errors).toEqual([]);
   });
 
   it("warns on a literal duplicate", async () => {
-    const errors = await runRuleOnSource(
-      OFM064Rule,
-      "Body #project once and #project twice.",
-    );
+    const errors = await runRuleOnSource(OFM064Rule, "Body #project once and #project twice.");
     expect(errors).toHaveLength(1);
     expect(errors[0]?.ruleCode).toBe("OFM064");
     expect(errors[0]?.message).toContain("first seen on line 1");
   });
 
   it("warns on a case-insensitive duplicate by default", async () => {
-    const errors = await runRuleOnSource(
-      OFM064Rule,
-      "Body #Project once and #project twice.",
-    );
+    const errors = await runRuleOnSource(OFM064Rule, "Body #Project once and #project twice.");
     expect(errors).toHaveLength(1);
   });
 
   it("ignores case differences when caseSensitive is true", async () => {
-    const errors = await runRuleOnSource(
-      OFM064Rule,
-      "Body #Project once and #project twice.",
-      { tags: { ...DEFAULT_CONFIG.tags, caseSensitive: true } },
-    );
+    const errors = await runRuleOnSource(OFM064Rule, "Body #Project once and #project twice.", {
+      tags: { ...DEFAULT_CONFIG.tags, caseSensitive: true },
+    });
     expect(errors).toEqual([]);
   });
 });

@@ -23,9 +23,7 @@ export interface CalloutConfig {
 export interface FrontmatterConfig {
   readonly required: readonly string[];
   readonly dateFields: readonly string[];
-  readonly typeMap: Readonly<
-    Record<string, "string" | "number" | "boolean" | "array" | "date">
-  >;
+  readonly typeMap: Readonly<Record<string, "string" | "number" | "boolean" | "array" | "date">>;
   readonly allowUnknown: boolean;
 }
 

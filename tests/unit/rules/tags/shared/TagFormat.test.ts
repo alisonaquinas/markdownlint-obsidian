@@ -6,12 +6,9 @@ import {
 } from "../../../../../src/infrastructure/rules/ofm/tags/shared/TagFormat.js";
 
 describe("isValidTag", () => {
-  it.each(["simple", "nested/tag", "area/meta/deep", "with-dash", "with_us"])(
-    "accepts %s",
-    (v) => {
-      expect(isValidTag(v)).toBe(true);
-    },
-  );
+  it.each(["simple", "nested/tag", "area/meta/deep", "with-dash", "with_us"])("accepts %s", (v) => {
+    expect(isValidTag(v)).toBe(true);
+  });
 
   it.each(["", "/leading", "trailing/", "double//slash", "has space", "123", "#hash"])(
     "rejects %s",

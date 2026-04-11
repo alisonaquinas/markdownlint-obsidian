@@ -2,10 +2,11 @@ import { describe, it, expect } from "vitest";
 import { OFM083Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
+import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 
 const withTypeMap = (
   typeMap: Record<string, "string" | "number" | "boolean" | "array" | "date">,
-) => ({
+): Partial<LinterConfig> => ({
   frontmatter: {
     ...DEFAULT_CONFIG.frontmatter,
     typeMap: Object.freeze(typeMap),

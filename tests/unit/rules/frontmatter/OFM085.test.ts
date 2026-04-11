@@ -15,10 +15,7 @@ import { makeLintError } from "../../../../src/domain/linting/LintError.js";
  */
 describe("OFM085 duplicate-frontmatter-key", () => {
   it("passes for clean frontmatter (real parser path)", async () => {
-    const errors = await runRuleOnSource(
-      OFM085Rule,
-      "---\ntags: [a]\ntitle: Note\n---\nbody",
-    );
+    const errors = await runRuleOnSource(OFM085Rule, "---\ntags: [a]\ntitle: Note\n---\nbody");
     expect(errors).toEqual([]);
   });
 

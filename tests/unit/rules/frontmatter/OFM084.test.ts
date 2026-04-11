@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import { OFM084Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
+import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 
-const withRequired = (required: readonly string[]) => ({
+const withRequired = (required: readonly string[]): Partial<LinterConfig> => ({
   frontmatter: {
     ...DEFAULT_CONFIG.frontmatter,
     required: Object.freeze(required),

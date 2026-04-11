@@ -5,18 +5,12 @@ import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.j
 
 describe("OFM065 mixed-case-tag", () => {
   it("passes when casing is uniform", async () => {
-    const errors = await runRuleOnSource(
-      OFM065Rule,
-      "Body #project here and #project there.",
-    );
+    const errors = await runRuleOnSource(OFM065Rule, "Body #project here and #project there.");
     expect(errors).toEqual([]);
   });
 
   it("warns when a later occurrence changes case", async () => {
-    const errors = await runRuleOnSource(
-      OFM065Rule,
-      "Body #project then #Project later.",
-    );
+    const errors = await runRuleOnSource(OFM065Rule, "Body #project then #Project later.");
     expect(errors).toHaveLength(1);
     expect(errors[0]?.ruleCode).toBe("OFM065");
     expect(errors[0]?.message).toContain("Project");
@@ -24,11 +18,9 @@ describe("OFM065 mixed-case-tag", () => {
   });
 
   it("is a no-op when caseSensitive is true", async () => {
-    const errors = await runRuleOnSource(
-      OFM065Rule,
-      "Body #project then #Project later.",
-      { tags: { ...DEFAULT_CONFIG.tags, caseSensitive: true } },
-    );
+    const errors = await runRuleOnSource(OFM065Rule, "Body #project then #Project later.", {
+      tags: { ...DEFAULT_CONFIG.tags, caseSensitive: true },
+    });
     expect(errors).toEqual([]);
   });
 });

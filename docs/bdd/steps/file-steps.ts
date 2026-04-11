@@ -39,21 +39,18 @@ Given(
   },
 );
 
-Given(
-  "the config requires frontmatter key {string}",
-  async function (this: OFMWorld, key: string) {
-    if (!this.vaultDir) await this.initVault();
-    const cfg = {
-      frontmatter: {
-        required: [key],
-        dateFields: [],
-        typeMap: {},
-        allowUnknown: true,
-      },
-    };
-    await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
-  },
-);
+Given("the config requires frontmatter key {string}", async function (this: OFMWorld, key: string) {
+  if (!this.vaultDir) await this.initVault();
+  const cfg = {
+    frontmatter: {
+      required: [key],
+      dateFields: [],
+      typeMap: {},
+      allowUnknown: true,
+    },
+  };
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+});
 
 Given(
   "a file {string} with frontmatter {string}",
@@ -63,21 +60,18 @@ Given(
   },
 );
 
-Given(
-  "the config declares {string} as a date field",
-  async function (this: OFMWorld, key: string) {
-    if (!this.vaultDir) await this.initVault();
-    const cfg = {
-      frontmatter: {
-        required: [],
-        dateFields: [key],
-        typeMap: {},
-        allowUnknown: true,
-      },
-    };
-    await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
-  },
-);
+Given("the config declares {string} as a date field", async function (this: OFMWorld, key: string) {
+  if (!this.vaultDir) await this.initVault();
+  const cfg = {
+    frontmatter: {
+      required: [],
+      dateFields: [key],
+      typeMap: {},
+      allowUnknown: true,
+    },
+  };
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+});
 
 Given(
   "a file {string} with frontmatter {string} and {string}",

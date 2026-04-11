@@ -13,8 +13,7 @@
  * @param input - Candidate value (any type).
  * @returns true if `input` is a valid ISO-8601 date or `Date` instance.
  */
-const ISO_PATTERN =
-  /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})?)?$/;
+const ISO_PATTERN = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})?)?$/;
 
 export function isIsoDate(input: unknown): boolean {
   if (input instanceof Date) {

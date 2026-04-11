@@ -25,7 +25,9 @@ afterEach(async () => {
   await fs.rm(tmp, { recursive: true, force: true });
 });
 
-describe("frontmatter rules integration", () => {
+// CLI spawns are slow on Windows under parallel execution; 15s gives the
+// runner enough headroom for the slowest cold-start case.
+describe("frontmatter rules integration", { timeout: 15000 }, () => {
   it("fails when required key missing", async () => {
     await fs.copyFile(
       path.resolve("tests/fixtures/rules/frontmatter/missing-tags.md"),

@@ -4,10 +4,7 @@ import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 
 describe("OFM060 invalid-tag-format", () => {
   it("passes for clean tags", async () => {
-    const errors = await runRuleOnSource(
-      OFM060Rule,
-      "Body with #project and #area/notes tags.",
-    );
+    const errors = await runRuleOnSource(OFM060Rule, "Body with #project and #area/notes tags.");
     expect(errors).toEqual([]);
   });
 

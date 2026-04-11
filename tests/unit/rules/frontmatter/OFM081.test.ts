@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import { OFM081Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
+import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 
-const withDateFields = (dateFields: readonly string[]) => ({
+const withDateFields = (dateFields: readonly string[]): Partial<LinterConfig> => ({
   frontmatter: {
     ...DEFAULT_CONFIG.frontmatter,
     dateFields: Object.freeze(dateFields),

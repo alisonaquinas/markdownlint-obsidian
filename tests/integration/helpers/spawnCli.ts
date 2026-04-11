@@ -9,9 +9,7 @@ export interface SpawnResult {
 }
 
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
-const TSX_LOADER_URL = pathToFileURL(
-  path.resolve("node_modules/tsx/dist/loader.mjs"),
-).href;
+const TSX_LOADER_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
 
 /**
  * Run the markdownlint-obsidian binary with the given args in `cwd`.
@@ -27,14 +25,10 @@ const TSX_LOADER_URL = pathToFileURL(
  */
 export function spawnCli(args: readonly string[], cwd: string): Promise<SpawnResult> {
   return new Promise((resolve) => {
-    const child = spawn(
-      process.execPath,
-      ["--import", TSX_LOADER_URL, BIN, ...args],
-      {
-        cwd,
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
+    const child = spawn(process.execPath, ["--import", TSX_LOADER_URL, BIN, ...args], {
+      cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     let stdout = "";
     let stderr = "";
     child.stdout.on("data", (chunk: Buffer) => {

@@ -27,10 +27,7 @@ describe("OFM066 frontmatter-tag-not-in-body", () => {
   });
 
   it("ignores non-string entries in tags array", async () => {
-    const errors = await runRuleOnSource(
-      OFM066Rule,
-      "---\ntags: [42]\n---\nBody",
-    );
+    const errors = await runRuleOnSource(OFM066Rule, "---\ntags: [42]\n---\nBody");
     expect(errors).toEqual([]);
   });
 });

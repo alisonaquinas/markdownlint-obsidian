@@ -27,14 +27,7 @@ type Emit = (e: { line: number; column: number; message: string }) => void;
 
 function walk(value: unknown, path: readonly string[], emit: Emit): void {
   if (typeof value === "string") {
-    if (TRAILING_WS.test(value)) {
-      const where = path.length === 0 ? "(root)" : path.join(".");
-      emit({
-        line: 1,
-        column: 1,
-        message: `Frontmatter value at "${where}" has trailing whitespace`,
-      });
-    }
+    checkString(value, path, emit);
     return;
   }
   if (Array.isArray(value)) {
@@ -42,8 +35,22 @@ function walk(value: unknown, path: readonly string[], emit: Emit): void {
     return;
   }
   if (value !== null && typeof value === "object") {
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      walk(v, [...path, k], emit);
-    }
+    walkObject(value as Record<string, unknown>, path, emit);
+  }
+}
+
+function checkString(value: string, path: readonly string[], emit: Emit): void {
+  if (!TRAILING_WS.test(value)) return;
+  const where = path.length === 0 ? "(root)" : path.join(".");
+  emit({
+    line: 1,
+    column: 1,
+    message: `Frontmatter value at "${where}" has trailing whitespace`,
+  });
+}
+
+function walkObject(obj: Record<string, unknown>, path: readonly string[], emit: Emit): void {
+  for (const [k, v] of Object.entries(obj)) {
+    walk(v, [...path, k], emit);
   }
 }
