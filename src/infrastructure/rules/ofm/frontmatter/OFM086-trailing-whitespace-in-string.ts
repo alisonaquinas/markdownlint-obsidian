@@ -13,6 +13,11 @@ const KEY_LINE = /^([A-Za-z0-9_-]+)\s*:/;
  * spaces or tabs. Marked fixable for the future Phase 9 autofix engine,
  * which will rewrite the YAML in place.
  *
+ * Autofix is only emitted for simple top-level scalar values (`path.length === 1`).
+ * Nested map values and array elements report the violation without a fix because
+ * the `keyLineMap` line number points to the parent key line, not the actual
+ * value line — splicing there would corrupt the frontmatter.
+ *
  * @see docs/rules/frontmatter/OFM086.md
  */
 export const OFM086Rule: OFMRule = {

@@ -13,13 +13,17 @@ import type { FileExistenceChecker } from "../domain/fs/FileExistenceChecker.js"
 // Module-level set to suppress repeated warnings per process
 const warnedMissingFix = new Set<string>();
 
-function warnIfMissingFix(rule: OFMRule, fix: unknown): void {
-  if (rule.fixable && fix === undefined && !warnedMissingFix.has(rule.names[0] ?? "")) {
-    warnedMissingFix.add(rule.names[0] ?? "");
-    process.stderr.write(
-      `[OFM internal] Rule ${rule.names[0] ?? "unknown"} is fixable but emitted no Fix payload\n`,
-    );
+function emitDebugFixWarning(ruleName: string): void {
+  if (process.env["OFM_DEBUG_FIX"] !== undefined) {
+    process.stderr.write(`[OFM internal] Rule ${ruleName} is fixable but emitted no Fix payload\n`);
   }
+}
+
+function warnIfMissingFix(rule: OFMRule, fix: unknown): void {
+  const name = rule.names[0] ?? "";
+  if (!rule.fixable || fix !== undefined || warnedMissingFix.has(name)) return;
+  warnedMissingFix.add(name);
+  emitDebugFixWarning(rule.names[0] ?? "unknown");
 }
 
 export interface LintDependencies {

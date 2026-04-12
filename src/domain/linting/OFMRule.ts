@@ -54,9 +54,13 @@ export interface OFMRule {
   readonly tags: readonly string[];
   readonly severity: "error" | "warning";
   /**
-   * When `true`, every `onError` call from this rule MUST include a populated
-   * `fix` field. The autofix engine (Phase 9) relies on this invariant to
-   * apply fixes without a separate lookup step.
+   * When `true`, `onError` calls from this rule should include a populated
+   * `fix` field wherever the violation's edit location is precisely known.
+   * Partial-fix rules that cannot determine exact column offsets for every
+   * violation may omit `fix` for those cases — the fix engine skips violations
+   * without a `fix` payload rather than failing. Developers can enable
+   * `OFM_DEBUG_FIX=1` to surface rules that never emit any fixes despite being
+   * marked fixable.
    */
   readonly fixable: boolean;
   run(params: RuleParams, onError: OnErrorCallback): void | Promise<void>;
