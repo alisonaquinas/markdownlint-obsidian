@@ -56,8 +56,6 @@ function applyLineGroup(
     if (overlapping !== undefined) {
       conflicts.push({
         filePath,
-        ruleA: "<fix>",
-        ruleB: "<fix>",
         first: overlapping,
         second: fix,
         reason: `Overlap on line ${lineNumber}`,

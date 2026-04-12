@@ -89,6 +89,7 @@ reports/                                  Created in Task 14 (gitignored)
 ### Task 1: package.json and npm scripts
 
 **Files:**
+
 - Create: `package.json`
 
 - [ ] **Write `package.json`**
@@ -162,6 +163,7 @@ git commit -m "feat: add package.json with deps and scripts"
 ### Task 2: TypeScript configuration
 
 **Files:**
+
 - Create: `tsconfig.json`
 - Create: `tsconfig.build.json`
 
@@ -222,6 +224,7 @@ git commit -m "feat: add TypeScript strict config"
 ### Task 3: ESLint and Prettier
 
 **Files:**
+
 - Create: `eslint.config.js`
 - Create: `.prettierrc.json`
 - Create: `.editorconfig`
@@ -296,6 +299,7 @@ git commit -m "feat: add ESLint flat config and Prettier"
 ### Task 4: Vitest configuration
 
 **Files:**
+
 - Create: `vitest.config.ts`
 
 - [ ] **Write `vitest.config.ts`**
@@ -355,6 +359,7 @@ git commit -m "feat: add Vitest config and smoke test"
 ### Task 5: Domain value objects — LintError and LintResult
 
 **Files:**
+
 - Create: `src/domain/linting/LintError.ts`
 - Create: `src/domain/linting/LintResult.ts`
 - Create: `tests/unit/domain/LintError.test.ts`
@@ -363,6 +368,7 @@ git commit -m "feat: add Vitest config and smoke test"
 - [ ] **Write failing tests first**
 
 `tests/unit/domain/LintError.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeLintError } from "../../../src/domain/linting/LintError.js";
@@ -395,6 +401,7 @@ describe("LintError", () => {
 ```
 
 `tests/unit/domain/LintResult.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";
@@ -500,6 +507,7 @@ git commit -m "feat: add LintError and LintResult domain value objects"
 ### Task 6: Domain — OFMRule interface and RuleRegistry
 
 **Files:**
+
 - Create: `src/domain/linting/OFMRule.ts`
 - Create: `src/domain/linting/RuleRegistry.ts`
 - Create: `tests/unit/domain/RuleRegistry.test.ts`
@@ -507,6 +515,7 @@ git commit -m "feat: add LintError and LintResult domain value objects"
 - [ ] **Write failing test**
 
 `tests/unit/domain/RuleRegistry.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeRuleRegistry } from "../../../src/domain/linting/RuleRegistry.js";
@@ -617,6 +626,7 @@ git commit -m "feat: add OFMRule interface and RuleRegistry domain service"
 ### Task 7: Domain config value objects
 
 **Files:**
+
 - Create: `src/domain/config/RuleConfig.ts`
 - Create: `src/domain/config/LinterConfig.ts`
 
@@ -688,6 +698,7 @@ git commit -m "feat: add LinterConfig and RuleConfig domain types"
 ### Task 8: Default config and config validator
 
 **Files:**
+
 - Create: `src/infrastructure/config/defaults.ts`
 - Create: `src/infrastructure/config/ConfigValidator.ts`
 - Create: `tests/unit/config/ConfigValidator.test.ts`
@@ -695,6 +706,7 @@ git commit -m "feat: add LinterConfig and RuleConfig domain types"
 - [ ] **Write failing test**
 
 `tests/unit/config/ConfigValidator.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { validateConfig } from "../../../src/infrastructure/config/ConfigValidator.js";
@@ -773,12 +785,14 @@ git commit -m "feat: add default config and ConfigValidator"
 ### Task 9: Config loader
 
 **Files:**
+
 - Create: `src/infrastructure/config/ConfigLoader.ts`
 - Create: `tests/unit/config/ConfigLoader.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/config/ConfigLoader.test.ts`:
+
 ```ts
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { loadConfig } from "../../../src/infrastructure/config/ConfigLoader.js";
@@ -889,12 +903,14 @@ git commit -m "feat: add ConfigLoader with cascading config file discovery"
 ### Task 10: File discovery
 
 **Files:**
+
 - Create: `src/infrastructure/discovery/FileDiscovery.ts`
 - Create: `tests/unit/discovery/FileDiscovery.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/discovery/FileDiscovery.test.ts`:
+
 ```ts
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { discoverFiles } from "../../../src/infrastructure/discovery/FileDiscovery.js";
@@ -978,6 +994,7 @@ git commit -m "feat: add FileDiscovery with globby and gitignore support"
 ### Task 11: Default and JSON formatters
 
 **Files:**
+
 - Create: `src/infrastructure/formatters/DefaultFormatter.ts`
 - Create: `src/infrastructure/formatters/JsonFormatter.ts`
 - Create: `src/infrastructure/formatters/FormatterRegistry.ts`
@@ -987,6 +1004,7 @@ git commit -m "feat: add FileDiscovery with globby and gitignore support"
 - [ ] **Write failing tests**
 
 `tests/unit/formatters/DefaultFormatter.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { formatDefault } from "../../../src/infrastructure/formatters/DefaultFormatter.js";
@@ -1015,6 +1033,7 @@ describe("DefaultFormatter", () => {
 ```
 
 `tests/unit/formatters/JsonFormatter.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { formatJson } from "../../../src/infrastructure/formatters/JsonFormatter.js";
@@ -1115,12 +1134,14 @@ git commit -m "feat: add DefaultFormatter, JsonFormatter, FormatterRegistry"
 ### Task 12: LintUseCase stub
 
 **Files:**
+
 - Create: `src/application/LintUseCase.ts`
 - Create: `tests/unit/application/LintUseCase.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/application/LintUseCase.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { runLint } from "../../../src/application/LintUseCase.js";
@@ -1173,6 +1194,7 @@ git commit -m "feat: add LintUseCase stub"
 ### Task 13: CLI entry point
 
 **Files:**
+
 - Create: `src/cli/args.ts`
 - Create: `src/cli/main.ts`
 - Create: `bin/markdownlint-obsidian.js`
@@ -1181,6 +1203,7 @@ git commit -m "feat: add LintUseCase stub"
 - [ ] **Write failing integration tests**
 
 `tests/integration/cli/cli.test.ts` — note the `--import` prefix pointing at the absolute tsx loader path so the shipped-as-TS source can run under `node` without a build step:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";
@@ -1356,6 +1379,7 @@ git commit -m "feat: wire CLI entry point — --help, --version, file discovery,
 ### Task 14: BDD harness setup
 
 **Files:**
+
 - Update: `docs/bdd/steps/world.ts` (already scaffolded — verify contents match below)
 - Create: `cucumber.json`
 - Create: `docs/bdd/steps/file-steps.ts`
@@ -1539,6 +1563,7 @@ git commit -m "feat: wire cucumber-js BDD harness with World, file, CLI, asserti
 ### Task 15: Markdown lint configs and dogfood stub
 
 **Files:**
+
 - Create: `.markdownlint-cli2.jsonc`
 - Create: `docs/.obsidian-linter.jsonc`
 - Create: `tests/integration/dogfood/dogfood.test.ts`
@@ -1572,6 +1597,7 @@ git commit -m "feat: wire cucumber-js BDD harness with World, file, CLI, asserti
 - [ ] **Write dogfood integration test**
 
 `tests/integration/dogfood/dogfood.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";
@@ -1611,6 +1637,7 @@ git commit -m "feat: add markdownlint configs and dogfood integration test"
 ### Task 16: CI workflow
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Write `.github/workflows/ci.yml`**
