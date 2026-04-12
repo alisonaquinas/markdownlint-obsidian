@@ -63,6 +63,51 @@ run({ parsed }: RuleParams, onError: OnErrorCallback): void {
 },
 ```
 
+## Reading rule config
+
+`params.config` is the full `LinterConfig` for the current run. Rules can
+read standard config properties or configure themselves via a factory function.
+
+**Reading a standard config key:**
+
+```ts
+run({ config }, onError) {
+  if (!config.resolve) return; // vault resolution disabled — skip cross-file checks
+}
+```
+
+**Config-driven rule via factory function** (recommended for configurable rules):
+
+```ts
+import type { OFMRule } from 'markdownlint-obsidian/api';
+
+function makeBannedTargetsRule(banned: readonly string[]): OFMRule {
+  const bannedSet = new Set(banned);
+  return {
+    names: ["CUSTOM002", "banned-wikilink-targets"],
+    description: "Disallow wikilinks to banned target paths",
+    tags: ["custom", "wikilinks"],
+    severity: "error",
+    fixable: false,
+    run({ parsed }, onError) {
+      for (const link of parsed.wikilinks) {
+        if (bannedSet.has(link.target)) {
+          onError({
+            line: link.position.line,
+            column: link.position.column,
+            message: `Wikilink target "${link.target}" is banned`,
+          });
+        }
+      }
+    },
+  };
+}
+
+export default makeBannedTargetsRule(["wiki/deprecated", "drafts/private"]);
+```
+
+The factory approach keeps the rule pure and makes the banned set trivially testable.
+
 ## Emitting a Fix
 
 If your rule can automatically correct violations, set `fixable: true` and include a `fix` payload with each `onError` call. Use `makeFix` to construct a validated, frozen fix:
