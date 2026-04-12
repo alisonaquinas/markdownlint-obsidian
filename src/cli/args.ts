@@ -45,6 +45,10 @@ export function buildProgram(): Command {
     .option("--no-globs", "Ignore globs property in config file")
     .option("--vault-root <path>", "Override auto-detected vault root")
     .option("--no-resolve", "Disable wikilink resolution")
-    .option("--output-formatter <name>", "Output formatter (default, json)", "default");
+    .option(
+      "--output-formatter <name>",
+      "Output formatter (default, json, junit, sarif)",
+      "default",
+    );
   return program;
 }
