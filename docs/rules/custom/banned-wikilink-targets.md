@@ -1,49 +1,36 @@
 ---
-title: banned-wikilink-targets
+rule-code: CUSTOM002
+rule-name: banned-wikilink-targets
+severity: error
+fixable: false
+area: custom (example)
 ---
 
-# banned-wikilink-targets
+# CUSTOM002 - banned-wikilink-targets
 
-Block links to specific wikilink targets.
+**Severity:** error  
+**Fixable:** no  
+**Added in:** Phase 10 (example)
 
-## Example
+## What it does
 
-This custom rule prevents linking to certain sensitive or deprecated pages:
+Blocks wikilinks whose `target` matches a configured denylist. The example
+bans `wiki/deprecated` and `drafts/private`.
 
-```typescript
-import type { OFMRule, LintError, RuleParams } from 'markdownlint-obsidian/public';
+## Bad example
 
-const bannedTargets = ['private', 'deprecated', 'internal'];
-
-export default {
-  names: ['banned-wikilink-targets'],
-  description: 'Block links to specific targets',
-  onError: (params: RuleParams): LintError[] => {
-    const errors: LintError[] = [];
-    
-    for (const wikilink of params.parsed.wikilinks) {
-      if (bannedTargets.includes(wikilink.target)) {
-        errors.push({
-          code: 'CUSTOM002',
-          lineNumber: wikilink.lineNumber,
-          message: `Wikilink to "${wikilink.target}" is not allowed`,
-        });
-      }
-    }
-    
-    return errors;
-  },
-} as OFMRule;
+```markdown
+See [[wiki/deprecated]] for details.
 ```
 
-## Configuration
+## Good example
 
-Add to your `.markdownlint-obsidian.json`:
-
-```json
-{
-  "customRules": ["./rules/banned-wikilink-targets.ts"]
-}
+```markdown
+See [[current-page]] for details.
 ```
 
-See [[guides/custom-rules]] for the full authoring guide.
+## Source
+
+`examples/rules/banned-wikilink-targets.ts`
+
+Adapt the `BANNED` set to your vault's needs.

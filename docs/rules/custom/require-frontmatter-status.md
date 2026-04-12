@@ -1,51 +1,43 @@
 ---
-title: require-frontmatter-status
+rule-code: CUSTOM001
+rule-name: require-frontmatter-status
+severity: error
+fixable: false
+area: custom (example)
 ---
 
-# require-frontmatter-status
+# CUSTOM001 - require-frontmatter-status
 
-Enforce the presence of a `status` frontmatter key in all documents.
+**Severity:** error  
+**Fixable:** no  
+**Added in:** Phase 10 (example)
 
-## Example
+## What it does
 
-This custom rule checks that every document has a YAML front matter with a `status` field:
+Requires every note to declare a `status` frontmatter key whose value is one
+of: `draft`, `review`, `published`, `archived`.
 
-```typescript
-import type { OFMRule, LintError, RuleParams } from 'markdownlint-obsidian/public';
+## Bad example
 
-export default {
-  names: ['require-frontmatter-status'],
-  description: 'Enforce a `status` frontmatter key',
-  onError: (params: RuleParams): LintError[] => {
-    if (!params.parsed.frontmatter) {
-      return [{
-        code: 'CUSTOM001',
-        lineNumber: 1,
-        message: 'Missing frontmatter block',
-      }];
-    }
-    
-    if (!('status' in params.parsed.frontmatter)) {
-      return [{
-        code: 'CUSTOM001',
-        lineNumber: 1,
-        message: 'Missing `status` key in frontmatter',
-      }];
-    }
-    
-    return [];
-  },
-} as OFMRule;
+```markdown
+---
+title: My Note
+---
+Body text.
 ```
 
-## Configuration
+## Good example
 
-Add to your `.markdownlint-obsidian.json`:
-
-```json
-{
-  "customRules": ["./rules/require-frontmatter-status.ts"]
-}
+```markdown
+---
+title: My Note
+status: draft
+---
+Body text.
 ```
 
-See [[guides/custom-rules]] for the full authoring guide.
+## Source
+
+`examples/rules/require-frontmatter-status.ts`
+
+See [[guides/custom-rules]] for how to adapt this pattern.
