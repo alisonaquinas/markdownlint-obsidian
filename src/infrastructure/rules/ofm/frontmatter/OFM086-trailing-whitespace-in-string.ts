@@ -39,20 +39,19 @@ export const OFM086Rule: OFMRule = {
 function buildKeyLineMap(raw: string | null): Map<string, number> {
   const map = new Map<string, number>();
   if (raw === null) return map;
-  const rawLines = raw.split(/\r?\n/);
-  for (let i = 0; i < rawLines.length; i += 1) {
-    const lineText = rawLines[i] ?? "";
-    // Only match top-level keys (no leading whitespace).
-    if (/^\s/.test(lineText)) continue;
-    const match = lineText.match(KEY_LINE);
-    if (match === null) continue;
-    const key = match[1] ?? "";
-    if (!map.has(key)) {
-      // +1 for the opening separator line, +1 to convert to 1-based.
-      map.set(key, i + 2);
-    }
-  }
+  raw.split(/\r?\n/).forEach((lineText, i) => recordKeyLine(lineText, i, map));
   return map;
+}
+
+function recordKeyLine(lineText: string, i: number, map: Map<string, number>): void {
+  if (/^\s/.test(lineText)) return;
+  const match = lineText.match(KEY_LINE);
+  if (match === null) return;
+  const key = match[1] ?? "";
+  if (!map.has(key)) {
+    // +1 for the opening separator line, +1 to convert to 1-based.
+    map.set(key, i + 2);
+  }
 }
 
 type Emit = (e: { line: number; column: number; message: string }) => void;

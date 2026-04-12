@@ -45,7 +45,7 @@ describe("updateFence", () => {
     it("does not open a new block while already inside a backtick fence", () => {
       const opened = updateFence("```", null);
       // A second opening fence inside the block should be treated as content
-      const inner = updateFence("```", opened.fence);
+      const _inner = updateFence("```", opened.fence);
       // This actually closes the outer fence (same token closes), so let's
       // test with a *different* token — a backtick fence inside a tilde fence
       const outerOpened = updateFence("~~~", null);
@@ -138,9 +138,7 @@ describe("stripInlineCode", () => {
   });
 
   it("removes multiple inline code spans from one line", () => {
-    expect(stripInlineCode("Use `===` or `!==` to compare")).toBe(
-      "Use  or  to compare",
-    );
+    expect(stripInlineCode("Use `===` or `!==` to compare")).toBe("Use  or  to compare");
   });
 
   it("returns the line unchanged when there are no backticks", () => {
@@ -152,9 +150,7 @@ describe("stripInlineCode", () => {
   });
 
   it("removes an inline code span at the start of a line", () => {
-    expect(stripInlineCode("`cmd` runs the process")).toBe(
-      " runs the process",
-    );
+    expect(stripInlineCode("`cmd` runs the process")).toBe(" runs the process");
   });
 
   it("removes an inline code span at the end of a line", () => {
@@ -163,9 +159,7 @@ describe("stripInlineCode", () => {
 
   it("leaves text intact when a single backtick has no closing pair (unbalanced)", () => {
     // One lone backtick — the regex finds no complete pair, so text is unchanged
-    expect(stripInlineCode("odd ` backtick here")).toBe(
-      "odd ` backtick here",
-    );
+    expect(stripInlineCode("odd ` backtick here")).toBe("odd ` backtick here");
   });
 
   it("strips balanced pairs and leaves an unpaired trailing backtick untouched", () => {

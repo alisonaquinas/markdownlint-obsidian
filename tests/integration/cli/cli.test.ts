@@ -32,7 +32,9 @@ describe("CLI", { timeout: 20000 }, () => {
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
-      await execAsync("node", [...NODE_ARGS, "--output-formatter", "bogus", "**/*.md"], { cwd: tmp });
+      await execAsync("node", [...NODE_ARGS, "--output-formatter", "bogus", "**/*.md"], {
+        cwd: tmp,
+      });
       throw new Error("Expected exit code 2 but process succeeded");
     } catch (err: unknown) {
       const e = err as { code?: number; stderr?: string };
