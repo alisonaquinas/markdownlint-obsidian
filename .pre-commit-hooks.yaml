@@ -1,0 +1,7 @@
+- id: markdownlint-obsidian
+  name: markdownlint-obsidian
+  description: Lint Obsidian Flavored Markdown files
+  entry: markdownlint-obsidian
+  language: node
+  files: \.md$
+  require_serial: false
