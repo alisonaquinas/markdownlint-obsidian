@@ -3,6 +3,7 @@
 ## Value Objects
 
 ### LinterConfig
+
 Immutable. The fully merged, validated configuration for one LintRun.
 
 ```typescript
@@ -22,6 +23,7 @@ interface LinterConfig {
 ```
 
 ### RuleConfig
+
 Per-rule enable/disable and options.
 
 ```typescript

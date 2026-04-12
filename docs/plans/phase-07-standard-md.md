@@ -6,7 +6,12 @@
 
 **Architecture:** A new adapter `MarkdownLintAdapter` runs the upstream library once per file and translates each violation into a `LintError`. Rule registration happens via a generated map (names, severity, description) so the registry sees every MD rule as a first-class `OFMRule`. A curated list of OFM-conflicting rules is disabled in `DEFAULT_CONFIG.rules`, each with a `docs/rules/standard-md/<rule>.md` page explaining the conflict.
 
-**Tech Stack:** Phase 6 stack plus `markdownlint@0.34+` (ESM-ready). Consider `markdownlint-rule-helpers` if the lint helpers simplify adaptation — optional, not required.
+**Tech Stack:** Phase 6 stack plus `markdownlint@0.40+` (ESM-only, named exports).
+The sync API lives at `markdownlint/sync` as a named export `lint` (aliased from
+`lintSync`). Configuration type is `Configuration`. `LintError.fixInfo` is
+preserved in `StandardViolation` for Phase 9 autofix. Consider
+`markdownlint-rule-helpers` if helpers simplify adaptation — optional, not
+required.
 
 ---
 
@@ -98,7 +103,8 @@ describe("MarkdownLintAdapter", () => {
 - [ ] **Implement `MarkdownLintAdapter.ts`**
 
 ```ts
-import markdownlint from "markdownlint";
+import { lint as lintSync } from "markdownlint/sync";
+import type { Configuration, FixInfo } from "markdownlint";
 
 export interface StandardViolation {
   readonly ruleNames: readonly string[];
@@ -107,19 +113,21 @@ export interface StandardViolation {
   readonly errorContext?: string;
   readonly errorDetail?: string;
   readonly errorRange?: readonly [number, number];
+  readonly fixInfo?: FixInfo;
 }
 
 export interface MarkdownLintAdapter {
   runOnce(
     filePath: string,
     content: string,
-    config: Readonly<Record<string, unknown>>,
+    config: Configuration,
   ): readonly StandardViolation[];
 }
 
 /**
- * Thin adapter over markdownlint.sync with per-file memoization so multiple
- * rules sharing the same file each consume the cached violation list.
+ * Thin adapter over markdownlint/sync with per-(filePath, contentHash)
+ * memoization so multiple rules sharing the same file each consume the
+ * cached violation list.
  */
 export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
   const cache = new Map<string, readonly StandardViolation[]>();
@@ -130,17 +138,18 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
 
-      const raw = markdownlint.sync({
+      const results = lintSync({
         strings: { [filePath]: content },
-        config: config as markdownlint.Configuration,
+        config,
       });
-      const list: StandardViolation[] = (raw[filePath] ?? []).map((r) => ({
+      const list: StandardViolation[] = (results[filePath] ?? []).map((r) => ({
         ruleNames: r.ruleNames,
         ruleDescription: r.ruleDescription,
         lineNumber: r.lineNumber,
         errorContext: r.errorContext ?? undefined,
         errorDetail: r.errorDetail ?? undefined,
-        errorRange: r.errorRange ?? undefined,
+        errorRange: (r.errorRange as [number, number] | null) ?? undefined,
+        fixInfo: r.fixInfo ?? undefined,
       }));
       const frozen = Object.freeze(list);
       cache.set(key, frozen);

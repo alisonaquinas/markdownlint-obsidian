@@ -1,11 +1,34 @@
 {
   // Dogfood: lint docs/ with markdownlint-obsidian.
+  //
   // Phase 4 flips resolve:true so wikilink rules OFM001-007 run against
   // the docs tree. vaultRoot points at docs/ itself (not the repo root)
   // so wikilinks written relative to docs/ (e.g. [[plans/phase-01]]) resolve
   // cleanly via the exact-match strategy.
+  //
+  // Phase 7 enables the markdownlint MD rules. The three MD rules below
+  // are disabled for dogfooding because they collide with our plan/spec
+  // writing convention:
+  //
+  //   - MD031 (blanks-around-fences): plan files embed code fences tight
+  //     under a "- [ ] Implement X" bullet by design; inserting a blank
+  //     line there breaks the single-task-per-bullet structure.
+  //   - MD032 (blanks-around-lists): plans and specs use "Label:" +
+  //     list-below as a dense, scannable format; forcing a blank line
+  //     between every label and its list would add 150+ noise edits.
+  //   - MD040 (fenced-code-language): plans use unlabelled fences for
+  //     pseudo-grammars, file-tree snippets, and ASCII diagrams where
+  //     a language tag would be misleading.
+  //
+  // Every other MD rule stays on so real prose fixes (MD022 blanks-around-
+  // headings, MD038 spaces-in-code) are surfaced and fixed in-place.
   "vaultRoot": "./",
   "resolve": true,
   "globs": ["**/*.md"],
-  "ignores": ["superpowers/**"]
+  "ignores": ["superpowers/**"],
+  "rules": {
+    "MD031": { "enabled": false },
+    "MD032": { "enabled": false },
+    "MD040": { "enabled": false }
+  }
 }
