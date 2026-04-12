@@ -10,24 +10,41 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
 
   it("warns on a top-level trailing-space string", async () => {
     // The trailing whitespace must survive YAML parsing, so we use a quoted scalar.
+    // "title" is the first key after the opening "---" (line 1), so it lands on line 2.
     const errors = await runRuleOnSource(OFM086Rule, '---\ntitle: "Note  "\n---\nbody');
     expect(errors).toHaveLength(1);
     expect(errors[0]?.ruleCode).toBe("OFM086");
     expect(errors[0]?.message).toContain("title");
+    expect(errors[0]?.line).toBe(2);
   });
 
   it("walks into nested objects", async () => {
+    // "author" is on line 2 of the file (line 1 is "---").
     const errors = await runRuleOnSource(OFM086Rule, '---\nauthor:\n  name: "Alison "\n---\nbody');
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("author.name");
+    expect(errors[0]?.line).toBe(2);
   });
 
   it("walks into arrays", async () => {
+    // "tags" is on line 2 of the file (line 1 is "---").
     const errors = await runRuleOnSource(
       OFM086Rule,
       '---\ntags:\n  - "first "\n  - clean\n---\nbody',
     );
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("tags.0");
+    expect(errors[0]?.line).toBe(2);
+  });
+
+  it("reports the correct line for a key that is not the first key", async () => {
+    // "description" is the second key, on line 3.
+    const errors = await runRuleOnSource(
+      OFM086Rule,
+      '---\ntitle: Clean\ndescription: "Has trailing  "\n---\nbody',
+    );
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toContain("description");
+    expect(errors[0]?.line).toBe(3);
   });
 });
