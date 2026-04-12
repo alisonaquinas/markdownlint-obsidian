@@ -155,6 +155,10 @@ function emitAndExit(results: readonly LintResult[], formatterName: string): num
   return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }
 
+function fmtRange(col: number, del: number): string {
+  return del === 0 ? `col ${col}` : `col ${col}–${col + del - 1}`;
+}
+
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
@@ -162,6 +166,10 @@ async function runPipeline(
   cwd: string,
 ): Promise<number> {
   const config = applyCliOverrides(rawConfig, opts);
+  if (opts.fix && opts.fixCheck) {
+    process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
+    return EXIT_CODES.TOOL_FAILURE;
+  }
   const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
@@ -195,7 +203,12 @@ async function runFixPipeline(
     process.stderr.write(
       `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
     );
-  for (const conflict of outcome.conflicts)
-    process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason}\n`);
+  for (const conflict of outcome.conflicts) {
+    const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+    const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+    process.stderr.write(
+      `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
+    );
+  }
   return emitAndExit(outcome.finalPass, opts.outputFormatter);
 }

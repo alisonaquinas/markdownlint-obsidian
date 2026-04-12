@@ -48,7 +48,7 @@ Two fixes on the same file that target overlapping character ranges cannot both 
 
 - The **rightmost** fix (highest column position on the line) is applied.
 - The **earlier** fix (lower column position) is skipped.
-- The conflict is reported to stderr as a `[fix-conflict]` message showing the file path and affected line.
+- The conflict is reported to stderr as a `[fix-conflict]` message showing the file path, the affected line, and the conflicting column ranges of both fixes.
 
 In practice, conflicts are rare because each rule owns a distinct part of the syntax it targets.
 

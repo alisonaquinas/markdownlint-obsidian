@@ -12,6 +12,11 @@ export interface FixDependencies extends LintDependencies {
 }
 
 export interface FixOutcome {
+  /**
+   * Lint results from the initial pass, before any fixes were applied.
+   * Not consumed by the CLI but exposed for programmatic callers that want
+   * to compare pre/post violations or surface "was fixable" diagnostics.
+   */
   readonly firstPass: readonly LintResult[];
   readonly finalPass: readonly LintResult[];
   readonly filesFixed: readonly string[];
