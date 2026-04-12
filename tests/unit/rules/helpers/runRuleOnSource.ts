@@ -60,14 +60,39 @@ export async function runRuleOnSource(
   blockRefIndex: BlockRefIndex | null = null,
   filePath: string = "test.md",
 ): Promise<LintError[]> {
+  const parseResult = parseOrFallback(filePath, source);
+  if (parseResult.kind === "error") return [parseResult.error];
+
+  const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
+  const errors: LintError[] = [];
+  await rule.run(
+    {
+      filePath: parseResult.parsed.filePath,
+      parsed: parseResult.parsed,
+      config,
+      vault,
+      fsCheck,
+      blockRefIndex,
+    },
+    (partial) => errors.push(buildError(rule, partial)),
+  );
+
+  return errors;
+}
+
+type ParseOutcome =
+  | { kind: "parsed"; parsed: ReturnType<ReturnType<typeof makeMarkdownItParser>["parse"]> }
+  | { kind: "error"; error: LintError };
+
+function parseOrFallback(filePath: string, source: string): ParseOutcome {
   const parser = makeMarkdownItParser();
-  let parsed;
   try {
-    parsed = parser.parse(filePath, source);
+    return { kind: "parsed", parsed: parser.parse(filePath, source) };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return [
-      makeLintError({
+    return {
+      kind: "error",
+      error: makeLintError({
         ruleCode: "OFM902",
         ruleName: "frontmatter-parse-error",
         severity: "error",
@@ -76,28 +101,22 @@ export async function runRuleOnSource(
         message,
         fixable: false,
       }),
-    ];
+    };
   }
+}
 
-  const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
-  const errors: LintError[] = [];
-  await rule.run(
-    { filePath: parsed.filePath, parsed, config, vault, fsCheck, blockRefIndex },
-    (partial) => {
-      errors.push(
-        makeLintError({
-          ruleCode: rule.names[0] ?? "UNKNOWN",
-          ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-          severity: rule.severity,
-          line: partial.line,
-          column: partial.column,
-          message: partial.message,
-          fixable: rule.fixable,
-          ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
-        }),
-      );
-    },
-  );
-
-  return errors;
+function buildError(
+  rule: OFMRule,
+  partial: Parameters<Parameters<OFMRule["run"]>[1]>[0],
+): LintError {
+  return makeLintError({
+    ruleCode: rule.names[0] ?? "UNKNOWN",
+    ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+    severity: rule.severity,
+    line: partial.line,
+    column: partial.column,
+    message: partial.message,
+    fixable: rule.fixable,
+    ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
+  });
 }
