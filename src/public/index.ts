@@ -30,7 +30,6 @@ export type { SourcePosition } from "../domain/parsing/SourcePosition.js";
 // Config
 export type {
   LinterConfig,
-  RuleConfig,
   FrontmatterConfig,
   TagConfig,
   CalloutConfig,

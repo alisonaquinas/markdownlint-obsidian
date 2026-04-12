@@ -2,6 +2,7 @@
  * Re-exports every built-in rule constant for composition and wrapping.
  * Import from "markdownlint-obsidian/rules".
  */
+// System
 export { frontmatterParseErrorRule } from "../infrastructure/rules/ofm/system/FrontmatterParseError.js";
 // Frontmatter
 export { OFM080Rule } from "../infrastructure/rules/ofm/frontmatter/OFM080-missing-required-key.js";
