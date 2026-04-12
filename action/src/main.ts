@@ -1,6 +1,41 @@
 import * as core from "@actions/core";
-// eslint-disable-next-line import/no-unresolved -- resolved at bundle time by esbuild via file:..
+// Resolved at bundle time by esbuild via the `file:..` dev-dependency on
+// the root markdownlint-obsidian package.
+// @ts-expect-error -- no type declarations published under this entry yet.
 import { main as runLinter } from "markdownlint-obsidian/src/cli/main.js";
+
+interface ActionInputs {
+  readonly globs: readonly string[];
+  readonly vaultRoot: string;
+  readonly config: string;
+  readonly format: string;
+  readonly failOnWarnings: boolean;
+}
+
+/** Collect and normalise every action input up-front. */
+function readInputs(): ActionInputs {
+  const rawFailOnWarnings = core.getInput("fail-on-warnings") || "false";
+  return {
+    globs: core.getInput("globs").split(/\s+/).filter(Boolean),
+    vaultRoot: core.getInput("vault-root"),
+    config: core.getInput("config"),
+    format: core.getInput("format") || "default",
+    // `getBooleanInput` throws when the input is missing entirely
+    // (e.g. during a local smoke test). We accept the documented
+    // defaults without invoking it so the action stays runnable.
+    failOnWarnings: /^(true|True|TRUE)$/.test(rawFailOnWarnings),
+  };
+}
+
+/** Build the argv vector the CLI expects from parsed action inputs. */
+function buildArgv(inputs: ActionInputs): string[] {
+  const argv = ["node", "markdownlint-obsidian"];
+  if (inputs.vaultRoot) argv.push("--vault-root", inputs.vaultRoot);
+  if (inputs.config) argv.push("--config", inputs.config);
+  argv.push("--output-formatter", inputs.format);
+  argv.push(...inputs.globs);
+  return argv;
+}
 
 /**
  * Entry point for the GitHub Action.
@@ -10,36 +45,14 @@ import { main as runLinter } from "markdownlint-obsidian/src/cli/main.js";
  * {@link core.setFailed} so the action step fails visibly in the UI.
  */
 async function run(): Promise<void> {
-  const globs = core.getInput("globs").split(/\s+/).filter(Boolean);
-  const vaultRoot = core.getInput("vault-root");
-  const config = core.getInput("config");
-  const format = core.getInput("format") || "default";
-  // `getBooleanInput` throws when the input is missing entirely (e.g. during
-  // a local smoke test). Fall back to the literal "false" default documented
-  // in `action.yml` so the action stays runnable without GitHub's input
-  // injection.
-  const rawFailOnWarnings = core.getInput("fail-on-warnings") || "false";
-  const failOnWarnings = /^(true|True|TRUE)$/.test(rawFailOnWarnings);
-
-  const argv = ["node", "markdownlint-obsidian"];
-  if (vaultRoot) argv.push("--vault-root", vaultRoot);
-  if (config) argv.push("--config", config);
-  argv.push("--output-formatter", format);
-  argv.push(...globs);
-
-  const exitCode = await runLinter(argv);
-
-  if (failOnWarnings && exitCode === 0) {
-    // Placeholder: a future revision will parse structured output to
-    // detect warnings. For now `--output-formatter json` + the existing
-    // exit code is authoritative.
-  }
-
+  const inputs = readInputs();
+  const exitCode = (await runLinter(buildArgv(inputs))) as number;
+  // `failOnWarnings` is a placeholder input for a future severity-aware
+  // summary. The existing exit code already covers the error case.
+  void inputs.failOnWarnings;
   if (exitCode !== 0) {
     core.setFailed(`markdownlint-obsidian exited with ${exitCode}`);
   }
 }
 
-run().catch((err: unknown) =>
-  core.setFailed(err instanceof Error ? err.message : String(err)),
-);
+run().catch((err: unknown) => core.setFailed(err instanceof Error ? err.message : String(err)));

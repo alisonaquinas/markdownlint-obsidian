@@ -14,10 +14,7 @@ describe("JUnitFormatter", () => {
       message: "broken",
       fixable: false,
     });
-    const results = [
-      makeLintResult("notes/a.md", [err]),
-      makeLintResult("notes/b.md", []),
-    ];
+    const results = [makeLintResult("notes/a.md", [err]), makeLintResult("notes/b.md", [])];
     const xml = formatJUnit(results);
     expect(xml).toContain(`<testsuite name="notes/a.md"`);
     expect(xml).toContain("<failure");

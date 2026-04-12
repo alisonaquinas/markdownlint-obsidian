@@ -33464,7 +33464,7 @@ var {
 // ../src/cli/args.ts
 function buildProgram() {
   const program2 = new Command();
-  program2.name("markdownlint-obsidian").description("Obsidian Flavored Markdown linter for CI pipelines").version("0.1.0").argument("[globs...]", "Glob patterns for files to lint").option("--config <path>", "Explicit config file path").option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)").option("--fix", "Auto-fix fixable errors in-place", false).option("--format", "Read stdin, write linted content to stdout", false).option("--no-globs", "Ignore globs property in config file").option("--vault-root <path>", "Override auto-detected vault root").option("--no-resolve", "Disable wikilink resolution").option(
+  program2.name("markdownlint-obsidian").description("Obsidian Flavored Markdown linter for CI pipelines").version("0.8.0").argument("[globs...]", "Glob patterns for files to lint").option("--config <path>", "Explicit config file path").option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)").option("--fix", "Auto-fix fixable errors in-place", false).option("--format", "Read stdin, write linted content to stdout", false).option("--no-globs", "Ignore globs property in config file").option("--vault-root <path>", "Override auto-detected vault root").option("--no-resolve", "Disable wikilink resolution").option(
     "--output-formatter <name>",
     "Output formatter (default, json, junit, sarif)",
     "default"
@@ -36509,36 +36509,32 @@ var builder = new json2xml_default({
   suppressEmptyNode: false
 });
 function formatJUnit(results) {
-  const suites = results.map((r) => {
-    const cases = r.errors.map((e) => ({
-      "@_name": `${e.ruleCode} ${e.ruleName}`,
-      "@_classname": r.filePath,
-      failure: {
-        "@_message": e.message,
-        "#text": `${r.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`
-      }
-    }));
-    if (cases.length === 0) {
-      cases.push({
-        "@_name": "clean",
-        "@_classname": r.filePath
-      });
-    }
-    return {
-      "@_name": r.filePath,
-      "@_tests": cases.length,
-      "@_failures": r.errors.length,
-      "@_errors": 0,
-      testcase: cases
-    };
-  });
+  const suites = results.map(toTestSuite);
   const doc = {
     "?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
-    testsuites: {
-      testsuite: suites
-    }
+    testsuites: { testsuite: suites }
   };
   return builder.build(doc);
+}
+function toTestSuite(result) {
+  const cases = result.errors.map((e) => ({
+    "@_name": `${e.ruleCode} ${e.ruleName}`,
+    "@_classname": result.filePath,
+    failure: {
+      "@_message": e.message,
+      "#text": `${result.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`
+    }
+  }));
+  if (cases.length === 0) {
+    cases.push({ "@_name": "clean", "@_classname": result.filePath });
+  }
+  return {
+    "@_name": result.filePath,
+    "@_tests": cases.length,
+    "@_failures": result.errors.length,
+    "@_errors": 0,
+    testcase: cases
+  };
 }
 
 // ../src/infrastructure/formatters/SarifFormatter.ts
@@ -36547,28 +36543,7 @@ var TOOL_VERSION = "0.8.0";
 var INFORMATION_URI = "https://github.com/alisonaquinas/markdownlint-obsidian";
 var SARIF_SCHEMA = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
 function formatSarif(results) {
-  const rulesById = /* @__PURE__ */ new Map();
-  const sarifResults = [];
-  for (const file of results) {
-    for (const err of file.errors) {
-      if (!rulesById.has(err.ruleCode)) {
-        rulesById.set(err.ruleCode, toSarifRule(err));
-      }
-      sarifResults.push({
-        ruleId: err.ruleCode,
-        level: err.severity,
-        message: { text: err.message },
-        locations: [
-          {
-            physicalLocation: {
-              artifactLocation: { uri: file.filePath },
-              region: { startLine: err.line, startColumn: err.column }
-            }
-          }
-        ]
-      });
-    }
-  }
+  const { rules: rules2, sarifResults } = collectRulesAndResults(results);
   const doc = {
     $schema: SARIF_SCHEMA,
     version: "2.1.0",
@@ -36579,7 +36554,7 @@ function formatSarif(results) {
             name: TOOL_NAME,
             version: TOOL_VERSION,
             informationUri: INFORMATION_URI,
-            rules: [...rulesById.values()]
+            rules: rules2
           }
         },
         results: sarifResults
@@ -36587,6 +36562,34 @@ function formatSarif(results) {
     ]
   };
   return JSON.stringify(doc, null, 2);
+}
+function collectRulesAndResults(results) {
+  const rulesById = /* @__PURE__ */ new Map();
+  const sarifResults = [];
+  for (const file of results) {
+    for (const err of file.errors) {
+      if (!rulesById.has(err.ruleCode)) {
+        rulesById.set(err.ruleCode, toSarifRule(err));
+      }
+      sarifResults.push(toSarifResult(file.filePath, err));
+    }
+  }
+  return { rules: [...rulesById.values()], sarifResults };
+}
+function toSarifResult(filePath, err) {
+  return {
+    ruleId: err.ruleCode,
+    level: err.severity,
+    message: { text: err.message },
+    locations: [
+      {
+        physicalLocation: {
+          artifactLocation: { uri: filePath },
+          region: { startLine: err.line, startColumn: err.column }
+        }
+      }
+    ]
+  };
 }
 function toSarifRule(err) {
   return {
@@ -58440,30 +58443,38 @@ async function runPipeline(globArgs, opts, rawConfig, cwd) {
 }
 
 // src/main.ts
-async function run() {
-  const globs = core.getInput("globs").split(/\s+/).filter(Boolean);
-  const vaultRoot = core.getInput("vault-root");
-  const config2 = core.getInput("config");
-  const format3 = core.getInput("format") || "default";
+function readInputs() {
   const rawFailOnWarnings = core.getInput("fail-on-warnings") || "false";
-  const failOnWarnings = /^(true|True|TRUE)$/.test(rawFailOnWarnings);
+  return {
+    globs: core.getInput("globs").split(/\s+/).filter(Boolean),
+    vaultRoot: core.getInput("vault-root"),
+    config: core.getInput("config"),
+    format: core.getInput("format") || "default",
+    // `getBooleanInput` throws when the input is missing entirely
+    // (e.g. during a local smoke test). We accept the documented
+    // defaults without invoking it so the action stays runnable.
+    failOnWarnings: /^(true|True|TRUE)$/.test(rawFailOnWarnings)
+  };
+}
+function buildArgv(inputs) {
   const argv = ["node", "markdownlint-obsidian"];
-  if (vaultRoot)
-    argv.push("--vault-root", vaultRoot);
-  if (config2)
-    argv.push("--config", config2);
-  argv.push("--output-formatter", format3);
-  argv.push(...globs);
-  const exitCode = await main(argv);
-  if (failOnWarnings && exitCode === 0) {
-  }
+  if (inputs.vaultRoot)
+    argv.push("--vault-root", inputs.vaultRoot);
+  if (inputs.config)
+    argv.push("--config", inputs.config);
+  argv.push("--output-formatter", inputs.format);
+  argv.push(...inputs.globs);
+  return argv;
+}
+async function run() {
+  const inputs = readInputs();
+  const exitCode = await main(buildArgv(inputs));
+  void inputs.failOnWarnings;
   if (exitCode !== 0) {
     core.setFailed(`markdownlint-obsidian exited with ${exitCode}`);
   }
 }
-run().catch(
-  (err) => core.setFailed(err instanceof Error ? err.message : String(err))
-);
+run().catch((err) => core.setFailed(err instanceof Error ? err.message : String(err)));
 /*! Bundled license information:
 
 undici/lib/fetch/body.js:

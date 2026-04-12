@@ -36,36 +36,32 @@ const builder = new XMLBuilder({
  * @returns A UTF-8 JUnit XML document as a string.
  */
 export function formatJUnit(results: readonly LintResult[]): string {
-  const suites: TestSuiteShape[] = results.map((r) => {
-    const cases: TestCaseShape[] = r.errors.map((e) => ({
-      "@_name": `${e.ruleCode} ${e.ruleName}`,
-      "@_classname": r.filePath,
-      failure: {
-        "@_message": e.message,
-        "#text": `${r.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`,
-      },
-    }));
-    if (cases.length === 0) {
-      cases.push({
-        "@_name": "clean",
-        "@_classname": r.filePath,
-      });
-    }
-    return {
-      "@_name": r.filePath,
-      "@_tests": cases.length,
-      "@_failures": r.errors.length,
-      "@_errors": 0,
-      testcase: cases,
-    };
-  });
-
+  const suites: TestSuiteShape[] = results.map(toTestSuite);
   const doc = {
     "?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
-    testsuites: {
-      testsuite: suites,
-    },
+    testsuites: { testsuite: suites },
   };
-
   return builder.build(doc) as string;
+}
+
+/** Convert a single {@link LintResult} into a JUnit `<testsuite>` shape. */
+function toTestSuite(result: LintResult): TestSuiteShape {
+  const cases: TestCaseShape[] = result.errors.map((e) => ({
+    "@_name": `${e.ruleCode} ${e.ruleName}`,
+    "@_classname": result.filePath,
+    failure: {
+      "@_message": e.message,
+      "#text": `${result.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`,
+    },
+  }));
+  if (cases.length === 0) {
+    cases.push({ "@_name": "clean", "@_classname": result.filePath });
+  }
+  return {
+    "@_name": result.filePath,
+    "@_tests": cases.length,
+    "@_failures": result.errors.length,
+    "@_errors": 0,
+    testcase: cases,
+  };
 }

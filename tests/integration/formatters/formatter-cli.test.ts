@@ -20,10 +20,7 @@ describe("CLI formatter wiring", { timeout: 20000 }, () => {
   beforeAll(async () => {
     tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-fmt-"));
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
-    await fs.writeFile(
-      path.join(tmp, "broken.md"),
-      "# Broken\n\n[[does-not-exist]]\n",
-    );
+    await fs.writeFile(path.join(tmp, "broken.md"), "# Broken\n\n[[does-not-exist]]\n");
   });
 
   afterAll(async () => {

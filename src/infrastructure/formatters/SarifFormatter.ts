@@ -38,30 +38,7 @@ interface SarifResult {
  * @returns Pretty-printed SARIF JSON string.
  */
 export function formatSarif(results: readonly LintResult[]): string {
-  const rulesById = new Map<string, SarifRule>();
-  const sarifResults: SarifResult[] = [];
-
-  for (const file of results) {
-    for (const err of file.errors) {
-      if (!rulesById.has(err.ruleCode)) {
-        rulesById.set(err.ruleCode, toSarifRule(err));
-      }
-      sarifResults.push({
-        ruleId: err.ruleCode,
-        level: err.severity,
-        message: { text: err.message },
-        locations: [
-          {
-            physicalLocation: {
-              artifactLocation: { uri: file.filePath },
-              region: { startLine: err.line, startColumn: err.column },
-            },
-          },
-        ],
-      });
-    }
-  }
-
+  const { rules, sarifResults } = collectRulesAndResults(results);
   const doc = {
     $schema: SARIF_SCHEMA,
     version: "2.1.0",
@@ -72,15 +49,49 @@ export function formatSarif(results: readonly LintResult[]): string {
             name: TOOL_NAME,
             version: TOOL_VERSION,
             informationUri: INFORMATION_URI,
-            rules: [...rulesById.values()],
+            rules,
           },
         },
         results: sarifResults,
       },
     ],
   };
-
   return JSON.stringify(doc, null, 2);
+}
+
+interface CollectedSarifData {
+  readonly rules: readonly SarifRule[];
+  readonly sarifResults: readonly SarifResult[];
+}
+
+function collectRulesAndResults(results: readonly LintResult[]): CollectedSarifData {
+  const rulesById = new Map<string, SarifRule>();
+  const sarifResults: SarifResult[] = [];
+  for (const file of results) {
+    for (const err of file.errors) {
+      if (!rulesById.has(err.ruleCode)) {
+        rulesById.set(err.ruleCode, toSarifRule(err));
+      }
+      sarifResults.push(toSarifResult(file.filePath, err));
+    }
+  }
+  return { rules: [...rulesById.values()], sarifResults };
+}
+
+function toSarifResult(filePath: string, err: LintError): SarifResult {
+  return {
+    ruleId: err.ruleCode,
+    level: err.severity,
+    message: { text: err.message },
+    locations: [
+      {
+        physicalLocation: {
+          artifactLocation: { uri: filePath },
+          region: { startLine: err.line, startColumn: err.column },
+        },
+      },
+    ],
+  };
 }
 
 function toSarifRule(err: LintError): SarifRule {
