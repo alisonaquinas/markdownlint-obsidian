@@ -9,8 +9,8 @@ import { classifyEmbed } from "./shared/EmbedClassifier.js";
  * so the author's intent is lost silently — a common source of confusion
  * when a PDF or video embed fails to shrink.
  *
- * Fixable: the autofix (Phase 9) will strip the redundant hint. For now
- * the rule just reports the warning so the catalog can surface it.
+ * Fixable: the autofix (Phase 10) will strip the redundant hint once precise
+ * sizing-hint column tracking is available.
  *
  * @see docs/rules/embeds/OFM025.md
  */
@@ -19,7 +19,7 @@ export const OFM025Rule: OFMRule = {
   description: "Sizing hint used on an embed type that does not honour it",
   tags: ["embeds", "style"],
   severity: "warning",
-  fixable: true,
+  fixable: false,
   run({ parsed }, onError) {
     for (const embed of parsed.embeds) {
       if (embed.width === null && embed.height === null) continue;

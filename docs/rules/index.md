@@ -29,7 +29,7 @@ frontmatter, and `OFM9xx` for parser/system errors.
 | [[rules/embeds/OFM022]] | embed-target-missing            | error    | enabled  | no      |
 | [[rules/embeds/OFM023]] | embed-size-invalid              | warning  | enabled  | no      |
 | [[rules/embeds/OFM024]] | disallowed-embed-extension      | error    | enabled  | no      |
-| [[rules/embeds/OFM025]] | embed-size-on-non-image         | warning  | enabled  | yes |
+| [[rules/embeds/OFM025]] | embed-size-on-non-image         | warning  | enabled  | no      |
 
 ## Callouts (OFM040-OFM059)
 
