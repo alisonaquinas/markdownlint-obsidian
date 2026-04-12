@@ -1,5 +1,5 @@
 import type { Configuration } from "markdownlint";
-import type { OFMRule } from "../../../domain/linting/OFMRule.js";
+import type { OFMRule, OnErrorCallback, RuleParams } from "../../../domain/linting/OFMRule.js";
 import type { LinterConfig } from "../../../domain/config/LinterConfig.js";
 import type { RuleConfig } from "../../../domain/config/RuleConfig.js";
 import type { MarkdownLintAdapter } from "./MarkdownLintAdapter.js";
@@ -45,7 +45,7 @@ export function buildStandardRule(
     tags: ["markdownlint", "standard"],
     severity: desc.severity,
     fixable: desc.fixable,
-    run({ filePath, parsed, config }, onError) {
+    run({ filePath, parsed, config }: RuleParams, onError: OnErrorCallback): void {
       const mdConfig = extractMdConfig(config);
       const violations = adapter.runOnce(filePath, parsed.raw, mdConfig);
       for (const v of violations) {
@@ -53,9 +53,7 @@ export function buildStandardRule(
         onError({
           line: v.lineNumber,
           column: v.errorRange?.[0] ?? 1,
-          message: v.errorDetail
-            ? `${v.ruleDescription}: ${v.errorDetail}`
-            : v.ruleDescription,
+          message: v.errorDetail ? `${v.ruleDescription}: ${v.errorDetail}` : v.ruleDescription,
         });
       }
     },

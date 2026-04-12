@@ -33,10 +33,9 @@ const CONFIG_FILES: readonly string[] = [
  */
 export async function loadConfig(startDir: string): Promise<LinterConfig> {
   const layers = await collectConfigLayers(startDir);
-  const merged = layers.reduce<Record<string, unknown>>(
-    (acc, layer) => mergeLayer(acc, layer),
-    { ...DEFAULT_CONFIG } as Record<string, unknown>,
-  );
+  const merged = layers.reduce<Record<string, unknown>>((acc, layer) => mergeLayer(acc, layer), {
+    ...DEFAULT_CONFIG,
+  } as Record<string, unknown>);
   validateConfig(merged);
   return merged as LinterConfig;
 }

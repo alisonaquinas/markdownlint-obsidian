@@ -31,14 +31,12 @@ export interface MdConflict {
 export const OFM_MD_CONFLICTS: readonly MdConflict[] = Object.freeze([
   Object.freeze({
     code: "MD013",
-    reason:
-      "line-length — wikilinks and embeds routinely exceed column limits",
+    reason: "line-length — wikilinks and embeds routinely exceed column limits",
     docPage: "rules/standard-md/MD013.md",
   }),
   Object.freeze({
     code: "MD033",
-    reason:
-      "no-inline-html — OFM callouts and embeds render as HTML elements",
+    reason: "no-inline-html — OFM callouts and embeds render as HTML elements",
     docPage: "rules/standard-md/MD033.md",
   }),
   Object.freeze({
@@ -48,8 +46,7 @@ export const OFM_MD_CONFLICTS: readonly MdConflict[] = Object.freeze([
   }),
   Object.freeze({
     code: "MD041",
-    reason:
-      "first-line-heading — frontmatter-only notes are common in Obsidian",
+    reason: "first-line-heading — frontmatter-only notes are common in Obsidian",
     docPage: "rules/standard-md/MD041.md",
   }),
   Object.freeze({

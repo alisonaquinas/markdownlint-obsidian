@@ -1,5 +1,5 @@
 import { lint as lintSync } from "markdownlint/sync";
-import type { Configuration, FixInfo } from "markdownlint";
+import type { Configuration, FixInfo, LintError as MarkdownLintError } from "markdownlint";
 
 /**
  * Normalised shape of one markdownlint violation.
@@ -28,11 +28,7 @@ export interface StandardViolation {
  * rules sharing a file never re-parse through markdownlint.
  */
 export interface MarkdownLintAdapter {
-  runOnce(
-    filePath: string,
-    content: string,
-    config: Configuration,
-  ): readonly StandardViolation[];
+  runOnce(filePath: string, content: string, config: Configuration): readonly StandardViolation[];
 }
 
 /**
@@ -46,7 +42,11 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
   const cache = new Map<string, readonly StandardViolation[]>();
 
   return {
-    runOnce(filePath, content, config) {
+    runOnce(
+      filePath: string,
+      content: string,
+      config: Configuration,
+    ): readonly StandardViolation[] {
       const key = `${filePath}::${fnv1a(content)}`;
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
@@ -56,20 +56,52 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
         config,
       });
       const raw = results[filePath] ?? [];
-      const list: StandardViolation[] = raw.map((r) => ({
-        ruleNames: r.ruleNames,
-        ruleDescription: r.ruleDescription,
-        lineNumber: r.lineNumber,
-        errorContext: r.errorContext ?? undefined,
-        errorDetail: r.errorDetail ?? undefined,
-        errorRange: toRangeTuple(r.errorRange),
-        fixInfo: r.fixInfo ?? undefined,
-      }));
+      const list: StandardViolation[] = raw.map(normalise);
       const frozen = Object.freeze(list);
       cache.set(key, frozen);
       return frozen;
     },
   };
+}
+
+type MutableViolation = {
+  -readonly [K in keyof StandardViolation]: StandardViolation[K];
+};
+
+/**
+ * Translate one upstream {@link MarkdownLintError} into a
+ * {@link StandardViolation}, dropping any optional field that was
+ * `null`/missing so the resulting object is compatible with TypeScript's
+ * `exactOptionalPropertyTypes` strict mode (which rejects explicit
+ * `undefined` values on optional properties).
+ */
+function normalise(r: MarkdownLintError): StandardViolation {
+  const out: MutableViolation = {
+    ruleNames: r.ruleNames,
+    ruleDescription: r.ruleDescription,
+    lineNumber: r.lineNumber,
+  };
+  assignIfPresent(out, "errorContext", r.errorContext);
+  assignIfPresent(out, "errorDetail", r.errorDetail);
+  assignIfPresent(out, "errorRange", toRangeTuple(r.errorRange));
+  assignIfPresent(out, "fixInfo", r.fixInfo);
+  return out;
+}
+
+/**
+ * Copy `value` onto `out[key]` only when it is neither `null` nor
+ * `undefined`. Exists so {@link normalise} can stay flat (one condition
+ * per optional field) while satisfying the lint ceiling on cyclomatic
+ * complexity.
+ */
+function assignIfPresent<K extends keyof MutableViolation>(
+  out: MutableViolation,
+  key: K,
+  value: MutableViolation[K] | null | undefined,
+): void {
+  if (value !== null && value !== undefined) {
+    out[key] = value;
+  }
 }
 
 /**
@@ -79,9 +111,7 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
  * tuple or `undefined` so consumers can destructure without runtime shape
  * checks. Anything shorter than two numbers is treated as absent.
  */
-function toRangeTuple(
-  value: number[] | null,
-): readonly [number, number] | undefined {
+function toRangeTuple(value: number[] | null): readonly [number, number] | undefined {
   if (value === null || value.length < 2) return undefined;
   return [value[0]!, value[1]!] as const;
 }

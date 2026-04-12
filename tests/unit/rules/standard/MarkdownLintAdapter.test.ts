@@ -31,21 +31,13 @@ describe("MarkdownLintAdapter", () => {
 
   it("returns an empty array on clean content", () => {
     const adapter = makeMarkdownLintAdapter();
-    const results = adapter.runOnce(
-      "clean.md",
-      "# clean\n\ntext here\n",
-      { default: true },
-    );
+    const results = adapter.runOnce("clean.md", "# clean\n\ntext here\n", { default: true });
     expect(results).toEqual([]);
   });
 
   it("surfaces MD001 (heading-increment) violations with fixInfo when markdownlint provides it", () => {
     const adapter = makeMarkdownLintAdapter();
-    const results = adapter.runOnce(
-      "skip.md",
-      "# h1\n\n### skipped h2\n",
-      { default: true },
-    );
+    const results = adapter.runOnce("skip.md", "# h1\n\n### skipped h2\n", { default: true });
     const md001 = results.filter((r) => r.ruleNames.includes("MD001"));
     expect(md001.length).toBeGreaterThan(0);
     // fixInfo is optional upstream; we at least verify the field round-trips

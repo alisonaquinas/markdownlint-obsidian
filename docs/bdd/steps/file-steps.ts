@@ -71,7 +71,7 @@ Given(
   "a file {string} containing {string}",
   async function (this: OFMWorld, relPath: string, content: string) {
     if (!this.vaultDir) await this.initVault();
-    await this.writeFile(relPath, content);
+    await this.writeFile(relPath, ensureTrailingNewline(content));
   },
 );
 
@@ -79,9 +79,22 @@ Given(
   "a file {string} containing:",
   async function (this: OFMWorld, relPath: string, content: string) {
     if (!this.vaultDir) await this.initVault();
-    await this.writeFile(relPath, content);
+    await this.writeFile(relPath, ensureTrailingNewline(content));
   },
 );
+
+/**
+ * Ensure a BDD fixture ends with exactly one trailing newline.
+ *
+ * Without this the Phase 7 MD047 (single-trailing-newline) rule fires on
+ * every inline step-string that was written as `"See [[a#^one]]"`, which
+ * is not what the wikilink/block-reference feature files are trying to
+ * test. Triple-quoted heredocs already end with `\n`, so this helper is a
+ * no-op for them.
+ */
+function ensureTrailingNewline(content: string): string {
+  return content.endsWith("\n") ? content : `${content}\n`;
+}
 
 // ---- Phase 3 frontmatter steps ---------------------------------------------
 

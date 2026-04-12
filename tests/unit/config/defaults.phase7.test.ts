@@ -25,12 +25,8 @@ describe("DEFAULT_CONFIG Phase 7 additions", () => {
   });
 
   it("exposes exactly the OFM_MD_CONFLICTS list as MD-prefixed defaults", () => {
-    const mdKeys = Object.keys(DEFAULT_CONFIG.rules).filter((k) =>
-      k.startsWith("MD"),
-    );
+    const mdKeys = Object.keys(DEFAULT_CONFIG.rules).filter((k) => k.startsWith("MD"));
     expect(mdKeys).toHaveLength(OFM_MD_CONFLICTS.length);
-    expect(mdKeys.sort()).toEqual(
-      OFM_MD_CONFLICTS.map((c) => c.code).sort(),
-    );
+    expect(mdKeys.sort()).toEqual(OFM_MD_CONFLICTS.map((c) => c.code).sort());
   });
 });

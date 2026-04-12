@@ -8,9 +8,7 @@ import { OFM_MD_CONFLICTS } from "../rules/standard/OFM_MD_CONFLICTS.js";
  * allocated exactly once and shared across every merge layer.
  */
 const MD_CONFLICT_OVERRIDES: Readonly<Record<string, RuleConfig>> = Object.freeze(
-  Object.fromEntries(
-    OFM_MD_CONFLICTS.map((c) => [c.code, Object.freeze({ enabled: false })]),
-  ),
+  Object.fromEntries(OFM_MD_CONFLICTS.map((c) => [c.code, Object.freeze({ enabled: false })])),
 );
 
 /**

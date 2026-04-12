@@ -16,11 +16,9 @@ import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.j
  * StandardRuleAdapter tests hermetic — they do not depend on upstream
  * markdownlint behaviour.
  */
-function stubAdapter(
-  violations: readonly StandardViolation[],
-): MarkdownLintAdapter {
+function stubAdapter(violations: readonly StandardViolation[]): MarkdownLintAdapter {
   return {
-    runOnce() {
+    runOnce(): readonly StandardViolation[] {
       return violations;
     },
   };
