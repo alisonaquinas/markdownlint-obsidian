@@ -110,11 +110,12 @@ function checkString(
   const line = (topKey !== undefined && keyLineMap.get(topKey)) || 1;
   const trimmedValue = value.trimEnd();
   const trailingCount = value.length - trimmedValue.length;
+  const fix = buildTopLevelFix(path, line, trimmedValue, trailingCount, frontmatterRaw);
   emit({
     line,
     column: 1,
     message: `Frontmatter value at "${where}" has trailing whitespace`,
-    fix: buildTopLevelFix(path, line, trimmedValue, trailingCount, frontmatterRaw),
+    ...(fix !== undefined ? { fix } : {}),
   });
 }
 
