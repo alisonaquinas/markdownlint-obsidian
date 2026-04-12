@@ -12,7 +12,9 @@ export function registerCustomRules(registry: RuleRegistry, rules: readonly OFMR
       registry.register(rule);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`OFM904: skipped duplicate custom rule "${rule.names[0]}": ${message}\n`);
+      process.stderr.write(
+        `OFM904: skipped duplicate custom rule "${rule.names[0]}": ${message}\n`,
+      );
     }
   }
 }

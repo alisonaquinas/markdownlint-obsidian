@@ -45,8 +45,12 @@ async function writeTmp(name: string, src: string): Promise<string> {
   return p;
 }
 
-beforeEach(async () => { tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-crloader-")); });
-afterEach(async () => { await fs.rm(tmp, { recursive: true, force: true }); });
+beforeEach(async () => {
+  tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-crloader-"));
+});
+afterEach(async () => {
+  await fs.rm(tmp, { recursive: true, force: true });
+});
 
 describe("loadCustomRules", () => {
   it("loads a valid default-export rule", async () => {

@@ -174,15 +174,7 @@ async function runPipeline(
   }
   const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
-  const registry = makeRuleRegistry();
-  registerBuiltinRules(registry);
-
-  const { rules: customRules, errors: customErrors } =
-    await loadCustomRules(config.customRules, cwd);
-  for (const err of customErrors) {
-    process.stderr.write(`OFM905: failed to load custom rule module "${err.modulePath}": ${err.message}\n`);
-  }
-  registerCustomRules(registry, customRules);
+  const registry = await setupRegistry(config, cwd);
 
   const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
   if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
@@ -195,6 +187,24 @@ async function runPipeline(
 
   const results = await runLint(files, config, registry, lintDeps);
   return emitAndExit(results, opts.outputFormatter);
+}
+
+async function setupRegistry(config: LinterConfig, cwd: string): Promise<RuleRegistry> {
+  const registry = makeRuleRegistry();
+  registerBuiltinRules(registry);
+
+  const { rules: customRules, errors: customErrors } = await loadCustomRules(
+    config.customRules,
+    cwd,
+  );
+  for (const err of customErrors) {
+    process.stderr.write(
+      `OFM905: failed to load custom rule module "${err.modulePath}": ${err.message}\n`,
+    );
+  }
+  registerCustomRules(registry, customRules);
+
+  return registry;
 }
 
 async function runFixPipeline(

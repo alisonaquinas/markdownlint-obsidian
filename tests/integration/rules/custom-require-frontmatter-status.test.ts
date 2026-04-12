@@ -15,7 +15,9 @@ beforeEach(async () => {
     JSON.stringify({ customRules: [RULE_PATH] }),
   );
 });
-afterEach(async () => { await fs.rm(vault, { recursive: true, force: true }); });
+afterEach(async () => {
+  await fs.rm(vault, { recursive: true, force: true });
+});
 
 describe("custom rule: require-frontmatter-status", { timeout: 20000 }, () => {
   it("passes when status is a valid value", async () => {

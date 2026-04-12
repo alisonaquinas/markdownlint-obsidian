@@ -18,7 +18,9 @@ beforeEach(async () => {
     }),
   );
 });
-afterEach(async () => { await fs.rm(vault, { recursive: true, force: true }); });
+afterEach(async () => {
+  await fs.rm(vault, { recursive: true, force: true });
+});
 
 describe("custom rule: banned-wikilink-targets", { timeout: 20000 }, () => {
   it("passes when no banned targets are linked", async () => {
@@ -28,10 +30,7 @@ describe("custom rule: banned-wikilink-targets", { timeout: 20000 }, () => {
   });
 
   it("fails when a banned target is linked", async () => {
-    await fs.writeFile(
-      path.join(vault, "note.md"),
-      "# Hi\n\nSee [[wiki/deprecated]] for info.\n",
-    );
+    await fs.writeFile(path.join(vault, "note.md"), "# Hi\n\nSee [[wiki/deprecated]] for info.\n");
     const r = await spawnCli(["**/*.md"], vault);
     expect(r.exitCode).toBe(1);
     expect(r.stdout).toContain("CUSTOM002");

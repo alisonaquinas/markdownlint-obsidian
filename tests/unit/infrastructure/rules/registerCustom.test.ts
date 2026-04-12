@@ -38,7 +38,7 @@ describe("registerCustomRules", () => {
     registry.register(original);
 
     const duplicate = makeStubRule(["OFM101"]);
-    const stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
 
     expect(() => registerCustomRules(registry, [duplicate])).not.toThrow();
   });

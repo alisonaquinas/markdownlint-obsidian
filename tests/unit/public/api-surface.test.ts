@@ -10,8 +10,9 @@ describe("public API surface", () => {
   });
 
   it("makeFix validates inputs", () => {
-    expect(() => api.makeFix({ lineNumber: 0, editColumn: 1, deleteCount: 0, insertText: "" }))
-      .toThrow("lineNumber");
+    expect(() =>
+      api.makeFix({ lineNumber: 0, editColumn: 1, deleteCount: 0, insertText: "" }),
+    ).toThrow("lineNumber");
   });
 
   it("exports every built-in rule constant", () => {

@@ -30,25 +30,41 @@ export async function loadCustomRules(
   const errors: CustomRuleLoadError[] = [];
 
   for (const entry of customRules) {
-    try {
-      const absolute = path.isAbsolute(entry) ? entry : path.resolve(baseDir, entry);
-      const fileUrl = pathToFileURL(absolute).toString();
-      const mod = (await import(fileUrl)) as Record<string, unknown>;
-      const candidate = mod.default ?? mod["rules"];
-      if (Array.isArray(candidate)) {
-        for (const r of candidate) rules.push(validateRule(r, entry));
-      } else {
-        rules.push(validateRule(candidate, entry));
-      }
-    } catch (err) {
-      errors.push({
-        modulePath: entry,
-        message: err instanceof Error ? err.message : String(err),
-      });
+    const result = await loadSingleRuleEntry(entry, baseDir);
+    if ("error" in result) {
+      errors.push(result.error);
+    } else {
+      rules.push(...result.rules);
     }
   }
 
   return { rules, errors };
+}
+
+async function loadSingleRuleEntry(
+  entry: string,
+  baseDir: string,
+): Promise<{ readonly rules: OFMRule[] } | { readonly error: CustomRuleLoadError }> {
+  try {
+    const absolute = path.isAbsolute(entry) ? entry : path.resolve(baseDir, entry);
+    const fileUrl = pathToFileURL(absolute).toString();
+    const mod = (await import(fileUrl)) as Record<string, unknown>;
+    const candidate = mod.default ?? mod["rules"];
+    const rules: OFMRule[] = [];
+    if (Array.isArray(candidate)) {
+      for (const r of candidate) rules.push(validateRule(r, entry));
+    } else {
+      rules.push(validateRule(candidate, entry));
+    }
+    return { rules };
+  } catch (err) {
+    return {
+      error: {
+        modulePath: entry,
+        message: err instanceof Error ? err.message : String(err),
+      },
+    };
+  }
 }
 
 function validateRule(candidate: unknown, modulePath: string): OFMRule {
@@ -56,23 +72,49 @@ function validateRule(candidate: unknown, modulePath: string): OFMRule {
     throw new Error(`Custom rule module "${modulePath}" does not export a rule object`);
   }
   const rule = candidate as Partial<OFMRule>;
+  validateNames(rule, modulePath);
+  validateDescription(rule, modulePath);
+  validateTags(rule, modulePath);
+  validateSeverity(rule, modulePath);
+  validateFixable(rule, modulePath);
+  validateRun(rule, modulePath);
+  return candidate as OFMRule;
+}
+
+function validateNames(rule: Partial<OFMRule>, modulePath: string): void {
   if (!Array.isArray(rule.names) || rule.names.length === 0) {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "names"`);
   }
+}
+
+function validateDescription(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.description !== "string") {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "description"`);
   }
+}
+
+function validateTags(rule: Partial<OFMRule>, modulePath: string): void {
   if (!Array.isArray(rule.tags)) {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "tags"`);
   }
+}
+
+function validateSeverity(rule: Partial<OFMRule>, modulePath: string): void {
   if (rule.severity !== "error" && rule.severity !== "warning") {
-    throw new Error(`Custom rule from "${modulePath}" has invalid or missing "severity" (must be "error" or "warning")`);
+    throw new Error(
+      `Custom rule from "${modulePath}" has invalid or missing "severity" (must be "error" or "warning")`,
+    );
   }
+}
+
+function validateFixable(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.fixable !== "boolean") {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "fixable"`);
   }
+}
+
+function validateRun(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.run !== "function") {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "run"`);
   }
-  return candidate as OFMRule;
 }
