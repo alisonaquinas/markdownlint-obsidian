@@ -27,6 +27,25 @@ describe("CLI", { timeout: 20000 }, () => {
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
+  it("--output-formatter with unknown value exits 2 and writes OFM901 to stderr", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
+    try {
+      await execAsync("node", [...NODE_ARGS, "--output-formatter", "bogus", "**/*.md"], {
+        cwd: tmp,
+      });
+      throw new Error("Expected exit code 2 but process succeeded");
+    } catch (err: unknown) {
+      const e = err as { code?: number; stderr?: string };
+      expect(e.code).toBe(2);
+      expect(e.stderr).toContain("OFM901");
+      expect(e.stderr).toContain("bogus");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
+
   it("clean directory exits 0 with no output", async () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
     // Phase 4 requires a vault root; mark the temp dir as one so the

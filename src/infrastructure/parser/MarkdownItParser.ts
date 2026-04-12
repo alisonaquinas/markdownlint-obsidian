@@ -36,6 +36,7 @@ function parseOne(md: MarkdownIt, filePath: string, content: string): ParseResul
     frontmatter: data,
     frontmatterRaw: rawFrontmatter,
     frontmatterEndLine: rawFrontmatter === null ? 0 : bodyStartLine - 1,
+    // Reserved for Phase 9 autofix — token stream stored in ParseResult.tokens, not currently consumed by rules
     tokens: md.parse(body, {}),
     wikilinks,
     embeds: extractEmbeds(wikilinks),

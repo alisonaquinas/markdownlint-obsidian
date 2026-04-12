@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { updateFence } from "../shared/fenceStateMachine.js";
 
 // A line that looks like it is trying to be a callout header: starts with
 // `>` followed by any whitespace and then `[`. This is a loose sniff so
@@ -8,31 +9,6 @@ const LOOKS_LIKE_HEADER = /^>\s*\[/;
 // The same grammar the CalloutExtractor uses. A line that matches this is
 // a well-formed callout header (possibly with a fold marker and title).
 const STRICT_HEADER = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\][+-]?(\s.*)?$/;
-
-// Opening or closing fence line (```, ~~~, or longer).
-const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
-
-/**
- * Result of advancing the fence state machine over a single line.
- * `skip` means the line is either a fence delimiter or inside a code
- * block and should be ignored by the header check.
- */
-interface FenceResult {
-  readonly fence: string | null;
-  readonly skip: boolean;
-}
-
-function updateFence(line: string, fence: string | null): FenceResult {
-  const fenceMatch = line.match(FENCE_PATTERN);
-  if (fence !== null) {
-    const closed = fenceMatch !== null && line.trim().startsWith(fence);
-    return { fence: closed ? null : fence, skip: true };
-  }
-  if (fenceMatch !== null) {
-    return { fence: fenceMatch[2] ?? null, skip: true };
-  }
-  return { fence: null, skip: false };
-}
 
 /**
  * OFM041 — malformed-callout.

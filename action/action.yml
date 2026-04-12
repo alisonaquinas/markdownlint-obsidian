@@ -1,0 +1,28 @@
+name: "markdownlint-obsidian"
+description: "Obsidian Flavored Markdown linter for CI"
+author: "alisonaquinas"
+inputs:
+  globs:
+    description: "Glob patterns to lint (space-separated)"
+    required: false
+    default: "**/*.md"
+  vault-root:
+    description: "Override auto-detected vault root"
+    required: false
+  config:
+    description: "Explicit config file path"
+    required: false
+  format:
+    description: "Output formatter: default, json, junit, sarif"
+    required: false
+    default: "default"
+  fail-on-warnings:
+    description: "Exit non-zero on warnings as well as errors"
+    required: false
+    default: "false"
+runs:
+  using: "node20"
+  main: "dist/main.js"
+branding:
+  icon: "book-open"
+  color: "purple"

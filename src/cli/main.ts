@@ -6,6 +6,7 @@ import { makeRuleRegistry } from "../domain/linting/RuleRegistry.js";
 import { runLint } from "../application/LintUseCase.js";
 import { getFormatter } from "../infrastructure/formatters/FormatterRegistry.js";
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
+import type { Formatter } from "../infrastructure/formatters/FormatterRegistry.js";
 import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
 import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
@@ -155,7 +156,15 @@ async function runPipeline(
 
   const results = await runLint(files, config, registry, buildLintDeps(bootstrapResult));
 
-  const output = getFormatter(opts.outputFormatter)(results);
+  let formatter: Formatter;
+  try {
+    formatter = getFormatter(opts.outputFormatter);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+
+  const output = formatter(results);
   if (output) process.stdout.write(output + "\n");
   return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }

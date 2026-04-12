@@ -22,12 +22,11 @@ describe("FrontmatterParser", () => {
   });
 
   it("throws OFM902 deterministically on repeated calls (no gray-matter cache fallthrough)", () => {
-    // Regression pin for the gray-matter parse-error caching bug:
-    // without `cache: false`, gray-matter keyed its internal cache on the
-    // input string and returned an empty-data success from the cache on
-    // the second call, silently swallowing OFM902. Phase 6's
-    // BlockRefIndexBuilder triggered this by parsing every vault file
-    // before the main lint pass.
+    // Regression: gray-matter cache was returning stale results without { cache: false }
+    // Without it, gray-matter keyed its internal cache on the input string and returned
+    // an empty-data success from the cache on the second call, silently swallowing OFM902.
+    // Phase 6's BlockRefIndexBuilder triggered this by parsing every vault file before
+    // the main lint pass.
     const malformed = "---\n : invalid :\n---\nbody";
     expect(() => parseFrontmatter(malformed)).toThrowError(/OFM902/);
     expect(() => parseFrontmatter(malformed)).toThrowError(/OFM902/);

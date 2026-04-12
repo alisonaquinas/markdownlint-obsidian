@@ -1,58 +1,83 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
-
-// `==a ==b== c==` — three pairs of `==` separated by non-`=` characters on
-// a single line. The pattern cannot tell "nested" apart from "two adjacent
-// highlights on one line" (`==a== and ==b==`), so it fires on both. The
-// rule trades that precision for a one-line check; authors who use two
-// highlights per sentence can disable OFM123 or add an inline suppression.
-const NESTED = /==[^=\n]*==[^=\n]*==/;
-
-const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
-
-interface FenceResult {
-  readonly fence: string | null;
-  readonly skip: boolean;
-}
+import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
 
 /**
- * Fence-tracking state machine shared with OFM041 and OFM122. Fenced
- * code blocks are skipped so example markdown inside rule documentation
- * does not trip the rule.
+ * Returns true if the line contains a truly nested highlight.
+ *
+ * A nested highlight occurs when an opening `==` marker is followed by
+ * content that itself ends with a space before the greedy-closing `==`,
+ * indicating the author intended a larger outer span with an inner `==...==`
+ * pair inside it (e.g. `==outer ==inner== text==`).
+ *
+ * Strategy: split the line on `==` to get alternating segments.  With 0-based
+ * indexing, odd segments (1, 3, 5…) are the content *inside* each greedy
+ * highlight pair.  A nested highlight is signalled when an odd-indexed segment
+ * ends with whitespace — meaning the `==` that "closes" that segment is really
+ * an inner opener rather than a proper closing delimiter.
+ *
+ * Only segments that contain non-whitespace characters AND end with
+ * whitespace are flagged.  Pure-whitespace segments (e.g. the `" "` from
+ * `== ==`) are skipped — they represent invalid/empty spans, not nesting.
+ *
+ * Examples (segments after split on `==`):
+ *
+ *   "==a== and ==b=="
+ *     → ["", "a", " and ", "b", ""]
+ *     odd segments: "a", "b"  — neither ends with space → no nesting ✓
+ *
+ *   "==outer ==inner== text=="
+ *     → ["", "outer ", "inner", " text", ""]
+ *     odd segment "outer " has content and ends with space → nested ✓
+ *
+ *   "== =="  (whitespace-only span from code doc examples)
+ *     → ["", " ", ""]
+ *     odd segment " " is pure whitespace → skipped → no nesting ✓
  */
-function updateFence(line: string, fence: string | null): FenceResult {
-  const fenceMatch = line.match(FENCE_PATTERN);
-  if (fence !== null) {
-    const closed = fenceMatch !== null && line.trim().startsWith(fence);
-    return { fence: closed ? null : fence, skip: true };
+function hasNestedHighlight(line: string): boolean {
+  const parts = line.split("==");
+  // A single ==...== span produces exactly 3 parts: ["", content, ""].
+  // With only 3 parts there is no room for a second == pair, so nesting
+  // is impossible regardless of trailing whitespace in the content.
+  if (parts.length <= 3) return false;
+  // Odd-indexed parts are the content between each greedy ==...== pair.
+  // If any of them ends with whitespace, the closing `==` is an inner
+  // opener rather than a proper delimiter — that is a nested highlight.
+  for (let i = 1; i < parts.length; i += 2) {
+    const segment = parts[i];
+    // Only flag segment[i] when there are more parts after the presumed
+    // inner span (i.e. parts.length > i + 2).  This ensures a trailing
+    // space in a single span like `==foo ==` is never treated as nesting.
+    if (
+      segment !== undefined &&
+      segment.trim().length > 0 &&
+      /\s$/.test(segment) &&
+      parts.length > i + 2
+    ) {
+      return true;
+    }
   }
-  if (fenceMatch !== null) {
-    return { fence: fenceMatch[2] ?? null, skip: true };
-  }
-  return { fence: null, skip: false };
-}
-
-/**
- * Strip inline backtick code so `===` operators inside prose don't count.
- * Mirrors the helper in OFM122.
- */
-function stripInlineCode(line: string): string {
-  return line.replace(/`[^`\n]*`/g, "");
+  return false;
 }
 
 /**
  * OFM123 — nested-highlight.
  *
- * Reports every line that contains three `==` marker pairs. The pattern
- * fires on both nested attempts (`==a ==b== c==`) and two separate
- * highlights on one line (`==a== and ==b==`); the latter is treated as a
- * style smell under the same rule. Teams that rely on multiple highlights
- * per line should disable the rule via `rules.OFM123.enabled: false`.
+ * Reports lines that contain a truly nested highlight, i.e. a `==...==` span
+ * whose interior contains another `==` marker (`==outer ==inner== text==`).
+ * Obsidian cannot render such constructs; the inner pair closes the outer one
+ * and the trailing `==` becomes stray text.
+ *
+ * Adjacent highlights on the same line (`==a== and ==b==`) are NOT flagged;
+ * each forms its own valid, non-overlapping span.
+ *
+ * Inline backtick code is stripped before scanning so `==` operators inside
+ * inline code do not contribute to the check.
  *
  * @see docs/rules/highlights/OFM123.md
  */
 export const OFM123Rule: OFMRule = {
   names: ["OFM123", "nested-highlight"],
-  description: "Highlights cannot be nested",
+  description: "Highlight span contains another == marker inside it (nested highlight)",
   tags: ["highlights", "syntax"],
   severity: "error",
   fixable: false,
@@ -63,7 +88,7 @@ export const OFM123Rule: OFMRule = {
       fence = step.fence;
       if (step.skip) return;
       const scanned = stripInlineCode(line);
-      if (NESTED.test(scanned)) {
+      if (hasNestedHighlight(scanned)) {
         onError({
           line: i + 1,
           column: 1,

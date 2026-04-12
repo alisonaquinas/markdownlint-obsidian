@@ -19,6 +19,7 @@ export interface ParseResult {
   readonly frontmatterRaw: string | null;
   /** 1-based line number where frontmatter ends; 0 if no frontmatter. */
   readonly frontmatterEndLine: number;
+  /** Reserved for Phase 9 autofix: markdown-it token stream, not currently used by rules. */
   readonly tokens: readonly unknown[];
   readonly wikilinks: readonly WikilinkNode[];
   readonly embeds: readonly EmbedNode[];

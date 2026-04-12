@@ -3,18 +3,32 @@ import { OFM123Rule } from "../../../../src/infrastructure/rules/ofm/highlights/
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 
 describe("OFM123 nested-highlight", () => {
-  it("reports three `==` markers on a single line", async () => {
+  it("reports a truly nested highlight (inner == inside outer span)", async () => {
+    const errors = await runRuleOnSource(OFM123Rule, "==outer ==inner== text==\n");
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.ruleCode).toBe("OFM123");
+  });
+
+  it("reports three `==` markers where first span content ends with space", async () => {
     const errors = await runRuleOnSource(OFM123Rule, "==a ==b== c==\n");
     expect(errors).toHaveLength(1);
     expect(errors[0]?.ruleCode).toBe("OFM123");
   });
 
-  it("also flags two adjacent highlights on one line (known trade-off)", async () => {
-    // The regex cannot tell "nested" from "two highlights per line". The
-    // rule documents this as a style-smell catch-all and recommends
-    // disabling the rule or splitting lines if a vault uses this pattern.
+  it("does NOT flag two adjacent highlights on one line", async () => {
+    // Two separate, non-overlapping highlights — each forms a valid span.
     const errors = await runRuleOnSource(OFM123Rule, "==a== and ==b==\n");
-    expect(errors).toHaveLength(1);
+    expect(errors).toEqual([]);
+  });
+
+  it("does NOT flag adjacent highlights with no text between", async () => {
+    const errors = await runRuleOnSource(OFM123Rule, "==foo== ==bar==\n");
+    expect(errors).toEqual([]);
+  });
+
+  it("does NOT flag a multi-word highlight", async () => {
+    const errors = await runRuleOnSource(OFM123Rule, "==multi word== and ==other==\n");
+    expect(errors).toEqual([]);
   });
 
   it("passes on a single highlight", async () => {
@@ -24,6 +38,18 @@ describe("OFM123 nested-highlight", () => {
 
   it("passes on plain prose", async () => {
     const errors = await runRuleOnSource(OFM123Rule, "no highlights here\n");
+    expect(errors).toEqual([]);
+  });
+
+  it("passes on inline code containing ==", async () => {
+    const errors = await runRuleOnSource(OFM123Rule, "Use `a == b` for comparison\n");
+    expect(errors).toEqual([]);
+  });
+
+  it("does NOT flag a single highlight with trailing space in body (==foo ==)", async () => {
+    // "==foo ==" splits on "==" into ["", "foo ", ""] — only 3 parts, no nesting possible.
+    // OFM086 may warn about the trailing space, but OFM123 must not fire.
+    const errors = await runRuleOnSource(OFM123Rule, "==foo ==\n");
     expect(errors).toEqual([]);
   });
 });

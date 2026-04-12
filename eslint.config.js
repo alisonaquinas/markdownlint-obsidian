@@ -3,7 +3,14 @@ import tsparser from "@typescript-eslint/parser";
 
 export default [
   {
-    ignores: ["dist/", "node_modules/", "coverage/", "reports/"],
+    ignores: [
+      "dist/",
+      "node_modules/",
+      "coverage/",
+      "reports/",
+      "action/dist/",
+      "action/node_modules/",
+    ],
   },
   {
     files: ["**/*.ts"],
@@ -27,6 +34,16 @@ export default [
     files: ["tests/**/*.ts", "docs/bdd/**/*.ts"],
     rules: {
       "max-lines-per-function": "off",
+    },
+  },
+  {
+    // Data-table files: these are pure data with no real complexity
+    files: [
+      "docs/bdd/steps/file-steps.ts",
+      "src/infrastructure/rules/standard/registerStandard.ts",
+    ],
+    rules: {
+      "max-lines": "off",
     },
   },
 ];

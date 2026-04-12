@@ -1,4 +1,8 @@
 import { Command } from "commander";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../../package.json") as { version: string };
 
 /**
  * Parsed CLI options returned by commander.
@@ -36,7 +40,7 @@ export function buildProgram(): Command {
   program
     .name("markdownlint-obsidian")
     .description("Obsidian Flavored Markdown linter for CI pipelines")
-    .version("0.1.0")
+    .version(version)
     .argument("[globs...]", "Glob patterns for files to lint")
     .option("--config <path>", "Explicit config file path")
     .option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)")
@@ -45,6 +49,10 @@ export function buildProgram(): Command {
     .option("--no-globs", "Ignore globs property in config file")
     .option("--vault-root <path>", "Override auto-detected vault root")
     .option("--no-resolve", "Disable wikilink resolution")
-    .option("--output-formatter <name>", "Output formatter (default, json)", "default");
+    .option(
+      "--output-formatter <name>",
+      "Output formatter (default, json, junit, sarif)",
+      "default",
+    );
   return program;
 }

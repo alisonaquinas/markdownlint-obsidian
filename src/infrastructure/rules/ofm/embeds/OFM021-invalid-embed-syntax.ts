@@ -1,33 +1,14 @@
 import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
+import { updateFence } from "../shared/fenceStateMachine.js";
 
 // Use `g` so matchAll can iterate over every occurrence on a single line.
 const EMPTY_EMBED = /!\[\[\s*\]\]/g;
 // Detects an unclosed `![[` on a line that has no corresponding `]]`.
 const OPEN_BRACKETS = /!\[\[/;
-// Opening or closing fence line (```, ~~~, or longer). Matched against the
-// line's leading whitespace so indented fences still close properly.
-const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
 
 interface InlineSpan {
   readonly start: number;
   readonly end: number;
-}
-
-interface FenceResult {
-  readonly fence: string | null;
-  readonly skip: boolean;
-}
-
-function updateFence(line: string, fence: string | null): FenceResult {
-  const fenceMatch = line.match(FENCE_PATTERN);
-  if (fence !== null) {
-    const closed = fenceMatch !== null && line.trim().startsWith(fence);
-    return { fence: closed ? null : fence, skip: true };
-  }
-  if (fenceMatch !== null) {
-    return { fence: fenceMatch[2] ?? null, skip: true };
-  }
-  return { fence: null, skip: false };
 }
 
 /**

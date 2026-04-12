@@ -1,41 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
-
-const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
-
-interface FenceResult {
-  readonly fence: string | null;
-  readonly skip: boolean;
-}
-
-/**
- * Advance a simple fence state machine over a line. Mirrors the helper in
- * OFM041 so OFM122 stays consistent with the "fenced code is skipped"
- * policy. Phase 6 deferred the shared `CodeRegionMap` refactor (see the
- * reviewer note in the Phase 6 plan); when that lands this logic should
- * collapse into a lookup on `ParseResult.codeRegions`.
- */
-function updateFence(line: string, fence: string | null): FenceResult {
-  const fenceMatch = line.match(FENCE_PATTERN);
-  if (fence !== null) {
-    const closed = fenceMatch !== null && line.trim().startsWith(fence);
-    return { fence: closed ? null : fence, skip: true };
-  }
-  if (fenceMatch !== null) {
-    return { fence: fenceMatch[2] ?? null, skip: true };
-  }
-  return { fence: null, skip: false };
-}
-
-/**
- * Strip matched backtick-delimited inline code spans from a line. Nested
- * backticks (`` `a\`b` ``) are uncommon in prose; we use the simple case of
- * paired single backticks. Content between the delimiters is replaced with
- * empty strings so downstream `==` counting ignores operators that sit
- * inside documentation-style inline code.
- */
-function stripInlineCode(line: string): string {
-  return line.replace(/`[^`\n]*`/g, "");
-}
+import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
 
 /**
  * OFM122 — malformed-highlight.
