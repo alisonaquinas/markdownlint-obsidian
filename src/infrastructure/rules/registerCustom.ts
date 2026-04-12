@@ -16,7 +16,9 @@ export function registerCustomRules(registry: RuleRegistry, rules: readonly OFMR
       // otherwise fall back to the rule's primary name.
       const match = message.match(/Duplicate rule name: (.+)$/);
       const conflictLabel = match?.[1] ?? rule.names[0];
-      process.stderr.write(`OFM904: skipped duplicate custom rule "${conflictLabel}": ${message}\n`);
+      process.stderr.write(
+        `OFM904: skipped duplicate custom rule "${conflictLabel}": ${message}\n`,
+      );
     }
   }
 }
