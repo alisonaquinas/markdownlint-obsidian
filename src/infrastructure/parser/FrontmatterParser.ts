@@ -22,16 +22,10 @@ export function parseFrontmatter(source: string): FrontmatterParseOutput {
 }
 
 function parseInternal(source: string): FrontmatterParseOutput {
-  // gray-matter mutates a cached `File` object when called with the same
-  // raw string twice, sometimes leaving `matter` undefined on subsequent
-  // invocations. Passing a fresh object reduces the hit rate, but the
-  // engine additionally keeps a content-keyed cache: after a parse error
-  // the second call returns an empty result instead of re-throwing, which
-  // broke the Phase 6 pipeline once BlockRefIndexBuilder started parsing
-  // every file before the lint pass. `cache: false` opts out of that
-  // cache entirely so OFM902 fires deterministically on every invocation.
-  // The `cache` option is not in gray-matter's upstream typings, so we
-  // pass it via a loose options bag and accept the typing cost.
+  // gray-matter caches parsed results by content string; { cache: false } disables this.
+  // Without it, OFM902 (invalid-frontmatter) fails to fire when the same malformed content
+  // is parsed twice in the same process (e.g., in test suites or repeated linting).
+  // The cast is required because gray-matter's TypeScript types do not expose this option.
   const options = { cache: false } as unknown as Parameters<typeof matter>[1];
   const parsed = matter({ content: source }, options);
   const data = (parsed.data ?? {}) as Record<string, unknown>;
