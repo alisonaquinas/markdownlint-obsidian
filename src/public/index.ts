@@ -46,3 +46,6 @@ export type { VaultIndex } from "../domain/vault/VaultIndex.js";
 export type { VaultPath } from "../domain/vault/VaultPath.js";
 export type { BlockRefIndex } from "../domain/vault/BlockRefIndex.js";
 export type { MatchResult } from "../domain/vault/WikilinkMatcher.js";
+
+// Filesystem boundary (needed to type params.fsCheck in custom rule implementations)
+export type { FileExistenceChecker } from "../domain/fs/FileExistenceChecker.js";

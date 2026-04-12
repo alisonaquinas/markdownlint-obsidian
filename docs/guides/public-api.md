@@ -17,8 +17,8 @@ This API follows **semver**: additive changes land in minor releases; breaking c
 import type { OFMRule, RuleParams, OnErrorCallback, Fix, ParseResult } from 'markdownlint-obsidian/api';
 import { makeFix, makeLintError } from 'markdownlint-obsidian/api';
 
-// Built-in rule list (read-only array of OFMRule)
-import { builtinRules } from 'markdownlint-obsidian/rules';
+// Named rule constants — one export per built-in rule
+import { OFM001Rule, OFM080Rule, frontmatterParseErrorRule } from 'markdownlint-obsidian/rules';
 ```
 
 For local development before publishing, use the source path directly:
@@ -146,3 +146,9 @@ const fix = makeFix({ lineNumber: 3, editColumn: 5, deleteCount: 2, insertText: 
 | `VaultPath` | type | Normalized vault-relative path |
 | `BlockRefIndex` | type | Cross-file `^block-id` index |
 | `MatchResult` | type | Result of a `VaultIndex` wikilink match |
+
+### Filesystem Types
+
+| Export | Kind | Description |
+| ------ | ---- | ----------- |
+| `FileExistenceChecker` | type | Interface for `params.fsCheck` — probe asset file existence without coupling to `node:fs` |

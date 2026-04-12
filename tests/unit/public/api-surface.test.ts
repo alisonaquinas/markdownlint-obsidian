@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import * as api from "../../../src/public/index.js";
 import * as rules from "../../../src/public/rules.js";
+// Compile-time assertion: if FileExistenceChecker is not exported, tsc fails here
+import type { FileExistenceChecker as _FEC } from "../../../src/public/index.js";
 
 describe("public API surface", () => {
   it("exports rule primitive factories", () => {
