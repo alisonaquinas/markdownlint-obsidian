@@ -24,7 +24,7 @@ describe("DEFAULT_CONFIG Phase 7 additions", () => {
     expect(DEFAULT_CONFIG.rules.OFM121?.enabled).toBe(false);
   });
 
-  it("exposes exactly five MD-prefixed defaults (the conflict list)", () => {
+  it("exposes exactly the OFM_MD_CONFLICTS list as MD-prefixed defaults", () => {
     const mdKeys = Object.keys(DEFAULT_CONFIG.rules).filter((k) =>
       k.startsWith("MD"),
     );

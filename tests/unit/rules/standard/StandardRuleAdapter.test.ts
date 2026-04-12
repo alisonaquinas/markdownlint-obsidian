@@ -99,8 +99,9 @@ describe("buildStandardRule", () => {
 });
 
 describe("extractMdConfig", () => {
-  it("produces { default: true } when no MD rules are configured", () => {
-    expect(extractMdConfig(DEFAULT_CONFIG)).toEqual({ default: true });
+  it("starts every translation with { default: true }", () => {
+    const cfg = { ...DEFAULT_CONFIG, rules: {} };
+    expect(extractMdConfig(cfg)).toEqual({ default: true });
   });
 
   it("maps enabled: false to false", () => {
@@ -143,5 +144,14 @@ describe("extractMdConfig", () => {
     const mdc = extractMdConfig(cfg);
     expect(mdc.OFM001).toBeUndefined();
     expect(mdc.MD013).toBe(false);
+  });
+
+  it("reflects the five Phase 7 OFM conflict disables when translating DEFAULT_CONFIG", () => {
+    const mdc = extractMdConfig(DEFAULT_CONFIG);
+    expect(mdc.MD013).toBe(false);
+    expect(mdc.MD033).toBe(false);
+    expect(mdc.MD034).toBe(false);
+    expect(mdc.MD041).toBe(false);
+    expect(mdc.MD042).toBe(false);
   });
 });

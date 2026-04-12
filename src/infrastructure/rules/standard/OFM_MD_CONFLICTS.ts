@@ -57,4 +57,11 @@ export const OFM_MD_CONFLICTS: readonly MdConflict[] = Object.freeze([
     reason: "no-empty-links — does not understand `[[]]` wikilink syntax",
     docPage: "rules/standard-md/MD042.md",
   }),
+  Object.freeze({
+    code: "MD018",
+    reason:
+      "no-missing-space-atx — Obsidian tags starting a line (`#project`) " +
+      "look like malformed ATX headings to markdownlint",
+    docPage: "rules/standard-md/MD018.md",
+  }),
 ]);

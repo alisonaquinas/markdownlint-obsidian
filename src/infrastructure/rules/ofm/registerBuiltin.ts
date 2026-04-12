@@ -1,4 +1,5 @@
 import type { RuleRegistry } from "../../../domain/linting/RuleRegistry.js";
+import { registerStandardRules } from "../standard/registerStandard.js";
 import { frontmatterParseErrorRule } from "./system/FrontmatterParseError.js";
 import { OFM080Rule } from "./frontmatter/OFM080-missing-required-key.js";
 import { OFM081Rule } from "./frontmatter/OFM081-invalid-date-format.js";
@@ -91,7 +92,21 @@ const ALL = [
   OFM124Rule,
 ];
 
-/** Register every built-in OFM rule with a RuleRegistry. */
+/**
+ * Register every built-in rule with `registry`.
+ *
+ * Registration order is:
+ * 1. Phase 2–6 OFM rules (wikilinks, embeds, callouts, tags, frontmatter,
+ *    block references, highlights, system).
+ * 2. Phase 7 standard markdownlint wrappers (MD001–MD049) via
+ *    {@link registerStandardRules}.
+ *
+ * Ordering is observable because {@link RuleRegistry.all} iterates the
+ * underlying insertion order. OFM rules come first so the CLI's default
+ * output lists the Obsidian-specific diagnostics before the upstream MD
+ * ones, which matches how humans scan for the "interesting" violations.
+ */
 export function registerBuiltinRules(registry: RuleRegistry): void {
   for (const rule of ALL) registry.register(rule);
+  registerStandardRules(registry);
 }
