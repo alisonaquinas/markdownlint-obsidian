@@ -1,4 +1,8 @@
 import { Command } from "commander";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../../package.json") as { version: string };
 
 /**
  * Parsed CLI options returned by commander.
@@ -36,7 +40,7 @@ export function buildProgram(): Command {
   program
     .name("markdownlint-obsidian")
     .description("Obsidian Flavored Markdown linter for CI pipelines")
-    .version("0.8.0")
+    .version(version)
     .argument("[globs...]", "Glob patterns for files to lint")
     .option("--config <path>", "Explicit config file path")
     .option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)")

@@ -1,8 +1,11 @@
+import { createRequire } from "node:module";
 import type { LintResult } from "../../domain/linting/LintResult.js";
 import type { LintError } from "../../domain/linting/LintError.js";
 
+const require = createRequire(import.meta.url);
+const { version: TOOL_VERSION } = require("../../../package.json") as { version: string };
+
 const TOOL_NAME = "markdownlint-obsidian";
-const TOOL_VERSION = "0.8.0";
 const INFORMATION_URI = "https://github.com/alisonaquinas/markdownlint-obsidian";
 const SARIF_SCHEMA =
   "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
