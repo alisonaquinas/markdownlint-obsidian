@@ -1,4 +1,17 @@
 import type { LinterConfig } from "../../domain/config/LinterConfig.js";
+import type { RuleConfig } from "../../domain/config/RuleConfig.js";
+import { OFM_MD_CONFLICTS } from "../rules/standard/OFM_MD_CONFLICTS.js";
+
+/**
+ * Pre-computed map of every OFM-conflicting markdownlint rule set to
+ * `{ enabled: false }`. Lives at module top-level so the frozen object is
+ * allocated exactly once and shared across every merge layer.
+ */
+const MD_CONFLICT_OVERRIDES: Readonly<Record<string, RuleConfig>> = Object.freeze(
+  Object.fromEntries(
+    OFM_MD_CONFLICTS.map((c) => [c.code, Object.freeze({ enabled: false })]),
+  ),
+);
 
 /**
  * Built-in default {@link LinterConfig} used when no configuration files
@@ -9,6 +22,12 @@ import type { LinterConfig } from "../../domain/config/LinterConfig.js";
  * - `tags` is added with `maxDepth: 5` and case-insensitive comparisons.
  * - `rules.OFM082` and `rules.OFM066` are disabled by default; both warn
  *   on stylistic issues most vaults would not opt into without thinking.
+ *
+ * Phase 7 additions:
+ * - Every entry in {@link OFM_MD_CONFLICTS} is merged into `rules` with
+ *   `enabled: false`. The curated list documents why each rule collides
+ *   with OFM syntax; users who want the upstream behaviour back can
+ *   re-enable individual rules in their own config.
  */
 export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
   vaultRoot: null,
@@ -94,6 +113,8 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
     // config key (`highlights.allow = false`) to opt in.
     OFM120: Object.freeze({ enabled: false }),
     OFM121: Object.freeze({ enabled: false }),
+    // Phase 7: disable every MD rule that conflicts with OFM syntax.
+    ...MD_CONFLICT_OVERRIDES,
   }),
   customRules: Object.freeze([]),
   globs: Object.freeze(["**/*.md"]),
