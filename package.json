@@ -6,10 +6,25 @@
   "bin": {
     "markdownlint-obsidian": "./bin/markdownlint-obsidian.js"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./dist/public/index.d.ts",
+      "default": "./dist/public/index.js"
+    },
+    "./rules": {
+      "types": "./dist/public/rules.d.ts",
+      "default": "./dist/public/rules.js"
+    }
+  },
   "files": [
     "bin/",
     "dist/",
     "src/",
+    "examples/",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
