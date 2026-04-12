@@ -227,3 +227,31 @@ Given("a config file disabling highlights", async function (this: OFMWorld) {
   };
   await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
 });
+
+// ---- Phase 8 CI exit-code steps -------------------------------------------
+
+Given("a vault with a broken wikilink", async function (this: OFMWorld) {
+  await this.initVault();
+  // Write a file that links to a page that does not exist in the vault.
+  // OFM001 (error severity) fires and drives exit code 1.
+  await this.writeFile("notes/index.md", "# Index\n\nSee [[no-such-page]]\n");
+});
+
+Given("a config file with invalid JSON", async function (this: OFMWorld) {
+  await this.initVault();
+  // Write a stub markdown file so the glob matches at least one file.
+  await this.writeFile("notes/clean.md", "# Clean\n");
+  // Write a config with an unknown key — ConfigValidator throws OFM901,
+  // loadConfig returns null, and the CLI exits with code 2.
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify({ __invalid_key__: true }));
+});
+
+Given("a file with a warning-severity rule violation", async function (this: OFMWorld) {
+  await this.initVault();
+  // OFM005 (wikilink-case-mismatch) has severity "warning". It fires when a
+  // wikilink resolves only via case-insensitive fallback. The file
+  // "notes/target.md" exists; linking as [[Target]] (capitalised) triggers
+  // OFM005. Warnings do not set hasErrors, so the exit code remains 0.
+  await this.writeFile("notes/target.md", "# Target\n");
+  await this.writeFile("notes/index.md", "# Index\n\nSee [[Target]]\n");
+});
