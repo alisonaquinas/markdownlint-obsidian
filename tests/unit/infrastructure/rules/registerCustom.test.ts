@@ -43,12 +43,14 @@ describe("registerCustomRules", () => {
     expect(() => registerCustomRules(registry, [duplicate])).not.toThrow();
   });
 
-  it("writes an OFM904 line to stderr containing the rule name and error message", () => {
+  it("writes an OFM904 line to stderr labelling the colliding alias, not the rule's primary name", () => {
     const registry = makeRuleRegistry();
+    // Register a rule under "OFM101".
     const original = makeStubRule(["OFM101"]);
     registry.register(original);
 
-    const duplicate = makeStubRule(["OFM101"]);
+    // New rule whose *primary* name is unique but whose alias "OFM101" collides.
+    const duplicate = makeStubRule(["MY-UNIQUE-CODE", "OFM101"]);
     const stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
 
     registerCustomRules(registry, [duplicate]);
@@ -56,7 +58,9 @@ describe("registerCustomRules", () => {
     expect(stderrSpy).toHaveBeenCalledOnce();
     const written = stderrSpy.mock.calls[0]?.[0] as string;
     expect(written).toMatch(/^OFM904:/);
+    // The label must be the *colliding* name, not the rule's primary name.
     expect(written).toContain('"OFM101"');
+    expect(written).not.toContain('"MY-UNIQUE-CODE"');
     // The registry throws "Duplicate rule name: OFM101" — verify it propagates.
     expect(written).toContain("Duplicate rule name: OFM101");
   });
