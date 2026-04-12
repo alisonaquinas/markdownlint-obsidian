@@ -90,7 +90,9 @@ function validateNames(rule: Partial<OFMRule>, modulePath: string): void {
 function validateDescription(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.description !== "string") {
     const detail = rule.description !== undefined ? ` (got ${typeof rule.description})` : "";
-    throw new Error(`Custom rule from "${modulePath}" requires "description" to be a string${detail}`);
+    throw new Error(
+      `Custom rule from "${modulePath}" requires "description" to be a string${detail}`,
+    );
   }
 }
 
