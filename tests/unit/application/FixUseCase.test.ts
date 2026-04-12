@@ -138,6 +138,9 @@ describe("FixUseCase", () => {
     expect(writes).toHaveLength(1);
     expect(writes[0]!.path).toBe(FAKE_FILE);
     expect(writes[0]!.content).toBe(PATCHED_CONTENT);
+
+    // 5. No conflicts expected with non-overlapping fixes
+    expect(outcome.conflicts).toEqual([]);
   });
 
   it("does not write or add to filesFixed when no fixes are present", async () => {
