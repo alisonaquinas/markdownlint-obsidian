@@ -111,4 +111,23 @@ describe("applyFixes", () => {
     expect(patched).toBe("line one\r\nline TWO\r\nline three");
     expect(conflicts).toHaveLength(0);
   });
+
+  it("does not throw when lineNumber is beyond the file length (out-of-range fallback)", () => {
+    const raw = "only one line";
+    const fix = makeFix({ lineNumber: 99, editColumn: 1, deleteCount: 0, insertText: "x" });
+
+    // Must not throw; the ?? "" fallback handles undefined lines[98]
+    expect(() => applyFixes(raw, [fix])).not.toThrow();
+
+    const { patched, conflicts } = applyFixes(raw, [fix]);
+
+    expect(conflicts).toHaveLength(0);
+    // The patched string will have the original line, many empty lines (from sparse array), then "x"
+    expect(patched.startsWith("only one line")).toBe(true);
+    expect(patched.endsWith("x")).toBe(true);
+    // Verify the structure: original line + 98 newlines + "x"
+    const lines = patched.split("\n");
+    expect(lines[0]).toBe("only one line");
+    expect(lines[98]).toBe("x");
+  });
 });
