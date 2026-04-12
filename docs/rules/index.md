@@ -106,6 +106,10 @@ conflict-page links for the rules disabled by default in OFM vaults.
 ## Custom rules (user-defined codes)
 
 Custom rules use codes chosen by the rule author (e.g. `CUSTOM001`).
-Codes are not reserved by this package. Set the `customRules` config option
-to an array of paths to load custom rule modules. Each custom rule module
-must export an `OFMRule` object or array with a unique `names[0]` identifier.
+Codes are not reserved by this package. See [[guides/custom-rules]] for
+the authoring guide and [[guides/public-api]] for the full API surface.
+
+| Example | Description |
+|---------|-------------|
+| [[rules/custom/require-frontmatter-status]] | Enforce a `status` frontmatter key |
+| [[rules/custom/banned-wikilink-targets]] | Block links to specific targets |
