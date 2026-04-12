@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
+import { spawnCli } from "../helpers/spawnCli.js";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
@@ -41,6 +42,24 @@ describe("CLI", { timeout: 20000 }, () => {
       expect(e.code).toBe(2);
       expect(e.stderr).toContain("OFM901");
       expect(e.stderr).toContain("bogus");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("OFM905 is written to stderr when a custom rule module cannot be loaded", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
+    await fs.writeFile(
+      path.join(tmp, ".obsidian-linter.jsonc"),
+      JSON.stringify({ customRules: ["./does-not-exist.mjs"] }),
+      "utf8",
+    );
+    try {
+      const result = await spawnCli(["**/*.md"], tmp);
+      expect(result.exitCode).toBe(0);
+      expect(result.stderr).toContain("OFM905");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });
     }

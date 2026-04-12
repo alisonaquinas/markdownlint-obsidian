@@ -90,4 +90,38 @@ describe("loadCustomRules", () => {
     expect(rules).toHaveLength(1);
     expect(rules[0]?.names[0]).toBe("UNIT004");
   });
+
+  const EMPTY_ARRAY_SRC = `export default [];`;
+
+  it("returns zero rules and zero errors when default export is an empty array", async () => {
+    const p = await writeTmp("empty-array.mjs", EMPTY_ARRAY_SRC);
+    const { rules, errors } = await loadCustomRules([p], tmp);
+    expect(errors).toHaveLength(0);
+    expect(rules).toHaveLength(0);
+  });
+
+  const NO_EXPORT_SRC = `export const unrelated = 42;`;
+
+  it("produces a load error when module exports neither default nor rules", async () => {
+    const p = await writeTmp("no-export.mjs", NO_EXPORT_SRC);
+    const { rules, errors } = await loadCustomRules([p], tmp);
+    expect(rules).toHaveLength(0);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toContain("does not export a rule object");
+  });
+
+  const FUNCTION_EXPORT_SRC = `
+export default function makeRule() {
+  return { names: ["FN001"], description: "test", tags: [], severity: "error", fixable: false,
+           run(_p, _e) {} };
+}
+`;
+
+  it("produces a load error when default export is a function (factory not called)", async () => {
+    const p = await writeTmp("fn-export.mjs", FUNCTION_EXPORT_SRC);
+    const { rules, errors } = await loadCustomRules([p], tmp);
+    expect(rules).toHaveLength(0);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.message).toContain("does not export a rule object");
+  });
 });
