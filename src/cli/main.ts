@@ -13,6 +13,8 @@ import type { LintResult } from "../domain/linting/LintResult.js";
 import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
 import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
+import { loadCustomRules } from "../infrastructure/config/CustomRuleLoader.js";
+import { registerCustomRules } from "../infrastructure/rules/registerCustom.js";
 import { bootstrapVault } from "../application/VaultBootstrap.js";
 import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
 import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
@@ -174,6 +176,13 @@ async function runPipeline(
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
   registerBuiltinRules(registry);
+
+  const { rules: customRules, errors: customErrors } =
+    await loadCustomRules(config.customRules, cwd);
+  for (const err of customErrors) {
+    process.stderr.write(`OFM905: failed to load custom rule module "${err.modulePath}": ${err.message}\n`);
+  }
+  registerCustomRules(registry, customRules);
 
   const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
   if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
