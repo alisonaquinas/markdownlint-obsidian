@@ -21,6 +21,6 @@ describe("public API surface", () => {
     expect(typeof rules.OFM001Rule).toBe("object");
     expect(typeof rules.OFM080Rule).toBe("object");
     expect(typeof rules.frontmatterParseErrorRule).toBe("object");
-    expect(Object.keys(rules).length).toBe(44);
+    expect(Object.keys(rules).length).toBe(44); // update when new built-in rules are added
   });
 });
