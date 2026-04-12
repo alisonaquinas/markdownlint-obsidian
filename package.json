@@ -15,7 +15,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:bdd": "node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js --tags @smoke",
-    "test:dogfood": "node --import tsx bin/markdownlint-obsidian.js \"docs/**/*.md\"",
+    "test:dogfood": "cd docs && node --import tsx ../bin/markdownlint-obsidian.js \"**/*.md\"",
     "test:all": "npm run typecheck && npm run lint && npm run test && npm run test:bdd",
     "prepublishOnly": "npm run build && npm run test:all"
   },
