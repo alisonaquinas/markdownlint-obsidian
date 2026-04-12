@@ -94,6 +94,50 @@ describe("buildStandardRule", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]?.line).toBe(5);
   });
+
+  it("threads fixInfo as a Fix when the violation carries it", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD009", "no-trailing-spaces"],
+        ruleDescription: "Trailing spaces",
+        lineNumber: 4,
+        fixInfo: {
+          editColumn: 10,
+          deleteCount: 2,
+          insertText: "",
+        },
+      },
+    ]);
+    const descMd009 = {
+      code: "MD009",
+      name: "no-trailing-spaces",
+      description: "Trailing spaces",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd009, adapter);
+    const errors = await runRuleOnSource(rule, "hello     \nworld\n");
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 4,
+      editColumn: 10,
+      deleteCount: 2,
+      insertText: "",
+    });
+  });
+
+  it("omits fix when violation has no fixInfo", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD013", "line-length"],
+        ruleDescription: "Line length",
+        lineNumber: 7,
+      },
+    ]);
+    const rule = buildStandardRule(descMd013, adapter);
+    const errors = await runRuleOnSource(rule, "# h\n");
+    expect(errors[0]?.fix).toBeUndefined();
+  });
 });
 
 describe("extractMdConfig", () => {
