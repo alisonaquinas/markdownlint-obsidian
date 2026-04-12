@@ -1179,7 +1179,7 @@ export const OFM066Rule: OFMRule = {
 ```
 
 Mark `OFM066` disabled by default in `defaults.ts`. **Phase 3 amendment:** OFM062
-is also disabled by default — its `# ` token detection over-fires on prose
+is also disabled by default — its `#` (with trailing space) token detection over-fires on prose
 markdown (e.g. quoted strings inside code-prose), so it joins OFM066/OFM082 as
 opt-in. The unit tests bypass the registry and exercise the rule directly via
 `runRuleOnSource`, so coverage is unaffected.

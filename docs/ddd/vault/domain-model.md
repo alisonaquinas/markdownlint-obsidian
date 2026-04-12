@@ -3,6 +3,7 @@
 ## Value Objects
 
 ### VaultPath
+
 Immutable. A normalized, vault-root-relative path to a `.md` file.
 
 ```typescript
@@ -14,6 +15,7 @@ interface VaultPath {
 ```
 
 ### WikilinkNode
+
 Immutable. A parsed wikilink extracted from a file.
 
 ```typescript
@@ -31,6 +33,7 @@ interface WikilinkNode {
 ## Domain Service
 
 ### VaultIndex
+
 Built once per LintRun. Resolves wikilink targets to VaultPaths using Obsidian's
 own resolution logic: exact match first, then case-insensitive, then basename-only.
 

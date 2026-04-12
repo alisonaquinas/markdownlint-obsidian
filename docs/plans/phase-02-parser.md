@@ -1332,7 +1332,7 @@ git commit -m "feat(parser): add TagExtractor"
 - Create: `tests/unit/parser/ofm/HighlightExtractor.test.ts`
 - Create: `tests/unit/parser/ofm/CommentExtractor.test.ts`
 
-Block reference *definitions* appear at end of line as ` ^blockid`. Block *links* (`[[page#^blockid]]`) are already captured by the wikilink extractor.
+Block reference *definitions* appear at end of line as a leading space followed by `^blockid`. Block *links* (`[[page#^blockid]]`) are already captured by the wikilink extractor.
 
 - [ ] **Implement `BlockRefExtractor.ts`**
 
