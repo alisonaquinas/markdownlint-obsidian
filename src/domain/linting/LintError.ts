@@ -1,3 +1,4 @@
+import type { Fix } from "./Fix.js";
 export type { Fix } from "./Fix.js";
 
 /**
