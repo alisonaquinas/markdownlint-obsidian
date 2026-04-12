@@ -53,6 +53,11 @@ export interface OFMRule {
   readonly description: string;
   readonly tags: readonly string[];
   readonly severity: "error" | "warning";
+  /**
+   * When `true`, every `onError` call from this rule MUST include a populated
+   * `fix` field. The autofix engine (Phase 9) relies on this invariant to
+   * apply fixes without a separate lookup step.
+   */
   readonly fixable: boolean;
   run(params: RuleParams, onError: OnErrorCallback): void | Promise<void>;
 }

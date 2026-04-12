@@ -10,6 +10,18 @@ import type { VaultIndex } from "../domain/vault/VaultIndex.js";
 import type { BlockRefIndex } from "../domain/vault/BlockRefIndex.js";
 import type { FileExistenceChecker } from "../domain/fs/FileExistenceChecker.js";
 
+// Module-level set to suppress repeated warnings per process
+const warnedMissingFix = new Set<string>();
+
+function warnIfMissingFix(rule: OFMRule, fix: unknown): void {
+  if (rule.fixable && fix === undefined && !warnedMissingFix.has(rule.names[0] ?? "")) {
+    warnedMissingFix.add(rule.names[0] ?? "");
+    process.stderr.write(
+      `[OFM internal] Rule ${rule.names[0] ?? "unknown"} is fixable but emitted no Fix payload\n`,
+    );
+  }
+}
+
 export interface LintDependencies {
   readonly parser: Parser;
   readonly readFile: (absolutePath: string) => Promise<string>;
@@ -76,6 +88,7 @@ async function runRule(
   await rule.run(
     { filePath: parsed.filePath, parsed, config, vault, fsCheck, blockRefIndex },
     (partial) => {
+      warnIfMissingFix(rule, partial.fix);
       errors.push(
         makeLintError({
           ruleCode: rule.names[0] ?? "UNKNOWN",
