@@ -8,16 +8,16 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/src/public/index.d.ts",
+      "default": "./dist/src/public/index.js"
     },
     "./api": {
-      "types": "./dist/public/index.d.ts",
-      "default": "./dist/public/index.js"
+      "types": "./dist/src/public/index.d.ts",
+      "default": "./dist/src/public/index.js"
     },
     "./rules": {
-      "types": "./dist/public/rules.d.ts",
-      "default": "./dist/public/rules.js"
+      "types": "./dist/src/public/rules.d.ts",
+      "default": "./dist/src/public/rules.js"
     }
   },
   "files": [
