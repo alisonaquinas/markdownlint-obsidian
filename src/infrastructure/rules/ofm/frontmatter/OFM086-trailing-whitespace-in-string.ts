@@ -78,6 +78,25 @@ function walk(
   }
 }
 
+// Only emit a fix for simple top-level scalars (path.length === 1).
+// For nested maps or array elements the line number points to the parent
+// key, not the actual value line, so autofix is deferred.
+function buildTopLevelFix(
+  path: readonly string[],
+  line: number,
+  trimmedValue: string,
+  trailingCount: number,
+  frontmatterRaw: string | null,
+): Fix | undefined {
+  if (path.length !== 1) return undefined;
+  return makeFix({
+    lineNumber: line,
+    editColumn: findTrailingWhitespaceColumn(line, trimmedValue, frontmatterRaw),
+    deleteCount: trailingCount,
+    insertText: "",
+  });
+}
+
 function checkString(
   value: string,
   path: readonly string[],
@@ -89,14 +108,13 @@ function checkString(
   const where = path.length === 0 ? "(root)" : path.join(".");
   const topKey = path[0];
   const line = (topKey !== undefined && keyLineMap.get(topKey)) || 1;
-  const trailingCount = value.length - value.trimEnd().length;
   const trimmedValue = value.trimEnd();
-  const editColumn = findTrailingWhitespaceColumn(line, trimmedValue, frontmatterRaw);
+  const trailingCount = value.length - trimmedValue.length;
   emit({
     line,
     column: 1,
     message: `Frontmatter value at "${where}" has trailing whitespace`,
-    fix: makeFix({ lineNumber: line, editColumn, deleteCount: trailingCount, insertText: "" }),
+    fix: buildTopLevelFix(path, line, trimmedValue, trailingCount, frontmatterRaw),
   });
 }
 
@@ -141,7 +159,11 @@ function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): 
     const wsMatch = rawLine.match(/[ \t]+(?=["']?\s*$)/);
     return wsMatch !== null && wsMatch.index !== undefined ? wsMatch.index + 1 : 1;
   }
-  const idx = rawLine.indexOf(trimmedValue);
+  // Search only in the value portion (after the colon) to avoid false matches
+  // when the key name is a substring of the value (e.g., `Note: "Note  "`).
+  const colonIdx = rawLine.indexOf(":");
+  const searchFrom = colonIdx === -1 ? 0 : colonIdx + 1;
+  const idx = rawLine.indexOf(trimmedValue, searchFrom);
   return idx === -1 ? 1 : idx + trimmedValue.length + 1;
 }
 

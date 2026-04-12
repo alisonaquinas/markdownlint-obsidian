@@ -24,6 +24,7 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("author.name");
     expect(errors[0]?.line).toBe(2);
+    expect(errors[0]?.fix).toBeUndefined();
   });
 
   it("walks into arrays", async () => {
@@ -35,6 +36,7 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("tags.0");
     expect(errors[0]?.line).toBe(2);
+    expect(errors[0]?.fix).toBeUndefined();
   });
 
   it("reports the correct line for a key that is not the first key", async () => {
@@ -59,6 +61,21 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
     expect(errors[0]?.fix).toMatchObject({
       lineNumber: 2,
       editColumn: 13,
+      deleteCount: 2,
+      insertText: "",
+    });
+  });
+
+  it("handles a top-level key whose name is a substring of its value", async () => {
+    // rawLine: 'Note: "Note  "' — colonIdx=4, searchFrom=5
+    // "Note" in value portion starts at index 7 (after space + quote)
+    // editColumn = 7 + 4 + 1 = 12
+    const errors = await runRuleOnSource(OFM086Rule, '---\nNote: "Note  "\n---\nbody');
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 2,
+      editColumn: 12,
       deleteCount: 2,
       insertText: "",
     });
