@@ -1,3 +1,6 @@
+// Installed-package import (after `npm install markdownlint-obsidian`):
+//   import type { OFMRule } from 'markdownlint-obsidian/api';
+// Source-tree import (running via tsx from repo root):
 import type { OFMRule } from "../../src/public/index.js";
 
 const ALLOWED = new Set(["draft", "review", "published", "archived"]);
