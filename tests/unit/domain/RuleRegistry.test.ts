@@ -57,5 +57,7 @@ describe("RuleRegistry", () => {
 
     // "NEW-CODE" must NOT be accessible after the failed registration
     expect(registry.get("NEW-CODE")).toBeUndefined();
+    // Also confirm the overall registry size is unchanged after the failed insert
+    expect(registry.all()).toHaveLength(1); // only the original "EXISTING" rule
   });
 });
