@@ -44,6 +44,11 @@ const DEFAULT_FS_CHECK: FileExistenceChecker = {
  * @param blockRefIndex - Optional stub {@link BlockRefIndex}. Defaults to
  *                        `null`, matching the `config.resolve === false`
  *                        branch so existing tests stay green.
+ * @param filePath - Optional file path to attach to the parsed result.
+ *                   Defaults to `"test.md"` so existing tests stay green.
+ *                   Rules that care about the path (e.g. OFM120's
+ *                   `allowedGlobs` matching) should pass a realistic
+ *                   absolute path here.
  * @returns LintError instances emitted by the rule, in emission order.
  */
 export async function runRuleOnSource(
@@ -53,11 +58,12 @@ export async function runRuleOnSource(
   vault: VaultIndex | null = null,
   fsCheck: FileExistenceChecker = DEFAULT_FS_CHECK,
   blockRefIndex: BlockRefIndex | null = null,
+  filePath: string = "test.md",
 ): Promise<LintError[]> {
   const parser = makeMarkdownItParser();
   let parsed;
   try {
-    parsed = parser.parse("test.md", source);
+    parsed = parser.parse(filePath, source);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return [

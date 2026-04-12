@@ -9,6 +9,10 @@ import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
  * listed glob is exempt, which lets teams ban highlights everywhere except
  * (e.g.) `notes/daily/**`.
  *
+ * Each glob is prefixed with `**\/` before matching so documented
+ * vault-relative patterns like `notes/daily/**` match the absolute file
+ * paths that the CLI hands to the parser.
+ *
  * Default config keeps the rule disabled (`rules.OFM120.enabled: false`) so
  * vaults that embrace highlights do not need an opt-out; flip
  * `highlights.allow` to `false` in `.obsidian-linter.jsonc` to turn it on.
@@ -23,8 +27,9 @@ export const OFM120Rule: OFMRule = {
   fixable: false,
   run({ parsed, config }, onError) {
     if (config.highlights.allow) return;
+    const normalizedPath = parsed.filePath.replace(/\\/g, "/");
     const allowedHere = config.highlights.allowedGlobs.some((glob) =>
-      minimatch(parsed.filePath, glob),
+      minimatch(normalizedPath, prefixGlob(glob)),
     );
     if (allowedHere) return;
     for (const h of parsed.highlights) {
@@ -36,3 +41,13 @@ export const OFM120Rule: OFMRule = {
     }
   },
 };
+
+/**
+ * Prepend `**\/` to a vault-relative glob so it can match against an
+ * absolute filePath handed in by the CLI. Idempotent: globs that are
+ * already absolute (`**\/foo`, `/foo`) pass through unchanged.
+ */
+function prefixGlob(glob: string): string {
+  if (glob.startsWith("**/") || glob.startsWith("/")) return glob;
+  return `**/${glob}`;
+}

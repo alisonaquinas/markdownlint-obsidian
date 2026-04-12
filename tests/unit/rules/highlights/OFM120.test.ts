@@ -34,6 +34,34 @@ describe("OFM120 disallowed-highlight", () => {
     expect(errors).toHaveLength(1);
   });
 
+  it("exempts a realistic absolute path via documented vault-relative glob", async () => {
+    const src = "prose ==one==\n";
+    const errors = await runRuleOnSource(
+      OFM120Rule,
+      src,
+      { highlights: { allow: false, allowedGlobs: ["notes/daily/**"] } },
+      null,
+      undefined,
+      null,
+      "/home/user/vault/notes/daily/2026-04-11.md",
+    );
+    expect(errors).toEqual([]);
+  });
+
+  it("reports when the absolute path is outside the vault-relative glob", async () => {
+    const src = "prose ==one==\n";
+    const errors = await runRuleOnSource(
+      OFM120Rule,
+      src,
+      { highlights: { allow: false, allowedGlobs: ["notes/daily/**"] } },
+      null,
+      undefined,
+      null,
+      "/home/user/vault/notes/projects/index.md",
+    );
+    expect(errors).toHaveLength(1);
+  });
+
   it("is a no-op for files with no highlights", async () => {
     const errors = await runRuleOnSource(OFM120Rule, "plain prose\n", {
       highlights: { allow: false, allowedGlobs: [] },
