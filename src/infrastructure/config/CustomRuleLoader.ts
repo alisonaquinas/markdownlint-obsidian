@@ -89,13 +89,15 @@ function validateNames(rule: Partial<OFMRule>, modulePath: string): void {
 
 function validateDescription(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.description !== "string") {
-    throw new Error(`Custom rule from "${modulePath}" is missing required field "description"`);
+    const detail = rule.description !== undefined ? ` (got ${typeof rule.description})` : "";
+    throw new Error(`Custom rule from "${modulePath}" requires "description" to be a string${detail}`);
   }
 }
 
 function validateTags(rule: Partial<OFMRule>, modulePath: string): void {
   if (!Array.isArray(rule.tags)) {
-    throw new Error(`Custom rule from "${modulePath}" is missing required field "tags"`);
+    const detail = rule.tags !== undefined ? ` (got ${typeof rule.tags})` : "";
+    throw new Error(`Custom rule from "${modulePath}" requires "tags" to be an array${detail}`);
   }
 }
 
@@ -109,12 +111,14 @@ function validateSeverity(rule: Partial<OFMRule>, modulePath: string): void {
 
 function validateFixable(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.fixable !== "boolean") {
-    throw new Error(`Custom rule from "${modulePath}" is missing required field "fixable"`);
+    const detail = rule.fixable !== undefined ? ` (got ${typeof rule.fixable})` : "";
+    throw new Error(`Custom rule from "${modulePath}" requires "fixable" to be a boolean${detail}`);
   }
 }
 
 function validateRun(rule: Partial<OFMRule>, modulePath: string): void {
   if (typeof rule.run !== "function") {
-    throw new Error(`Custom rule from "${modulePath}" is missing required field "run"`);
+    const detail = rule.run !== undefined ? ` (got ${typeof rule.run})` : "";
+    throw new Error(`Custom rule from "${modulePath}" requires "run" to be a function${detail}`);
   }
 }
