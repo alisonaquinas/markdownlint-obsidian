@@ -93,6 +93,8 @@ frontmatter, and `OFM9xx` for parser/system errors.
 | OFM901 | internal-parser-error | Unexpected parser failure outside known categories. |
 | OFM902 | frontmatter-parse-error | gray-matter / js-yaml could not parse frontmatter. |
 | OFM903 | fix-conflict | Two fixable rules targeted the same character range; the second fix was skipped. |
+| [[rules/system/OFM904]] | duplicate-custom-rule | A custom rule's name already exists; the duplicate was skipped. |
+| [[rules/system/OFM905]] | custom-rule-load-failure | A custom rule module could not be imported; the entry was skipped. |
 
 ## Standard markdownlint rules (MD001–MD049)
 
@@ -100,3 +102,10 @@ Phase 7 adopts every upstream markdownlint rule as a first-class rule in
 the registry. See the [[rules/standard-md/index|standard-md catalog]]
 for the enabled/disabled status of every `MDxxx` code and the
 conflict-page links for the rules disabled by default in OFM vaults.
+
+## Custom rules (user-defined codes)
+
+Custom rules use codes chosen by the rule author (e.g. `CUSTOM001`).
+Codes are not reserved by this package. Set the `customRules` config option
+to an array of paths to load custom rule modules. Each custom rule module
+must export an `OFMRule` object or array with a unique `names[0]` identifier.
