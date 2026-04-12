@@ -79,5 +79,8 @@ function spliceLine(lines: string[], lineNumber: number, fix: Fix): void {
 function rangesIntersect(a: Fix, b: Fix): boolean {
   const aEnd = a.editColumn + a.deleteCount;
   const bEnd = b.editColumn + b.deleteCount;
+  // Same anchor always conflicts (catches zero-width insertion vs deletion at same column).
+  if (a.editColumn === b.editColumn) return true;
+  // Standard half-open interval overlap check.
   return a.editColumn < bEnd && b.editColumn < aEnd;
 }

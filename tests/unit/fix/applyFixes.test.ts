@@ -86,6 +86,20 @@ describe("applyFixes", () => {
     expect(conflicts).toHaveLength(0);
   });
 
+  it("zero-width insertion at same column as deletion is treated as conflict", () => {
+    // fix1: col 5, delete 3, insert "X" — accepted (higher editColumn processed first via sort,
+    //        but both are col 5 so tie-break keeps fix1 first in the accepted list)
+    // fix2: col 5, delete 0, insert "Y" — zero-width insertion at same anchor → conflict
+    const raw = "abcdefghi";
+    const fix1 = makeFix({ lineNumber: 1, editColumn: 5, deleteCount: 3, insertText: "X" });
+    const fix2 = makeFix({ lineNumber: 1, editColumn: 5, deleteCount: 0, insertText: "Y" });
+
+    const { patched, conflicts } = applyFixes(raw, [fix1, fix2]);
+
+    expect(conflicts).toHaveLength(1);
+    expect(patched).not.toContain("Y"); // conflicting insertion was not applied
+  });
+
   it("preserves CRLF line endings when splitting and rejoining", () => {
     // split on \n, each line may contain trailing \r — they should be preserved
     const raw = "line one\r\nline two\r\nline three";
