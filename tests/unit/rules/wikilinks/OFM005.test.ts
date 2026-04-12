@@ -28,4 +28,18 @@ describe("OFM005 wikilink-case-mismatch", () => {
     const errors = await runRuleOnSource(OFM005Rule, "[[anything]]", {}, null);
     expect(errors).toEqual([]);
   });
+
+  it("emits a fix that replaces the wikilink target with the canonical path", async () => {
+    // "[[notes/index]]" — '[' at column 1, '[[' takes 2 chars, target starts at column 3
+    // target "notes/index" has length 11, canonical is "notes/Index.md"
+    const vault = stubVault(["notes/Index.md"]);
+    const errors = await runRuleOnSource(OFM005Rule, "[[notes/index]]", {}, vault);
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 3,
+      deleteCount: 11,
+      insertText: "notes/Index.md",
+    });
+  });
 });

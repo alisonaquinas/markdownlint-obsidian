@@ -72,6 +72,7 @@ docs/
 ### Task 1: FileExistenceChecker interface
 
 **Files:**
+
 - Create: `src/domain/fs/FileExistenceChecker.ts`
 
 - [ ] **Implement**
@@ -103,6 +104,7 @@ git commit -m "feat(fs): add FileExistenceChecker DIP interface"
 ### Task 2: NodeFsExistenceChecker
 
 **Files:**
+
 - Create: `src/infrastructure/fs/NodeFsExistenceChecker.ts`
 - Create: `tests/unit/infrastructure/fs/NodeFsExistenceChecker.test.ts`
 
@@ -178,6 +180,7 @@ git commit -m "feat(fs): add NodeFsExistenceChecker"
 ### Task 3: Extend RuleParams with fsCheck
 
 **Files:**
+
 - Modify: `src/domain/linting/OFMRule.ts`
 - Modify: `src/application/LintUseCase.ts`
 - Modify: `tests/unit/rules/helpers/runRuleOnSource.ts`
@@ -221,6 +224,7 @@ git commit -m "refactor(rules): thread FileExistenceChecker into RuleParams"
 ### Task 4: EmbedConfig + richer CalloutConfig
 
 **Files:**
+
 - Modify: `src/domain/config/LinterConfig.ts`
 - Modify: `src/infrastructure/config/defaults.ts`
 - Modify: `src/infrastructure/config/ConfigValidator.ts`
@@ -288,6 +292,7 @@ git commit -m "feat(config): add EmbedConfig and extend CalloutConfig"
 ### Task 5: EmbedClassifier shared helper
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/shared/EmbedClassifier.ts`
 - Create: `tests/unit/rules/embeds/shared/EmbedClassifier.test.ts`
 
@@ -331,6 +336,7 @@ git commit -m "feat(rules): add EmbedClassifier helper"
 ### Task 6: OFM020 — broken-embed (markdown target)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/OFM020-broken-embed.ts`
 - Create: `tests/unit/rules/embeds/OFM020.test.ts`
 
@@ -379,6 +385,7 @@ git commit -m "feat(rules): OFM020 broken-embed (markdown)"
 ### Task 7: OFM021 — invalid-embed-syntax
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/OFM021-invalid-embed-syntax.ts`
 - Create: `tests/unit/rules/embeds/OFM021.test.ts`
 
@@ -434,6 +441,7 @@ git commit -m "feat(rules): OFM021 invalid-embed-syntax"
 ### Task 8: OFM022 — embed-target-missing (non-markdown asset)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/OFM022-embed-target-missing.ts`
 - Create: `tests/unit/rules/embeds/OFM022.test.ts`
 
@@ -496,6 +504,7 @@ git commit -m "feat(rules): OFM022 embed-target-missing; support async rules"
 ### Task 9: OFM023 — embed-size-invalid
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/OFM023-embed-size-invalid.ts`
 - Create: `tests/unit/rules/embeds/OFM023.test.ts`
 
@@ -547,6 +556,7 @@ git commit -m "feat(rules): OFM023 embed-size-invalid"
 ### Task 10: OFM024 — disallowed-embed-extension / OFM025 — embed-extension-mismatch
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/embeds/OFM024-disallowed-embed-extension.ts`
 - Create: `src/infrastructure/rules/ofm/embeds/OFM025-embed-extension-mismatch.ts`
 - Create: `tests/unit/rules/embeds/OFM024.test.ts`
@@ -623,6 +633,7 @@ git commit -m "feat(rules): OFM024 disallowed-embed-extension and OFM025 size-on
 ### Task 11: CalloutTypeRegistry helper
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/callouts/shared/CalloutTypeRegistry.ts`
 - Create: `tests/unit/rules/callouts/shared/CalloutTypeRegistry.test.ts`
 
@@ -665,6 +676,7 @@ git commit -m "feat(rules): add CalloutTypeRegistry"
 ### Task 12: OFM040 — unknown-callout-type
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/callouts/OFM040-unknown-callout-type.ts`
 - Create: `tests/unit/rules/callouts/OFM040.test.ts`
 
@@ -713,6 +725,7 @@ git commit -m "feat(rules): OFM040 unknown-callout-type"
 ### Task 13: OFM041 — malformed-callout
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/callouts/OFM041-malformed-callout.ts`
 - Create: `tests/unit/rules/callouts/OFM041.test.ts`
 
@@ -761,6 +774,7 @@ git commit -m "feat(rules): OFM041 malformed-callout"
 ### Task 14: OFM042 — empty-callout / OFM043 — callout-in-list / OFM044 — callout-fold-on-note
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/callouts/OFM042-empty-callout.ts`
 - Create: `src/infrastructure/rules/ofm/callouts/OFM043-callout-in-list.ts`
 - Create: `src/infrastructure/rules/ofm/callouts/OFM044-callout-fold-on-note.ts`
@@ -871,6 +885,7 @@ git commit -m "feat(rules): OFM042 empty-callout, OFM043 callout-in-list, OFM044
 ### Task 15: Register embed + callout rules
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 
 - [ ] **Append imports for OFM020–025 and OFM040–044**. Extend `ALL`.
@@ -888,6 +903,7 @@ git commit -m "feat(rules): register Phase 5 embed and callout rules"
 ### Task 16: Integration tests — embeds + callouts
 
 **Files:**
+
 - Create: `tests/fixtures/rules/embeds/image.png` (empty file is fine)
 - Create: `tests/fixtures/rules/embeds/valid.md`, `broken.md`, `invalid-size.md`
 - Create: `tests/fixtures/rules/callouts/valid.md`, `unknown.md`, `custom.md`
@@ -951,6 +967,7 @@ git commit -m "test(rules): embed + callout integration tests"
 ### Task 17: Green callouts.feature + add embeds.feature
 
 **Files:**
+
 - Modify: `docs/bdd/steps/file-steps.ts`
 - Create: `docs/bdd/features/embeds.feature`
 
@@ -1017,6 +1034,7 @@ git commit -m "feat(bdd): green callouts.feature and add embeds.feature"
 ### Task 18: Rule documentation pages
 
 **Files:**
+
 - Create: 11 pages under `docs/rules/embeds/` and `docs/rules/callouts/`
 - Modify: `docs/rules/index.md`
 

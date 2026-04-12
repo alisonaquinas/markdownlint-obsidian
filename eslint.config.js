@@ -41,6 +41,7 @@ export default [
     files: [
       "docs/bdd/steps/file-steps.ts",
       "src/infrastructure/rules/standard/registerStandard.ts",
+      "src/cli/main.ts",
     ],
     rules: {
       "max-lines": "off",

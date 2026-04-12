@@ -15,6 +15,7 @@ export interface CLIArgs {
   readonly config?: string;
   readonly configPointer?: string;
   readonly fix: boolean;
+  readonly fixCheck: boolean;
   readonly format: boolean;
   readonly noGlobs: boolean;
   readonly vaultRoot?: string;
@@ -45,6 +46,7 @@ export function buildProgram(): Command {
     .option("--config <path>", "Explicit config file path")
     .option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)")
     .option("--fix", "Auto-fix fixable errors in-place", false)
+    .option("--fix-check", "Check if fixes are needed without writing files", false)
     .option("--format", "Read stdin, write linted content to stdout", false)
     .option("--no-globs", "Ignore globs property in config file")
     .option("--vault-root <path>", "Override auto-detected vault root")

@@ -1,14 +1,5 @@
-/**
- * Single auto-fix instruction emitted by a fixable rule.
- *
- * Coordinates are 1-based to match {@link LintError} positions.
- */
-export interface Fix {
-  readonly lineNumber: number;
-  readonly editColumn: number;
-  readonly deleteCount: number;
-  readonly insertText: string;
-}
+import type { Fix } from "./Fix.js";
+export type { Fix } from "./Fix.js";
 
 /**
  * Immutable value object describing a single rule violation in a Markdown file.

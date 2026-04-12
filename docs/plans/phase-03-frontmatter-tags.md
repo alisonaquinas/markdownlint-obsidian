@@ -137,6 +137,7 @@ describe("OFMNNN", () => {
 ### Task 1: Test helper — runRuleOnSource
 
 **Files:**
+
 - Create: `tests/unit/rules/helpers/runRuleOnSource.ts`
 - Create: `tests/unit/rules/helpers/runRuleOnSource.test.ts`
 
@@ -242,6 +243,7 @@ git commit -m "test(rules): add runRuleOnSource helper"
 ### Task 2: Extend RuleParams with ParseResult and config access
 
 **Files:**
+
 - Modify: `src/domain/linting/OFMRule.ts`
 - Modify: `src/application/LintUseCase.ts`
 - Modify: `src/domain/parsing/ParseResult.ts` (Phase-2 review fix #2: freeze `frontmatter`)
@@ -299,6 +301,7 @@ git commit -m "refactor(rules): expand RuleParams with full ParseResult and Lint
 ### Task 3: Extend LinterConfig and defaults for frontmatter/tag options
 
 **Files:**
+
 - Modify: `src/domain/config/LinterConfig.ts`
 - Modify: `src/infrastructure/config/defaults.ts`
 - Modify: `src/infrastructure/config/ConfigValidator.ts`
@@ -380,6 +383,7 @@ git commit -m "feat(config): add TagConfig and expand FrontmatterConfig"
 ### Task 4: Shared helper — DateFormat
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/shared/DateFormat.ts`
 - Create: `tests/unit/rules/frontmatter/shared/DateFormat.test.ts`
 
@@ -433,6 +437,7 @@ git commit -m "feat(rules): add isIsoDate helper"
 ### Task 5: Shared helper — FrontmatterAccess
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/shared/FrontmatterAccess.ts`
 - Create: `tests/unit/rules/frontmatter/shared/FrontmatterAccess.test.ts`
 
@@ -482,6 +487,7 @@ git commit -m "feat(rules): add getByDotPath and typeOf helpers"
 ### Task 6: OFM080 — missing-required-key
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM080-missing-required-key.ts`
 - Create: `tests/unit/rules/frontmatter/OFM080.test.ts`
 
@@ -564,6 +570,7 @@ git commit -m "feat(rules): OFM080 missing-required-key"
 ### Task 7: OFM081 — invalid-date-format
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format.ts`
 - Create: `tests/unit/rules/frontmatter/OFM081.test.ts`
 
@@ -610,6 +617,7 @@ git commit -m "feat(rules): OFM081 invalid-date-format"
 ### Task 8: OFM082 — unknown-top-level-key (disabled by default)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM082-unknown-top-level-key.ts`
 - Create: `tests/unit/rules/frontmatter/OFM082.test.ts`
 
@@ -660,6 +668,7 @@ git commit -m "feat(rules): OFM082 unknown-top-level-key (warning, off by defaul
 ### Task 9: OFM083 — invalid-value-type
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type.ts`
 - Create: `tests/unit/rules/frontmatter/OFM083.test.ts`
 
@@ -715,6 +724,7 @@ git commit -m "feat(rules): OFM083 invalid-value-type"
 Each is a focused rule on the already-parsed frontmatter. One commit, one test file per rule.
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key.ts`
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key.ts`
 - Create: `src/infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string.ts`
@@ -865,6 +875,7 @@ git commit -m "feat(rules): OFM084-087 empty/duplicate/whitespace/tag-entry fron
 ### Task 11: TagFormat helper
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/tags/shared/TagFormat.ts`
 - Create: `tests/unit/rules/tags/shared/TagFormat.test.ts`
 
@@ -940,6 +951,7 @@ git commit -m "feat(rules): add isValidTag and tagDepth helpers"
 ### Task 12: OFM060 — invalid-tag-format
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/tags/OFM060-invalid-tag-format.ts`
 - Create: `tests/unit/rules/tags/OFM060.test.ts`
 
@@ -984,6 +996,7 @@ git commit -m "feat(rules): OFM060 invalid-tag-format"
 ### Task 13: OFM061 — tag-depth-exceeded
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/tags/OFM061-tag-depth-exceeded.ts`
 - Create: `tests/unit/rules/tags/OFM061.test.ts`
 
@@ -1029,6 +1042,7 @@ git commit -m "feat(rules): OFM061 tag-depth-exceeded"
 ### Task 14: OFM062–OFM066 batch — empty/trailing-slash/duplicate/case/unused
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/tags/OFM062-empty-tag.ts`
 - Create: `src/infrastructure/rules/ofm/tags/OFM063-trailing-slash.ts`
 - Create: `src/infrastructure/rules/ofm/tags/OFM064-duplicate-tag.ts`
@@ -1208,6 +1222,7 @@ git commit -m "feat(rules): OFM062-066 tag hygiene"
 ### Task 15: Register all new rules
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 
 - [ ] **Update `registerBuiltin.ts`**
@@ -1257,6 +1272,7 @@ git commit -m "feat(rules): register Phase 3 frontmatter and tag rules"
 ### Task 16: Integration test helper — spawnCli
 
 **Files:**
+
 - Create: `tests/integration/helpers/spawnCli.ts`
 - Create: `tests/integration/helpers/spawnCli.test.ts`
 
@@ -1329,6 +1345,7 @@ git commit -m "test(integration): add spawnCli helper"
 ### Task 17: Integration tests — frontmatter + tags end-to-end
 
 **Files:**
+
 - Create: `tests/fixtures/rules/frontmatter/{missing-tags,invalid-date,valid}.md`
 - Create: `tests/fixtures/rules/tags/{bad-format,duplicate,valid}.md`
 - Create: `tests/integration/rules/frontmatter-integration.test.ts`
@@ -1455,6 +1472,7 @@ git commit -m "test(rules): frontmatter + tags integration tests"
 ### Task 18: Green the existing frontmatter.feature + add tags.feature
 
 **Files:**
+
 - Modify: `docs/bdd/steps/file-steps.ts`
 - Modify: `docs/bdd/features/frontmatter.feature` (add `@smoke` tags so `npm run test:bdd` exercises them)
 - Create: `docs/bdd/features/tags.feature` (also tagged `@smoke`)
@@ -1573,6 +1591,7 @@ git commit -m "feat(bdd): wire frontmatter.feature steps and add tags.feature"
 ### Task 19: Rule documentation pages
 
 **Files:**
+
 - Create: `docs/rules/frontmatter/OFM080.md` ... `OFM087.md`
 - Create: `docs/rules/tags/OFM060.md` ... `OFM066.md`
 - Modify: `docs/rules/index.md`

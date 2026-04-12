@@ -46,6 +46,7 @@ docs/
 ### Task 1: Install fast-xml-parser
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Install**
@@ -66,6 +67,7 @@ git commit -m "chore(deps): add fast-xml-parser for JUnit/SARIF serialization"
 ### Task 2: JUnitFormatter
 
 **Files:**
+
 - Create: `src/infrastructure/formatters/JUnitFormatter.ts`
 - Create: `tests/unit/formatters/JUnitFormatter.test.ts`
 - Create: `tests/unit/formatters/__snapshots__/JUnitFormatter.snap`
@@ -202,6 +204,7 @@ git commit -m "feat(formatters): add JUnit XML formatter"
 ### Task 3: SarifFormatter
 
 **Files:**
+
 - Create: `src/infrastructure/formatters/SarifFormatter.ts`
 - Create: `tests/unit/formatters/SarifFormatter.test.ts`
 
@@ -345,6 +348,7 @@ git commit -m "feat(formatters): add SARIF 2.1.0 formatter"
 ### Task 4: Register new formatters
 
 **Files:**
+
 - Modify: `src/infrastructure/formatters/FormatterRegistry.ts`
 - Modify: `src/cli/args.ts` (update `--output-formatter` help text)
 
@@ -383,6 +387,7 @@ git commit -m "feat(cli): wire junit + sarif formatters"
 ### Task 5: GitHub Action scaffold
 
 **Files:**
+
 - Create: `action/action.yml`
 - Create: `action/package.json`
 - Create: `action/src/main.ts`
@@ -495,6 +500,7 @@ git commit -m "feat(action): add GitHub Action scaffold"
 ### Task 6: Build the action bundle
 
 **Files:**
+
 - Create: `action/dist/.gitkeep`
 - Modify: `.github/workflows/ci.yml` (run `npm run build` in `action/` on PRs)
 
@@ -514,6 +520,7 @@ git commit -m "chore(action): commit built bundle + CI drift check"
 ### Task 7: Pre-commit hook manifest
 
 **Files:**
+
 - Create: `.pre-commit-hooks.yaml`
 
 - [ ] **Write**
@@ -549,6 +556,7 @@ git commit -m "feat(pre-commit): add .pre-commit-hooks.yaml manifest"
 ### Task 8: Dockerfile
 
 **Files:**
+
 - Create: `docker/Dockerfile`
 - Create: `docker/entrypoint.sh`
 - Create: `.github/workflows/docker-publish.yml`
@@ -624,6 +632,7 @@ git commit -m "feat(docker): add Dockerfile and publish workflow"
 ### Task 9: Release prep
 
 **Files:**
+
 - Modify: `package.json` (`version: "0.8.0"`)
 - Create: `CHANGELOG.md`
 - Modify: `README.md`

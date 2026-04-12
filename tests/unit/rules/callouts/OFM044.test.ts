@@ -51,4 +51,36 @@ describe("OFM044 callout-fold-disabled", () => {
     );
     expect(errors).toEqual([]);
   });
+
+  it("emits a fix that deletes the '+' fold marker from a NOTE callout", async () => {
+    // "> [!NOTE]+ Title" — '+' is at 0-based index 9, so column 10 (1-based)
+    const errors = await runRuleOnSource(
+      OFM044Rule,
+      "> [!NOTE]+ Title\n> body\n",
+      withFoldDisabled(),
+    );
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 10,
+      deleteCount: 1,
+      insertText: "",
+    });
+  });
+
+  it("emits a fix that deletes the '-' fold marker from a TIP callout", async () => {
+    // "> [!TIP]- Title" — '-' is at 0-based index 8, so column 9 (1-based)
+    const errors = await runRuleOnSource(
+      OFM044Rule,
+      "> [!TIP]- Title\n> body\n",
+      withFoldDisabled(),
+    );
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 9,
+      deleteCount: 1,
+      insertText: "",
+    });
+  });
 });

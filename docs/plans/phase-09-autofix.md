@@ -61,6 +61,7 @@ tests/
 ### Task 1: Extract `Fix` to its own file
 
 **Files:**
+
 - Modify: `src/domain/linting/LintError.ts`
 - Create: `src/domain/linting/Fix.ts`
 - Create: `tests/unit/domain/Fix.test.ts`
@@ -110,6 +111,7 @@ git commit -m "refactor(domain): extract Fix to its own module"
 ### Task 2: FixPlan + FixConflict value objects
 
 **Files:**
+
 - Create: `src/domain/linting/FixPlan.ts`
 - Create: `src/domain/linting/FixConflict.ts`
 - Create: `tests/unit/domain/FixPlan.test.ts`
@@ -160,6 +162,7 @@ git commit -m "feat(domain): add FixPlan and FixConflict value objects"
 ### Task 3: applyFixes — the core edit engine
 
 **Files:**
+
 - Create: `src/domain/fix/applyFixes.ts`
 - Create: `tests/unit/fix/applyFixes.test.ts`
 
@@ -283,6 +286,7 @@ git commit -m "feat(fix): add applyFixes with overlap detection"
 ### Task 4: FileWriter — atomic writes
 
 **Files:**
+
 - Create: `src/infrastructure/io/FileWriter.ts`
 - Create: `tests/unit/io/FileWriter.test.ts`
 
@@ -318,6 +322,7 @@ git commit -m "feat(io): add atomic FileWriter"
 ### Task 5: FixUseCase
 
 **Files:**
+
 - Create: `src/application/FixUseCase.ts`
 - Create: `tests/unit/application/FixUseCase.test.ts`
 
@@ -389,6 +394,7 @@ git commit -m "feat(application): add FixUseCase"
 ### Task 6: Extend OFMRule fix contract
 
 **Files:**
+
 - Modify: `src/domain/linting/OFMRule.ts`
 
 The `onError` callback currently allows an optional `fix` field but only at the type level. Clarify that `fix` is required when `rule.fixable === true` and that the `editColumn` is interpreted relative to the *post-frontmatter body* line number, matching `ParseResult.lines`.
@@ -409,6 +415,7 @@ git commit -m "docs(rules): clarify Fix contract for fixable rules"
 Seven rules already advertise `fixable: true` but their implementations do not emit a Fix yet. Add the fix payload per rule. Each update is a small TDD cycle.
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string.ts`
 - Modify: `src/infrastructure/rules/ofm/tags/OFM063-trailing-slash.ts`
 - Modify: `src/infrastructure/rules/ofm/tags/OFM065-mixed-case-tag.ts`
@@ -462,6 +469,7 @@ git commit -m "feat(rules): emit Fix payload for all fixable OFM rules"
 ### Task 8: Propagate markdownlint fixInfo
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/standard/StandardRuleAdapter.ts`
 - Modify: `src/infrastructure/rules/standard/MarkdownLintAdapter.ts`
 
@@ -495,6 +503,7 @@ git commit -m "feat(rules): propagate markdownlint fixInfo through StandardRuleA
 ### Task 9: `--fix` wiring in CLI
 
 **Files:**
+
 - Modify: `src/cli/args.ts`
 - Modify: `src/cli/main.ts`
 
@@ -537,6 +546,7 @@ git commit -m "feat(cli): wire --fix and --fix-check"
 ### Task 10: Integration test — --fix round trip
 
 **Files:**
+
 - Create: `tests/integration/cli/fix.test.ts`
 
 - [ ] **Write**
@@ -589,6 +599,7 @@ git commit -m "test(cli): --fix and --fix-check round-trip integration"
 ### Task 11: Guide — autofix
 
 **Files:**
+
 - Create: `docs/guides/autofix.md`
 - Modify: `docs/rules/index.md`
 

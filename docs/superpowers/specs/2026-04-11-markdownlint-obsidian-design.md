@@ -196,6 +196,7 @@ bdd/
 ```
 
 **Scenario example (`wikilinks.feature`):**
+
 ```gherkin
 Feature: Wikilink resolution
 
@@ -366,6 +367,7 @@ Exit codes:
 ### CI integration
 
 **GitHub Actions:**
+
 ```yaml
 - uses: mscottx88/markdownlint-obsidian-action@v1
   with:
@@ -373,6 +375,7 @@ Exit codes:
 ```
 
 **Pre-commit:**
+
 ```yaml
 - repo: https://github.com/mscottx88/markdownlint-obsidian
   rev: v1.0.0
@@ -381,6 +384,7 @@ Exit codes:
 ```
 
 **Docker:**
+
 ```bash
 docker run -v $PWD:/workdir markdownlint-obsidian "**/*.md"
 ```
@@ -459,6 +463,7 @@ docs/
 ```
 
 **Wiki conventions:**
+
 - Pages cross-link with `[[wikilinks]]`
 - Rule pages include frontmatter: `tags`, `rule-code`, `severity`, `fixable`, `area`
 - `index.md` and `log.md` maintained per `llm-wiki.md` pattern — LLM updates both on every docs change
@@ -490,6 +495,7 @@ tests/
 ```
 
 **Key principles:**
+
 - Rule tests are table-driven (valid/invalid fixture lists, same pattern as markdownlint)
 - Dogfood test is a first-class CI gate — `docs/` must pass before any PR merges
 - Vault resolution tested with real fixture vaults (synthetic `.obsidian/` directories)

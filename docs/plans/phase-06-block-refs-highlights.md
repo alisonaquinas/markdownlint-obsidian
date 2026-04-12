@@ -66,6 +66,7 @@ docs/
 ### Task 1: BlockRefIndex domain service
 
 **Files:**
+
 - Create: `src/domain/vault/BlockRefIndex.ts`
 - Create: `tests/unit/domain/vault/BlockRefIndex.test.ts`
 
@@ -171,6 +172,7 @@ git commit -m "feat(vault): add BlockRefIndex domain service"
 ### Task 2: BlockRefIndexBuilder
 
 **Files:**
+
 - Create: `src/infrastructure/vault/BlockRefIndexBuilder.ts`
 - Create: `tests/unit/infrastructure/vault/BlockRefIndexBuilder.test.ts`
 
@@ -235,6 +237,7 @@ git commit -m "feat(vault): add BlockRefIndexBuilder"
 ### Task 3: Update VaultBootstrap to produce BlockRefIndex
 
 **Files:**
+
 - Modify: `src/application/VaultBootstrap.ts`
 - Modify: `src/cli/main.ts`
 - Modify: `tests/unit/application/VaultBootstrap.test.ts`
@@ -284,6 +287,7 @@ git commit -m "feat(vault): bootstrap BlockRefIndex and thread into rules"
 ### Task 4: BlockRef + Highlight + Comment config
 
 **Files:**
+
 - Modify: `src/domain/config/LinterConfig.ts`
 - Modify: `src/infrastructure/config/defaults.ts`
 - Modify: `src/infrastructure/config/ConfigValidator.ts`
@@ -341,6 +345,7 @@ git commit -m "feat(config): add BlockRef/Highlight/Comment config"
 ### Task 5: OFM100 — invalid-block-ref
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/block-references/OFM100-invalid-block-ref.ts`
 - Create: `tests/unit/rules/block-references/OFM100.test.ts`
 
@@ -385,6 +390,7 @@ git commit -m "feat(rules): OFM100 invalid-block-ref"
 ### Task 6: OFM101 — duplicate-block-id
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/block-references/OFM101-duplicate-block-id.ts`
 - Create: `tests/unit/rules/block-references/OFM101.test.ts`
 
@@ -433,6 +439,7 @@ git commit -m "feat(rules): OFM101 duplicate-block-id"
 ### Task 7: OFM102 — broken-block-link (cross-file)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/block-references/OFM102-broken-block-link.ts`
 - Create: `tests/unit/rules/block-references/OFM102.test.ts`
 
@@ -482,6 +489,7 @@ git commit -m "feat(rules): OFM102 broken-block-link"
 ### Task 8: OFM103 — block-ref-on-heading / OFM104 — block-id-format
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading.ts`
 - Create: `src/infrastructure/rules/ofm/block-references/OFM104-block-id-format.ts`
 - Create: matching test files
@@ -552,6 +560,7 @@ git commit -m "feat(rules): OFM103 block-ref-on-heading and OFM104 block-id-case
 ### Task 9: OFM120 — disallowed-highlight
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/highlights/OFM120-disallowed-highlight.ts`
 - Create: `tests/unit/rules/highlights/OFM120.test.ts`
 
@@ -603,6 +612,7 @@ git commit -m "feat(rules): OFM120 disallowed-highlight"
 ### Task 10: OFM121 — disallowed-comment
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/highlights/OFM121-disallowed-comment.ts`
 - Create: `tests/unit/rules/highlights/OFM121.test.ts`
 
@@ -656,6 +666,7 @@ git commit -m "feat(rules): OFM121 disallowed-comment"
 ### Task 11: OFM122 — malformed-highlight / OFM123 — nested-highlight / OFM124 — empty-highlight
 
 **Files:**
+
 - Create: three rule files + three test files under `src/infrastructure/rules/ofm/highlights/` and `tests/unit/rules/highlights/`
 
 - [ ] **OFM122 malformed-highlight** — detects unmatched `==` on a line (odd count).
@@ -747,6 +758,7 @@ git commit -m "feat(rules): OFM122 malformed, OFM123 nested, OFM124 empty highli
 ### Task 12: Register block-ref + highlight rules
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 
 - [ ] **Append imports for OFM100–104 and OFM120–124**. Extend `ALL`. Defaults: OFM103 and OFM104 warning; OFM120 and OFM121 enabled only when the corresponding config flips `allow: false`.
@@ -764,6 +776,7 @@ git commit -m "feat(rules): register Phase 6 block-ref and highlight rules"
 ### Task 13: Retire OFM007 placeholder
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body.ts`
 
 OFM102 now owns cross-file block-reference validation. Keep OFM007 as a deprecated alias that simply points at the same implementation so existing configs do not break.
@@ -797,6 +810,7 @@ git commit -m "refactor(rules): retire OFM007 in favour of OFM102 alias"
 ### Task 14: Integration tests
 
 **Files:**
+
 - Create: `tests/integration/rules/block-refs-integration.test.ts`
 - Create: `tests/integration/rules/highlights-integration.test.ts`
 
@@ -817,6 +831,7 @@ git commit -m "test(rules): Phase 6 integration tests"
 ### Task 15: BDD features
 
 **Files:**
+
 - Create: `docs/bdd/features/block-references.feature`
 - Create: `docs/bdd/features/highlights.feature`
 
@@ -906,6 +921,7 @@ git commit -m "feat(bdd): add block-references and highlights features"
 ### Task 16: Rule documentation pages
 
 **Files:**
+
 - Create: `docs/rules/block-references/OFM100.md` ... `OFM104.md`
 - Create: `docs/rules/highlights/OFM120.md` ... `OFM124.md`
 - Modify: `docs/rules/index.md`

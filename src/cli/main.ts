@@ -2,11 +2,14 @@ import type { Command } from "commander";
 import { buildProgram } from "./args.js";
 import { loadConfig } from "../infrastructure/config/ConfigLoader.js";
 import { discoverFiles } from "../infrastructure/discovery/FileDiscovery.js";
-import { makeRuleRegistry } from "../domain/linting/RuleRegistry.js";
+import { makeRuleRegistry, type RuleRegistry } from "../domain/linting/RuleRegistry.js";
 import { runLint } from "../application/LintUseCase.js";
+import { runFix } from "../application/FixUseCase.js";
+import { writeMarkdownFile } from "../infrastructure/io/FileWriter.js";
 import { getFormatter } from "../infrastructure/formatters/FormatterRegistry.js";
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { Formatter } from "../infrastructure/formatters/FormatterRegistry.js";
+import type { LintResult } from "../domain/linting/LintResult.js";
 import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
 import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
@@ -18,6 +21,7 @@ import { makeNodeFsExistenceChecker } from "../infrastructure/fs/NodeFsExistence
 
 interface ParsedOptions {
   readonly fix: boolean;
+  readonly fixCheck: boolean;
   readonly format: boolean;
   readonly vaultRoot?: string;
   /**
@@ -124,11 +128,6 @@ interface BootstrapOk {
   readonly result: Awaited<ReturnType<typeof bootstrapVault>>;
 }
 
-/**
- * Build the {@link runLint} dependency bag from a successful bootstrap
- * result. Extracted so {@link runPipeline} stays under the complexity cap
- * after Phase 6 added `blockRefIndex` to the runtime contract.
- */
 function buildLintDeps(ok: BootstrapOk): Parameters<typeof runLint>[3] {
   return {
     parser: makeMarkdownItParser(),
@@ -139,6 +138,27 @@ function buildLintDeps(ok: BootstrapOk): Parameters<typeof runLint>[3] {
   };
 }
 
+function resolveFormatter(name: string): Formatter | null {
+  try {
+    return getFormatter(name);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    return null;
+  }
+}
+
+function emitAndExit(results: readonly LintResult[], formatterName: string): number {
+  const formatter = resolveFormatter(formatterName);
+  if (formatter === null) return EXIT_CODES.TOOL_FAILURE;
+  const output = formatter(results);
+  if (output) process.stdout.write(output + "\n");
+  return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
+}
+
+function fmtRange(col: number, del: number): string {
+  return del === 0 ? `col ${col}` : `col ${col}–${col + del - 1}`;
+}
+
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
@@ -146,6 +166,10 @@ async function runPipeline(
   cwd: string,
 ): Promise<number> {
   const config = applyCliOverrides(rawConfig, opts);
+  if (opts.fix && opts.fixCheck) {
+    process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
+    return EXIT_CODES.TOOL_FAILURE;
+  }
   const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
   const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
   const registry = makeRuleRegistry();
@@ -154,17 +178,37 @@ async function runPipeline(
   const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
   if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
 
-  const results = await runLint(files, config, registry, buildLintDeps(bootstrapResult));
+  const lintDeps = buildLintDeps(bootstrapResult);
 
-  let formatter: Formatter;
-  try {
-    formatter = getFormatter(opts.outputFormatter);
-  } catch (err) {
-    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
-    return EXIT_CODES.TOOL_FAILURE;
+  if (opts.fix || opts.fixCheck) {
+    return runFixPipeline(files, opts, config, registry, lintDeps);
   }
 
-  const output = formatter(results);
-  if (output) process.stdout.write(output + "\n");
-  return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
+  const results = await runLint(files, config, registry, lintDeps);
+  return emitAndExit(results, opts.outputFormatter);
+}
+
+async function runFixPipeline(
+  files: readonly string[],
+  opts: ParsedOptions,
+  config: LinterConfig,
+  registry: RuleRegistry,
+  lintDeps: Parameters<typeof runLint>[3],
+): Promise<number> {
+  const writeFile = opts.fixCheck
+    ? (_path: string, _content: string): Promise<void> => Promise.resolve()
+    : writeMarkdownFile;
+  const outcome = await runFix(files, config, registry, { ...lintDeps, writeFile });
+  if (outcome.filesFixed.length > 0)
+    process.stderr.write(
+      `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
+    );
+  for (const conflict of outcome.conflicts) {
+    const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+    const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+    process.stderr.write(
+      `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
+    );
+  }
+  return emitAndExit(outcome.finalPass, opts.outputFormatter);
 }

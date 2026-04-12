@@ -46,6 +46,7 @@ tests/
 ### Task 1: Install markdownlint
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Install runtime dep**
@@ -68,6 +69,7 @@ git commit -m "chore(deps): add markdownlint"
 ### Task 2: MarkdownLintAdapter — run-once-per-file
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/MarkdownLintAdapter.ts`
 - Create: `tests/unit/rules/standard/MarkdownLintAdapter.test.ts`
 
@@ -180,6 +182,7 @@ git commit -m "feat(rules): add MarkdownLintAdapter with per-file memoization"
 ### Task 3: StandardRuleAdapter — one OFMRule per MD rule
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/StandardRuleAdapter.ts`
 - Create: `tests/unit/rules/standard/StandardRuleAdapter.test.ts`
 
@@ -255,6 +258,7 @@ git commit -m "feat(rules): add StandardRuleAdapter"
 ### Task 4: OFM_MD_CONFLICTS curated list
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/OFM_MD_CONFLICTS.ts`
 
 - [ ] **Implement**
@@ -313,6 +317,7 @@ git commit -m "feat(rules): enumerate OFM/MD rule conflicts"
 ### Task 5: registerStandard — all MD001..MD049 entries
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/registerStandard.ts`
 - Create: `tests/unit/rules/standard/registerStandard.test.ts`
 
@@ -394,6 +399,7 @@ git commit -m "feat(rules): registerStandard for MD001..MD049"
 ### Task 6: Disable conflicting rules in defaults
 
 **Files:**
+
 - Modify: `src/infrastructure/config/defaults.ts`
 
 - [ ] **Expand `DEFAULT_CONFIG.rules`** to disable each entry from `OFM_MD_CONFLICTS`:
@@ -425,6 +431,7 @@ git commit -m "feat(config): disable OFM-conflicting MD rules by default"
 ### Task 7: Wire registerStandard into registerBuiltin
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 
 - [ ] **Update**
@@ -453,6 +460,7 @@ git commit -m "feat(rules): register standard markdownlint rules alongside OFM r
 ### Task 8: Integration test
 
 **Files:**
+
 - Create: `tests/integration/rules/standard-md-integration.test.ts`
 
 - [ ] **Write**
@@ -512,6 +520,7 @@ git commit -m "test(rules): standard MD integration with OFM conflict coverage"
 ### Task 9: Documentation — standard-md catalog
 
 **Files:**
+
 - Create: `docs/rules/standard-md/index.md`
 - Create: one page per conflict (`MD013.md`, `MD033.md`, `MD034.md`, `MD041.md`, `MD042.md`)
 - Modify: `docs/rules/index.md`

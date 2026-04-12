@@ -1,8 +1,9 @@
-import type { Configuration } from "markdownlint";
+import type { Configuration, FixInfo } from "markdownlint";
 import type { OFMRule, OnErrorCallback, RuleParams } from "../../../domain/linting/OFMRule.js";
 import type { LinterConfig } from "../../../domain/config/LinterConfig.js";
 import type { RuleConfig } from "../../../domain/config/RuleConfig.js";
-import type { MarkdownLintAdapter } from "./MarkdownLintAdapter.js";
+import type { MarkdownLintAdapter, StandardViolation } from "./MarkdownLintAdapter.js";
+import { makeFix, type Fix } from "../../../domain/linting/Fix.js";
 
 /**
  * Minimal metadata needed to expose one upstream markdownlint rule as an
@@ -23,6 +24,32 @@ export interface StandardRuleDescriptor {
 }
 
 /**
+ * Translate a markdownlint {@link FixInfo} into our domain {@link Fix},
+ * filling in defaults for any fields the library left absent.
+ */
+function fixInfoToFix(fi: FixInfo, fallbackLine: number): Fix {
+  return makeFix({
+    lineNumber: fi.lineNumber ?? fallbackLine,
+    editColumn: fi.editColumn ?? 1,
+    deleteCount: fi.deleteCount ?? 0,
+    insertText: fi.insertText ?? "",
+  });
+}
+
+/**
+ * Translate a {@link StandardViolation} into the payload expected by
+ * {@link OnErrorCallback}, attaching a {@link Fix} when `fixInfo` is present.
+ */
+function buildErrorPayload(v: StandardViolation): Parameters<OnErrorCallback>[0] {
+  return {
+    line: v.lineNumber,
+    column: v.errorRange?.[0] ?? 1,
+    message: v.errorDetail ? `${v.ruleDescription}: ${v.errorDetail}` : v.ruleDescription,
+    ...(v.fixInfo !== undefined && { fix: fixInfoToFix(v.fixInfo, v.lineNumber) }),
+  };
+}
+
+/**
  * Wrap a single markdownlint rule descriptor as an {@link OFMRule}.
  *
  * The returned rule defers execution to the shared
@@ -32,8 +59,7 @@ export interface StandardRuleDescriptor {
  * per file per lint pass, regardless of how many MD rules fire.
  *
  * Violations that markdownlint returns without an `errorRange` fall back to
- * column 1; any richer range handling is deferred to the Phase 9 autofix
- * work that consumes `fixInfo` directly.
+ * column 1; `fixInfo` is translated to a {@link Fix} when present.
  */
 export function buildStandardRule(
   desc: StandardRuleDescriptor,
@@ -50,11 +76,7 @@ export function buildStandardRule(
       const violations = adapter.runOnce(filePath, parsed.raw, mdConfig);
       for (const v of violations) {
         if (!v.ruleNames.includes(desc.code)) continue;
-        onError({
-          line: v.lineNumber,
-          column: v.errorRange?.[0] ?? 1,
-          message: v.errorDetail ? `${v.ruleDescription}: ${v.errorDetail}` : v.ruleDescription,
-        });
+        onError(buildErrorPayload(v));
       }
     },
   };

@@ -77,6 +77,7 @@ docs/
 ### Task 1: VaultPath value object
 
 **Files:**
+
 - Create: `src/domain/vault/VaultPath.ts`
 - Create: `tests/unit/domain/vault/VaultPath.test.ts`
 
@@ -144,6 +145,7 @@ git commit -m "feat(vault): add VaultPath value object"
 ### Task 2: VaultRoot branded type
 
 **Files:**
+
 - Create: `src/domain/vault/VaultRoot.ts`
 
 - [ ] **Implement**
@@ -172,6 +174,7 @@ git commit -m "feat(vault): add branded VaultRoot type"
 ### Task 3: WikilinkMatcher — normalisation + resolution logic
 
 **Files:**
+
 - Create: `src/domain/vault/WikilinkMatcher.ts`
 - Create: `tests/unit/domain/vault/WikilinkMatcher.test.ts`
 
@@ -307,6 +310,7 @@ git commit -m "feat(vault): add WikilinkMatcher with exact/case-insensitive/base
 ### Task 4: VaultIndex + VaultDetector interfaces
 
 **Files:**
+
 - Create: `src/domain/vault/VaultIndex.ts`
 - Create: `src/domain/vault/VaultDetector.ts`
 
@@ -349,6 +353,7 @@ git commit -m "feat(vault): add VaultIndex and VaultDetector interfaces"
 ### Task 5: GitRootFinder + NodeFsVaultDetector
 
 **Files:**
+
 - Create: `src/infrastructure/vault/GitRootFinder.ts`
 - Create: `src/infrastructure/vault/NodeFsVaultDetector.ts`
 - Create: `tests/unit/infrastructure/vault/GitRootFinder.test.ts`
@@ -432,6 +437,7 @@ git commit -m "feat(vault): add NodeFsVaultDetector and GitRootFinder"
 ### Task 6: FileIndexBuilder — concrete VaultIndex
 
 **Files:**
+
 - Create: `src/infrastructure/vault/FileIndexBuilder.ts`
 - Create: `tests/unit/infrastructure/vault/FileIndexBuilder.test.ts`
 
@@ -527,6 +533,7 @@ git commit -m "feat(vault): add FileIndexBuilder"
 ### Task 7: VaultBootstrap application use case
 
 **Files:**
+
 - Create: `src/application/VaultBootstrap.ts`
 - Create: `tests/unit/application/VaultBootstrap.test.ts`
 
@@ -577,6 +584,7 @@ git commit -m "feat(application): add VaultBootstrap use case"
 ### Task 8: RuleParams gains `vault`, LintUseCase threads VaultIndex
 
 **Files:**
+
 - Modify: `src/domain/linting/OFMRule.ts`
 - Modify: `src/application/LintUseCase.ts`
 - Modify: `tests/unit/rules/helpers/runRuleOnSource.ts`
@@ -612,6 +620,7 @@ git commit -m "refactor(rules): thread VaultIndex into RuleParams"
 ### Task 9: OFM001 — broken-wikilink
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM001-broken-wikilink.ts`
 - Create: `tests/unit/rules/wikilinks/OFM001.test.ts`
 
@@ -698,6 +707,7 @@ git commit -m "feat(rules): OFM001 broken-wikilink"
 ### Task 10: OFM002 — invalid-wikilink-format
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM002-invalid-wikilink-format.ts`
 - Create: `tests/unit/rules/wikilinks/OFM002.test.ts`
 
@@ -760,6 +770,7 @@ git commit -m "feat(rules): OFM002 invalid-wikilink-format"
 ### Task 11: OFM003 — self-link (warning)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.ts`
 - Create: `tests/unit/rules/wikilinks/OFM003.test.ts`
 
@@ -806,6 +817,7 @@ git commit -m "feat(rules): OFM003 self-link (warning)"
 ### Task 12: OFM004 — ambiguous-target
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target.ts`
 - Create: `tests/unit/rules/wikilinks/OFM004.test.ts`
 
@@ -850,6 +862,7 @@ git commit -m "feat(rules): OFM004 ambiguous-wikilink-target"
 ### Task 13: OFM005 — case-mismatch (warning)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM005-case-mismatch.ts`
 - Create: `tests/unit/rules/wikilinks/OFM005.test.ts`
 
@@ -895,6 +908,7 @@ git commit -m "feat(rules): OFM005 wikilink-case-mismatch"
 ### Task 14: OFM006 — empty-heading / OFM007 — block-ref-in-body
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM006-empty-heading.ts`
 - Create: `src/infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body.ts`
 - Create: `tests/unit/rules/wikilinks/OFM006.test.ts`
@@ -968,6 +982,7 @@ git commit -m "feat(rules): OFM006 empty-heading and OFM007 block-ref-in-body"
 ### Task 15: Register wikilink rules
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 - Modify: `src/infrastructure/config/defaults.ts`
 
@@ -1002,6 +1017,7 @@ git commit -m "feat(rules): register wikilink rules OFM001-007"
 ### Task 16: CLI wiring — `--vault-root`, `--no-resolve`, VaultBootstrap
 
 **Files:**
+
 - Modify: `src/cli/args.ts`
 - Modify: `src/cli/main.ts`
 - Modify: `src/application/LintUseCase.ts`
@@ -1053,6 +1069,7 @@ git commit -m "feat(cli): wire VaultBootstrap and --vault-root / --no-resolve"
 ### Task 17: Integration tests — wikilinks + vault detection
 
 **Files:**
+
 - Create: `tests/integration/rules/wikilinks-integration.test.ts`
 - Create: `tests/integration/rules/vault-detection-integration.test.ts`
 
@@ -1124,6 +1141,7 @@ git commit -m "test(rules): wikilink + vault-detection integration tests"
 ### Task 18: Rule documentation pages
 
 **Files:**
+
 - Create: `docs/rules/wikilinks/OFM001.md` ... `OFM007.md`
 - Modify: `docs/rules/index.md`
 
@@ -1151,6 +1169,7 @@ git commit -m "docs(rules): wikilink rule catalog pages"
 ### Task 19: Green the existing BDD features
 
 **Files:**
+
 - Modify: `docs/bdd/steps/file-steps.ts`
 - Modify: `docs/bdd/steps/assertion-steps.ts`
 
