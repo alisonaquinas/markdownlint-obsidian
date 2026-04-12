@@ -33,10 +33,7 @@ describe("block-reference rules integration", { timeout: 20000 }, () => {
   });
 
   it("duplicate block id reports OFM101", async () => {
-    await fs.writeFile(
-      path.join(vault, "notes", "dup.md"),
-      "first ^same\n\nsecond ^same\n",
-    );
+    await fs.writeFile(path.join(vault, "notes", "dup.md"), "first ^same\n\nsecond ^same\n");
     const r = await spawnCli(["**/*.md"], vault);
     expect(r.exitCode).toBe(1);
     expect(r.stdout).toContain("OFM101");

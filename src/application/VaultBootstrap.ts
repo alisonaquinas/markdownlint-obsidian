@@ -2,10 +2,7 @@ import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { VaultDetector } from "../domain/vault/VaultDetector.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";
 import type { VaultPath } from "../domain/vault/VaultPath.js";
-import {
-  makeBlockRefIndex,
-  type BlockRefIndex,
-} from "../domain/vault/BlockRefIndex.js";
+import { makeBlockRefIndex, type BlockRefIndex } from "../domain/vault/BlockRefIndex.js";
 
 /**
  * Output of a successful {@link bootstrapVault} run.

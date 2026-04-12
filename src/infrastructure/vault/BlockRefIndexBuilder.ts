@@ -1,9 +1,6 @@
 import type { Parser } from "../../domain/parsing/Parser.js";
 import type { VaultPath } from "../../domain/vault/VaultPath.js";
-import {
-  makeBlockRefIndex,
-  type BlockRefIndex,
-} from "../../domain/vault/BlockRefIndex.js";
+import { makeBlockRefIndex, type BlockRefIndex } from "../../domain/vault/BlockRefIndex.js";
 
 /**
  * Infrastructure dependencies required to scan a vault for block references.

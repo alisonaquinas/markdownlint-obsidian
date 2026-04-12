@@ -3,10 +3,7 @@ import { bootstrapVault } from "../../../src/application/VaultBootstrap.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import type { VaultIndex } from "../../../src/domain/vault/VaultIndex.js";
 import type { LinterConfig } from "../../../src/domain/config/LinterConfig.js";
-import {
-  makeBlockRefIndex,
-  type BlockRefIndex,
-} from "../../../src/domain/vault/BlockRefIndex.js";
+import { makeBlockRefIndex, type BlockRefIndex } from "../../../src/domain/vault/BlockRefIndex.js";
 
 function stubIndex(root = "/stub"): VaultIndex {
   return Object.freeze({
@@ -102,9 +99,7 @@ describe("bootstrapVault", () => {
 
   it("invokes buildBlockRefIndex with the file list from the vault", async () => {
     const cfg: LinterConfig = DEFAULT_CONFIG;
-    const files = [
-      Object.freeze({ relative: "a.md", absolute: "/v/a.md", stem: "a" }),
-    ];
+    const files = [Object.freeze({ relative: "a.md", absolute: "/v/a.md", stem: "a" })];
     const idx: VaultIndex = Object.freeze({
       root: "/v",
       all: () => files,

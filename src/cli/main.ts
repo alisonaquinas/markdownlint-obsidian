@@ -119,6 +119,25 @@ async function bootstrapVaultOrExit(
   }
 }
 
+interface BootstrapOk {
+  readonly result: Awaited<ReturnType<typeof bootstrapVault>>;
+}
+
+/**
+ * Build the {@link runLint} dependency bag from a successful bootstrap
+ * result. Extracted so {@link runPipeline} stays under the complexity cap
+ * after Phase 6 added `blockRefIndex` to the runtime contract.
+ */
+function buildLintDeps(ok: BootstrapOk): Parameters<typeof runLint>[3] {
+  return {
+    parser: makeMarkdownItParser(),
+    readFile: readMarkdownFile,
+    vault: ok.result?.vault ?? null,
+    blockRefIndex: ok.result?.blockRefs ?? null,
+    fsCheck: makeNodeFsExistenceChecker(),
+  };
+}
+
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
@@ -134,13 +153,7 @@ async function runPipeline(
   const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
   if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
 
-  const results = await runLint(files, config, registry, {
-    parser: makeMarkdownItParser(),
-    readFile: readMarkdownFile,
-    vault: bootstrapResult.result?.vault ?? null,
-    blockRefIndex: bootstrapResult.result?.blockRefs ?? null,
-    fsCheck: makeNodeFsExistenceChecker(),
-  });
+  const results = await runLint(files, config, registry, buildLintDeps(bootstrapResult));
 
   const output = getFormatter(opts.outputFormatter)(results);
   if (output) process.stdout.write(output + "\n");

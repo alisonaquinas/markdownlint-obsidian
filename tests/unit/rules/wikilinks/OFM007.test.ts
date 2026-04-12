@@ -41,14 +41,7 @@ describe("OFM007 wikilink-block-ref (alias of OFM102)", () => {
   it("ignores plain wikilinks without a block ref", async () => {
     const vault = stubVault(["notes/a.md"]);
     const blockRefs = makeBlockRefIndex(new Map([["notes/a.md", new Set(["intro"])]]));
-    const errors = await runRuleOnSource(
-      OFM007Rule,
-      "[[a]]\n",
-      {},
-      vault,
-      undefined,
-      blockRefs,
-    );
+    const errors = await runRuleOnSource(OFM007Rule, "[[a]]\n", {}, vault, undefined, blockRefs);
     expect(errors).toEqual([]);
   });
 
