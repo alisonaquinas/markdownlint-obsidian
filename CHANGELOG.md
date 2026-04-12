@@ -5,6 +5,33 @@ All notable changes to `markdownlint-obsidian` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-04-12
+
+### Added
+
+- **Phase 10 — Custom Rules API**
+  - `markdownlint-obsidian/api` subpath exports every type and factory needed
+    to author a custom rule: `OFMRule`, `RuleParams`, `OnErrorCallback`,
+    `LintError`, `LintResult`, `Fix`, parse result VOs, config interfaces,
+    and vault types.
+  - `markdownlint-obsidian/rules` subpath re-exports all built-in rule
+    constants for composition and wrapping.
+  - `customRules` config key dynamically imports each listed module path and
+    registers the exported rules alongside built-ins.
+  - Load failures emit `OFM905` to stderr and never crash the run; name
+    collisions emit `OFM904` and skip the duplicate.
+  - Two worked examples under `examples/rules/`: `require-frontmatter-status`
+    (CUSTOM001) and `banned-wikilink-targets` (CUSTOM002), both with
+    integration-test coverage.
+  - `docs/guides/custom-rules.md` — full authoring walkthrough.
+  - `docs/guides/public-api.md` — subpath reference and stability guarantee.
+
+### Changed
+
+- `package.json` version bumped to `1.0.0`.
+- `package.json` gains `exports` field with `.`, `./api`, and `./rules`
+  subpaths and declares `examples/` in `files`.
+
 ## [0.8.0] - 2026-04-11
 
 ### Added
