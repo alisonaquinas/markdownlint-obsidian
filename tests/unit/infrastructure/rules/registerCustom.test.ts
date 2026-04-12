@@ -41,7 +41,6 @@ describe("registerCustomRules", () => {
     const stderrSpy = vi.spyOn(process.stderr, "write").mockImplementation(() => true);
 
     expect(() => registerCustomRules(registry, [duplicate])).not.toThrow();
-    stderrSpy.mockRestore();
   });
 
   it("writes an OFM904 line to stderr containing the rule name and error message", () => {
