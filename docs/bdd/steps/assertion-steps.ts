@@ -36,6 +36,11 @@ Then("error OFM001 is reported \\(missing-page not in vault)", function (this: O
   assert.ok(output.includes("OFM001"), `expected output to contain "OFM001"`);
 });
 
+Then("stderr contains {string}", function (this: OFMWorld, expected: string) {
+  const stderr = this.cliResult?.stderr ?? "";
+  assert.ok(stderr.includes(expected), `expected stderr to contain "${expected}", got: ${stderr}`);
+});
+
 After(async function (this: OFMWorld) {
   await this.cleanup();
 });

@@ -246,6 +246,49 @@ Given("a config file with invalid JSON", async function (this: OFMWorld) {
   await this.writeFile(".obsidian-linter.jsonc", JSON.stringify({ __invalid_key__: true }));
 });
 
+// ---- Phase 10 custom-rules steps ------------------------------------------
+
+Given("a vault with a custom rule that always fires", async function (this: OFMWorld) {
+  await this.initVault();
+  // Write the custom rule module — a plain ESM file that always fires DEMO001.
+  await this.writeFile(
+    "rules/demo-rule.mjs",
+    [
+      "export default {",
+      '  names: ["DEMO001"],',
+      '  description: "Demo rule that always fires",',
+      '  tags: ["demo"],',
+      '  severity: "error",',
+      "  fixable: false,",
+      "  run(_params, onError) {",
+      '    onError({ line: 1, column: 1, message: "demo rule fired" });',
+      "  },",
+      "};",
+    ].join("\n") + "\n",
+  );
+  // Config pointing at the rule module.
+  await this.writeFile(
+    ".obsidian-linter.jsonc",
+    JSON.stringify({ customRules: ["./rules/demo-rule.mjs"] }),
+  );
+  // A note file for the linter to process.
+  await this.writeFile("notes/note.md", "# Note\n");
+});
+
+Given(
+  "a vault with a customRules entry pointing to a missing file",
+  async function (this: OFMWorld) {
+    await this.initVault();
+    // Config pointing at a file that does not exist — triggers OFM905 on stderr.
+    await this.writeFile(
+      ".obsidian-linter.jsonc",
+      JSON.stringify({ customRules: ["./does-not-exist.mjs"] }),
+    );
+    // A clean note file so the linter has something to process.
+    await this.writeFile("notes/clean.md", "# Clean\n");
+  },
+);
+
 Given("a file with a warning-severity rule violation", async function (this: OFMWorld) {
   await this.initVault();
   // OFM005 (wikilink-case-mismatch) has severity "warning". It fires when a
