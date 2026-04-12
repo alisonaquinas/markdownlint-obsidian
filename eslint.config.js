@@ -36,4 +36,14 @@ export default [
       "max-lines-per-function": "off",
     },
   },
+  {
+    // Data-table files: these are pure data with no real complexity
+    files: [
+      "docs/bdd/steps/file-steps.ts",
+      "src/infrastructure/rules/standard/registerStandard.ts",
+    ],
+    rules: {
+      "max-lines": "off",
+    },
+  },
 ];
