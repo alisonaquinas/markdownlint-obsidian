@@ -31,6 +31,12 @@ const MISSING_RUN_SRC = `
 export default { names: ["BAD001"], description: "bad", tags: [], severity: "error", fixable: false };
 `;
 
+const NAMED_EXPORT_SRC = `
+export const rules = [
+  { names: ["UNIT004"], description: "named-export-rule", tags: [], severity: "error", fixable: false, run(_p, _e) {} },
+];
+`;
+
 let tmp: string;
 
 async function writeTmp(name: string, src: string): Promise<string> {
@@ -71,5 +77,13 @@ describe("loadCustomRules", () => {
     expect(rules).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("run");
+  });
+
+  it("loads a named 'rules' export", async () => {
+    const p = await writeTmp("named.mjs", NAMED_EXPORT_SRC);
+    const { rules, errors } = await loadCustomRules([p], tmp);
+    expect(errors).toHaveLength(0);
+    expect(rules).toHaveLength(1);
+    expect(rules[0]?.names[0]).toBe("UNIT004");
   });
 });

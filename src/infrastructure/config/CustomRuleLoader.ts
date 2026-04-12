@@ -59,6 +59,18 @@ function validateRule(candidate: unknown, modulePath: string): OFMRule {
   if (!Array.isArray(rule.names) || rule.names.length === 0) {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "names"`);
   }
+  if (typeof rule.description !== "string") {
+    throw new Error(`Custom rule from "${modulePath}" is missing required field "description"`);
+  }
+  if (!Array.isArray(rule.tags)) {
+    throw new Error(`Custom rule from "${modulePath}" is missing required field "tags"`);
+  }
+  if (rule.severity !== "error" && rule.severity !== "warning") {
+    throw new Error(`Custom rule from "${modulePath}" has invalid or missing "severity" (must be "error" or "warning")`);
+  }
+  if (typeof rule.fixable !== "boolean") {
+    throw new Error(`Custom rule from "${modulePath}" is missing required field "fixable"`);
+  }
   if (typeof rule.run !== "function") {
     throw new Error(`Custom rule from "${modulePath}" is missing required field "run"`);
   }
