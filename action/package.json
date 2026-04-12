@@ -4,7 +4,7 @@
   "private": true,
   "description": "GitHub Action wrapper for markdownlint-obsidian",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/main.js"
+    "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=cjs --main-fields=module,main --outfile=dist/main.js"
   },
   "dependencies": {
     "@actions/core": "^1.10.0"

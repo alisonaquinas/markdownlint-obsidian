@@ -14,7 +14,12 @@ async function run(): Promise<void> {
   const vaultRoot = core.getInput("vault-root");
   const config = core.getInput("config");
   const format = core.getInput("format") || "default";
-  const failOnWarnings = core.getBooleanInput("fail-on-warnings");
+  // `getBooleanInput` throws when the input is missing entirely (e.g. during
+  // a local smoke test). Fall back to the literal "false" default documented
+  // in `action.yml` so the action stays runnable without GitHub's input
+  // injection.
+  const rawFailOnWarnings = core.getInput("fail-on-warnings") || "false";
+  const failOnWarnings = /^(true|True|TRUE)$/.test(rawFailOnWarnings);
 
   const argv = ["node", "markdownlint-obsidian"];
   if (vaultRoot) argv.push("--vault-root", vaultRoot);

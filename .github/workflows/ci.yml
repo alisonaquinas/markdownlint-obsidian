@@ -33,3 +33,14 @@ jobs:
 
       - name: Dogfood docs/
         run: npm run test:dogfood
+
+      - name: Verify action bundle is up-to-date
+        run: |
+          cd action
+          npm install
+          npm run build
+          cd ..
+          git diff --exit-code action/dist/ || {
+            echo "action/dist/ is stale — run 'cd action && npm install && npm run build' and commit"
+            exit 1
+          }
