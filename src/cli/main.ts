@@ -194,5 +194,8 @@ async function runFixPipeline(
   if (outcome.filesFixed.length > 0) {
     process.stderr.write(`Fixed ${outcome.filesFixed.length} file(s)\n`);
   }
+  for (const conflict of outcome.conflicts) {
+    process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason}\n`);
+  }
   return emitAndExit(outcome.finalPass, opts.outputFormatter);
 }

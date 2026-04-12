@@ -48,7 +48,7 @@ Two fixes on the same file that target overlapping character ranges cannot both 
 
 - The **first** fix (earlier in source order) is applied.
 - The **second** fix is skipped.
-- An **OFM903** (`fix-conflict`) diagnostic is emitted identifying both rules and the conflicting range.
+- The conflict is reported to stderr as a `[fix-conflict]` message showing the file path and affected line.
 
 In practice, conflicts are rare because each rule owns a distinct part of the syntax it targets.
 
