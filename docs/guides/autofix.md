@@ -84,4 +84,4 @@ Two fixes applied: OFM086 removed trailing whitespace from the `title` value; OF
   # Exits 1 if any fixable violation is present; forces authors to run --fix locally
 ```
 
-`--fix-check` reports `Fixed N file(s)` to stderr to tell you exactly which files would be changed.
+`--fix-check` reports `Would fix N file(s)` to stderr to tell you exactly which files would be changed.

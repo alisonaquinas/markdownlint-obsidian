@@ -191,11 +191,11 @@ async function runFixPipeline(
     ? (_path: string, _content: string): Promise<void> => Promise.resolve()
     : writeMarkdownFile;
   const outcome = await runFix(files, config, registry, { ...lintDeps, writeFile });
-  if (outcome.filesFixed.length > 0) {
-    process.stderr.write(`Fixed ${outcome.filesFixed.length} file(s)\n`);
-  }
-  for (const conflict of outcome.conflicts) {
+  if (outcome.filesFixed.length > 0)
+    process.stderr.write(
+      `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
+    );
+  for (const conflict of outcome.conflicts)
     process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason}\n`);
-  }
   return emitAndExit(outcome.finalPass, opts.outputFormatter);
 }

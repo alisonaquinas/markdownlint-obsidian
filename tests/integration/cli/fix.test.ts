@@ -38,7 +38,7 @@ describe("--fix and --fix-check round-trip", { timeout: 30000 }, () => {
     const result = await spawnCli(["--fix-check", "**/*.md"], tmp);
 
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("Fixed 1 file(s)");
+    expect(result.stderr).toContain("Would fix 1 file(s)");
     const content = await fs.readFile(filePath, "utf8");
     expect(content).toBe(original); // file must be unchanged on disk
   });
