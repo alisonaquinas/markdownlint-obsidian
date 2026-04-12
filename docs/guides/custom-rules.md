@@ -111,7 +111,7 @@ export default {
 
 ## Register via Config
 
-Add your custom rule paths to `.obsidian-linter.jsonc` in your vault root. Paths are resolved relative to the config file:
+Add your custom rule paths to `.obsidian-linter.jsonc` in your vault root. Paths are resolved relative to the current working directory (the directory from which you run the linter):
 
 ```jsonc
 {
