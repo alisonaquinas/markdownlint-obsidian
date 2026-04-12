@@ -36,7 +36,7 @@ export function buildProgram(): Command {
   program
     .name("markdownlint-obsidian")
     .description("Obsidian Flavored Markdown linter for CI pipelines")
-    .version("0.1.0")
+    .version("0.8.0")
     .argument("[globs...]", "Glob patterns for files to lint")
     .option("--config <path>", "Explicit config file path")
     .option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)")

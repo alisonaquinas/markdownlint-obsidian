@@ -1,11 +1,36 @@
 {
   "name": "markdownlint-obsidian",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Obsidian Flavored Markdown linter for CI pipelines",
   "type": "module",
   "bin": {
     "markdownlint-obsidian": "./bin/markdownlint-obsidian.js"
   },
+  "files": [
+    "bin/",
+    "dist/",
+    "src/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisonaquinas/markdownlint-obsidian.git"
+  },
+  "homepage": "https://github.com/alisonaquinas/markdownlint-obsidian#readme",
+  "bugs": {
+    "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
+  },
+  "keywords": [
+    "markdown",
+    "markdownlint",
+    "obsidian",
+    "linter",
+    "ci",
+    "sarif",
+    "junit"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
