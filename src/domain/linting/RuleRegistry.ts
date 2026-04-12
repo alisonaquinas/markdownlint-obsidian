@@ -37,10 +37,14 @@ export function makeRuleRegistry(): RuleRegistry {
 
   return {
     register(rule: OFMRule): void {
+      // Pass 1 — validate all names before touching the map
       for (const name of rule.names) {
         if (byName.has(name)) {
           throw new Error(`Duplicate rule name: ${name}`);
         }
+      }
+      // Pass 2 — all names are free; safe to insert
+      for (const name of rule.names) {
         byName.set(name, rule);
       }
     },

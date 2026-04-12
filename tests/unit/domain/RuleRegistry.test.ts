@@ -30,4 +30,32 @@ describe("RuleRegistry", () => {
     registry.register(stubRule);
     expect(registry.all()).toHaveLength(1);
   });
+
+  it("does not partially insert a rule when a later name collides", () => {
+    const registry = makeRuleRegistry();
+    // Seed the registry with a rule that owns the name "EXISTING"
+    const existing: OFMRule = {
+      names: ["EXISTING"],
+      description: "already registered",
+      tags: [],
+      severity: "error",
+      fixable: false,
+      run: (): void => undefined,
+    };
+    registry.register(existing);
+
+    // A new rule whose first name is fresh but whose second name collides
+    const conflicting: OFMRule = {
+      names: ["NEW-CODE", "EXISTING"],
+      description: "should not be inserted",
+      tags: [],
+      severity: "error",
+      fixable: false,
+      run: (): void => undefined,
+    };
+    expect(() => registry.register(conflicting)).toThrow("EXISTING");
+
+    // "NEW-CODE" must NOT be accessible after the failed registration
+    expect(registry.get("NEW-CODE")).toBeUndefined();
+  });
 });
