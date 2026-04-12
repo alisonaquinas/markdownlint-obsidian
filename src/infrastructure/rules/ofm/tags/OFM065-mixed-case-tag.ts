@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { makeFix } from "../../../../domain/linting/Fix.js";
 
 /**
  * OFM065 — mixed-case-tag.
@@ -28,6 +29,12 @@ export const OFM065Rule: OFMRule = {
           line: tag.position.line,
           column: tag.position.column,
           message: `Tag "${tag.raw}" case differs from earlier "${seen}"`,
+          fix: makeFix({
+            lineNumber: tag.position.line,
+            editColumn: tag.position.column,
+            deleteCount: tag.raw.length,
+            insertText: "#" + seen,
+          }),
         });
       }
     }

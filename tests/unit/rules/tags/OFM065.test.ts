@@ -23,4 +23,18 @@ describe("OFM065 mixed-case-tag", () => {
     });
     expect(errors).toEqual([]);
   });
+
+  it("emits a fix that replaces the wrong-case tag with the canonical form", async () => {
+    // "Body #project then #Project later."
+    // '#Project' starts at column 20 (1-based), raw="#Project", length=8
+    // canonical seen="project", so insertText="#project"
+    const errors = await runRuleOnSource(OFM065Rule, "Body #project then #Project later.");
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 20,
+      deleteCount: 8,
+      insertText: "#project",
+    });
+  });
 });

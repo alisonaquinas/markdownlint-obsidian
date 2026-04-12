@@ -26,4 +26,17 @@ describe("OFM104 block-id-case", () => {
     const errors = await runRuleOnSource(OFM104Rule, "Paragraph ^123-abc\n");
     expect(errors).toEqual([]);
   });
+
+  it("emits a fix that lowercases the block id", async () => {
+    // "Paragraph ^Intro" — '^' is at column 11, id "Intro" starts at column 12
+    // fix replaces "Intro" (length 5) with "intro"
+    const errors = await runRuleOnSource(OFM104Rule, "Paragraph ^Intro\n");
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 12,
+      deleteCount: 5,
+      insertText: "intro",
+    });
+  });
 });

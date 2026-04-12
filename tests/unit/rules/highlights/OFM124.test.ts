@@ -20,4 +20,16 @@ describe("OFM124 empty-highlight", () => {
     const errors = await runRuleOnSource(OFM124Rule, "plain prose\n");
     expect(errors).toEqual([]);
   });
+
+  it("emits a fix that deletes the entire empty highlight span", async () => {
+    // "prose ==   ==" — '==' starts at column 7, text="   " (3 spaces), deleteCount=3+4=7
+    const errors = await runRuleOnSource(OFM124Rule, "prose ==   ==\n");
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 1,
+      editColumn: 7,
+      deleteCount: 7,
+      insertText: "",
+    });
+  });
 });

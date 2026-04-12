@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { makeFix } from "../../../../domain/linting/Fix.js";
 
 /**
  * OFM104 — block-id-case.
@@ -26,6 +27,12 @@ export const OFM104Rule: OFMRule = {
           line: ref.position.line,
           column: ref.position.column,
           message: `Block id "^${ref.blockId}" should be lowercase`,
+          fix: makeFix({
+            lineNumber: ref.position.line,
+            editColumn: ref.position.column + 1,
+            deleteCount: ref.blockId.length,
+            insertText: ref.blockId.toLowerCase(),
+          }),
         });
       }
     }

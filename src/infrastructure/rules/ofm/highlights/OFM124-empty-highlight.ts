@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { makeFix } from "../../../../domain/linting/Fix.js";
 
 /**
  * OFM124 — empty-highlight.
@@ -23,6 +24,12 @@ export const OFM124Rule: OFMRule = {
           line: h.position.line,
           column: h.position.column,
           message: "Empty highlight `====`",
+          fix: makeFix({
+            lineNumber: h.position.line,
+            editColumn: h.position.column,
+            deleteCount: h.text.length + 4,
+            insertText: "",
+          }),
         });
       }
     }

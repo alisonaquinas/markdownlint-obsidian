@@ -47,4 +47,20 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
     expect(errors[0]?.message).toContain("description");
     expect(errors[0]?.line).toBe(3);
   });
+
+  it("emits a fix that deletes the trailing whitespace from a top-level string value", async () => {
+    // '---\ntitle: "Note  "\n---\nbody'
+    // frontmatterRaw = 'title: "Note  "\n'
+    // rawLine[0] = 'title: "Note  "' — "Note" starts at 0-based index 8
+    // trailing whitespace (2 spaces) starts at column 8+4+1=13 (1-based)
+    // trailingCount=2
+    const errors = await runRuleOnSource(OFM086Rule, '---\ntitle: "Note  "\n---\nbody');
+    expect(errors[0]?.fix).toBeDefined();
+    expect(errors[0]?.fix).toMatchObject({
+      lineNumber: 2,
+      editColumn: 13,
+      deleteCount: 2,
+      insertText: "",
+    });
+  });
 });

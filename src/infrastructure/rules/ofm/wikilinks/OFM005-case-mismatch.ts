@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { makeFix } from "../../../../domain/linting/Fix.js";
 
 /**
  * OFM005 — wikilink-case-mismatch.
@@ -25,6 +26,12 @@ export const OFM005Rule: OFMRule = {
           line: link.position.line,
           column: link.position.column,
           message: `Wikilink "${link.target}" case differs from canonical "${match.path.relative}"`,
+          fix: makeFix({
+            lineNumber: link.position.line,
+            editColumn: link.position.column + 2,
+            deleteCount: link.target.length,
+            insertText: match.path.relative,
+          }),
         });
       }
     }

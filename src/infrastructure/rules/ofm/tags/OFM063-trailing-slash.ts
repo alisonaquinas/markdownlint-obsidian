@@ -1,4 +1,5 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
+import { makeFix } from "../../../../domain/linting/Fix.js";
 
 /**
  * OFM063 — tag-trailing-slash.
@@ -21,6 +22,12 @@ export const OFM063Rule: OFMRule = {
           line: tag.position.line,
           column: tag.position.column,
           message: `Tag "${tag.raw}" has a trailing slash`,
+          fix: makeFix({
+            lineNumber: tag.position.line,
+            editColumn: tag.position.column + tag.raw.length - 1,
+            deleteCount: 1,
+            insertText: "",
+          }),
         });
       }
     }
