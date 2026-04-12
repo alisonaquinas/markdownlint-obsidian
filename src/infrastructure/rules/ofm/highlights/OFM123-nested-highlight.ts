@@ -35,17 +35,24 @@ import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
  */
 function hasNestedHighlight(line: string): boolean {
   const parts = line.split("==");
+  // A single ==...== span produces exactly 3 parts: ["", content, ""].
+  // With only 3 parts there is no room for a second == pair, so nesting
+  // is impossible regardless of trailing whitespace in the content.
+  if (parts.length <= 3) return false;
   // Odd-indexed parts are the content between each greedy ==...== pair.
   // If any of them ends with whitespace, the closing `==` is an inner
   // opener rather than a proper delimiter — that is a nested highlight.
   for (let i = 1; i < parts.length; i += 2) {
     const segment = parts[i];
-    // A segment that has real content (non-whitespace) but ends with
-    // whitespace indicates the closing `==` is actually an inner opener
-    // rather than a proper delimiter — that is a nested highlight.
-    // Pure-whitespace segments (e.g. from `== ==`) are not flagged since
-    // they represent invalid/empty spans rather than nesting.
-    if (segment !== undefined && segment.trim().length > 0 && /\s$/.test(segment)) {
+    // Only flag segment[i] when there are more parts after the presumed
+    // inner span (i.e. parts.length > i + 2).  This ensures a trailing
+    // space in a single span like `==foo ==` is never treated as nesting.
+    if (
+      segment !== undefined &&
+      segment.trim().length > 0 &&
+      /\s$/.test(segment) &&
+      parts.length > i + 2
+    ) {
       return true;
     }
   }

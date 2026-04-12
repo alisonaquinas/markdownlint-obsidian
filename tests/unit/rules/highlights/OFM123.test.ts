@@ -45,4 +45,11 @@ describe("OFM123 nested-highlight", () => {
     const errors = await runRuleOnSource(OFM123Rule, "Use `a == b` for comparison\n");
     expect(errors).toEqual([]);
   });
+
+  it("does NOT flag a single highlight with trailing space in body (==foo ==)", async () => {
+    // "==foo ==" splits on "==" into ["", "foo ", ""] — only 3 parts, no nesting possible.
+    // OFM086 may warn about the trailing space, but OFM123 must not fire.
+    const errors = await runRuleOnSource(OFM123Rule, "==foo ==\n");
+    expect(errors).toEqual([]);
+  });
 });
