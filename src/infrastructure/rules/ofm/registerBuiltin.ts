@@ -33,6 +33,16 @@ import { OFM041Rule } from "./callouts/OFM041-malformed-callout.js";
 import { OFM042Rule } from "./callouts/OFM042-empty-callout.js";
 import { OFM043Rule } from "./callouts/OFM043-callout-in-list.js";
 import { OFM044Rule } from "./callouts/OFM044-callout-fold-disabled.js";
+import { OFM100Rule } from "./block-references/OFM100-invalid-block-ref.js";
+import { OFM101Rule } from "./block-references/OFM101-duplicate-block-id.js";
+import { OFM102Rule } from "./block-references/OFM102-broken-block-link.js";
+import { OFM103Rule } from "./block-references/OFM103-block-ref-on-heading.js";
+import { OFM104Rule } from "./block-references/OFM104-block-id-format.js";
+import { OFM120Rule } from "./highlights/OFM120-disallowed-highlight.js";
+import { OFM121Rule } from "./highlights/OFM121-disallowed-comment.js";
+import { OFM122Rule } from "./highlights/OFM122-malformed-highlight.js";
+import { OFM123Rule } from "./highlights/OFM123-nested-highlight.js";
+import { OFM124Rule } from "./highlights/OFM124-empty-highlight.js";
 
 const ALL = [
   frontmatterParseErrorRule,
@@ -69,6 +79,16 @@ const ALL = [
   OFM042Rule,
   OFM043Rule,
   OFM044Rule,
+  OFM100Rule,
+  OFM101Rule,
+  OFM102Rule,
+  OFM103Rule,
+  OFM104Rule,
+  OFM120Rule,
+  OFM121Rule,
+  OFM122Rule,
+  OFM123Rule,
+  OFM124Rule,
 ];
 
 /** Register every built-in OFM rule with a RuleRegistry. */

@@ -12,6 +12,7 @@ import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuilti
 import { bootstrapVault } from "../application/VaultBootstrap.js";
 import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
 import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
+import { buildBlockRefIndex } from "../infrastructure/vault/BlockRefIndexBuilder.js";
 import { makeNodeFsExistenceChecker } from "../infrastructure/fs/NodeFsExistenceChecker.js";
 
 interface ParsedOptions {
@@ -101,18 +102,40 @@ function applyCliOverrides(config: LinterConfig, opts: ParsedOptions): LinterCon
 async function bootstrapVaultOrExit(
   cwd: string,
   config: LinterConfig,
-): Promise<{ vault: Awaited<ReturnType<typeof bootstrapVault>> } | { exitCode: number }> {
+): Promise<{ result: Awaited<ReturnType<typeof bootstrapVault>> } | { exitCode: number }> {
   try {
-    const vault = await bootstrapVault(cwd, config, {
+    const parser = makeMarkdownItParser();
+    const result = await bootstrapVault(cwd, config, {
       detector: makeNodeFsVaultDetector(),
       buildIndex: buildFileIndex,
+      buildBlockRefIndex: (files) =>
+        buildBlockRefIndex(files, { parser, readFile: readMarkdownFile }),
     });
-    return { vault };
+    return { result };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     process.stderr.write(`${message}\n`);
     return { exitCode: EXIT_CODES.TOOL_FAILURE };
   }
+}
+
+interface BootstrapOk {
+  readonly result: Awaited<ReturnType<typeof bootstrapVault>>;
+}
+
+/**
+ * Build the {@link runLint} dependency bag from a successful bootstrap
+ * result. Extracted so {@link runPipeline} stays under the complexity cap
+ * after Phase 6 added `blockRefIndex` to the runtime contract.
+ */
+function buildLintDeps(ok: BootstrapOk): Parameters<typeof runLint>[3] {
+  return {
+    parser: makeMarkdownItParser(),
+    readFile: readMarkdownFile,
+    vault: ok.result?.vault ?? null,
+    blockRefIndex: ok.result?.blockRefs ?? null,
+    fsCheck: makeNodeFsExistenceChecker(),
+  };
 }
 
 async function runPipeline(
@@ -130,12 +153,7 @@ async function runPipeline(
   const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
   if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
 
-  const results = await runLint(files, config, registry, {
-    parser: makeMarkdownItParser(),
-    readFile: readMarkdownFile,
-    vault: bootstrapResult.vault,
-    fsCheck: makeNodeFsExistenceChecker(),
-  });
+  const results = await runLint(files, config, registry, buildLintDeps(bootstrapResult));
 
   const output = getFormatter(opts.outputFormatter)(results);
   if (output) process.stdout.write(output + "\n");

@@ -69,6 +69,18 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
     allowList: null,
     denyList: Object.freeze([]),
   }),
+  blockRefs: Object.freeze({
+    idPattern: "^[A-Za-z0-9-]{1,32}$",
+    requireUnique: true,
+  }),
+  highlights: Object.freeze({
+    allow: true,
+    allowedGlobs: Object.freeze([]),
+  }),
+  comments: Object.freeze({
+    allow: true,
+    disallowMultiline: false,
+  }),
   rules: Object.freeze({
     OFM062: Object.freeze({ enabled: false }),
     OFM066: Object.freeze({ enabled: false }),
@@ -76,6 +88,12 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
     // OFM003 (self-link) is disabled by default; self-links are commonly
     // intentional (sidebars, navigation blocks).
     OFM003: Object.freeze({ enabled: false }),
+    // OFM120 / OFM121 are gated on the `highlights` and `comments` config
+    // blocks. Disable them by default — the explicit rule flag keeps the
+    // registry ordering deterministic while letting teams flip a single
+    // config key (`highlights.allow = false`) to opt in.
+    OFM120: Object.freeze({ enabled: false }),
+    OFM121: Object.freeze({ enabled: false }),
   }),
   customRules: Object.freeze([]),
   globs: Object.freeze(["**/*.md"]),

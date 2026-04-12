@@ -5,6 +5,7 @@ import { makeMarkdownItParser } from "../../../../src/infrastructure/parser/Mark
 import { DEFAULT_CONFIG } from "../../../../src/infrastructure/config/defaults.js";
 import type { LinterConfig } from "../../../../src/domain/config/LinterConfig.js";
 import type { VaultIndex } from "../../../../src/domain/vault/VaultIndex.js";
+import type { BlockRefIndex } from "../../../../src/domain/vault/BlockRefIndex.js";
 import type { FileExistenceChecker } from "../../../../src/domain/fs/FileExistenceChecker.js";
 
 /**
@@ -40,6 +41,14 @@ const DEFAULT_FS_CHECK: FileExistenceChecker = {
  * @param vault - Optional stub vault index (null disables wikilink resolution).
  * @param fsCheck - Optional stub file existence checker. Defaults to one
  *                  that returns `false` for every probe.
+ * @param blockRefIndex - Optional stub {@link BlockRefIndex}. Defaults to
+ *                        `null`, matching the `config.resolve === false`
+ *                        branch so existing tests stay green.
+ * @param filePath - Optional file path to attach to the parsed result.
+ *                   Defaults to `"test.md"` so existing tests stay green.
+ *                   Rules that care about the path (e.g. OFM120's
+ *                   `allowedGlobs` matching) should pass a realistic
+ *                   absolute path here.
  * @returns LintError instances emitted by the rule, in emission order.
  */
 export async function runRuleOnSource(
@@ -48,15 +57,42 @@ export async function runRuleOnSource(
   overrides: Partial<LinterConfig> = {},
   vault: VaultIndex | null = null,
   fsCheck: FileExistenceChecker = DEFAULT_FS_CHECK,
+  blockRefIndex: BlockRefIndex | null = null,
+  filePath: string = "test.md",
 ): Promise<LintError[]> {
+  const parseResult = parseOrFallback(filePath, source);
+  if (parseResult.kind === "error") return [parseResult.error];
+
+  const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
+  const errors: LintError[] = [];
+  await rule.run(
+    {
+      filePath: parseResult.parsed.filePath,
+      parsed: parseResult.parsed,
+      config,
+      vault,
+      fsCheck,
+      blockRefIndex,
+    },
+    (partial) => errors.push(buildError(rule, partial)),
+  );
+
+  return errors;
+}
+
+type ParseOutcome =
+  | { kind: "parsed"; parsed: ReturnType<ReturnType<typeof makeMarkdownItParser>["parse"]> }
+  | { kind: "error"; error: LintError };
+
+function parseOrFallback(filePath: string, source: string): ParseOutcome {
   const parser = makeMarkdownItParser();
-  let parsed;
   try {
-    parsed = parser.parse("test.md", source);
+    return { kind: "parsed", parsed: parser.parse(filePath, source) };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return [
-      makeLintError({
+    return {
+      kind: "error",
+      error: makeLintError({
         ruleCode: "OFM902",
         ruleName: "frontmatter-parse-error",
         severity: "error",
@@ -65,25 +101,22 @@ export async function runRuleOnSource(
         message,
         fixable: false,
       }),
-    ];
+    };
   }
+}
 
-  const config: LinterConfig = Object.freeze({ ...DEFAULT_CONFIG, ...overrides });
-  const errors: LintError[] = [];
-  await rule.run({ filePath: parsed.filePath, parsed, config, vault, fsCheck }, (partial) => {
-    errors.push(
-      makeLintError({
-        ruleCode: rule.names[0] ?? "UNKNOWN",
-        ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-        severity: rule.severity,
-        line: partial.line,
-        column: partial.column,
-        message: partial.message,
-        fixable: rule.fixable,
-        ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
-      }),
-    );
+function buildError(
+  rule: OFMRule,
+  partial: Parameters<Parameters<OFMRule["run"]>[1]>[0],
+): LintError {
+  return makeLintError({
+    ruleCode: rule.names[0] ?? "UNKNOWN",
+    ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+    severity: rule.severity,
+    line: partial.line,
+    column: partial.column,
+    message: partial.message,
+    fixable: rule.fixable,
+    ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
   });
-
-  return errors;
 }

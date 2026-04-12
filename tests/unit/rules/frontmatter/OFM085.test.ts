@@ -59,6 +59,7 @@ describe("OFM085 duplicate-frontmatter-key", () => {
         config: DEFAULT_CONFIG,
         vault: null,
         fsCheck: stubFsCheck,
+        blockRefIndex: null,
       },
       (partial) => {
         errors.push(

@@ -203,3 +203,14 @@ Given("the config allowList includes {string}", async function (this: OFMWorld, 
   };
   await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
 });
+
+// ---- Phase 6 highlight steps ----------------------------------------------
+
+Given("a config file disabling highlights", async function (this: OFMWorld) {
+  if (!this.vaultDir) await this.initVault();
+  const cfg = {
+    highlights: { allow: false, allowedGlobs: [] },
+    rules: { OFM120: { enabled: true } },
+  };
+  await this.writeFile(".obsidian-linter.jsonc", JSON.stringify(cfg));
+});
