@@ -20,12 +20,9 @@ describe("isIsoDate", () => {
     },
   );
 
-  it.each([[null], [undefined], [42], [true], [[]], [{}]])(
-    "rejects non-string %s",
-    (input) => {
-      expect(isIsoDate(input)).toBe(false);
-    },
-  );
+  it.each([[null], [undefined], [42], [true], [[]], [{}]])("rejects non-string %s", (input) => {
+    expect(isIsoDate(input)).toBe(false);
+  });
 
   it("accepts a valid Date instance (gray-matter coerces unquoted YAML dates)", () => {
     expect(isIsoDate(new Date("2026-04-11"))).toBe(true);
