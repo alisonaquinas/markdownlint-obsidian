@@ -58,9 +58,9 @@ Consumers verify a signed image with:
 
 ```
 cosign verify \
-  --certificate-identity-regexp "https://github.com/alisonaquinas/obsidian-linter/.*" \
+  --certificate-identity-regexp "https://github.com/alisonaquinas/markdownlint-obsidian/.*" \
   --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-  ghcr.io/alisonaquinas/obsidian-linter:<tag>
+  ghcr.io/alisonaquinas/markdownlint-obsidian:<tag>
 ```
 
 The verification chain runs entirely through Sigstore's public Rekor transparency log and Fulcio CA — no project-specific key material is involved.

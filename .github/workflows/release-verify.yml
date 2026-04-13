@@ -8,8 +8,9 @@ jobs:
   verify-npm:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for npm CDN propagation
-        run: sleep 90
+      - name: Wait for publish workflows to complete and CDN to propagate
+        # npm-publish and docker-publish take 3-10 min; add buffer for CDN propagation
+        run: sleep 600
 
       - uses: actions/setup-node@v4
         with:
@@ -27,13 +28,20 @@ jobs:
 
       - name: Audit npm signatures (verifies provenance)
         if: startsWith(github.event.release.tag_name, 'packages/cli')
-        run: npm audit signatures
+        run: |
+          VERSION="${GITHUB_REF_NAME#packages/cli}"
+          VERSION="${VERSION#v}"
+          mkdir /tmp/audit-test && cd /tmp/audit-test
+          npm init -y
+          npm install "markdownlint-obsidian-cli@${VERSION}"
+          npm audit signatures
 
   verify-ghcr-npm:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for GitHub Packages propagation
-        run: sleep 90
+      - name: Wait for publish workflows to complete and CDN to propagate
+        # npm-publish and docker-publish take 3-10 min; add buffer for CDN propagation
+        run: sleep 600
 
       - uses: actions/setup-node@v4
         with:
@@ -53,13 +61,17 @@ jobs:
 
   verify-ghcr-docker:
     runs-on: ubuntu-latest
+    if: startsWith(github.event.release.tag_name, 'packages/cli')
     steps:
+      - name: Wait for Docker image propagation
+        run: sleep 120
+
       - uses: sigstore/cosign-installer@v3
 
       - name: Pull, verify signature, and smoke-test image
         run: |
-          TAG="${{ github.event.release.tag_name }}"
-          IMG="ghcr.io/alisonaquinas/markdownlint-obsidian:${TAG}"
+          DOCKER_TAG=$(echo "${{ github.event.release.tag_name }}" | sed 's|.*/v|v|')
+          IMG="ghcr.io/alisonaquinas/markdownlint-obsidian:${DOCKER_TAG}"
           docker pull "$IMG"
           cosign verify \
             --certificate-identity-regexp '^https://github\.com/alisonaquinas/markdownlint-obsidian/' \

@@ -6,6 +6,7 @@ on:
 
 jobs:
   build:
+    if: startsWith(github.event.release.tag_name, 'packages/cli')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -14,6 +15,12 @@ jobs:
       attestations: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Derive Docker tag from release tag
+        id: tag
+        run: |
+          DOCKER_TAG=$(echo "${{ github.event.release.tag_name }}" | sed 's|.*/v|v|')
+          echo "docker_tag=${DOCKER_TAG}" >> "$GITHUB_OUTPUT"
 
       - uses: sigstore/cosign-installer@v3
 
@@ -31,7 +38,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/alisonaquinas/markdownlint-obsidian:latest
-            ghcr.io/alisonaquinas/markdownlint-obsidian:${{ github.event.release.tag_name }}
+            ghcr.io/alisonaquinas/markdownlint-obsidian:${{ steps.tag.outputs.docker_tag }}
           sbom: true
           provenance: mode=max
 
