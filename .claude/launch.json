@@ -1,0 +1,21 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "core:test:watch",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["test", "--watch", "--timeout", "30000"],
+      "cwd": "packages/core",
+      "port": 0,
+      "_note": "No HTTP port — test watcher process only"
+    },
+    {
+      "name": "cli:test:watch",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["test", "--watch", "--timeout", "30000"],
+      "cwd": "packages/cli",
+      "port": 0,
+      "_note": "No HTTP port — test watcher process only"
+    }
+  ]
+}
