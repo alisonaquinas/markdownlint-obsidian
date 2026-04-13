@@ -1,12 +1,5 @@
 # markdownlint-obsidian
 
-<picture>
-  <source media="(prefers-color-scheme: dark)"
-    srcset="docs/assets/obsidian-linter-logo-dark-transparent.png">
-  <img alt="Obsidian Linter"
-    src="docs/assets/obsidian-linter-logo-light-transparent.png" width="280">
-</picture>
-
 Obsidian Flavored Markdown linter for CI pipelines. Catches broken
 wikilinks, unresolved embeds, malformed callouts, block-reference typos,
 and every standard `markdownlint` rule — with OFM-aware rule conflicts
