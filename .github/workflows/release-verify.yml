@@ -70,7 +70,7 @@ jobs:
 
       - name: Pull, verify signature, and smoke-test image
         run: |
-          DOCKER_TAG=$(echo "${{ github.event.release.tag_name }}" | sed 's|.*/v|v|')
+          DOCKER_TAG=$(echo "${{ github.event.release.tag_name }}" | sed 's|packages/[^v]*||')
           IMG="ghcr.io/alisonaquinas/markdownlint-obsidian:${DOCKER_TAG}"
           docker pull "$IMG"
           cosign verify \
