@@ -35,11 +35,15 @@ jobs:
         if: startsWith(github.event.release.tag_name, 'packages/core')
         run: npm publish --access public --provenance
         working-directory: packages/core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish cli (if cli release tag)
         if: startsWith(github.event.release.tag_name, 'packages/cli')
         run: npm publish --access public --provenance
         working-directory: packages/cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-ghcr-npm:
     runs-on: ubuntu-latest
