@@ -11,3 +11,15 @@ exports[`JUnitFormatter > snapshots a representative run 1`] = `
 </testsuites>
 "
 `;
+
+exports[`JUnitFormatter snapshots a representative run 1`] = `
+"<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="notes/index.md" tests="1" failures="1" errors="0">
+    <testcase name="OFM001 no-broken-wikilinks" classname="notes/index.md">
+      <failure message="missing target">notes/index.md:3:5 OFM001 missing target</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
+"
+`;

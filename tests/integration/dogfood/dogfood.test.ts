@@ -1,20 +1,18 @@
 import { describe, it, expect } from "bun:test";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
-const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
-const NODE_ARGS = ["--import", TSX_URL, BIN];
+const BUN = process.execPath;
 
-// Dogfood spawns the full CLI with a `docs/**/*.md` glob — tsx loader import
-// plus 30+ markdown files is noticeably slower than a single-file integration
-// test, so we give this case a 20s budget to match the other integration suites.
+// Dogfood spawns the full CLI with a `docs/**/*.md` glob — 30+ markdown files.
+// Under Bun there is no loader overhead, but we still give this a generous budget
+// to match the other integration suites.
 describe("dogfood", () => {
   it("docs/ directory passes the linter (Phase 1: no rules active)", async () => {
-    const result = await execAsync("node", [...NODE_ARGS, "**/*.md"], {
+    const result = await execAsync(BUN, [BIN, "**/*.md"], {
       cwd: path.resolve("docs"),
     }).catch((e: unknown) => {
       const err = e as { code?: number; stdout?: string; stderr?: string };

@@ -1,7 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
@@ -9,22 +8,24 @@ import { spawnCli } from "../helpers/spawnCli.js";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
-const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
-const NODE_ARGS = ["--import", TSX_URL, BIN];
+
+// Under Bun, process.execPath is the Bun binary which executes the TypeScript
+// dev entry natively — no --import loader flag needed.
+const BUN = process.execPath;
 
 // CLI spawns share the same runner parallelism budget as the wikilink and
-// embed integration tests. On Windows the cold-start plus loader import can
-// blow past the default 5s timeout under load, so we give every case the
-// same generous window we use for the other integration suites.
+// embed integration tests. On Windows the cold-start can blow past the default
+// 5s timeout under load, so we give every case the same generous window we use
+// for the other integration suites.
 describe("CLI", () => {
   it("--help exits 0 and prints usage", async () => {
-    const { stdout } = await execAsync("node", [...NODE_ARGS, "--help"]);
+    const { stdout } = await execAsync(BUN, [BIN, "--help"]);
     expect(stdout).toContain("markdownlint-obsidian");
     expect(stdout).toContain("--fix");
   });
 
   it("--version exits 0 and prints semver", async () => {
-    const { stdout } = await execAsync("node", [...NODE_ARGS, "--version"]);
+    const { stdout } = await execAsync(BUN, [BIN, "--version"]);
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
@@ -33,7 +34,7 @@ describe("CLI", () => {
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
-      await execAsync("node", [...NODE_ARGS, "--output-formatter", "bogus", "**/*.md"], {
+      await execAsync(BUN, [BIN, "--output-formatter", "bogus", "**/*.md"], {
         cwd: tmp,
       });
       throw new Error("Expected exit code 2 but process succeeded");
@@ -72,7 +73,7 @@ describe("CLI", () => {
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
-      const { stdout } = await execAsync("node", [...NODE_ARGS, "**/*.md"], { cwd: tmp });
+      const { stdout } = await execAsync(BUN, [BIN, "**/*.md"], { cwd: tmp });
       expect(stdout.trim()).toBe("");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });

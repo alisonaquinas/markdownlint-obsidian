@@ -1,15 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
-const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
-const NODE_ARGS = ["--import", TSX_URL, BIN];
+const BUN = process.execPath;
 
 // Stand up a tiny vault with one broken wikilink so each formatter has
 // at least one lint error to render. The broken wikilink points at a
@@ -29,11 +27,9 @@ describe("CLI formatter wiring", () => {
 
   async function runCli(formatter: string): Promise<{ stdout: string; code: number }> {
     try {
-      const { stdout } = await execAsync(
-        "node",
-        [...NODE_ARGS, "--output-formatter", formatter, "**/*.md"],
-        { cwd: tmp },
-      );
+      const { stdout } = await execAsync(BUN, [BIN, "--output-formatter", formatter, "**/*.md"], {
+        cwd: tmp,
+      });
       return { stdout, code: 0 };
     } catch (err) {
       const e = err as { stdout?: string; code?: number };
