@@ -1,6 +1,6 @@
 // Installed-package import (after `npm install markdownlint-obsidian`):
 //   import type { OFMRule } from 'markdownlint-obsidian/api';
-// Source-tree import (running via tsx from repo root):
+// Source-tree import (running via Bun from repo root):
 import type { OFMRule } from "../../src/public/index.js";
 
 const BANNED = new Set(["wiki/deprecated", "drafts/private"]);

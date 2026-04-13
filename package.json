@@ -46,7 +46,7 @@
     "junit"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node scripts/gen-dist-bin.mjs",
+    "build": "tsc -p tsconfig.build.json && bun scripts/gen-dist-bin.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",

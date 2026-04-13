@@ -3,4 +3,3 @@ coverage = false
 coverageThreshold = { lines = 0.80, functions = 0.80, branches = 0.80 }
 coverageReporter = ["text", "lcov"]
 coverageDir = "coverage"
-timeout = 30000

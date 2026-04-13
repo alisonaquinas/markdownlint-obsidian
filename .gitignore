@@ -34,8 +34,6 @@ tsconfig.tsbuildinfo
 # ── Test / coverage output ────────────────────────────────────────
 coverage/
 .nyc_output/
-.vitest/
-.vitest-cache/
 reports/
 junit.xml
 test-results/
