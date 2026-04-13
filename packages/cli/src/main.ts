@@ -1,25 +1,13 @@
 import type { Command } from "commander";
 import { buildProgram } from "./args.js";
-import { loadConfig } from "../infrastructure/config/ConfigLoader.js";
-import { discoverFiles } from "../infrastructure/discovery/FileDiscovery.js";
-import { makeRuleRegistry, type RuleRegistry } from "../domain/linting/RuleRegistry.js";
-import { runLint } from "../application/LintUseCase.js";
-import { runFix } from "../application/FixUseCase.js";
-import { writeMarkdownFile } from "../infrastructure/io/FileWriter.js";
-import { getFormatter } from "../infrastructure/formatters/FormatterRegistry.js";
-import type { LinterConfig } from "../domain/config/LinterConfig.js";
-import type { Formatter } from "../infrastructure/formatters/FormatterRegistry.js";
-import type { LintResult } from "../domain/linting/LintResult.js";
-import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
-import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
-import { registerBuiltinRules } from "../infrastructure/rules/ofm/registerBuiltin.js";
-import { loadCustomRules } from "../infrastructure/config/CustomRuleLoader.js";
-import { registerCustomRules } from "../infrastructure/rules/registerCustom.js";
-import { bootstrapVault } from "../application/VaultBootstrap.js";
-import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
-import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
-import { buildBlockRefIndex } from "../infrastructure/vault/BlockRefIndexBuilder.js";
-import { makeNodeFsExistenceChecker } from "../infrastructure/fs/NodeFsExistenceChecker.js";
+import {
+  lint,
+  fix,
+  getFormatter,
+  loadConfig,
+  type Formatter,
+  type LintResult,
+} from "markdownlint-obsidian/engine";
 
 interface ParsedOptions {
   readonly fix: boolean;
@@ -51,7 +39,7 @@ export const EXIT_CODES = Object.freeze({
 /**
  * Entry point called by `bin/markdownlint-obsidian.js`.
  *
- * Parses arguments, loads config, discovers files, runs the lint use case,
+ * Parses arguments, runs the linting pipeline via the engine API,
  * prints formatter output, and returns the appropriate exit code.
  *
  * @param argv - Argument vector, typically `process.argv`.
@@ -66,14 +54,9 @@ export async function main(argv: string[]): Promise<number> {
 
   const opts = program.opts<ParsedOptions>();
   const cwd = process.cwd();
+  const globs = program.args as string[];
 
-  const config = await loadConfig(opts.config ?? cwd).catch(() => null);
-  if (!config) {
-    process.stderr.write("OFM901: failed to load configuration\n");
-    return EXIT_CODES.TOOL_FAILURE;
-  }
-
-  return runPipeline(program.args, opts, config, cwd);
+  return runPipeline(globs, opts, cwd);
 }
 
 interface ParseResult {
@@ -91,53 +74,6 @@ function parseArgv(program: Command, argv: string[]): ParseResult {
     }
     return { terminal: EXIT_CODES.TOOL_FAILURE };
   }
-}
-
-/**
- * Apply CLI-flag overrides to a loaded {@link LinterConfig}.
- *
- * Only the explicit flags we promise to thread — `--vault-root` and
- * `--no-resolve` — participate. Anything else stays on the config value.
- */
-function applyCliOverrides(config: LinterConfig, opts: ParsedOptions): LinterConfig {
-  const patch: { vaultRoot?: string; resolve?: boolean } = {};
-  if (opts.vaultRoot !== undefined) patch.vaultRoot = opts.vaultRoot;
-  if (opts.resolve === false) patch.resolve = false;
-  return Object.freeze({ ...config, ...patch });
-}
-
-async function bootstrapVaultOrExit(
-  cwd: string,
-  config: LinterConfig,
-): Promise<{ result: Awaited<ReturnType<typeof bootstrapVault>> } | { exitCode: number }> {
-  try {
-    const parser = makeMarkdownItParser();
-    const result = await bootstrapVault(cwd, config, {
-      detector: makeNodeFsVaultDetector(),
-      buildIndex: buildFileIndex,
-      buildBlockRefIndex: (files) =>
-        buildBlockRefIndex(files, { parser, readFile: readMarkdownFile }),
-    });
-    return { result };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`${message}\n`);
-    return { exitCode: EXIT_CODES.TOOL_FAILURE };
-  }
-}
-
-interface BootstrapOk {
-  readonly result: Awaited<ReturnType<typeof bootstrapVault>>;
-}
-
-function buildLintDeps(ok: BootstrapOk): Parameters<typeof runLint>[3] {
-  return {
-    parser: makeMarkdownItParser(),
-    readFile: readMarkdownFile,
-    vault: ok.result?.vault ?? null,
-    blockRefIndex: ok.result?.blockRefs ?? null,
-    fsCheck: makeNodeFsExistenceChecker(),
-  };
 }
 
 function resolveFormatter(name: string): Formatter | null {
@@ -164,70 +100,65 @@ function fmtRange(col: number, del: number): string {
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
-  rawConfig: LinterConfig,
   cwd: string,
 ): Promise<number> {
-  const config = applyCliOverrides(rawConfig, opts);
   if (opts.fix && opts.fixCheck) {
     process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
-  const effectiveGlobs = globArgs.length > 0 ? globArgs : config.globs;
-  const files = await discoverFiles(effectiveGlobs, config.ignores, cwd);
-  const registry = await setupRegistry(config, cwd);
 
-  const bootstrapResult = await bootstrapVaultOrExit(cwd, config);
-  if ("exitCode" in bootstrapResult) return bootstrapResult.exitCode;
+  // Validate formatter before running the pipeline
+  const formatter = resolveFormatter(opts.outputFormatter);
+  if (formatter === null) return EXIT_CODES.TOOL_FAILURE;
 
-  const lintDeps = buildLintDeps(bootstrapResult);
+  // Load config to determine effective globs (CLI glob args override config globs)
+  const config = await loadConfig(opts.config ?? cwd).catch(() => null);
+  if (!config) {
+    process.stderr.write("OFM901: failed to load configuration\n");
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+
+  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config.globs;
+  const engineOptions = {
+    globs: effectiveGlobs,
+    cwd,
+    ...(opts.vaultRoot !== undefined && { vaultRoot: opts.vaultRoot }),
+    ...(opts.resolve === false && { resolve: false }),
+    ...(opts.config !== undefined && { config: opts.config }),
+    onCustomRuleError: (modulePath: string, message: string) => {
+      process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}\n`);
+    },
+  };
 
   if (opts.fix || opts.fixCheck) {
-    return runFixPipeline(files, opts, config, registry, lintDeps);
+    try {
+      const outcome = await fix({ ...engineOptions, check: opts.fixCheck });
+      if (outcome.filesFixed.length > 0) {
+        process.stderr.write(
+          `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
+        );
+      }
+      for (const conflict of outcome.conflicts) {
+        const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+        const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+        process.stderr.write(
+          `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
+        );
+      }
+      return emitAndExit(outcome.finalPass, opts.outputFormatter);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`${message}\n`);
+      return EXIT_CODES.TOOL_FAILURE;
+    }
   }
 
-  const results = await runLint(files, config, registry, lintDeps);
-  return emitAndExit(results, opts.outputFormatter);
-}
-
-async function setupRegistry(config: LinterConfig, cwd: string): Promise<RuleRegistry> {
-  const registry = makeRuleRegistry();
-  registerBuiltinRules(registry);
-
-  const { rules: customRules, errors: customErrors } = await loadCustomRules(
-    config.customRules,
-    cwd,
-  );
-  for (const err of customErrors) {
-    process.stderr.write(
-      `OFM905: failed to load custom rule module "${err.modulePath}": ${err.message}\n`,
-    );
+  try {
+    const results = await lint(engineOptions);
+    return emitAndExit(results, opts.outputFormatter);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${message}\n`);
+    return EXIT_CODES.TOOL_FAILURE;
   }
-  registerCustomRules(registry, customRules);
-
-  return registry;
-}
-
-async function runFixPipeline(
-  files: readonly string[],
-  opts: ParsedOptions,
-  config: LinterConfig,
-  registry: RuleRegistry,
-  lintDeps: Parameters<typeof runLint>[3],
-): Promise<number> {
-  const writeFile = opts.fixCheck
-    ? (_path: string, _content: string): Promise<void> => Promise.resolve()
-    : writeMarkdownFile;
-  const outcome = await runFix(files, config, registry, { ...lintDeps, writeFile });
-  if (outcome.filesFixed.length > 0)
-    process.stderr.write(
-      `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
-    );
-  for (const conflict of outcome.conflicts) {
-    const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
-    const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
-    process.stderr.write(
-      `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
-    );
-  }
-  return emitAndExit(outcome.finalPass, opts.outputFormatter);
 }

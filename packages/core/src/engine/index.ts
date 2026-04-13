@@ -49,6 +49,14 @@ export interface LintOptions {
   readonly resolve?: boolean;
   /** Working directory for config discovery, vault detection, and glob resolution. Defaults to cwd. */
   readonly cwd?: string;
+  /**
+   * Called once for each custom rule module that fails to load.
+   * If omitted, load errors are silently discarded.
+   *
+   * @param modulePath - The path string from the config's `customRules` list.
+   * @param message    - Human-readable error description.
+   */
+  readonly onCustomRuleError?: (modulePath: string, message: string) => void;
 }
 
 /**
@@ -88,6 +96,9 @@ export async function lint(options: LintOptions): Promise<LintResult[]> {
   registerBuiltinRules(registry);
 
   const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
+  for (const err of customRuleResult.errors) {
+    options.onCustomRuleError?.(err.modulePath, err.message);
+  }
   registerCustomRules(registry, customRuleResult.rules);
 
   let vaultResult: Awaited<ReturnType<typeof bootstrapVault>> = null;
@@ -144,6 +155,9 @@ export async function fix(options: FixOptions): Promise<FixOutcome> {
   registerBuiltinRules(registry);
 
   const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
+  for (const err of customRuleResult.errors) {
+    options.onCustomRuleError?.(err.modulePath, err.message);
+  }
   registerCustomRules(registry, customRuleResult.rules);
 
   let vaultResult: Awaited<ReturnType<typeof bootstrapVault>> = null;

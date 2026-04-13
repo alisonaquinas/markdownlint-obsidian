@@ -23,7 +23,7 @@
   },
   "files": ["dist/", "src/", "examples/", "README.md", "CHANGELOG.md", "LICENSE"],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/gen-dist-pkg.mjs",
     "typecheck": "tsc --noEmit",
     "test": "bun test --timeout 30000",
     "test:watch": "bun test --watch --timeout 30000",

@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnCli } from "../helpers/spawnCli.js";
+
+const FIXTURES = fileURLToPath(new URL("../../../../core/tests/fixtures/rules/tags", import.meta.url));
 
 let tmp: string;
 beforeEach(async () => {
@@ -19,7 +22,7 @@ afterEach(async () => {
 describe("tag rules integration", () => {
   it("fails with OFM060 on a malformed tag", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/tags/bad-format.md"),
+      path.join(FIXTURES, "bad-format.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);
@@ -29,7 +32,7 @@ describe("tag rules integration", () => {
 
   it("passes for clean tags (warnings do not change exit code)", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/tags/valid.md"),
+      path.join(FIXTURES, "valid.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);
@@ -38,7 +41,7 @@ describe("tag rules integration", () => {
 
   it("reports OFM064 (warning) but exits 0 for case-insensitive duplicates", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/tags/duplicate.md"),
+      path.join(FIXTURES, "duplicate.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);

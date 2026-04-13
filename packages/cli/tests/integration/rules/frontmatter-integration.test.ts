@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnCli } from "../helpers/spawnCli.js";
+
+const FIXTURES = fileURLToPath(new URL("../../../../core/tests/fixtures/rules/frontmatter", import.meta.url));
 
 let tmp: string;
 beforeEach(async () => {
@@ -30,7 +33,7 @@ afterEach(async () => {
 describe("frontmatter rules integration", () => {
   it("fails when required key missing", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/frontmatter/missing-tags.md"),
+      path.join(FIXTURES, "missing-tags.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);
@@ -40,7 +43,7 @@ describe("frontmatter rules integration", () => {
 
   it("fails on invalid date", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/frontmatter/invalid-date.md"),
+      path.join(FIXTURES, "invalid-date.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);
@@ -50,7 +53,7 @@ describe("frontmatter rules integration", () => {
 
   it("passes for valid file", async () => {
     await fs.copyFile(
-      path.resolve("tests/fixtures/rules/frontmatter/valid.md"),
+      path.join(FIXTURES, "valid.md"),
       path.join(tmp, "note.md"),
     );
     const r = await spawnCli(["**/*.md"], tmp);
