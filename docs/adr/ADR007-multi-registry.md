@@ -67,15 +67,15 @@ The verification chain runs entirely through Sigstore's public Rekor transparenc
 
 ### 4. `bun publish` over `npm publish`
 
-Use `bun publish` (Bun 1.2+) as the publish command throughout the CD pipeline rather than invoking `npm publish`.
+The project investigated using `bun publish` (Bun 1.2+) for the primary npm registry publish, but discovered that `bun publish` does not yet support the `--provenance` flag (as of Bun 1.3.x). As a result, the primary npmjs.org publish step falls back to `npm publish --provenance`, while Bun remains the build and install toolchain (`bun install`, `bun run build`).
 
-Rationale:
+Rationale for the dual approach:
 
-- **Toolchain consistency.** Phase 11 migrated the development toolchain to Bun (`bun install`, `bun test`, `bun run build`). Using `bun publish` keeps the entire pipeline within a single runtime, avoiding the need to install Node/npm alongside Bun in CI.
-- **Provenance support.** Bun 1.2+ supports `--provenance` and `--access public`, providing feature parity with `npm publish` for the flags needed in this pipeline.
-- **Workspace awareness.** `bun publish` respects the monorepo workspace layout and resolves `workspace:*` protocol references correctly before publishing.
+- **Build/install toolchain.** Phase 11 migrated the development toolchain to Bun (`bun install`, `bun test`, `bun run build`). This remains unchanged and avoids redundant Node/npm installation in CI for build tasks.
+- **Fallback for missing provenance.** Bun 1.2+ added partial npm publishing support but does not yet implement `--provenance`. This is exactly the fallback path described in the original plan: "Fall back to npm publish only if a Bun gap is discovered."
+- **Workspace awareness.** `bun publish` respects the monorepo workspace layout and resolves `workspace:*` protocol references correctly. The GitHub Packages mirror job still uses `npm publish` and also respects the workspace layout.
 
-If a gap between `bun publish` and `npm publish` behaviour is discovered (e.g. a missing flag, a registry compatibility issue), the affected publish step falls back to `npm publish` with Bun acting only as the package manager for installation.
+The GitHub Packages mirror job continues to use `npm publish` as planned (no change needed there). Only the final publish steps use npm; the entire build pipeline still runs on Bun.
 
 ## Rejected alternatives
 
