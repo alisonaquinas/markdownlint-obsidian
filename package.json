@@ -13,6 +13,7 @@
     "test": "bun run --filter '*' test",
     "test:bdd": "bun node_modules/@cucumber/cucumber/bin/cucumber.js --tags @smoke",
     "test:dogfood": "cd docs && bun ../packages/cli/bin/markdownlint-obsidian.js \"**/*.md\"",
+    "test:dogfood:published": "cd docs && npx -y markdownlint-obsidian-cli@latest \"**/*.md\"",
     "test:all": "bun run typecheck && bun run lint && bun run test && bun run test:bdd",
     "prepublishOnly": "echo 'Publish from packages/core or packages/cli, not the root' && exit 1"
   },
