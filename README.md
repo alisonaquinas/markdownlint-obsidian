@@ -8,10 +8,25 @@ pre-wired.
 ## Install
 
 ```bash
+# npm (Node 20+)
 npm install -D markdownlint-obsidian
+
+# bun (Bun 1.1+)
+bun add -d markdownlint-obsidian
 ```
 
-Node 20 or newer.
+Consumers: Node 20+ or Bun 1.1+ supported.
+
+## Development
+
+markdownlint-obsidian uses [Bun](https://bun.sh) 1.1+ for development and CI.
+Consumers can install and run the package under Node.js 20+ or Bun 1.1+.
+
+```bash
+curl -fsSL https://bun.sh/install | bash  # or: npm install -g bun
+bun install
+bun run test:all
+```
 
 ## Quick start
 

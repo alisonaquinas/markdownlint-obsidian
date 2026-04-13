@@ -76,6 +76,26 @@ lint:markdown:
       junit: junit.xml
 ```
 
+## Using Bun in CI
+
+If your pipeline already has Bun, swap `setup-node` for `setup-bun` and use
+`bun` throughout:
+
+```yaml
+- uses: oven-sh/setup-bun@v2
+  with:
+    bun-version: "1.1.30"
+- run: bun add -d markdownlint-obsidian
+- run: bunx markdownlint-obsidian "**/*.md"
+```
+
+The published `dist/bin.mjs` carries a `#!/usr/bin/env node` shebang, which
+Bun respects. `bunx markdownlint-obsidian` works identically to
+`npx markdownlint-obsidian`.
+
+Consumer pipelines that use Node are **not affected** — the existing
+`npx markdownlint-obsidian` invocation continues to work as before.
+
 ## Output formatters
 
 Every formatter is available both from the CLI (`--output-formatter`)

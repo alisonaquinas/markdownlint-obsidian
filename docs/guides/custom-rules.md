@@ -169,16 +169,17 @@ Add your custom rule paths to `.obsidian-linter.jsonc` in your vault root. Paths
 
 ## Development Workflow
 
-### TypeScript / tsx (dev)
+### TypeScript — Bun (recommended)
 
-During development you can reference the rule source directly using `tsx`:
+With Bun as your runtime you can reference `.ts` rule files directly — no
+compilation or loader flags needed:
 
 ```bash
-# Lint with tsx so TypeScript source is executed directly
-node --import tsx /path/to/bin/markdownlint-obsidian.js "**/*.md"
+# Bun executes TypeScript natively
+bun /path/to/bin/markdownlint-obsidian.js "**/*.md"
 ```
 
-Your config can point at `.ts` source files while using `tsx`:
+Your config can point at `.ts` source files as-is:
 
 ```jsonc
 {
@@ -186,6 +187,16 @@ Your config can point at `.ts` source files while using `tsx`:
     "./rules/require-frontmatter-status.ts"
   ]
 }
+```
+
+### TypeScript — Node + tsx (legacy)
+
+If you are using Node without Bun, run the linter through `tsx` to load
+`.ts` rule files without a compile step:
+
+```bash
+# Requires tsx installed: npm install -D tsx
+node --import tsx /path/to/bin/markdownlint-obsidian.js "**/*.md"
 ```
 
 ### Production Compilation
