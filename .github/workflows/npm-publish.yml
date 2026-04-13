@@ -17,7 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm to latest (for tokenless trusted publishing)
+        run: npm install -g npm@latest
 
       - uses: oven-sh/setup-bun@v2
         with:
