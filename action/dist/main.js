@@ -33461,18 +33461,18 @@ var {
   Help
 } = import_index.default;
 
-// ../dist/src/cli/args.js
+// ../packages/cli/dist/src/args.js
 var import_node_module = require("node:module");
 var import_meta = {};
 var require2 = (0, import_node_module.createRequire)(import_meta.url);
-var { version } = require2("../../package.json");
+var { version } = require2("../package.json");
 function buildProgram() {
   const program2 = new Command();
   program2.name("markdownlint-obsidian").description("Obsidian Flavored Markdown linter for CI pipelines").version(version).argument("[globs...]", "Glob patterns for files to lint").option("--config <path>", "Explicit config file path").option("--config-pointer <ptr>", "JSON Pointer into config (e.g. #/markdownlint)").option("--fix", "Auto-fix fixable errors in-place", false).option("--fix-check", "Check if fixes are needed without writing files", false).option("--format", "Read stdin, write linted content to stdout", false).option("--no-globs", "Ignore globs property in config file").option("--vault-root <path>", "Override auto-detected vault root").option("--no-resolve", "Disable wikilink resolution").option("--output-formatter <name>", "Output formatter (default, json, junit, sarif)", "default");
   return program2;
 }
 
-// ../dist/src/infrastructure/config/ConfigLoader.js
+// ../packages/core/dist/src/infrastructure/config/ConfigLoader.js
 var fs = __toESM(require("node:fs/promises"), 1);
 var path = __toESM(require("node:path"), 1);
 
@@ -34327,7 +34327,7 @@ var ParseErrorCode;
   ParseErrorCode2[ParseErrorCode2["InvalidCharacter"] = 16] = "InvalidCharacter";
 })(ParseErrorCode || (ParseErrorCode = {}));
 
-// ../dist/src/infrastructure/rules/standard/OFM_MD_CONFLICTS.js
+// ../packages/core/dist/src/infrastructure/rules/standard/OFM_MD_CONFLICTS.js
 var OFM_MD_CONFLICTS = Object.freeze([
   Object.freeze({
     code: "MD013",
@@ -34361,7 +34361,7 @@ var OFM_MD_CONFLICTS = Object.freeze([
   })
 ]);
 
-// ../dist/src/infrastructure/config/defaults.js
+// ../packages/core/dist/src/infrastructure/config/defaults.js
 var MD_CONFLICT_OVERRIDES = Object.freeze(Object.fromEntries(OFM_MD_CONFLICTS.map((c) => [c.code, Object.freeze({ enabled: false })])));
 var DEFAULT_CONFIG = Object.freeze({
   vaultRoot: null,
@@ -34457,7 +34457,7 @@ var DEFAULT_CONFIG = Object.freeze({
   outputFormatter: "default"
 });
 
-// ../dist/src/infrastructure/config/ConfigValidator.js
+// ../packages/core/dist/src/infrastructure/config/ConfigValidator.js
 var KNOWN_KEYS = /* @__PURE__ */ new Set([
   // markdownlint-obsidian extensions
   "vaultRoot",
@@ -34497,7 +34497,7 @@ function validateConfig(raw) {
   }
 }
 
-// ../dist/src/infrastructure/config/ConfigLoader.js
+// ../packages/core/dist/src/infrastructure/config/ConfigLoader.js
 var CONFIG_FILES = [
   ".markdownlint-cli2.jsonc",
   ".markdownlint-cli2.yaml",
@@ -35065,7 +35065,7 @@ var generateGlobTasks = normalizeArguments(generateTasks);
 var generateGlobTasksSync = normalizeArgumentsSync(generateTasksSync);
 var { convertPathToPattern } = import_fast_glob2.default;
 
-// ../dist/src/infrastructure/discovery/FileDiscovery.js
+// ../packages/core/dist/src/infrastructure/discovery/FileDiscovery.js
 async function discoverFiles(globs, ignores, cwd) {
   const patterns = [...globs, ...ignores.map((p) => `!${p}`)];
   const files = await globby(patterns, {
@@ -35075,1640 +35075,6 @@ async function discoverFiles(globs, ignores, cwd) {
     dot: false
   });
   return files.sort();
-}
-
-// ../dist/src/domain/linting/RuleRegistry.js
-function makeRuleRegistry() {
-  const byName = /* @__PURE__ */ new Map();
-  return {
-    register(rule) {
-      for (const name of rule.names) {
-        if (byName.has(name)) {
-          throw new Error(`Duplicate rule name: ${name}`);
-        }
-      }
-      for (const name of rule.names) {
-        byName.set(name, rule);
-      }
-    },
-    get(nameOrCode) {
-      return byName.get(nameOrCode);
-    },
-    all() {
-      return [...new Set(byName.values())];
-    }
-  };
-}
-
-// ../dist/src/domain/linting/LintError.js
-function makeLintError(fields) {
-  return Object.freeze({ ...fields });
-}
-
-// ../dist/src/domain/linting/LintResult.js
-function makeLintResult(filePath, errors2) {
-  return Object.freeze({
-    filePath,
-    errors: Object.freeze([...errors2]),
-    hasErrors: errors2.some((e) => e.severity === "error")
-  });
-}
-
-// ../dist/src/application/LintUseCase.js
-var warnedMissingFix = /* @__PURE__ */ new Set();
-function emitDebugFixWarning(ruleName) {
-  if (process.env["OFM_DEBUG_FIX"] !== void 0) {
-    process.stderr.write(`[OFM internal] Rule ${ruleName} is fixable but emitted no Fix payload
-`);
-  }
-}
-function warnIfMissingFix(rule, fix) {
-  const name = rule.names[0] ?? "";
-  if (!rule.fixable || fix !== void 0 || warnedMissingFix.has(name))
-    return;
-  warnedMissingFix.add(name);
-  emitDebugFixWarning(rule.names[0] ?? "unknown");
-}
-async function runLint(filePaths, config2, registry, deps) {
-  const results = [];
-  const vault = deps.vault ?? null;
-  const blockRefIndex = deps.blockRefIndex ?? null;
-  const fsCheck = deps.fsCheck;
-  for (const filePath of filePaths) {
-    const errors2 = [];
-    try {
-      const raw = await deps.readFile(filePath);
-      const parsed = deps.parser.parse(filePath, raw);
-      for (const rule of iterateActiveRules(registry, config2)) {
-        await runRule(rule, parsed, config2, vault, blockRefIndex, fsCheck, errors2);
-      }
-    } catch (err) {
-      errors2.push(buildParserError(err));
-    }
-    results.push(makeLintResult(filePath, errors2));
-  }
-  return results;
-}
-function iterateActiveRules(registry, config2) {
-  return registry.all().filter((rule) => {
-    for (const name of rule.names) {
-      const cfg = config2.rules[name];
-      if (cfg !== void 0)
-        return cfg.enabled;
-    }
-    return true;
-  });
-}
-async function runRule(rule, parsed, config2, vault, blockRefIndex, fsCheck, errors2) {
-  await rule.run({ filePath: parsed.filePath, parsed, config: config2, vault, fsCheck, blockRefIndex }, (partial) => {
-    warnIfMissingFix(rule, partial.fix);
-    errors2.push(makeLintError({
-      ruleCode: rule.names[0] ?? "UNKNOWN",
-      ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
-      severity: rule.severity,
-      line: partial.line,
-      column: partial.column,
-      message: partial.message,
-      fixable: rule.fixable,
-      ...partial.fix !== void 0 ? { fix: partial.fix } : {}
-    }));
-  });
-}
-function buildParserError(err) {
-  const message = err instanceof Error ? err.message : String(err);
-  const isOFM902 = message.startsWith("OFM902");
-  return makeLintError({
-    ruleCode: isOFM902 ? "OFM902" : "OFM901",
-    ruleName: isOFM902 ? "frontmatter-parse-error" : "internal-parser-error",
-    severity: "error",
-    line: 1,
-    column: 1,
-    message,
-    fixable: false
-  });
-}
-
-// ../dist/src/domain/fix/applyFixes.js
-function applyFixes(raw, fixes, filePath = "") {
-  const lines = raw.split("\n");
-  const conflicts = [];
-  const byLine = groupByLine(fixes);
-  for (const [lineNumber, list3] of byLine.entries()) {
-    applyLineGroup(lines, lineNumber, list3, filePath, conflicts);
-  }
-  return { patched: lines.join("\n"), conflicts };
-}
-function groupByLine(fixes) {
-  const byLine = /* @__PURE__ */ new Map();
-  for (const fix of fixes) {
-    const list3 = byLine.get(fix.lineNumber) ?? [];
-    list3.push(fix);
-    byLine.set(fix.lineNumber, list3);
-  }
-  return byLine;
-}
-function applyLineGroup(lines, lineNumber, list3, filePath, conflicts) {
-  const sorted = [...list3].sort((a, b) => b.editColumn - a.editColumn);
-  const accepted = [];
-  for (const fix of sorted) {
-    const overlapping = accepted.find((a) => rangesIntersect(a, fix));
-    if (overlapping !== void 0) {
-      conflicts.push({
-        filePath,
-        first: overlapping,
-        second: fix,
-        reason: `Overlap on line ${lineNumber}`
-      });
-      continue;
-    }
-    accepted.push(fix);
-    spliceLine(lines, lineNumber, fix);
-  }
-}
-function spliceLine(lines, lineNumber, fix) {
-  const idx = lineNumber - 1;
-  const line = lines[idx] ?? "";
-  const col = fix.editColumn - 1;
-  lines[idx] = line.slice(0, col) + fix.insertText + line.slice(col + fix.deleteCount);
-}
-function rangesIntersect(a, b) {
-  const aEnd = a.editColumn + a.deleteCount;
-  const bEnd = b.editColumn + b.deleteCount;
-  if (a.editColumn === b.editColumn)
-    return true;
-  return a.editColumn < bEnd && b.editColumn < aEnd;
-}
-
-// ../dist/src/application/FixUseCase.js
-async function runFix(filePaths, config2, registry, deps) {
-  const firstPass = await runLint(filePaths, config2, registry, deps);
-  const fixed = [];
-  const allConflicts = [];
-  for (const result of firstPass) {
-    const fixes = result.errors.filter((e) => e.fix !== void 0).map((e) => e.fix);
-    if (fixes.length === 0)
-      continue;
-    const raw = await deps.readFile(result.filePath);
-    const { patched, conflicts } = applyFixes(raw, fixes, result.filePath);
-    allConflicts.push(...conflicts);
-    if (patched !== raw) {
-      await deps.writeFile(result.filePath, patched);
-      fixed.push(result.filePath);
-    }
-  }
-  const finalPass = await runLint(filePaths, config2, registry, deps);
-  return { firstPass, finalPass, filesFixed: fixed, conflicts: allConflicts };
-}
-
-// ../dist/src/infrastructure/io/FileWriter.js
-var fs5 = __toESM(require("node:fs/promises"), 1);
-var path3 = __toESM(require("node:path"), 1);
-async function writeMarkdownFile(absolutePath, content3) {
-  const dir = path3.dirname(absolutePath);
-  const tmp = path3.join(dir, `.${path3.basename(absolutePath)}.tmp-${process.pid}-${Date.now()}`);
-  await fs5.writeFile(tmp, content3, "utf8");
-  try {
-    await fs5.rename(tmp, absolutePath);
-  } catch (err) {
-    await fs5.unlink(tmp).catch(() => void 0);
-    throw err;
-  }
-}
-
-// ../dist/src/infrastructure/formatters/DefaultFormatter.js
-function formatDefault(results) {
-  const lines = [];
-  for (const result of results) {
-    for (const err of result.errors) {
-      lines.push(`${result.filePath}:${err.line}:${err.column} ${err.ruleCode} ${err.message}`);
-    }
-  }
-  return lines.join("\n");
-}
-
-// ../dist/src/infrastructure/formatters/JsonFormatter.js
-function formatJson(results) {
-  return JSON.stringify(results.map((r) => ({
-    filePath: r.filePath,
-    errors: r.errors.map((e) => ({ ...e }))
-  })), null, 2);
-}
-
-// ../node_modules/path-expression-matcher/src/Expression.js
-var Expression = class {
-  /**
-   * Create a new Expression
-   * @param {string} pattern - Pattern string (e.g., "root.users.user", "..user[id]")
-   * @param {Object} options - Configuration options
-   * @param {string} options.separator - Path separator (default: '.')
-   */
-  constructor(pattern, options2 = {}, data) {
-    this.pattern = pattern;
-    this.separator = options2.separator || ".";
-    this.segments = this._parse(pattern);
-    this.data = data;
-    this._hasDeepWildcard = this.segments.some((seg) => seg.type === "deep-wildcard");
-    this._hasAttributeCondition = this.segments.some((seg) => seg.attrName !== void 0);
-    this._hasPositionSelector = this.segments.some((seg) => seg.position !== void 0);
-  }
-  /**
-   * Parse pattern string into segments
-   * @private
-   * @param {string} pattern - Pattern to parse
-   * @returns {Array} Array of segment objects
-   */
-  _parse(pattern) {
-    const segments = [];
-    let i = 0;
-    let currentPart = "";
-    while (i < pattern.length) {
-      if (pattern[i] === this.separator) {
-        if (i + 1 < pattern.length && pattern[i + 1] === this.separator) {
-          if (currentPart.trim()) {
-            segments.push(this._parseSegment(currentPart.trim()));
-            currentPart = "";
-          }
-          segments.push({ type: "deep-wildcard" });
-          i += 2;
-        } else {
-          if (currentPart.trim()) {
-            segments.push(this._parseSegment(currentPart.trim()));
-          }
-          currentPart = "";
-          i++;
-        }
-      } else {
-        currentPart += pattern[i];
-        i++;
-      }
-    }
-    if (currentPart.trim()) {
-      segments.push(this._parseSegment(currentPart.trim()));
-    }
-    return segments;
-  }
-  /**
-   * Parse a single segment
-   * @private
-   * @param {string} part - Segment string (e.g., "user", "ns::user", "user[id]", "ns::user:first")
-   * @returns {Object} Segment object
-   */
-  _parseSegment(part) {
-    const segment = { type: "tag" };
-    let bracketContent = null;
-    let withoutBrackets = part;
-    const bracketMatch = part.match(/^([^\[]+)(\[[^\]]*\])(.*)$/);
-    if (bracketMatch) {
-      withoutBrackets = bracketMatch[1] + bracketMatch[3];
-      if (bracketMatch[2]) {
-        const content3 = bracketMatch[2].slice(1, -1);
-        if (content3) {
-          bracketContent = content3;
-        }
-      }
-    }
-    let namespace = void 0;
-    let tagAndPosition = withoutBrackets;
-    if (withoutBrackets.includes("::")) {
-      const nsIndex = withoutBrackets.indexOf("::");
-      namespace = withoutBrackets.substring(0, nsIndex).trim();
-      tagAndPosition = withoutBrackets.substring(nsIndex + 2).trim();
-      if (!namespace) {
-        throw new Error(`Invalid namespace in pattern: ${part}`);
-      }
-    }
-    let tag = void 0;
-    let positionMatch = null;
-    if (tagAndPosition.includes(":")) {
-      const colonIndex = tagAndPosition.lastIndexOf(":");
-      const tagPart = tagAndPosition.substring(0, colonIndex).trim();
-      const posPart = tagAndPosition.substring(colonIndex + 1).trim();
-      const isPositionKeyword = ["first", "last", "odd", "even"].includes(posPart) || /^nth\(\d+\)$/.test(posPart);
-      if (isPositionKeyword) {
-        tag = tagPart;
-        positionMatch = posPart;
-      } else {
-        tag = tagAndPosition;
-      }
-    } else {
-      tag = tagAndPosition;
-    }
-    if (!tag) {
-      throw new Error(`Invalid segment pattern: ${part}`);
-    }
-    segment.tag = tag;
-    if (namespace) {
-      segment.namespace = namespace;
-    }
-    if (bracketContent) {
-      if (bracketContent.includes("=")) {
-        const eqIndex = bracketContent.indexOf("=");
-        segment.attrName = bracketContent.substring(0, eqIndex).trim();
-        segment.attrValue = bracketContent.substring(eqIndex + 1).trim();
-      } else {
-        segment.attrName = bracketContent.trim();
-      }
-    }
-    if (positionMatch) {
-      const nthMatch = positionMatch.match(/^nth\((\d+)\)$/);
-      if (nthMatch) {
-        segment.position = "nth";
-        segment.positionValue = parseInt(nthMatch[1], 10);
-      } else {
-        segment.position = positionMatch;
-      }
-    }
-    return segment;
-  }
-  /**
-   * Get the number of segments
-   * @returns {number}
-   */
-  get length() {
-    return this.segments.length;
-  }
-  /**
-   * Check if expression contains deep wildcard
-   * @returns {boolean}
-   */
-  hasDeepWildcard() {
-    return this._hasDeepWildcard;
-  }
-  /**
-   * Check if expression has attribute conditions
-   * @returns {boolean}
-   */
-  hasAttributeCondition() {
-    return this._hasAttributeCondition;
-  }
-  /**
-   * Check if expression has position selectors
-   * @returns {boolean}
-   */
-  hasPositionSelector() {
-    return this._hasPositionSelector;
-  }
-  /**
-   * Get string representation
-   * @returns {string}
-   */
-  toString() {
-    return this.pattern;
-  }
-};
-
-// ../node_modules/path-expression-matcher/src/Matcher.js
-var MatcherView = class {
-  /**
-   * @param {Matcher} matcher - The parent Matcher instance to read from.
-   */
-  constructor(matcher) {
-    this._matcher = matcher;
-  }
-  /**
-   * Get the path separator used by the parent matcher.
-   * @returns {string}
-   */
-  get separator() {
-    return this._matcher.separator;
-  }
-  /**
-   * Get current tag name.
-   * @returns {string|undefined}
-   */
-  getCurrentTag() {
-    const path14 = this._matcher.path;
-    return path14.length > 0 ? path14[path14.length - 1].tag : void 0;
-  }
-  /**
-   * Get current namespace.
-   * @returns {string|undefined}
-   */
-  getCurrentNamespace() {
-    const path14 = this._matcher.path;
-    return path14.length > 0 ? path14[path14.length - 1].namespace : void 0;
-  }
-  /**
-   * Get current node's attribute value.
-   * @param {string} attrName
-   * @returns {*}
-   */
-  getAttrValue(attrName) {
-    const path14 = this._matcher.path;
-    if (path14.length === 0)
-      return void 0;
-    return path14[path14.length - 1].values?.[attrName];
-  }
-  /**
-   * Check if current node has an attribute.
-   * @param {string} attrName
-   * @returns {boolean}
-   */
-  hasAttr(attrName) {
-    const path14 = this._matcher.path;
-    if (path14.length === 0)
-      return false;
-    const current = path14[path14.length - 1];
-    return current.values !== void 0 && attrName in current.values;
-  }
-  /**
-   * Get current node's sibling position (child index in parent).
-   * @returns {number}
-   */
-  getPosition() {
-    const path14 = this._matcher.path;
-    if (path14.length === 0)
-      return -1;
-    return path14[path14.length - 1].position ?? 0;
-  }
-  /**
-   * Get current node's repeat counter (occurrence count of this tag name).
-   * @returns {number}
-   */
-  getCounter() {
-    const path14 = this._matcher.path;
-    if (path14.length === 0)
-      return -1;
-    return path14[path14.length - 1].counter ?? 0;
-  }
-  /**
-   * Get current node's sibling index (alias for getPosition).
-   * @returns {number}
-   * @deprecated Use getPosition() or getCounter() instead
-   */
-  getIndex() {
-    return this.getPosition();
-  }
-  /**
-   * Get current path depth.
-   * @returns {number}
-   */
-  getDepth() {
-    return this._matcher.path.length;
-  }
-  /**
-   * Get path as string.
-   * @param {string} [separator] - Optional separator (uses default if not provided)
-   * @param {boolean} [includeNamespace=true]
-   * @returns {string}
-   */
-  toString(separator, includeNamespace = true) {
-    return this._matcher.toString(separator, includeNamespace);
-  }
-  /**
-   * Get path as array of tag names.
-   * @returns {string[]}
-   */
-  toArray() {
-    return this._matcher.path.map((n) => n.tag);
-  }
-  /**
-   * Match current path against an Expression.
-   * @param {Expression} expression
-   * @returns {boolean}
-   */
-  matches(expression) {
-    return this._matcher.matches(expression);
-  }
-  /**
-   * Match any expression in the given set against the current path.
-   * @param {ExpressionSet} exprSet
-   * @returns {boolean}
-   */
-  matchesAny(exprSet) {
-    return exprSet.matchesAny(this._matcher);
-  }
-};
-var Matcher = class {
-  /**
-   * Create a new Matcher.
-   * @param {Object} [options={}]
-   * @param {string} [options.separator='.'] - Default path separator
-   */
-  constructor(options2 = {}) {
-    this.separator = options2.separator || ".";
-    this.path = [];
-    this.siblingStacks = [];
-    this._pathStringCache = null;
-    this._view = new MatcherView(this);
-  }
-  /**
-   * Push a new tag onto the path.
-   * @param {string} tagName
-   * @param {Object|null} [attrValues=null]
-   * @param {string|null} [namespace=null]
-   */
-  push(tagName, attrValues = null, namespace = null) {
-    this._pathStringCache = null;
-    if (this.path.length > 0) {
-      this.path[this.path.length - 1].values = void 0;
-    }
-    const currentLevel = this.path.length;
-    if (!this.siblingStacks[currentLevel]) {
-      this.siblingStacks[currentLevel] = /* @__PURE__ */ new Map();
-    }
-    const siblings = this.siblingStacks[currentLevel];
-    const siblingKey = namespace ? `${namespace}:${tagName}` : tagName;
-    const counter = siblings.get(siblingKey) || 0;
-    let position = 0;
-    for (const count of siblings.values()) {
-      position += count;
-    }
-    siblings.set(siblingKey, counter + 1);
-    const node = {
-      tag: tagName,
-      position,
-      counter
-    };
-    if (namespace !== null && namespace !== void 0) {
-      node.namespace = namespace;
-    }
-    if (attrValues !== null && attrValues !== void 0) {
-      node.values = attrValues;
-    }
-    this.path.push(node);
-  }
-  /**
-   * Pop the last tag from the path.
-   * @returns {Object|undefined} The popped node
-   */
-  pop() {
-    if (this.path.length === 0)
-      return void 0;
-    this._pathStringCache = null;
-    const node = this.path.pop();
-    if (this.siblingStacks.length > this.path.length + 1) {
-      this.siblingStacks.length = this.path.length + 1;
-    }
-    return node;
-  }
-  /**
-   * Update current node's attribute values.
-   * Useful when attributes are parsed after push.
-   * @param {Object} attrValues
-   */
-  updateCurrent(attrValues) {
-    if (this.path.length > 0) {
-      const current = this.path[this.path.length - 1];
-      if (attrValues !== null && attrValues !== void 0) {
-        current.values = attrValues;
-      }
-    }
-  }
-  /**
-   * Get current tag name.
-   * @returns {string|undefined}
-   */
-  getCurrentTag() {
-    return this.path.length > 0 ? this.path[this.path.length - 1].tag : void 0;
-  }
-  /**
-   * Get current namespace.
-   * @returns {string|undefined}
-   */
-  getCurrentNamespace() {
-    return this.path.length > 0 ? this.path[this.path.length - 1].namespace : void 0;
-  }
-  /**
-   * Get current node's attribute value.
-   * @param {string} attrName
-   * @returns {*}
-   */
-  getAttrValue(attrName) {
-    if (this.path.length === 0)
-      return void 0;
-    return this.path[this.path.length - 1].values?.[attrName];
-  }
-  /**
-   * Check if current node has an attribute.
-   * @param {string} attrName
-   * @returns {boolean}
-   */
-  hasAttr(attrName) {
-    if (this.path.length === 0)
-      return false;
-    const current = this.path[this.path.length - 1];
-    return current.values !== void 0 && attrName in current.values;
-  }
-  /**
-   * Get current node's sibling position (child index in parent).
-   * @returns {number}
-   */
-  getPosition() {
-    if (this.path.length === 0)
-      return -1;
-    return this.path[this.path.length - 1].position ?? 0;
-  }
-  /**
-   * Get current node's repeat counter (occurrence count of this tag name).
-   * @returns {number}
-   */
-  getCounter() {
-    if (this.path.length === 0)
-      return -1;
-    return this.path[this.path.length - 1].counter ?? 0;
-  }
-  /**
-   * Get current node's sibling index (alias for getPosition).
-   * @returns {number}
-   * @deprecated Use getPosition() or getCounter() instead
-   */
-  getIndex() {
-    return this.getPosition();
-  }
-  /**
-   * Get current path depth.
-   * @returns {number}
-   */
-  getDepth() {
-    return this.path.length;
-  }
-  /**
-   * Get path as string.
-   * @param {string} [separator] - Optional separator (uses default if not provided)
-   * @param {boolean} [includeNamespace=true]
-   * @returns {string}
-   */
-  toString(separator, includeNamespace = true) {
-    const sep4 = separator || this.separator;
-    const isDefault = sep4 === this.separator && includeNamespace === true;
-    if (isDefault) {
-      if (this._pathStringCache !== null) {
-        return this._pathStringCache;
-      }
-      const result = this.path.map(
-        (n) => n.namespace ? `${n.namespace}:${n.tag}` : n.tag
-      ).join(sep4);
-      this._pathStringCache = result;
-      return result;
-    }
-    return this.path.map(
-      (n) => includeNamespace && n.namespace ? `${n.namespace}:${n.tag}` : n.tag
-    ).join(sep4);
-  }
-  /**
-   * Get path as array of tag names.
-   * @returns {string[]}
-   */
-  toArray() {
-    return this.path.map((n) => n.tag);
-  }
-  /**
-   * Reset the path to empty.
-   */
-  reset() {
-    this._pathStringCache = null;
-    this.path = [];
-    this.siblingStacks = [];
-  }
-  /**
-   * Match current path against an Expression.
-   * @param {Expression} expression
-   * @returns {boolean}
-   */
-  matches(expression) {
-    const segments = expression.segments;
-    if (segments.length === 0) {
-      return false;
-    }
-    if (expression.hasDeepWildcard()) {
-      return this._matchWithDeepWildcard(segments);
-    }
-    return this._matchSimple(segments);
-  }
-  /**
-   * @private
-   */
-  _matchSimple(segments) {
-    if (this.path.length !== segments.length) {
-      return false;
-    }
-    for (let i = 0; i < segments.length; i++) {
-      if (!this._matchSegment(segments[i], this.path[i], i === this.path.length - 1)) {
-        return false;
-      }
-    }
-    return true;
-  }
-  /**
-   * @private
-   */
-  _matchWithDeepWildcard(segments) {
-    let pathIdx = this.path.length - 1;
-    let segIdx = segments.length - 1;
-    while (segIdx >= 0 && pathIdx >= 0) {
-      const segment = segments[segIdx];
-      if (segment.type === "deep-wildcard") {
-        segIdx--;
-        if (segIdx < 0) {
-          return true;
-        }
-        const nextSeg = segments[segIdx];
-        let found = false;
-        for (let i = pathIdx; i >= 0; i--) {
-          if (this._matchSegment(nextSeg, this.path[i], i === this.path.length - 1)) {
-            pathIdx = i - 1;
-            segIdx--;
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          return false;
-        }
-      } else {
-        if (!this._matchSegment(segment, this.path[pathIdx], pathIdx === this.path.length - 1)) {
-          return false;
-        }
-        pathIdx--;
-        segIdx--;
-      }
-    }
-    return segIdx < 0;
-  }
-  /**
-   * @private
-   */
-  _matchSegment(segment, node, isCurrentNode) {
-    if (segment.tag !== "*" && segment.tag !== node.tag) {
-      return false;
-    }
-    if (segment.namespace !== void 0) {
-      if (segment.namespace !== "*" && segment.namespace !== node.namespace) {
-        return false;
-      }
-    }
-    if (segment.attrName !== void 0) {
-      if (!isCurrentNode) {
-        return false;
-      }
-      if (!node.values || !(segment.attrName in node.values)) {
-        return false;
-      }
-      if (segment.attrValue !== void 0) {
-        if (String(node.values[segment.attrName]) !== String(segment.attrValue)) {
-          return false;
-        }
-      }
-    }
-    if (segment.position !== void 0) {
-      if (!isCurrentNode) {
-        return false;
-      }
-      const counter = node.counter ?? 0;
-      if (segment.position === "first" && counter !== 0) {
-        return false;
-      } else if (segment.position === "odd" && counter % 2 !== 1) {
-        return false;
-      } else if (segment.position === "even" && counter % 2 !== 0) {
-        return false;
-      } else if (segment.position === "nth" && counter !== segment.positionValue) {
-        return false;
-      }
-    }
-    return true;
-  }
-  /**
-   * Match any expression in the given set against the current path.
-   * @param {ExpressionSet} exprSet
-   * @returns {boolean}
-   */
-  matchesAny(exprSet) {
-    return exprSet.matchesAny(this);
-  }
-  /**
-   * Create a snapshot of current state.
-   * @returns {Object}
-   */
-  snapshot() {
-    return {
-      path: this.path.map((node) => ({ ...node })),
-      siblingStacks: this.siblingStacks.map((map3) => new Map(map3))
-    };
-  }
-  /**
-   * Restore state from snapshot.
-   * @param {Object} snapshot
-   */
-  restore(snapshot) {
-    this._pathStringCache = null;
-    this.path = snapshot.path.map((node) => ({ ...node }));
-    this.siblingStacks = snapshot.siblingStacks.map((map3) => new Map(map3));
-  }
-  /**
-   * Return the read-only {@link MatcherView} for this matcher.
-   *
-   * The same instance is returned on every call — no allocation occurs.
-   * It always reflects the current parser state and is safe to pass to
-   * user callbacks without risk of accidental mutation.
-   *
-   * @returns {MatcherView}
-   *
-   * @example
-   * const view = matcher.readOnly();
-   * // pass view to callbacks — it stays in sync automatically
-   * view.matches(expr);       // ✓
-   * view.getCurrentTag();     // ✓
-   * // view.push(...)         // ✗ method does not exist — caught by TypeScript
-   */
-  readOnly() {
-    return this._view;
-  }
-};
-
-// ../node_modules/fast-xml-builder/src/orderedJs2Xml.js
-var EOL = "\n";
-function toXml(jArray, options2) {
-  let indentation = "";
-  if (options2.format && options2.indentBy.length > 0) {
-    indentation = EOL;
-  }
-  const stopNodeExpressions = [];
-  if (options2.stopNodes && Array.isArray(options2.stopNodes)) {
-    for (let i = 0; i < options2.stopNodes.length; i++) {
-      const node = options2.stopNodes[i];
-      if (typeof node === "string") {
-        stopNodeExpressions.push(new Expression(node));
-      } else if (node instanceof Expression) {
-        stopNodeExpressions.push(node);
-      }
-    }
-  }
-  const matcher = new Matcher();
-  return arrToStr(jArray, options2, indentation, matcher, stopNodeExpressions);
-}
-function arrToStr(arr, options2, indentation, matcher, stopNodeExpressions) {
-  let xmlStr = "";
-  let isPreviousElementTag = false;
-  if (options2.maxNestedTags && matcher.getDepth() > options2.maxNestedTags) {
-    throw new Error("Maximum nested tags exceeded");
-  }
-  if (!Array.isArray(arr)) {
-    if (arr !== void 0 && arr !== null) {
-      let text5 = arr.toString();
-      text5 = replaceEntitiesValue(text5, options2);
-      return text5;
-    }
-    return "";
-  }
-  for (let i = 0; i < arr.length; i++) {
-    const tagObj = arr[i];
-    const tagName = propName(tagObj);
-    if (tagName === void 0)
-      continue;
-    const attrValues = extractAttributeValues(tagObj[":@"], options2);
-    matcher.push(tagName, attrValues);
-    const isStopNode = checkStopNode(matcher, stopNodeExpressions);
-    if (tagName === options2.textNodeName) {
-      let tagText = tagObj[tagName];
-      if (!isStopNode) {
-        tagText = options2.tagValueProcessor(tagName, tagText);
-        tagText = replaceEntitiesValue(tagText, options2);
-      }
-      if (isPreviousElementTag) {
-        xmlStr += indentation;
-      }
-      xmlStr += tagText;
-      isPreviousElementTag = false;
-      matcher.pop();
-      continue;
-    } else if (tagName === options2.cdataPropName) {
-      if (isPreviousElementTag) {
-        xmlStr += indentation;
-      }
-      xmlStr += `<![CDATA[${tagObj[tagName][0][options2.textNodeName]}]]>`;
-      isPreviousElementTag = false;
-      matcher.pop();
-      continue;
-    } else if (tagName === options2.commentPropName) {
-      xmlStr += indentation + `<!--${tagObj[tagName][0][options2.textNodeName]}-->`;
-      isPreviousElementTag = true;
-      matcher.pop();
-      continue;
-    } else if (tagName[0] === "?") {
-      const attStr2 = attr_to_str(tagObj[":@"], options2, isStopNode);
-      const tempInd = tagName === "?xml" ? "" : indentation;
-      let piTextNodeName = tagObj[tagName][0][options2.textNodeName];
-      piTextNodeName = piTextNodeName.length !== 0 ? " " + piTextNodeName : "";
-      xmlStr += tempInd + `<${tagName}${piTextNodeName}${attStr2}?>`;
-      isPreviousElementTag = true;
-      matcher.pop();
-      continue;
-    }
-    let newIdentation = indentation;
-    if (newIdentation !== "") {
-      newIdentation += options2.indentBy;
-    }
-    const attStr = attr_to_str(tagObj[":@"], options2, isStopNode);
-    const tagStart = indentation + `<${tagName}${attStr}`;
-    let tagValue;
-    if (isStopNode) {
-      tagValue = getRawContent(tagObj[tagName], options2);
-    } else {
-      tagValue = arrToStr(tagObj[tagName], options2, newIdentation, matcher, stopNodeExpressions);
-    }
-    if (options2.unpairedTags.indexOf(tagName) !== -1) {
-      if (options2.suppressUnpairedNode)
-        xmlStr += tagStart + ">";
-      else
-        xmlStr += tagStart + "/>";
-    } else if ((!tagValue || tagValue.length === 0) && options2.suppressEmptyNode) {
-      xmlStr += tagStart + "/>";
-    } else if (tagValue && tagValue.endsWith(">")) {
-      xmlStr += tagStart + `>${tagValue}${indentation}</${tagName}>`;
-    } else {
-      xmlStr += tagStart + ">";
-      if (tagValue && indentation !== "" && (tagValue.includes("/>") || tagValue.includes("</"))) {
-        xmlStr += indentation + options2.indentBy + tagValue + indentation;
-      } else {
-        xmlStr += tagValue;
-      }
-      xmlStr += `</${tagName}>`;
-    }
-    isPreviousElementTag = true;
-    matcher.pop();
-  }
-  return xmlStr;
-}
-function extractAttributeValues(attrMap, options2) {
-  if (!attrMap || options2.ignoreAttributes)
-    return null;
-  const attrValues = {};
-  let hasAttrs = false;
-  for (let attr in attrMap) {
-    if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
-      continue;
-    const cleanAttrName = attr.startsWith(options2.attributeNamePrefix) ? attr.substr(options2.attributeNamePrefix.length) : attr;
-    attrValues[cleanAttrName] = attrMap[attr];
-    hasAttrs = true;
-  }
-  return hasAttrs ? attrValues : null;
-}
-function getRawContent(arr, options2) {
-  if (!Array.isArray(arr)) {
-    if (arr !== void 0 && arr !== null) {
-      return arr.toString();
-    }
-    return "";
-  }
-  let content3 = "";
-  for (let i = 0; i < arr.length; i++) {
-    const item = arr[i];
-    const tagName = propName(item);
-    if (tagName === options2.textNodeName) {
-      content3 += item[tagName];
-    } else if (tagName === options2.cdataPropName) {
-      content3 += item[tagName][0][options2.textNodeName];
-    } else if (tagName === options2.commentPropName) {
-      content3 += item[tagName][0][options2.textNodeName];
-    } else if (tagName && tagName[0] === "?") {
-      continue;
-    } else if (tagName) {
-      const attStr = attr_to_str_raw(item[":@"], options2);
-      const nestedContent = getRawContent(item[tagName], options2);
-      if (!nestedContent || nestedContent.length === 0) {
-        content3 += `<${tagName}${attStr}/>`;
-      } else {
-        content3 += `<${tagName}${attStr}>${nestedContent}</${tagName}>`;
-      }
-    }
-  }
-  return content3;
-}
-function attr_to_str_raw(attrMap, options2) {
-  let attrStr = "";
-  if (attrMap && !options2.ignoreAttributes) {
-    for (let attr in attrMap) {
-      if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
-        continue;
-      let attrVal = attrMap[attr];
-      if (attrVal === true && options2.suppressBooleanAttributes) {
-        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}`;
-      } else {
-        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}="${attrVal}"`;
-      }
-    }
-  }
-  return attrStr;
-}
-function propName(obj) {
-  const keys = Object.keys(obj);
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    if (!Object.prototype.hasOwnProperty.call(obj, key))
-      continue;
-    if (key !== ":@")
-      return key;
-  }
-}
-function attr_to_str(attrMap, options2, isStopNode) {
-  let attrStr = "";
-  if (attrMap && !options2.ignoreAttributes) {
-    for (let attr in attrMap) {
-      if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
-        continue;
-      let attrVal;
-      if (isStopNode) {
-        attrVal = attrMap[attr];
-      } else {
-        attrVal = options2.attributeValueProcessor(attr, attrMap[attr]);
-        attrVal = replaceEntitiesValue(attrVal, options2);
-      }
-      if (attrVal === true && options2.suppressBooleanAttributes) {
-        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}`;
-      } else {
-        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}="${attrVal}"`;
-      }
-    }
-  }
-  return attrStr;
-}
-function checkStopNode(matcher, stopNodeExpressions) {
-  if (!stopNodeExpressions || stopNodeExpressions.length === 0)
-    return false;
-  for (let i = 0; i < stopNodeExpressions.length; i++) {
-    if (matcher.matches(stopNodeExpressions[i])) {
-      return true;
-    }
-  }
-  return false;
-}
-function replaceEntitiesValue(textValue, options2) {
-  if (textValue && textValue.length > 0 && options2.processEntities) {
-    for (let i = 0; i < options2.entities.length; i++) {
-      const entity2 = options2.entities[i];
-      textValue = textValue.replace(entity2.regex, entity2.val);
-    }
-  }
-  return textValue;
-}
-
-// ../node_modules/fast-xml-builder/src/ignoreAttributes.js
-function getIgnoreAttributesFn(ignoreAttributes) {
-  if (typeof ignoreAttributes === "function") {
-    return ignoreAttributes;
-  }
-  if (Array.isArray(ignoreAttributes)) {
-    return (attrName) => {
-      for (const pattern of ignoreAttributes) {
-        if (typeof pattern === "string" && attrName === pattern) {
-          return true;
-        }
-        if (pattern instanceof RegExp && pattern.test(attrName)) {
-          return true;
-        }
-      }
-    };
-  }
-  return () => false;
-}
-
-// ../node_modules/fast-xml-builder/src/fxb.js
-var defaultOptions = {
-  attributeNamePrefix: "@_",
-  attributesGroupName: false,
-  textNodeName: "#text",
-  ignoreAttributes: true,
-  cdataPropName: false,
-  format: false,
-  indentBy: "  ",
-  suppressEmptyNode: false,
-  suppressUnpairedNode: true,
-  suppressBooleanAttributes: true,
-  tagValueProcessor: function(key, a) {
-    return a;
-  },
-  attributeValueProcessor: function(attrName, a) {
-    return a;
-  },
-  preserveOrder: false,
-  commentPropName: false,
-  unpairedTags: [],
-  entities: [
-    { regex: new RegExp("&", "g"), val: "&amp;" },
-    //it must be on top
-    { regex: new RegExp(">", "g"), val: "&gt;" },
-    { regex: new RegExp("<", "g"), val: "&lt;" },
-    { regex: new RegExp("'", "g"), val: "&apos;" },
-    { regex: new RegExp('"', "g"), val: "&quot;" }
-  ],
-  processEntities: true,
-  stopNodes: [],
-  // transformTagName: false,
-  // transformAttributeName: false,
-  oneListGroup: false,
-  maxNestedTags: 100,
-  jPath: true
-  // When true, callbacks receive string jPath; when false, receive Matcher instance
-};
-function Builder(options2) {
-  this.options = Object.assign({}, defaultOptions, options2);
-  if (this.options.stopNodes && Array.isArray(this.options.stopNodes)) {
-    this.options.stopNodes = this.options.stopNodes.map((node) => {
-      if (typeof node === "string" && node.startsWith("*.")) {
-        return ".." + node.substring(2);
-      }
-      return node;
-    });
-  }
-  this.stopNodeExpressions = [];
-  if (this.options.stopNodes && Array.isArray(this.options.stopNodes)) {
-    for (let i = 0; i < this.options.stopNodes.length; i++) {
-      const node = this.options.stopNodes[i];
-      if (typeof node === "string") {
-        this.stopNodeExpressions.push(new Expression(node));
-      } else if (node instanceof Expression) {
-        this.stopNodeExpressions.push(node);
-      }
-    }
-  }
-  if (this.options.ignoreAttributes === true || this.options.attributesGroupName) {
-    this.isAttribute = function() {
-      return false;
-    };
-  } else {
-    this.ignoreAttributesFn = getIgnoreAttributesFn(this.options.ignoreAttributes);
-    this.attrPrefixLen = this.options.attributeNamePrefix.length;
-    this.isAttribute = isAttribute;
-  }
-  this.processTextOrObjNode = processTextOrObjNode;
-  if (this.options.format) {
-    this.indentate = indentate;
-    this.tagEndChar = ">\n";
-    this.newLine = "\n";
-  } else {
-    this.indentate = function() {
-      return "";
-    };
-    this.tagEndChar = ">";
-    this.newLine = "";
-  }
-}
-Builder.prototype.build = function(jObj) {
-  if (this.options.preserveOrder) {
-    return toXml(jObj, this.options);
-  } else {
-    if (Array.isArray(jObj) && this.options.arrayNodeName && this.options.arrayNodeName.length > 1) {
-      jObj = {
-        [this.options.arrayNodeName]: jObj
-      };
-    }
-    const matcher = new Matcher();
-    return this.j2x(jObj, 0, matcher).val;
-  }
-};
-Builder.prototype.j2x = function(jObj, level, matcher) {
-  let attrStr = "";
-  let val = "";
-  if (this.options.maxNestedTags && matcher.getDepth() >= this.options.maxNestedTags) {
-    throw new Error("Maximum nested tags exceeded");
-  }
-  const jPath = this.options.jPath ? matcher.toString() : matcher;
-  const isCurrentStopNode = this.checkStopNode(matcher);
-  for (let key in jObj) {
-    if (!Object.prototype.hasOwnProperty.call(jObj, key))
-      continue;
-    if (typeof jObj[key] === "undefined") {
-      if (this.isAttribute(key)) {
-        val += "";
-      }
-    } else if (jObj[key] === null) {
-      if (this.isAttribute(key)) {
-        val += "";
-      } else if (key === this.options.cdataPropName) {
-        val += "";
-      } else if (key[0] === "?") {
-        val += this.indentate(level) + "<" + key + "?" + this.tagEndChar;
-      } else {
-        val += this.indentate(level) + "<" + key + "/" + this.tagEndChar;
-      }
-    } else if (jObj[key] instanceof Date) {
-      val += this.buildTextValNode(jObj[key], key, "", level, matcher);
-    } else if (typeof jObj[key] !== "object") {
-      const attr = this.isAttribute(key);
-      if (attr && !this.ignoreAttributesFn(attr, jPath)) {
-        attrStr += this.buildAttrPairStr(attr, "" + jObj[key], isCurrentStopNode);
-      } else if (!attr) {
-        if (key === this.options.textNodeName) {
-          let newval = this.options.tagValueProcessor(key, "" + jObj[key]);
-          val += this.replaceEntitiesValue(newval);
-        } else {
-          matcher.push(key);
-          const isStopNode = this.checkStopNode(matcher);
-          matcher.pop();
-          if (isStopNode) {
-            const textValue = "" + jObj[key];
-            if (textValue === "") {
-              val += this.indentate(level) + "<" + key + this.closeTag(key) + this.tagEndChar;
-            } else {
-              val += this.indentate(level) + "<" + key + ">" + textValue + "</" + key + this.tagEndChar;
-            }
-          } else {
-            val += this.buildTextValNode(jObj[key], key, "", level, matcher);
-          }
-        }
-      }
-    } else if (Array.isArray(jObj[key])) {
-      const arrLen = jObj[key].length;
-      let listTagVal = "";
-      let listTagAttr = "";
-      for (let j = 0; j < arrLen; j++) {
-        const item = jObj[key][j];
-        if (typeof item === "undefined") {
-        } else if (item === null) {
-          if (key[0] === "?")
-            val += this.indentate(level) + "<" + key + "?" + this.tagEndChar;
-          else
-            val += this.indentate(level) + "<" + key + "/" + this.tagEndChar;
-        } else if (typeof item === "object") {
-          if (this.options.oneListGroup) {
-            matcher.push(key);
-            const result = this.j2x(item, level + 1, matcher);
-            matcher.pop();
-            listTagVal += result.val;
-            if (this.options.attributesGroupName && item.hasOwnProperty(this.options.attributesGroupName)) {
-              listTagAttr += result.attrStr;
-            }
-          } else {
-            listTagVal += this.processTextOrObjNode(item, key, level, matcher);
-          }
-        } else {
-          if (this.options.oneListGroup) {
-            let textValue = this.options.tagValueProcessor(key, item);
-            textValue = this.replaceEntitiesValue(textValue);
-            listTagVal += textValue;
-          } else {
-            matcher.push(key);
-            const isStopNode = this.checkStopNode(matcher);
-            matcher.pop();
-            if (isStopNode) {
-              const textValue = "" + item;
-              if (textValue === "") {
-                listTagVal += this.indentate(level) + "<" + key + this.closeTag(key) + this.tagEndChar;
-              } else {
-                listTagVal += this.indentate(level) + "<" + key + ">" + textValue + "</" + key + this.tagEndChar;
-              }
-            } else {
-              listTagVal += this.buildTextValNode(item, key, "", level, matcher);
-            }
-          }
-        }
-      }
-      if (this.options.oneListGroup) {
-        listTagVal = this.buildObjectNode(listTagVal, key, listTagAttr, level);
-      }
-      val += listTagVal;
-    } else {
-      if (this.options.attributesGroupName && key === this.options.attributesGroupName) {
-        const Ks = Object.keys(jObj[key]);
-        const L = Ks.length;
-        for (let j = 0; j < L; j++) {
-          attrStr += this.buildAttrPairStr(Ks[j], "" + jObj[key][Ks[j]], isCurrentStopNode);
-        }
-      } else {
-        val += this.processTextOrObjNode(jObj[key], key, level, matcher);
-      }
-    }
-  }
-  return { attrStr, val };
-};
-Builder.prototype.buildAttrPairStr = function(attrName, val, isStopNode) {
-  if (!isStopNode) {
-    val = this.options.attributeValueProcessor(attrName, "" + val);
-    val = this.replaceEntitiesValue(val);
-  }
-  if (this.options.suppressBooleanAttributes && val === "true") {
-    return " " + attrName;
-  } else
-    return " " + attrName + '="' + val + '"';
-};
-function processTextOrObjNode(object, key, level, matcher) {
-  const attrValues = this.extractAttributes(object);
-  matcher.push(key, attrValues);
-  const isStopNode = this.checkStopNode(matcher);
-  if (isStopNode) {
-    const rawContent = this.buildRawContent(object);
-    const attrStr = this.buildAttributesForStopNode(object);
-    matcher.pop();
-    return this.buildObjectNode(rawContent, key, attrStr, level);
-  }
-  const result = this.j2x(object, level + 1, matcher);
-  matcher.pop();
-  if (object[this.options.textNodeName] !== void 0 && Object.keys(object).length === 1) {
-    return this.buildTextValNode(object[this.options.textNodeName], key, result.attrStr, level, matcher);
-  } else {
-    return this.buildObjectNode(result.val, key, result.attrStr, level);
-  }
-}
-Builder.prototype.extractAttributes = function(obj) {
-  if (!obj || typeof obj !== "object")
-    return null;
-  const attrValues = {};
-  let hasAttrs = false;
-  if (this.options.attributesGroupName && obj[this.options.attributesGroupName]) {
-    const attrGroup = obj[this.options.attributesGroupName];
-    for (let attrKey in attrGroup) {
-      if (!Object.prototype.hasOwnProperty.call(attrGroup, attrKey))
-        continue;
-      const cleanKey = attrKey.startsWith(this.options.attributeNamePrefix) ? attrKey.substring(this.options.attributeNamePrefix.length) : attrKey;
-      attrValues[cleanKey] = attrGroup[attrKey];
-      hasAttrs = true;
-    }
-  } else {
-    for (let key in obj) {
-      if (!Object.prototype.hasOwnProperty.call(obj, key))
-        continue;
-      const attr = this.isAttribute(key);
-      if (attr) {
-        attrValues[attr] = obj[key];
-        hasAttrs = true;
-      }
-    }
-  }
-  return hasAttrs ? attrValues : null;
-};
-Builder.prototype.buildRawContent = function(obj) {
-  if (typeof obj === "string") {
-    return obj;
-  }
-  if (typeof obj !== "object" || obj === null) {
-    return String(obj);
-  }
-  if (obj[this.options.textNodeName] !== void 0) {
-    return obj[this.options.textNodeName];
-  }
-  let content3 = "";
-  for (let key in obj) {
-    if (!Object.prototype.hasOwnProperty.call(obj, key))
-      continue;
-    if (this.isAttribute(key))
-      continue;
-    if (this.options.attributesGroupName && key === this.options.attributesGroupName)
-      continue;
-    const value = obj[key];
-    if (key === this.options.textNodeName) {
-      content3 += value;
-    } else if (Array.isArray(value)) {
-      for (let item of value) {
-        if (typeof item === "string" || typeof item === "number") {
-          content3 += `<${key}>${item}</${key}>`;
-        } else if (typeof item === "object" && item !== null) {
-          const nestedContent = this.buildRawContent(item);
-          const nestedAttrs = this.buildAttributesForStopNode(item);
-          if (nestedContent === "") {
-            content3 += `<${key}${nestedAttrs}/>`;
-          } else {
-            content3 += `<${key}${nestedAttrs}>${nestedContent}</${key}>`;
-          }
-        }
-      }
-    } else if (typeof value === "object" && value !== null) {
-      const nestedContent = this.buildRawContent(value);
-      const nestedAttrs = this.buildAttributesForStopNode(value);
-      if (nestedContent === "") {
-        content3 += `<${key}${nestedAttrs}/>`;
-      } else {
-        content3 += `<${key}${nestedAttrs}>${nestedContent}</${key}>`;
-      }
-    } else {
-      content3 += `<${key}>${value}</${key}>`;
-    }
-  }
-  return content3;
-};
-Builder.prototype.buildAttributesForStopNode = function(obj) {
-  if (!obj || typeof obj !== "object")
-    return "";
-  let attrStr = "";
-  if (this.options.attributesGroupName && obj[this.options.attributesGroupName]) {
-    const attrGroup = obj[this.options.attributesGroupName];
-    for (let attrKey in attrGroup) {
-      if (!Object.prototype.hasOwnProperty.call(attrGroup, attrKey))
-        continue;
-      const cleanKey = attrKey.startsWith(this.options.attributeNamePrefix) ? attrKey.substring(this.options.attributeNamePrefix.length) : attrKey;
-      const val = attrGroup[attrKey];
-      if (val === true && this.options.suppressBooleanAttributes) {
-        attrStr += " " + cleanKey;
-      } else {
-        attrStr += " " + cleanKey + '="' + val + '"';
-      }
-    }
-  } else {
-    for (let key in obj) {
-      if (!Object.prototype.hasOwnProperty.call(obj, key))
-        continue;
-      const attr = this.isAttribute(key);
-      if (attr) {
-        const val = obj[key];
-        if (val === true && this.options.suppressBooleanAttributes) {
-          attrStr += " " + attr;
-        } else {
-          attrStr += " " + attr + '="' + val + '"';
-        }
-      }
-    }
-  }
-  return attrStr;
-};
-Builder.prototype.buildObjectNode = function(val, key, attrStr, level) {
-  if (val === "") {
-    if (key[0] === "?")
-      return this.indentate(level) + "<" + key + attrStr + "?" + this.tagEndChar;
-    else {
-      return this.indentate(level) + "<" + key + attrStr + this.closeTag(key) + this.tagEndChar;
-    }
-  } else {
-    let tagEndExp = "</" + key + this.tagEndChar;
-    let piClosingChar = "";
-    if (key[0] === "?") {
-      piClosingChar = "?";
-      tagEndExp = "";
-    }
-    if ((attrStr || attrStr === "") && val.indexOf("<") === -1) {
-      return this.indentate(level) + "<" + key + attrStr + piClosingChar + ">" + val + tagEndExp;
-    } else if (this.options.commentPropName !== false && key === this.options.commentPropName && piClosingChar.length === 0) {
-      return this.indentate(level) + `<!--${val}-->` + this.newLine;
-    } else {
-      return this.indentate(level) + "<" + key + attrStr + piClosingChar + this.tagEndChar + val + this.indentate(level) + tagEndExp;
-    }
-  }
-};
-Builder.prototype.closeTag = function(key) {
-  let closeTag = "";
-  if (this.options.unpairedTags.indexOf(key) !== -1) {
-    if (!this.options.suppressUnpairedNode)
-      closeTag = "/";
-  } else if (this.options.suppressEmptyNode) {
-    closeTag = "/";
-  } else {
-    closeTag = `></${key}`;
-  }
-  return closeTag;
-};
-Builder.prototype.checkStopNode = function(matcher) {
-  if (!this.stopNodeExpressions || this.stopNodeExpressions.length === 0)
-    return false;
-  for (let i = 0; i < this.stopNodeExpressions.length; i++) {
-    if (matcher.matches(this.stopNodeExpressions[i])) {
-      return true;
-    }
-  }
-  return false;
-};
-Builder.prototype.buildTextValNode = function(val, key, attrStr, level, matcher) {
-  if (this.options.cdataPropName !== false && key === this.options.cdataPropName) {
-    return this.indentate(level) + `<![CDATA[${val}]]>` + this.newLine;
-  } else if (this.options.commentPropName !== false && key === this.options.commentPropName) {
-    return this.indentate(level) + `<!--${val}-->` + this.newLine;
-  } else if (key[0] === "?") {
-    return this.indentate(level) + "<" + key + attrStr + "?" + this.tagEndChar;
-  } else {
-    let textValue = this.options.tagValueProcessor(key, val);
-    textValue = this.replaceEntitiesValue(textValue);
-    if (textValue === "") {
-      return this.indentate(level) + "<" + key + attrStr + this.closeTag(key) + this.tagEndChar;
-    } else {
-      return this.indentate(level) + "<" + key + attrStr + ">" + textValue + "</" + key + this.tagEndChar;
-    }
-  }
-};
-Builder.prototype.replaceEntitiesValue = function(textValue) {
-  if (textValue && textValue.length > 0 && this.options.processEntities) {
-    for (let i = 0; i < this.options.entities.length; i++) {
-      const entity2 = this.options.entities[i];
-      textValue = textValue.replace(entity2.regex, entity2.val);
-    }
-  }
-  return textValue;
-};
-function indentate(level) {
-  return this.options.indentBy.repeat(level);
-}
-function isAttribute(name) {
-  if (name.startsWith(this.options.attributeNamePrefix) && name !== this.options.textNodeName) {
-    return name.substr(this.attrPrefixLen);
-  } else {
-    return false;
-  }
-}
-
-// ../node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js
-var json2xml_default = Builder;
-
-// ../dist/src/infrastructure/formatters/JUnitFormatter.js
-var builder = new json2xml_default({
-  ignoreAttributes: false,
-  format: true,
-  suppressEmptyNode: false
-});
-function formatJUnit(results) {
-  const suites = results.map(toTestSuite);
-  const doc = {
-    "?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
-    testsuites: { testsuite: suites }
-  };
-  return builder.build(doc);
-}
-function toTestSuite(result) {
-  const cases = result.errors.map((e) => ({
-    "@_name": `${e.ruleCode} ${e.ruleName}`,
-    "@_classname": result.filePath,
-    failure: {
-      "@_message": e.message,
-      "#text": `${result.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`
-    }
-  }));
-  if (cases.length === 0) {
-    cases.push({ "@_name": "clean", "@_classname": result.filePath });
-  }
-  return {
-    "@_name": result.filePath,
-    "@_tests": cases.length,
-    "@_failures": result.errors.length,
-    "@_errors": 0,
-    testcase: cases
-  };
-}
-
-// ../dist/src/infrastructure/formatters/SarifFormatter.js
-var import_node_module2 = require("node:module");
-var import_meta2 = {};
-var require3 = (0, import_node_module2.createRequire)(import_meta2.url);
-var { version: TOOL_VERSION } = require3("../../../package.json");
-var TOOL_NAME = "markdownlint-obsidian";
-var INFORMATION_URI = "https://github.com/alisonaquinas/markdownlint-obsidian";
-var SARIF_SCHEMA = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
-function formatSarif(results) {
-  const { rules: rules2, sarifResults } = collectRulesAndResults(results);
-  const doc = {
-    $schema: SARIF_SCHEMA,
-    version: "2.1.0",
-    runs: [
-      {
-        tool: {
-          driver: {
-            name: TOOL_NAME,
-            version: TOOL_VERSION,
-            informationUri: INFORMATION_URI,
-            rules: rules2
-          }
-        },
-        results: sarifResults
-      }
-    ]
-  };
-  return JSON.stringify(doc, null, 2);
-}
-function collectRulesAndResults(results) {
-  const rulesById = /* @__PURE__ */ new Map();
-  const sarifResults = [];
-  for (const file of results) {
-    for (const err of file.errors) {
-      if (!rulesById.has(err.ruleCode)) {
-        rulesById.set(err.ruleCode, toSarifRule(err));
-      }
-      sarifResults.push(toSarifResult(file.filePath, err));
-    }
-  }
-  return { rules: [...rulesById.values()], sarifResults };
-}
-function toSarifResult(filePath, err) {
-  return {
-    ruleId: err.ruleCode,
-    level: err.severity,
-    message: { text: err.message },
-    locations: [
-      {
-        physicalLocation: {
-          artifactLocation: { uri: filePath },
-          region: { startLine: err.line, startColumn: err.column }
-        }
-      }
-    ]
-  };
-}
-function toSarifRule(err) {
-  return {
-    id: err.ruleCode,
-    name: err.ruleName,
-    shortDescription: { text: err.ruleName },
-    defaultConfiguration: { level: err.severity }
-  };
-}
-
-// ../dist/src/infrastructure/formatters/FormatterRegistry.js
-var FORMATTERS = Object.freeze({
-  default: formatDefault,
-  json: formatJson,
-  junit: formatJUnit,
-  sarif: formatSarif
-});
-function getFormatter(name) {
-  const formatter = FORMATTERS[name];
-  if (!formatter) {
-    throw new Error(`OFM901: unknown formatter "${name}"`);
-  }
-  return formatter;
 }
 
 // ../node_modules/markdown-it/lib/common/utils.mjs
@@ -41265,14 +39631,14 @@ function isFunction(obj) {
 function escapeRE2(str2) {
   return str2.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 }
-var defaultOptions2 = {
+var defaultOptions = {
   fuzzyLink: true,
   fuzzyEmail: true,
   fuzzyIP: false
 };
 function isOptionsObj(obj) {
   return Object.keys(obj || {}).reduce(function(acc, k) {
-    return acc || defaultOptions2.hasOwnProperty(k);
+    return acc || defaultOptions.hasOwnProperty(k);
   }, false);
 }
 var defaultSchemas = {
@@ -41449,7 +39815,7 @@ function LinkifyIt(schemas, options2) {
       schemas = {};
     }
   }
-  this.__opts__ = assign2({}, defaultOptions2, options2);
+  this.__opts__ = assign2({}, defaultOptions, options2);
   this.__index__ = -1;
   this.__last_index__ = -1;
   this.__schema__ = "";
@@ -42155,7 +40521,7 @@ MarkdownIt.prototype.renderInline = function(src, env) {
 };
 var lib_default = MarkdownIt;
 
-// ../dist/src/domain/parsing/ParseResult.js
+// ../packages/core/dist/src/domain/parsing/ParseResult.js
 function makeParseResult(fields) {
   const rawLineCount = fields.raw === "" ? 0 : fields.raw.split(/\r?\n/).length;
   if (rawLineCount !== fields.lines.length && fields.raw !== "") {
@@ -42176,7 +40542,7 @@ function makeParseResult(fields) {
   });
 }
 
-// ../dist/src/infrastructure/parser/FrontmatterParser.js
+// ../packages/core/dist/src/infrastructure/parser/FrontmatterParser.js
 var import_gray_matter = __toESM(require_gray_matter(), 1);
 function parseFrontmatter(source) {
   try {
@@ -42205,7 +40571,7 @@ function countLines(text5) {
   return text5.split(/\r?\n/).length;
 }
 
-// ../dist/src/infrastructure/parser/ofm/CodeRegionMap.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/CodeRegionMap.js
 var FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;
 function buildCodeRegionMap(lines) {
   const state = {
@@ -42254,7 +40620,7 @@ function collectInlineSpans(line, lineNumber, out) {
   }
 }
 
-// ../dist/src/domain/parsing/WikilinkNode.js
+// ../packages/core/dist/src/domain/parsing/WikilinkNode.js
 function makeWikilinkNode(fields) {
   if (fields.target.length === 0) {
     throw new Error("WikilinkNode.target must not be empty");
@@ -42262,7 +40628,7 @@ function makeWikilinkNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/domain/parsing/SourcePosition.js
+// ../packages/core/dist/src/domain/parsing/SourcePosition.js
 function makeSourcePosition(line, column) {
   if (!Number.isInteger(line) || line < 1) {
     throw new Error(`SourcePosition.line must be a positive integer, got ${line}`);
@@ -42273,7 +40639,7 @@ function makeSourcePosition(line, column) {
   return Object.freeze({ line, column });
 }
 
-// ../dist/src/infrastructure/parser/ofm/WikilinkExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/WikilinkExtractor.js
 var WIKILINK_PATTERN = /(!?)\[\[([^\]\n]*?)\]\]/g;
 function extractWikilinks(lines, codeMap) {
   const out = [];
@@ -42347,7 +40713,7 @@ function splitHeading(headBeforeCaret) {
   };
 }
 
-// ../dist/src/domain/parsing/EmbedNode.js
+// ../packages/core/dist/src/domain/parsing/EmbedNode.js
 function makeEmbedNode(fields) {
   if (fields.target.length === 0) {
     throw new Error("EmbedNode.target must not be empty");
@@ -42355,7 +40721,7 @@ function makeEmbedNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/parser/ofm/EmbedExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/EmbedExtractor.js
 var SIZE_PATTERN = /^(\d+)(?:x(\d+))?$/;
 function extractEmbeds(wikilinks) {
   const out = [];
@@ -42385,7 +40751,7 @@ function parseSize(alias) {
   };
 }
 
-// ../dist/src/domain/parsing/CalloutNode.js
+// ../packages/core/dist/src/domain/parsing/CalloutNode.js
 function makeCalloutNode(fields) {
   if (fields.type.length === 0) {
     throw new Error("CalloutNode.type must not be empty");
@@ -42396,7 +40762,7 @@ function makeCalloutNode(fields) {
   });
 }
 
-// ../dist/src/infrastructure/parser/ofm/CalloutExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/CalloutExtractor.js
 var HEADER_PATTERN = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\]([+-]?)\s*(.*)$/;
 var CONTINUATION_PATTERN = /^>\s?(.*)$/;
 function extractCallouts(lines, codeMap) {
@@ -42446,7 +40812,7 @@ function collectBody(lines, start) {
   return { bodyLines, nextIndex: j };
 }
 
-// ../dist/src/domain/parsing/TagNode.js
+// ../packages/core/dist/src/domain/parsing/TagNode.js
 function makeTagNode(fields) {
   if (fields.value.length === 0) {
     throw new Error("TagNode.value must not be empty");
@@ -42457,7 +40823,7 @@ function makeTagNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/parser/ofm/TagExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/TagExtractor.js
 var TAG_PATTERN = /(?<![A-Za-z0-9_])#([A-Za-z0-9_/-]+)/g;
 var HAS_LETTER = /[A-Za-z_-]/;
 function extractTags(lines, codeMap) {
@@ -42483,7 +40849,7 @@ function collectFromLine2(line, lineNumber, codeMap, out) {
   }
 }
 
-// ../dist/src/domain/parsing/BlockRefNode.js
+// ../packages/core/dist/src/domain/parsing/BlockRefNode.js
 var BLOCK_ID_PATTERN = /^[A-Za-z0-9-]+$/;
 function makeBlockRefNode(fields) {
   if (!BLOCK_ID_PATTERN.test(fields.blockId)) {
@@ -42492,7 +40858,7 @@ function makeBlockRefNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/parser/ofm/BlockRefExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/BlockRefExtractor.js
 var BLOCK_REF_PATTERN = /(?:^|\s)\^([A-Za-z0-9-]+)\s*$/;
 function extractBlockRefs(lines, codeMap) {
   const out = [];
@@ -42518,12 +40884,12 @@ function parseLine(line, lineNumber, codeMap) {
   });
 }
 
-// ../dist/src/domain/parsing/HighlightNode.js
+// ../packages/core/dist/src/domain/parsing/HighlightNode.js
 function makeHighlightNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/parser/ofm/HighlightExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/HighlightExtractor.js
 var HIGHLIGHT_PATTERN = /==([^=\n]+)==/g;
 function extractHighlights(lines, codeMap) {
   const out = [];
@@ -42543,12 +40909,12 @@ function extractHighlights(lines, codeMap) {
   return out;
 }
 
-// ../dist/src/domain/parsing/CommentNode.js
+// ../packages/core/dist/src/domain/parsing/CommentNode.js
 function makeCommentNode(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/parser/ofm/CommentExtractor.js
+// ../packages/core/dist/src/infrastructure/parser/ofm/CommentExtractor.js
 function extractComments(lines) {
   const raw = lines.join("\n");
   const out = [];
@@ -42585,7 +40951,7 @@ function offsetToPosition(raw, offset) {
   return { line, column: col };
 }
 
-// ../dist/src/infrastructure/parser/MarkdownItParser.js
+// ../packages/core/dist/src/infrastructure/parser/MarkdownItParser.js
 function makeMarkdownItParser() {
   const md = new lib_default({ html: true, linkify: false });
   return {
@@ -42623,15 +40989,448 @@ function stripFrontmatter(content3) {
   return match3 === null ? content3 : content3.slice(match3[0].length);
 }
 
-// ../dist/src/infrastructure/io/FileReader.js
-var fs6 = __toESM(require("node:fs/promises"), 1);
+// ../packages/core/dist/src/infrastructure/io/FileReader.js
+var fs5 = __toESM(require("node:fs/promises"), 1);
 async function readMarkdownFile(absolutePath) {
-  const raw = await fs6.readFile(absolutePath, "utf8");
+  const raw = await fs5.readFile(absolutePath, "utf8");
   const withoutBom = raw.startsWith("\uFEFF") ? raw.slice(1) : raw;
   return withoutBom.replace(/\r\n/g, "\n");
 }
 
-// ../dist/src/domain/linting/Fix.js
+// ../packages/core/dist/src/infrastructure/io/FileWriter.js
+var fs6 = __toESM(require("node:fs/promises"), 1);
+var path3 = __toESM(require("node:path"), 1);
+async function writeMarkdownFile(absolutePath, content3) {
+  const dir = path3.dirname(absolutePath);
+  const tmp = path3.join(dir, `.${path3.basename(absolutePath)}.tmp-${process.pid}-${Date.now()}`);
+  await fs6.writeFile(tmp, content3, "utf8");
+  try {
+    await fs6.rename(tmp, absolutePath);
+  } catch (err) {
+    await fs6.unlink(tmp).catch(() => void 0);
+    throw err;
+  }
+}
+
+// ../packages/core/dist/src/domain/linting/RuleRegistry.js
+function makeRuleRegistry() {
+  const byName = /* @__PURE__ */ new Map();
+  return {
+    register(rule) {
+      for (const name of rule.names) {
+        if (byName.has(name)) {
+          throw new Error(`Duplicate rule name: ${name}`);
+        }
+      }
+      for (const name of rule.names) {
+        byName.set(name, rule);
+      }
+    },
+    get(nameOrCode) {
+      return byName.get(nameOrCode);
+    },
+    all() {
+      return [...new Set(byName.values())];
+    }
+  };
+}
+
+// ../packages/core/dist/src/domain/linting/LintError.js
+function makeLintError(fields) {
+  return Object.freeze({ ...fields });
+}
+
+// ../packages/core/dist/src/domain/linting/LintResult.js
+function makeLintResult(filePath, errors2) {
+  return Object.freeze({
+    filePath,
+    errors: Object.freeze([...errors2]),
+    hasErrors: errors2.some((e) => e.severity === "error")
+  });
+}
+
+// ../packages/core/dist/src/application/LintUseCase.js
+var warnedMissingFix = /* @__PURE__ */ new Set();
+function emitDebugFixWarning(ruleName) {
+  if (process.env["OFM_DEBUG_FIX"] !== void 0) {
+    process.stderr.write(`[OFM internal] Rule ${ruleName} is fixable but emitted no Fix payload
+`);
+  }
+}
+function warnIfMissingFix(rule, fix2) {
+  const name = rule.names[0] ?? "";
+  if (!rule.fixable || fix2 !== void 0 || warnedMissingFix.has(name))
+    return;
+  warnedMissingFix.add(name);
+  emitDebugFixWarning(rule.names[0] ?? "unknown");
+}
+async function runLint(filePaths, config2, registry, deps) {
+  const results = [];
+  const vault = deps.vault ?? null;
+  const blockRefIndex = deps.blockRefIndex ?? null;
+  const fsCheck = deps.fsCheck;
+  for (const filePath of filePaths) {
+    const errors2 = [];
+    try {
+      const raw = await deps.readFile(filePath);
+      const parsed = deps.parser.parse(filePath, raw);
+      for (const rule of iterateActiveRules(registry, config2)) {
+        await runRule(rule, parsed, config2, vault, blockRefIndex, fsCheck, errors2);
+      }
+    } catch (err) {
+      errors2.push(buildParserError(err));
+    }
+    results.push(makeLintResult(filePath, errors2));
+  }
+  return results;
+}
+function iterateActiveRules(registry, config2) {
+  return registry.all().filter((rule) => {
+    for (const name of rule.names) {
+      const cfg = config2.rules[name];
+      if (cfg !== void 0)
+        return cfg.enabled;
+    }
+    return true;
+  });
+}
+async function runRule(rule, parsed, config2, vault, blockRefIndex, fsCheck, errors2) {
+  await rule.run({ filePath: parsed.filePath, parsed, config: config2, vault, fsCheck, blockRefIndex }, (partial) => {
+    warnIfMissingFix(rule, partial.fix);
+    errors2.push(makeLintError({
+      ruleCode: rule.names[0] ?? "UNKNOWN",
+      ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
+      severity: rule.severity,
+      line: partial.line,
+      column: partial.column,
+      message: partial.message,
+      fixable: rule.fixable,
+      ...partial.fix !== void 0 ? { fix: partial.fix } : {}
+    }));
+  });
+}
+function buildParserError(err) {
+  const message = err instanceof Error ? err.message : String(err);
+  const isOFM902 = message.startsWith("OFM902");
+  return makeLintError({
+    ruleCode: isOFM902 ? "OFM902" : "OFM901",
+    ruleName: isOFM902 ? "frontmatter-parse-error" : "internal-parser-error",
+    severity: "error",
+    line: 1,
+    column: 1,
+    message,
+    fixable: false
+  });
+}
+
+// ../packages/core/dist/src/domain/fix/applyFixes.js
+function applyFixes(raw, fixes, filePath = "") {
+  const lines = raw.split("\n");
+  const conflicts = [];
+  const byLine = groupByLine(fixes);
+  for (const [lineNumber, list3] of byLine.entries()) {
+    applyLineGroup(lines, lineNumber, list3, filePath, conflicts);
+  }
+  return { patched: lines.join("\n"), conflicts };
+}
+function groupByLine(fixes) {
+  const byLine = /* @__PURE__ */ new Map();
+  for (const fix2 of fixes) {
+    const list3 = byLine.get(fix2.lineNumber) ?? [];
+    list3.push(fix2);
+    byLine.set(fix2.lineNumber, list3);
+  }
+  return byLine;
+}
+function applyLineGroup(lines, lineNumber, list3, filePath, conflicts) {
+  const sorted = [...list3].sort((a, b) => b.editColumn - a.editColumn);
+  const accepted = [];
+  for (const fix2 of sorted) {
+    const overlapping = accepted.find((a) => rangesIntersect(a, fix2));
+    if (overlapping !== void 0) {
+      conflicts.push({
+        filePath,
+        first: overlapping,
+        second: fix2,
+        reason: `Overlap on line ${lineNumber}`
+      });
+      continue;
+    }
+    accepted.push(fix2);
+    spliceLine(lines, lineNumber, fix2);
+  }
+}
+function spliceLine(lines, lineNumber, fix2) {
+  const idx = lineNumber - 1;
+  const line = lines[idx] ?? "";
+  const col = fix2.editColumn - 1;
+  lines[idx] = line.slice(0, col) + fix2.insertText + line.slice(col + fix2.deleteCount);
+}
+function rangesIntersect(a, b) {
+  const aEnd = a.editColumn + a.deleteCount;
+  const bEnd = b.editColumn + b.deleteCount;
+  if (a.editColumn === b.editColumn)
+    return true;
+  return a.editColumn < bEnd && b.editColumn < aEnd;
+}
+
+// ../packages/core/dist/src/application/FixUseCase.js
+async function runFix(filePaths, config2, registry, deps) {
+  const firstPass = await runLint(filePaths, config2, registry, deps);
+  const fixed = [];
+  const allConflicts = [];
+  for (const result of firstPass) {
+    const fixes = result.errors.filter((e) => e.fix !== void 0).map((e) => e.fix);
+    if (fixes.length === 0)
+      continue;
+    const raw = await deps.readFile(result.filePath);
+    const { patched, conflicts } = applyFixes(raw, fixes, result.filePath);
+    allConflicts.push(...conflicts);
+    if (patched !== raw) {
+      await deps.writeFile(result.filePath, patched);
+      fixed.push(result.filePath);
+    }
+  }
+  const finalPass = await runLint(filePaths, config2, registry, deps);
+  return { firstPass, finalPass, filesFixed: fixed, conflicts: allConflicts };
+}
+
+// ../packages/core/dist/src/domain/vault/BlockRefIndex.js
+function findDuplicates(list3) {
+  const seen = /* @__PURE__ */ new Set();
+  const dups = [];
+  for (const id of list3) {
+    if (seen.has(id)) {
+      if (!dups.includes(id))
+        dups.push(id);
+    } else {
+      seen.add(id);
+    }
+  }
+  return dups;
+}
+function buildDuplicateMap(raw) {
+  const out = /* @__PURE__ */ new Map();
+  for (const [page, list3] of raw.entries()) {
+    const dups = findDuplicates(list3);
+    if (dups.length > 0)
+      out.set(normalize3(page), dups);
+  }
+  return out;
+}
+function normalizeUnique(unique) {
+  const out = /* @__PURE__ */ new Map();
+  for (const [page, set2] of unique.entries()) {
+    out.set(normalize3(page), set2);
+  }
+  return out;
+}
+function makeBlockRefIndex(unique, raw = /* @__PURE__ */ new Map()) {
+  const duplicatesByPage = buildDuplicateMap(raw);
+  const normalizedUnique = normalizeUnique(unique);
+  return Object.freeze({
+    has(pageRelative, blockId) {
+      return normalizedUnique.get(normalize3(pageRelative))?.has(blockId) ?? false;
+    },
+    duplicatesIn(pageRelative) {
+      return duplicatesByPage.get(normalize3(pageRelative)) ?? [];
+    },
+    all() {
+      return normalizedUnique;
+    }
+  });
+}
+function normalize3(pageRelative) {
+  return pageRelative.endsWith(".md") ? pageRelative : `${pageRelative}.md`;
+}
+
+// ../packages/core/dist/src/application/VaultBootstrap.js
+async function bootstrapVault(startDir, config2, deps) {
+  if (!config2.resolve)
+    return null;
+  const root = config2.vaultRoot !== null && config2.vaultRoot !== void 0 ? config2.vaultRoot : await deps.detector.detect(startDir);
+  const vault = await deps.buildIndex(root, { caseSensitive: config2.wikilinks.caseSensitive });
+  const blockRefs = await deps.buildBlockRefIndex(vault.all());
+  return { vault, blockRefs };
+}
+
+// ../packages/core/dist/src/infrastructure/vault/NodeFsVaultDetector.js
+var fs8 = __toESM(require("node:fs/promises"), 1);
+var path5 = __toESM(require("node:path"), 1);
+
+// ../packages/core/dist/src/infrastructure/vault/GitRootFinder.js
+var fs7 = __toESM(require("node:fs/promises"), 1);
+var path4 = __toESM(require("node:path"), 1);
+async function findGitRoot(startDir) {
+  let dir = path4.resolve(startDir);
+  for (; ; ) {
+    try {
+      const stat3 = await fs7.stat(path4.join(dir, ".git"));
+      if (stat3.isDirectory() || stat3.isFile())
+        return dir;
+    } catch {
+    }
+    const parent = path4.dirname(dir);
+    if (parent === dir)
+      return null;
+    dir = parent;
+  }
+}
+
+// ../packages/core/dist/src/infrastructure/vault/NodeFsVaultDetector.js
+function makeNodeFsVaultDetector() {
+  return {
+    async detect(startDir) {
+      const obsidian = await findObsidianRoot(startDir);
+      if (obsidian !== null)
+        return obsidian;
+      const git = await findGitRoot(startDir);
+      if (git !== null)
+        return git;
+      throw new Error(`OFM900: no vault root found \u2014 no .obsidian/ or .git/ above ${path5.resolve(startDir)}`);
+    }
+  };
+}
+async function findObsidianRoot(startDir) {
+  let dir = path5.resolve(startDir);
+  for (; ; ) {
+    try {
+      const stat3 = await fs8.stat(path5.join(dir, ".obsidian"));
+      if (stat3.isDirectory())
+        return dir;
+    } catch {
+    }
+    const parent = path5.dirname(dir);
+    if (parent === dir)
+      return null;
+    dir = parent;
+  }
+}
+
+// ../packages/core/dist/src/infrastructure/vault/FileIndexBuilder.js
+var path7 = __toESM(require("node:path"), 1);
+
+// ../packages/core/dist/src/domain/vault/VaultPath.js
+var path6 = __toESM(require("node:path"), 1);
+function makeVaultPath(vaultRoot, absolute) {
+  const normalizedRoot = path6.resolve(vaultRoot);
+  const normalizedAbs = path6.resolve(absolute);
+  const rel = path6.relative(normalizedRoot, normalizedAbs);
+  if (rel === "" || rel.startsWith("..") || path6.isAbsolute(rel)) {
+    throw new Error(`VaultPath: "${absolute}" is outside vault root "${vaultRoot}"`);
+  }
+  const forward = rel.split(path6.sep).join("/");
+  return Object.freeze({
+    relative: forward,
+    absolute: normalizedAbs,
+    stem: path6.basename(forward, path6.extname(forward))
+  });
+}
+
+// ../packages/core/dist/src/domain/vault/WikilinkMatcher.js
+function matchWikilink(target, files, options2) {
+  const normalizedTarget = normalize4(target);
+  if (normalizedTarget === "")
+    return { kind: "not-found" };
+  const exact = files.find((f) => stripExt(f.relative) === normalizedTarget);
+  if (exact !== void 0)
+    return { kind: "resolved", path: exact, strategy: "exact" };
+  if (!options2.caseSensitive) {
+    const ci = files.find((f) => stripExt(f.relative).toLowerCase() === normalizedTarget.toLowerCase());
+    if (ci !== void 0)
+      return { kind: "resolved", path: ci, strategy: "case-insensitive" };
+  }
+  return matchByStem(normalizedTarget, files, options2);
+}
+function matchByStem(normalizedTarget, files, options2) {
+  const byStem = files.filter((f) => options2.caseSensitive ? f.stem === normalizedTarget : f.stem.toLowerCase() === normalizedTarget.toLowerCase());
+  if (byStem.length === 1)
+    return { kind: "resolved", path: byStem[0], strategy: "basename" };
+  if (byStem.length > 1)
+    return { kind: "ambiguous", candidates: byStem };
+  return { kind: "not-found" };
+}
+function normalize4(target) {
+  return target.replace(/\\/g, "/").replace(/\.md$/i, "");
+}
+function stripExt(relative2) {
+  return relative2.replace(/\.md$/i, "");
+}
+
+// ../packages/core/dist/src/infrastructure/vault/FileIndexBuilder.js
+async function buildFileIndex(vaultRoot, options2) {
+  const resolvedRoot = path7.resolve(vaultRoot);
+  const absolutes = await globby(["**/*.md"], {
+    cwd: resolvedRoot,
+    absolute: true,
+    gitignore: true,
+    ignore: [...options2.ignores ?? [], "**/.obsidian/**", "**/node_modules/**"]
+  });
+  const paths = absolutes.map((abs) => makeVaultPath(resolvedRoot, abs));
+  const byRelative = new Set(paths.map((p) => p.relative));
+  return Object.freeze({
+    root: resolvedRoot,
+    all: () => paths,
+    has: (relative2) => byRelative.has(relative2),
+    resolve: (link2) => matchWikilink(link2.target, paths, { caseSensitive: options2.caseSensitive })
+  });
+}
+
+// ../packages/core/dist/src/infrastructure/vault/BlockRefIndexBuilder.js
+async function buildBlockRefIndex(files, deps) {
+  const unique = /* @__PURE__ */ new Map();
+  const raw = /* @__PURE__ */ new Map();
+  for (const file of files) {
+    let parsed;
+    try {
+      const source = await deps.readFile(file.absolute);
+      parsed = deps.parser.parse(file.relative, source);
+    } catch {
+      continue;
+    }
+    const rawList = [];
+    const seen = /* @__PURE__ */ new Set();
+    for (const ref of parsed.blockRefs) {
+      rawList.push(ref.blockId);
+      seen.add(ref.blockId);
+    }
+    unique.set(file.relative, seen);
+    raw.set(file.relative, rawList);
+  }
+  return makeBlockRefIndex(unique, raw);
+}
+
+// ../packages/core/dist/src/infrastructure/fs/NodeFsExistenceChecker.js
+var fs9 = __toESM(require("node:fs/promises"), 1);
+var path8 = __toESM(require("node:path"), 1);
+function resolveWithinRoot(vaultRoot, relative2) {
+  if (typeof vaultRoot !== "string" || vaultRoot.length === 0)
+    return null;
+  if (typeof relative2 !== "string" || relative2.length === 0)
+    return null;
+  const normalized = relative2.replace(/\\/g, "/");
+  const rootResolved = path8.resolve(vaultRoot);
+  const absolute = path8.resolve(rootResolved, normalized);
+  const withinRoot = absolute === rootResolved || absolute.startsWith(rootResolved + path8.sep);
+  return withinRoot ? absolute : null;
+}
+function makeNodeFsExistenceChecker() {
+  return {
+    async exists(vaultRoot, relative2) {
+      const absolute = resolveWithinRoot(vaultRoot, relative2);
+      if (absolute === null)
+        return false;
+      try {
+        await fs9.access(absolute);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  };
+}
+
+// ../packages/core/dist/src/domain/linting/Fix.js
 function makeFix(fields) {
   if (fields.lineNumber < 1)
     throw new Error("Fix.lineNumber must be >= 1");
@@ -42642,7 +41441,7 @@ function makeFix(fields) {
   return Object.freeze({ ...fields });
 }
 
-// ../dist/src/infrastructure/rules/standard/StandardRuleAdapter.js
+// ../packages/core/dist/src/infrastructure/rules/standard/StandardRuleAdapter.js
 function fixInfoToFix(fi, fallbackLine) {
   return makeFix({
     lineNumber: fi.lineNumber ?? fallbackLine,
@@ -42694,7 +41493,7 @@ function extractMdConfig(config2) {
 
 // ../node_modules/markdownlint/lib/node-imports-node.mjs
 var import_node_fs4 = require("node:fs");
-var fs7 = { access: import_node_fs4.access, accessSync: import_node_fs4.accessSync, readFile: import_node_fs4.readFile, readFileSync: import_node_fs4.readFileSync };
+var fs10 = { access: import_node_fs4.access, accessSync: import_node_fs4.accessSync, readFile: import_node_fs4.readFile, readFileSync: import_node_fs4.readFileSync };
 
 // ../node_modules/markdownlint/lib/cache.mjs
 var import_helpers = __toESM(require_helpers(), 1);
@@ -47349,7 +46148,7 @@ var domain = {
   tokenize: tokenizeDomain,
   partial: true
 };
-var path4 = {
+var path9 = {
   tokenize: tokenizePath,
   partial: true
 };
@@ -47457,7 +46256,7 @@ function tokenizeWwwAutolink(effects, ok, nok) {
     }
     effects.enter("literalAutolink");
     effects.enter("literalAutolinkWww");
-    return effects.check(wwwPrefix, effects.attempt(domain, effects.attempt(path4, wwwAfter), nok), nok)(code3);
+    return effects.check(wwwPrefix, effects.attempt(domain, effects.attempt(path9, wwwAfter), nok), nok)(code3);
   }
   function wwwAfter(code3) {
     effects.exit("literalAutolinkWww");
@@ -47507,7 +46306,7 @@ function tokenizeProtocolAutolink(effects, ok, nok) {
     return nok(code3);
   }
   function afterProtocol(code3) {
-    return code3 === null || asciiControl(code3) || markdownLineEndingOrSpace(code3) || unicodeWhitespace(code3) || unicodePunctuation(code3) ? nok(code3) : effects.attempt(domain, effects.attempt(path4, protocolAfter), nok)(code3);
+    return code3 === null || asciiControl(code3) || markdownLineEndingOrSpace(code3) || unicodeWhitespace(code3) || unicodePunctuation(code3) ? nok(code3) : effects.attempt(domain, effects.attempt(path9, protocolAfter), nok)(code3);
   }
   function protocolAfter(code3) {
     effects.exit("literalAutolinkHttp");
@@ -53635,7 +52434,7 @@ var defaultProhibitedTexts = [
   "link",
   "more"
 ];
-function normalize3(str2) {
+function normalize5(str2) {
   return str2.replace(/[\W_]+/g, " ").replace(/\s+/g, " ").toLowerCase().trim();
 }
 var md059_default = {
@@ -53645,7 +52444,7 @@ var md059_default = {
   "parser": "micromark",
   "function": function MD059(params2, onError) {
     const prohibitedTexts = new Set(
-      (params2.config.prohibited_texts || defaultProhibitedTexts).map(normalize3)
+      (params2.config.prohibited_texts || defaultProhibitedTexts).map(normalize5)
     );
     if (prohibitedTexts.size > 0) {
       const links = filterByTypesCached(["link"]);
@@ -53653,7 +52452,7 @@ var md059_default = {
         const labelTexts = (0, import_micromark_helpers39.getDescendantsByType)(link2, ["label", "labelText"]);
         for (const labelText of labelTexts) {
           const { children, endColumn, endLine, parent, startColumn, startLine, text: text5 } = labelText;
-          if (!children.some((child) => allowedChildrenTypes.has(child.type)) && prohibitedTexts.has(normalize3(text5))) {
+          if (!children.some((child) => allowedChildrenTypes.has(child.type)) && prohibitedTexts.has(normalize5(text5))) {
             const range2 = startLine === endLine ? [startColumn, endColumn - startColumn] : void 0;
             (0, import_helpers51.addErrorContext)(
               onError,
@@ -54600,7 +53399,7 @@ function lintInput(options2, synchronous, callback) {
   const markdownItFactory = options2.markdownItFactory || (() => {
     throw new Error("The option 'markdownItFactory' was required (due to the option 'customRules' including a rule requiring the 'markdown-it' parser), but 'markdownItFactory' was not set.");
   });
-  const fs11 = options2.fs || fs7;
+  const fs11 = options2.fs || fs10;
   const aliasToRuleNames = mapAliasToRuleNames(ruleList);
   const results = newResults(ruleList);
   let done = false;
@@ -54692,7 +53491,7 @@ function lintSync(options2) {
   return results;
 }
 
-// ../dist/src/infrastructure/rules/standard/MarkdownLintAdapter.js
+// ../packages/core/dist/src/infrastructure/rules/standard/MarkdownLintAdapter.js
 function makeMarkdownLintAdapter() {
   const cache = /* @__PURE__ */ new Map();
   return {
@@ -54743,7 +53542,7 @@ function fnv1a(s) {
   return (h >>> 0).toString(16);
 }
 
-// ../dist/src/infrastructure/rules/standard/registerStandard.js
+// ../packages/core/dist/src/infrastructure/rules/standard/registerStandard.js
 var STANDARD_RULE_DESCRIPTORS = Object.freeze([
   {
     code: "MD001",
@@ -55053,7 +53852,7 @@ function registerStandardRules(registry, adapter = makeMarkdownLintAdapter()) {
   }
 }
 
-// ../dist/src/infrastructure/rules/ofm/system/FrontmatterParseError.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/system/FrontmatterParseError.js
 var frontmatterParseErrorRule = {
   names: ["OFM902", "frontmatter-parse-error"],
   description: "Frontmatter could not be parsed as YAML/TOML",
@@ -55064,7 +53863,7 @@ var frontmatterParseErrorRule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/shared/FrontmatterAccess.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/shared/FrontmatterAccess.js
 function getByDotPath(source, dotPath) {
   const parts = dotPath.split(".");
   let cursor = source;
@@ -55096,7 +53895,7 @@ function typeOf(value) {
   }
 }
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM080-missing-required-key.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM080-missing-required-key.js
 var OFM080Rule = {
   names: ["OFM080", "missing-required-key"],
   description: "Required frontmatter key is missing",
@@ -55116,7 +53915,7 @@ var OFM080Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/shared/DateFormat.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/shared/DateFormat.js
 var ISO_PATTERN = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})?)?$/;
 function isIsoDate(input) {
   if (input instanceof Date) {
@@ -55130,7 +53929,7 @@ function isIsoDate(input) {
   return Number.isFinite(ms);
 }
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format.js
 var OFM081Rule = {
   names: ["OFM081", "invalid-date-format"],
   description: "Frontmatter date field is not a valid ISO-8601 value",
@@ -55153,7 +53952,7 @@ var OFM081Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM082-unknown-top-level-key.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM082-unknown-top-level-key.js
 var OFM082Rule = {
   names: ["OFM082", "unknown-top-level-key"],
   description: "Frontmatter contains a key not present in typeMap",
@@ -55176,7 +53975,7 @@ var OFM082Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type.js
 var OFM083Rule = {
   names: ["OFM083", "invalid-value-type"],
   description: "Frontmatter key has the wrong type per typeMap",
@@ -55210,7 +54009,7 @@ var OFM083Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key.js
 var OFM084Rule = {
   names: ["OFM084", "empty-required-key"],
   description: "Required frontmatter key is present but empty",
@@ -55240,7 +54039,7 @@ function isEmpty2(value) {
   return false;
 }
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key.js
 var KEY_LINE = /^([A-Za-z0-9_-]+)\s*:/;
 var OFM085Rule = {
   names: ["OFM085", "duplicate-frontmatter-key"],
@@ -55275,7 +54074,7 @@ var OFM085Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string.js
 var TRAILING_WS = /[ \t]+$/;
 var KEY_LINE2 = /^([A-Za-z0-9_-]+)\s*:/;
 var OFM086Rule = {
@@ -55338,12 +54137,12 @@ function checkString(value, path14, keyLineMap, frontmatterRaw, emit) {
   const line = topKey !== void 0 && keyLineMap.get(topKey) || 1;
   const trimmedValue = value.trimEnd();
   const trailingCount = value.length - trimmedValue.length;
-  const fix = buildTopLevelFix(path14, line, trimmedValue, trailingCount, frontmatterRaw);
+  const fix2 = buildTopLevelFix(path14, line, trimmedValue, trailingCount, frontmatterRaw);
   emit({
     line,
     column: 1,
     message: `Frontmatter value at "${where}" has trailing whitespace`,
-    ...fix !== void 0 ? { fix } : {}
+    ...fix2 !== void 0 ? { fix: fix2 } : {}
   });
 }
 function findTrailingWhitespaceColumn(absoluteLine, trimmedValue, frontmatterRaw) {
@@ -55374,7 +54173,7 @@ function walkObject(obj, path14, keyLineMap, frontmatterRaw, emit) {
   }
 }
 
-// ../dist/src/infrastructure/rules/ofm/frontmatter/OFM087-non-string-tag-entry.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/frontmatter/OFM087-non-string-tag-entry.js
 var OFM087Rule = {
   names: ["OFM087", "non-string-tag-entry"],
   description: "Frontmatter tags array contains a non-string entry",
@@ -55397,7 +54196,7 @@ var OFM087Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/shared/TagFormat.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/shared/TagFormat.js
 var ALLOWED = /^[A-Za-z0-9_/-]+$/;
 var HAS_LETTER2 = /[A-Za-z_-]/;
 function isValidTag(value) {
@@ -55417,7 +54216,7 @@ function tagDepth(value) {
   return value.split("/").length;
 }
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM060-invalid-tag-format.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM060-invalid-tag-format.js
 var OFM060Rule = {
   names: ["OFM060", "invalid-tag-format"],
   description: "Tag contains characters outside Obsidian's allowed set",
@@ -55437,7 +54236,7 @@ var OFM060Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM061-tag-depth-exceeded.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM061-tag-depth-exceeded.js
 var OFM061Rule = {
   names: ["OFM061", "tag-depth-exceeded"],
   description: "Nested tag exceeds the configured maxDepth",
@@ -55459,7 +54258,7 @@ var OFM061Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM062-empty-tag.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM062-empty-tag.js
 var EMPTY_TAG = /(\s)(#\/?)(?:\s|$)/;
 var ATX_HEADING = /^#{1,6}(\s|$)/;
 var OFM062Rule = {
@@ -55486,7 +54285,7 @@ var OFM062Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM063-trailing-slash.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM063-trailing-slash.js
 var OFM063Rule = {
   names: ["OFM063", "tag-trailing-slash"],
   description: "Nested tag ends with a trailing slash",
@@ -55512,7 +54311,7 @@ var OFM063Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM064-duplicate-tag.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM064-duplicate-tag.js
 var OFM064Rule = {
   names: ["OFM064", "duplicate-tag"],
   description: "The same tag is repeated within one file",
@@ -55537,7 +54336,7 @@ var OFM064Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM065-mixed-case-tag.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM065-mixed-case-tag.js
 var OFM065Rule = {
   names: ["OFM065", "mixed-case-tag"],
   description: "Tag casing differs from its earlier occurrence",
@@ -55570,7 +54369,7 @@ var OFM065Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/tags/OFM066-frontmatter-tag-not-in-body.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/tags/OFM066-frontmatter-tag-not-in-body.js
 var OFM066Rule = {
   names: ["OFM066", "frontmatter-tag-not-in-body"],
   description: "Tag declared in frontmatter is never used in the body",
@@ -55596,7 +54395,7 @@ var OFM066Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM001-broken-wikilink.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM001-broken-wikilink.js
 var OFM001Rule = {
   names: ["OFM001", "no-broken-wikilinks"],
   description: "Wikilink target does not resolve within the vault",
@@ -55621,7 +54420,7 @@ var OFM001Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM002-invalid-wikilink-format.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM002-invalid-wikilink-format.js
 var EMPTY_RE = /\[\[\s*\]\]/g;
 var NESTED_RE = /\[\[[^\]]*\[\[/g;
 var OFM002Rule = {
@@ -55674,8 +54473,8 @@ function reportNested(line, lineNumber, codeMap, onError) {
   }
 }
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.js
-var path6 = __toESM(require("node:path"), 1);
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.js
+var path11 = __toESM(require("node:path"), 1);
 var OFM003Rule = {
   names: ["OFM003", "self-link"],
   description: "Wikilink points back at the same file",
@@ -55685,8 +54484,8 @@ var OFM003Rule = {
   run({ parsed, vault }, onError) {
     if (vault === null)
       return;
-    const selfAbs = path6.resolve(parsed.filePath);
-    const selfStem = path6.basename(parsed.filePath, path6.extname(parsed.filePath));
+    const selfAbs = path11.resolve(parsed.filePath);
+    const selfStem = path11.basename(parsed.filePath, path11.extname(parsed.filePath));
     for (const link2 of parsed.wikilinks) {
       const match3 = vault.resolve(link2);
       if (match3.kind !== "resolved")
@@ -55695,14 +54494,14 @@ var OFM003Rule = {
         onError({
           line: link2.position.line,
           column: link2.position.column,
-          message: `Self-link to "${selfStem}" in ${path6.basename(parsed.filePath)}`
+          message: `Self-link to "${selfStem}" in ${path11.basename(parsed.filePath)}`
         });
       }
     }
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target.js
 var OFM004Rule = {
   names: ["OFM004", "ambiguous-wikilink-target"],
   description: "Wikilink basename matches multiple files",
@@ -55726,7 +54525,7 @@ var OFM004Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM005-case-mismatch.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM005-case-mismatch.js
 var OFM005Rule = {
   names: ["OFM005", "wikilink-case-mismatch"],
   description: "Wikilink target only resolves case-insensitively",
@@ -55755,7 +54554,7 @@ var OFM005Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM006-empty-heading.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM006-empty-heading.js
 var EMPTY_HEADING_RE = /\[\[[^\]]*?#\s*(?:\||\]\])/;
 var OFM006Rule = {
   names: ["OFM006", "empty-wikilink-heading"],
@@ -55780,7 +54579,7 @@ var OFM006Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/block-references/OFM102-broken-block-link.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/block-references/OFM102-broken-block-link.js
 var OFM102Rule = {
   names: ["OFM102", "broken-block-link"],
   description: "Wikilink block reference targets a missing block id",
@@ -55807,14 +54606,14 @@ var OFM102Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body.js
 var OFM007Rule = {
   ...OFM102Rule,
   names: ["OFM007", "wikilink-block-ref"],
   description: "Block-reference wikilink target is broken (alias of OFM102)"
 };
 
-// ../dist/src/infrastructure/rules/ofm/embeds/shared/EmbedClassifier.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/shared/EmbedClassifier.js
 var BY_EXT = Object.freeze({
   md: "markdown",
   png: "image",
@@ -55840,7 +54639,7 @@ function classifyEmbed(embed) {
   return { kind: BY_EXT[ext2] ?? "unknown", extension: ext2 };
 }
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM020-broken-embed.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM020-broken-embed.js
 var OFM020Rule = {
   names: ["OFM020", "broken-embed"],
   description: "Embed target is a markdown file that does not exist in the vault",
@@ -55866,7 +54665,7 @@ var OFM020Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/shared/fenceStateMachine.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/shared/fenceStateMachine.js
 var FENCE_PATTERN2 = /^(\s*)(`{3,}|~{3,})/;
 function updateFence(line, fence2) {
   const fenceMatch = line.match(FENCE_PATTERN2);
@@ -55883,7 +54682,7 @@ function stripInlineCode(line) {
   return line.replace(/`[^`\n]*`/g, "");
 }
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM021-invalid-embed-syntax.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM021-invalid-embed-syntax.js
 var EMPTY_EMBED = /!\[\[\s*\]\]/g;
 var OPEN_BRACKETS = /!\[\[/;
 function computeInlineCodeSpans(line) {
@@ -55948,7 +54747,7 @@ var OFM021Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM022-embed-target-missing.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM022-embed-target-missing.js
 var OFM022Rule = {
   names: ["OFM022", "embed-target-missing"],
   description: "Embedded asset file does not exist beneath the vault root",
@@ -55974,7 +54773,7 @@ var OFM022Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM023-embed-size-invalid.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM023-embed-size-invalid.js
 function checkAxis(embed, actual, cap, axis, onError) {
   if (cap === null || actual === null || actual <= cap)
     return;
@@ -56001,7 +54800,7 @@ var OFM023Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM024-disallowed-embed-extension.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM024-disallowed-embed-extension.js
 var OFM024Rule = {
   names: ["OFM024", "disallowed-embed-extension"],
   description: "Embed extension is not in the allowedExtensions list",
@@ -56023,7 +54822,7 @@ var OFM024Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/embeds/OFM025-embed-size-on-non-image.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/embeds/OFM025-embed-size-on-non-image.js
 var OFM025Rule = {
   names: ["OFM025", "embed-size-on-non-image"],
   description: "Sizing hint used on an embed type that does not honour it",
@@ -56046,7 +54845,7 @@ var OFM025Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/callouts/shared/CalloutTypeRegistry.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/shared/CalloutTypeRegistry.js
 function buildCalloutTypeRegistry(config2) {
   const caseSensitive = config2.caseSensitive;
   const set2 = new Set(config2.allowList.map((t) => caseSensitive ? t : t.toUpperCase()));
@@ -56058,7 +54857,7 @@ function buildCalloutTypeRegistry(config2) {
   };
 }
 
-// ../dist/src/infrastructure/rules/ofm/callouts/OFM040-unknown-callout-type.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/OFM040-unknown-callout-type.js
 var OFM040Rule = {
   names: ["OFM040", "unknown-callout-type"],
   description: "Callout type is not in the allowList",
@@ -56079,7 +54878,7 @@ var OFM040Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/callouts/OFM041-malformed-callout.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/OFM041-malformed-callout.js
 var LOOKS_LIKE_HEADER = /^>\s*\[/;
 var STRICT_HEADER = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\][+-]?(\s.*)?$/;
 var OFM041Rule = {
@@ -56108,7 +54907,7 @@ var OFM041Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/callouts/OFM042-empty-callout.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/OFM042-empty-callout.js
 var OFM042Rule = {
   names: ["OFM042", "empty-callout"],
   description: "Callout has no title and no body",
@@ -56136,7 +54935,7 @@ var OFM042Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/callouts/OFM043-callout-in-list.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/OFM043-callout-in-list.js
 var LIST_LINE = /^(\s*[-*+]\s|\s*\d+\.\s)/;
 var OFM043Rule = {
   names: ["OFM043", "callout-in-list"],
@@ -56158,7 +54957,7 @@ var OFM043Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/callouts/OFM044-callout-fold-disabled.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/callouts/OFM044-callout-fold-disabled.js
 var INFORMATIONAL = /* @__PURE__ */ new Set(["NOTE", "INFO", "TIP", "HINT"]);
 var OFM044Rule = {
   names: ["OFM044", "callout-fold-disabled"],
@@ -56196,7 +54995,7 @@ function buildFoldFix(callout, headerLine) {
   };
 }
 
-// ../dist/src/infrastructure/rules/ofm/block-references/OFM100-invalid-block-ref.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/block-references/OFM100-invalid-block-ref.js
 var OFM100Rule = {
   names: ["OFM100", "invalid-block-ref"],
   description: "Block reference id does not match the configured pattern",
@@ -56217,7 +55016,7 @@ var OFM100Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/block-references/OFM101-duplicate-block-id.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/block-references/OFM101-duplicate-block-id.js
 var OFM101Rule = {
   names: ["OFM101", "duplicate-block-id"],
   description: "Same block id declared twice in the same file",
@@ -56243,7 +55042,7 @@ var OFM101Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading.js
 var HEADING_PREFIX = /^#{1,6}\s/;
 var OFM103Rule = {
   names: ["OFM103", "block-ref-on-heading"],
@@ -56265,7 +55064,7 @@ var OFM103Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/block-references/OFM104-block-id-format.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/block-references/OFM104-block-id-format.js
 var OFM104Rule = {
   names: ["OFM104", "block-id-case"],
   description: "Block id contains uppercase letters",
@@ -57344,12 +56143,12 @@ var qmarksTestNoExtDot = ([$0]) => {
   return (f) => f.length === len && f !== "." && f !== "..";
 };
 var defaultPlatform = typeof process === "object" && process ? typeof process.env === "object" && process.env && process.env.__MINIMATCH_TESTING_PLATFORM__ || process.platform : "posix";
-var path7 = {
+var path12 = {
   win32: { sep: "\\" },
   posix: { sep: "/" }
 };
-var sep = defaultPlatform === "win32" ? path7.win32.sep : path7.posix.sep;
-minimatch.sep = sep;
+var sep3 = defaultPlatform === "win32" ? path12.win32.sep : path12.posix.sep;
+minimatch.sep = sep3;
 var GLOBSTAR = Symbol("globstar **");
 minimatch.GLOBSTAR = GLOBSTAR;
 var qmark2 = "[^/]";
@@ -58094,7 +56893,7 @@ minimatch.Minimatch = Minimatch;
 minimatch.escape = escape3;
 minimatch.unescape = unescape;
 
-// ../dist/src/infrastructure/rules/ofm/highlights/OFM120-disallowed-highlight.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/highlights/OFM120-disallowed-highlight.js
 var OFM120Rule = {
   names: ["OFM120", "disallowed-highlight"],
   description: "Highlight `==text==` is disabled by config in this file",
@@ -58123,7 +56922,7 @@ function prefixGlob(glob) {
   return `**/${glob}`;
 }
 
-// ../dist/src/infrastructure/rules/ofm/highlights/OFM121-disallowed-comment.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/highlights/OFM121-disallowed-comment.js
 var OFM121Rule = {
   names: ["OFM121", "disallowed-comment"],
   description: "Obsidian comment `%%...%%` is disabled by config",
@@ -58154,7 +56953,7 @@ var OFM121Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/highlights/OFM122-malformed-highlight.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/highlights/OFM122-malformed-highlight.js
 var OFM122Rule = {
   names: ["OFM122", "malformed-highlight"],
   description: "Unmatched `==` markers on a single line",
@@ -58181,7 +56980,7 @@ var OFM122Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/highlights/OFM123-nested-highlight.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/highlights/OFM123-nested-highlight.js
 function hasNestedHighlight(line) {
   const parts = line.split("==");
   if (parts.length <= 3)
@@ -58219,7 +57018,7 @@ var OFM123Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/highlights/OFM124-empty-highlight.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/highlights/OFM124-empty-highlight.js
 var OFM124Rule = {
   names: ["OFM124", "empty-highlight"],
   description: "Highlight contains no text",
@@ -58245,7 +57044,7 @@ var OFM124Rule = {
   }
 };
 
-// ../dist/src/infrastructure/rules/ofm/registerBuiltin.js
+// ../packages/core/dist/src/infrastructure/rules/ofm/registerBuiltin.js
 var ALL = [
   frontmatterParseErrorRule,
   OFM080Rule,
@@ -58298,8 +57097,8 @@ function registerBuiltinRules(registry) {
   registerStandardRules(registry);
 }
 
-// ../dist/src/infrastructure/config/CustomRuleLoader.js
-var path8 = __toESM(require("node:path"), 1);
+// ../packages/core/dist/src/infrastructure/config/CustomRuleLoader.js
+var path13 = __toESM(require("node:path"), 1);
 var import_node_url2 = require("node:url");
 async function loadCustomRules(customRules, baseDir) {
   const rules2 = [];
@@ -58316,7 +57115,7 @@ async function loadCustomRules(customRules, baseDir) {
 }
 async function loadSingleRuleEntry(entry, baseDir) {
   try {
-    const absolute = path8.isAbsolute(entry) ? entry : path8.resolve(baseDir, entry);
+    const absolute = path13.isAbsolute(entry) ? entry : path13.resolve(baseDir, entry);
     const fileUrl = (0, import_node_url2.pathToFileURL)(absolute).toString();
     const mod = await import(fileUrl);
     const candidate = mod.default ?? mod["rules"];
@@ -58385,7 +57184,7 @@ function validateRun(rule, modulePath) {
   }
 }
 
-// ../dist/src/infrastructure/rules/registerCustom.js
+// ../packages/core/dist/src/infrastructure/rules/registerCustom.js
 function registerCustomRules(registry, rules2) {
   for (const rule of rules2) {
     try {
@@ -58400,242 +57199,1524 @@ function registerCustomRules(registry, rules2) {
   }
 }
 
-// ../dist/src/domain/vault/BlockRefIndex.js
-function findDuplicates(list3) {
-  const seen = /* @__PURE__ */ new Set();
-  const dups = [];
-  for (const id of list3) {
-    if (seen.has(id)) {
-      if (!dups.includes(id))
-        dups.push(id);
+// ../packages/core/dist/src/infrastructure/formatters/DefaultFormatter.js
+function formatDefault(results) {
+  const lines = [];
+  for (const result of results) {
+    for (const err of result.errors) {
+      lines.push(`${result.filePath}:${err.line}:${err.column} ${err.ruleCode} ${err.message}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+// ../packages/core/dist/src/infrastructure/formatters/JsonFormatter.js
+function formatJson(results) {
+  return JSON.stringify(results.map((r) => ({
+    filePath: r.filePath,
+    errors: r.errors.map((e) => ({ ...e }))
+  })), null, 2);
+}
+
+// ../node_modules/path-expression-matcher/src/Expression.js
+var Expression = class {
+  /**
+   * Create a new Expression
+   * @param {string} pattern - Pattern string (e.g., "root.users.user", "..user[id]")
+   * @param {Object} options - Configuration options
+   * @param {string} options.separator - Path separator (default: '.')
+   */
+  constructor(pattern, options2 = {}, data) {
+    this.pattern = pattern;
+    this.separator = options2.separator || ".";
+    this.segments = this._parse(pattern);
+    this.data = data;
+    this._hasDeepWildcard = this.segments.some((seg) => seg.type === "deep-wildcard");
+    this._hasAttributeCondition = this.segments.some((seg) => seg.attrName !== void 0);
+    this._hasPositionSelector = this.segments.some((seg) => seg.position !== void 0);
+  }
+  /**
+   * Parse pattern string into segments
+   * @private
+   * @param {string} pattern - Pattern to parse
+   * @returns {Array} Array of segment objects
+   */
+  _parse(pattern) {
+    const segments = [];
+    let i = 0;
+    let currentPart = "";
+    while (i < pattern.length) {
+      if (pattern[i] === this.separator) {
+        if (i + 1 < pattern.length && pattern[i + 1] === this.separator) {
+          if (currentPart.trim()) {
+            segments.push(this._parseSegment(currentPart.trim()));
+            currentPart = "";
+          }
+          segments.push({ type: "deep-wildcard" });
+          i += 2;
+        } else {
+          if (currentPart.trim()) {
+            segments.push(this._parseSegment(currentPart.trim()));
+          }
+          currentPart = "";
+          i++;
+        }
+      } else {
+        currentPart += pattern[i];
+        i++;
+      }
+    }
+    if (currentPart.trim()) {
+      segments.push(this._parseSegment(currentPart.trim()));
+    }
+    return segments;
+  }
+  /**
+   * Parse a single segment
+   * @private
+   * @param {string} part - Segment string (e.g., "user", "ns::user", "user[id]", "ns::user:first")
+   * @returns {Object} Segment object
+   */
+  _parseSegment(part) {
+    const segment = { type: "tag" };
+    let bracketContent = null;
+    let withoutBrackets = part;
+    const bracketMatch = part.match(/^([^\[]+)(\[[^\]]*\])(.*)$/);
+    if (bracketMatch) {
+      withoutBrackets = bracketMatch[1] + bracketMatch[3];
+      if (bracketMatch[2]) {
+        const content3 = bracketMatch[2].slice(1, -1);
+        if (content3) {
+          bracketContent = content3;
+        }
+      }
+    }
+    let namespace = void 0;
+    let tagAndPosition = withoutBrackets;
+    if (withoutBrackets.includes("::")) {
+      const nsIndex = withoutBrackets.indexOf("::");
+      namespace = withoutBrackets.substring(0, nsIndex).trim();
+      tagAndPosition = withoutBrackets.substring(nsIndex + 2).trim();
+      if (!namespace) {
+        throw new Error(`Invalid namespace in pattern: ${part}`);
+      }
+    }
+    let tag = void 0;
+    let positionMatch = null;
+    if (tagAndPosition.includes(":")) {
+      const colonIndex = tagAndPosition.lastIndexOf(":");
+      const tagPart = tagAndPosition.substring(0, colonIndex).trim();
+      const posPart = tagAndPosition.substring(colonIndex + 1).trim();
+      const isPositionKeyword = ["first", "last", "odd", "even"].includes(posPart) || /^nth\(\d+\)$/.test(posPart);
+      if (isPositionKeyword) {
+        tag = tagPart;
+        positionMatch = posPart;
+      } else {
+        tag = tagAndPosition;
+      }
     } else {
-      seen.add(id);
+      tag = tagAndPosition;
+    }
+    if (!tag) {
+      throw new Error(`Invalid segment pattern: ${part}`);
+    }
+    segment.tag = tag;
+    if (namespace) {
+      segment.namespace = namespace;
+    }
+    if (bracketContent) {
+      if (bracketContent.includes("=")) {
+        const eqIndex = bracketContent.indexOf("=");
+        segment.attrName = bracketContent.substring(0, eqIndex).trim();
+        segment.attrValue = bracketContent.substring(eqIndex + 1).trim();
+      } else {
+        segment.attrName = bracketContent.trim();
+      }
+    }
+    if (positionMatch) {
+      const nthMatch = positionMatch.match(/^nth\((\d+)\)$/);
+      if (nthMatch) {
+        segment.position = "nth";
+        segment.positionValue = parseInt(nthMatch[1], 10);
+      } else {
+        segment.position = positionMatch;
+      }
+    }
+    return segment;
+  }
+  /**
+   * Get the number of segments
+   * @returns {number}
+   */
+  get length() {
+    return this.segments.length;
+  }
+  /**
+   * Check if expression contains deep wildcard
+   * @returns {boolean}
+   */
+  hasDeepWildcard() {
+    return this._hasDeepWildcard;
+  }
+  /**
+   * Check if expression has attribute conditions
+   * @returns {boolean}
+   */
+  hasAttributeCondition() {
+    return this._hasAttributeCondition;
+  }
+  /**
+   * Check if expression has position selectors
+   * @returns {boolean}
+   */
+  hasPositionSelector() {
+    return this._hasPositionSelector;
+  }
+  /**
+   * Get string representation
+   * @returns {string}
+   */
+  toString() {
+    return this.pattern;
+  }
+};
+
+// ../node_modules/path-expression-matcher/src/Matcher.js
+var MatcherView = class {
+  /**
+   * @param {Matcher} matcher - The parent Matcher instance to read from.
+   */
+  constructor(matcher) {
+    this._matcher = matcher;
+  }
+  /**
+   * Get the path separator used by the parent matcher.
+   * @returns {string}
+   */
+  get separator() {
+    return this._matcher.separator;
+  }
+  /**
+   * Get current tag name.
+   * @returns {string|undefined}
+   */
+  getCurrentTag() {
+    const path14 = this._matcher.path;
+    return path14.length > 0 ? path14[path14.length - 1].tag : void 0;
+  }
+  /**
+   * Get current namespace.
+   * @returns {string|undefined}
+   */
+  getCurrentNamespace() {
+    const path14 = this._matcher.path;
+    return path14.length > 0 ? path14[path14.length - 1].namespace : void 0;
+  }
+  /**
+   * Get current node's attribute value.
+   * @param {string} attrName
+   * @returns {*}
+   */
+  getAttrValue(attrName) {
+    const path14 = this._matcher.path;
+    if (path14.length === 0)
+      return void 0;
+    return path14[path14.length - 1].values?.[attrName];
+  }
+  /**
+   * Check if current node has an attribute.
+   * @param {string} attrName
+   * @returns {boolean}
+   */
+  hasAttr(attrName) {
+    const path14 = this._matcher.path;
+    if (path14.length === 0)
+      return false;
+    const current = path14[path14.length - 1];
+    return current.values !== void 0 && attrName in current.values;
+  }
+  /**
+   * Get current node's sibling position (child index in parent).
+   * @returns {number}
+   */
+  getPosition() {
+    const path14 = this._matcher.path;
+    if (path14.length === 0)
+      return -1;
+    return path14[path14.length - 1].position ?? 0;
+  }
+  /**
+   * Get current node's repeat counter (occurrence count of this tag name).
+   * @returns {number}
+   */
+  getCounter() {
+    const path14 = this._matcher.path;
+    if (path14.length === 0)
+      return -1;
+    return path14[path14.length - 1].counter ?? 0;
+  }
+  /**
+   * Get current node's sibling index (alias for getPosition).
+   * @returns {number}
+   * @deprecated Use getPosition() or getCounter() instead
+   */
+  getIndex() {
+    return this.getPosition();
+  }
+  /**
+   * Get current path depth.
+   * @returns {number}
+   */
+  getDepth() {
+    return this._matcher.path.length;
+  }
+  /**
+   * Get path as string.
+   * @param {string} [separator] - Optional separator (uses default if not provided)
+   * @param {boolean} [includeNamespace=true]
+   * @returns {string}
+   */
+  toString(separator, includeNamespace = true) {
+    return this._matcher.toString(separator, includeNamespace);
+  }
+  /**
+   * Get path as array of tag names.
+   * @returns {string[]}
+   */
+  toArray() {
+    return this._matcher.path.map((n) => n.tag);
+  }
+  /**
+   * Match current path against an Expression.
+   * @param {Expression} expression
+   * @returns {boolean}
+   */
+  matches(expression) {
+    return this._matcher.matches(expression);
+  }
+  /**
+   * Match any expression in the given set against the current path.
+   * @param {ExpressionSet} exprSet
+   * @returns {boolean}
+   */
+  matchesAny(exprSet) {
+    return exprSet.matchesAny(this._matcher);
+  }
+};
+var Matcher = class {
+  /**
+   * Create a new Matcher.
+   * @param {Object} [options={}]
+   * @param {string} [options.separator='.'] - Default path separator
+   */
+  constructor(options2 = {}) {
+    this.separator = options2.separator || ".";
+    this.path = [];
+    this.siblingStacks = [];
+    this._pathStringCache = null;
+    this._view = new MatcherView(this);
+  }
+  /**
+   * Push a new tag onto the path.
+   * @param {string} tagName
+   * @param {Object|null} [attrValues=null]
+   * @param {string|null} [namespace=null]
+   */
+  push(tagName, attrValues = null, namespace = null) {
+    this._pathStringCache = null;
+    if (this.path.length > 0) {
+      this.path[this.path.length - 1].values = void 0;
+    }
+    const currentLevel = this.path.length;
+    if (!this.siblingStacks[currentLevel]) {
+      this.siblingStacks[currentLevel] = /* @__PURE__ */ new Map();
+    }
+    const siblings = this.siblingStacks[currentLevel];
+    const siblingKey = namespace ? `${namespace}:${tagName}` : tagName;
+    const counter = siblings.get(siblingKey) || 0;
+    let position = 0;
+    for (const count of siblings.values()) {
+      position += count;
+    }
+    siblings.set(siblingKey, counter + 1);
+    const node = {
+      tag: tagName,
+      position,
+      counter
+    };
+    if (namespace !== null && namespace !== void 0) {
+      node.namespace = namespace;
+    }
+    if (attrValues !== null && attrValues !== void 0) {
+      node.values = attrValues;
+    }
+    this.path.push(node);
+  }
+  /**
+   * Pop the last tag from the path.
+   * @returns {Object|undefined} The popped node
+   */
+  pop() {
+    if (this.path.length === 0)
+      return void 0;
+    this._pathStringCache = null;
+    const node = this.path.pop();
+    if (this.siblingStacks.length > this.path.length + 1) {
+      this.siblingStacks.length = this.path.length + 1;
+    }
+    return node;
+  }
+  /**
+   * Update current node's attribute values.
+   * Useful when attributes are parsed after push.
+   * @param {Object} attrValues
+   */
+  updateCurrent(attrValues) {
+    if (this.path.length > 0) {
+      const current = this.path[this.path.length - 1];
+      if (attrValues !== null && attrValues !== void 0) {
+        current.values = attrValues;
+      }
     }
   }
-  return dups;
-}
-function buildDuplicateMap(raw) {
-  const out = /* @__PURE__ */ new Map();
-  for (const [page, list3] of raw.entries()) {
-    const dups = findDuplicates(list3);
-    if (dups.length > 0)
-      out.set(normalize4(page), dups);
+  /**
+   * Get current tag name.
+   * @returns {string|undefined}
+   */
+  getCurrentTag() {
+    return this.path.length > 0 ? this.path[this.path.length - 1].tag : void 0;
   }
-  return out;
-}
-function normalizeUnique(unique) {
-  const out = /* @__PURE__ */ new Map();
-  for (const [page, set2] of unique.entries()) {
-    out.set(normalize4(page), set2);
+  /**
+   * Get current namespace.
+   * @returns {string|undefined}
+   */
+  getCurrentNamespace() {
+    return this.path.length > 0 ? this.path[this.path.length - 1].namespace : void 0;
   }
-  return out;
-}
-function makeBlockRefIndex(unique, raw = /* @__PURE__ */ new Map()) {
-  const duplicatesByPage = buildDuplicateMap(raw);
-  const normalizedUnique = normalizeUnique(unique);
-  return Object.freeze({
-    has(pageRelative, blockId) {
-      return normalizedUnique.get(normalize4(pageRelative))?.has(blockId) ?? false;
-    },
-    duplicatesIn(pageRelative) {
-      return duplicatesByPage.get(normalize4(pageRelative)) ?? [];
-    },
-    all() {
-      return normalizedUnique;
+  /**
+   * Get current node's attribute value.
+   * @param {string} attrName
+   * @returns {*}
+   */
+  getAttrValue(attrName) {
+    if (this.path.length === 0)
+      return void 0;
+    return this.path[this.path.length - 1].values?.[attrName];
+  }
+  /**
+   * Check if current node has an attribute.
+   * @param {string} attrName
+   * @returns {boolean}
+   */
+  hasAttr(attrName) {
+    if (this.path.length === 0)
+      return false;
+    const current = this.path[this.path.length - 1];
+    return current.values !== void 0 && attrName in current.values;
+  }
+  /**
+   * Get current node's sibling position (child index in parent).
+   * @returns {number}
+   */
+  getPosition() {
+    if (this.path.length === 0)
+      return -1;
+    return this.path[this.path.length - 1].position ?? 0;
+  }
+  /**
+   * Get current node's repeat counter (occurrence count of this tag name).
+   * @returns {number}
+   */
+  getCounter() {
+    if (this.path.length === 0)
+      return -1;
+    return this.path[this.path.length - 1].counter ?? 0;
+  }
+  /**
+   * Get current node's sibling index (alias for getPosition).
+   * @returns {number}
+   * @deprecated Use getPosition() or getCounter() instead
+   */
+  getIndex() {
+    return this.getPosition();
+  }
+  /**
+   * Get current path depth.
+   * @returns {number}
+   */
+  getDepth() {
+    return this.path.length;
+  }
+  /**
+   * Get path as string.
+   * @param {string} [separator] - Optional separator (uses default if not provided)
+   * @param {boolean} [includeNamespace=true]
+   * @returns {string}
+   */
+  toString(separator, includeNamespace = true) {
+    const sep4 = separator || this.separator;
+    const isDefault = sep4 === this.separator && includeNamespace === true;
+    if (isDefault) {
+      if (this._pathStringCache !== null) {
+        return this._pathStringCache;
+      }
+      const result = this.path.map(
+        (n) => n.namespace ? `${n.namespace}:${n.tag}` : n.tag
+      ).join(sep4);
+      this._pathStringCache = result;
+      return result;
     }
-  });
-}
-function normalize4(pageRelative) {
-  return pageRelative.endsWith(".md") ? pageRelative : `${pageRelative}.md`;
-}
-
-// ../dist/src/application/VaultBootstrap.js
-async function bootstrapVault(startDir, config2, deps) {
-  if (!config2.resolve)
-    return null;
-  const root = config2.vaultRoot !== null && config2.vaultRoot !== void 0 ? config2.vaultRoot : await deps.detector.detect(startDir);
-  const vault = await deps.buildIndex(root, { caseSensitive: config2.wikilinks.caseSensitive });
-  const blockRefs = await deps.buildBlockRefIndex(vault.all());
-  return { vault, blockRefs };
-}
-
-// ../dist/src/infrastructure/vault/NodeFsVaultDetector.js
-var fs9 = __toESM(require("node:fs/promises"), 1);
-var path10 = __toESM(require("node:path"), 1);
-
-// ../dist/src/infrastructure/vault/GitRootFinder.js
-var fs8 = __toESM(require("node:fs/promises"), 1);
-var path9 = __toESM(require("node:path"), 1);
-async function findGitRoot(startDir) {
-  let dir = path9.resolve(startDir);
-  for (; ; ) {
-    try {
-      const stat3 = await fs8.stat(path9.join(dir, ".git"));
-      if (stat3.isDirectory() || stat3.isFile())
-        return dir;
-    } catch {
-    }
-    const parent = path9.dirname(dir);
-    if (parent === dir)
-      return null;
-    dir = parent;
+    return this.path.map(
+      (n) => includeNamespace && n.namespace ? `${n.namespace}:${n.tag}` : n.tag
+    ).join(sep4);
   }
-}
-
-// ../dist/src/infrastructure/vault/NodeFsVaultDetector.js
-function makeNodeFsVaultDetector() {
-  return {
-    async detect(startDir) {
-      const obsidian = await findObsidianRoot(startDir);
-      if (obsidian !== null)
-        return obsidian;
-      const git = await findGitRoot(startDir);
-      if (git !== null)
-        return git;
-      throw new Error(`OFM900: no vault root found \u2014 no .obsidian/ or .git/ above ${path10.resolve(startDir)}`);
-    }
-  };
-}
-async function findObsidianRoot(startDir) {
-  let dir = path10.resolve(startDir);
-  for (; ; ) {
-    try {
-      const stat3 = await fs9.stat(path10.join(dir, ".obsidian"));
-      if (stat3.isDirectory())
-        return dir;
-    } catch {
-    }
-    const parent = path10.dirname(dir);
-    if (parent === dir)
-      return null;
-    dir = parent;
+  /**
+   * Get path as array of tag names.
+   * @returns {string[]}
+   */
+  toArray() {
+    return this.path.map((n) => n.tag);
   }
-}
-
-// ../dist/src/infrastructure/vault/FileIndexBuilder.js
-var path12 = __toESM(require("node:path"), 1);
-
-// ../dist/src/domain/vault/VaultPath.js
-var path11 = __toESM(require("node:path"), 1);
-function makeVaultPath(vaultRoot, absolute) {
-  const normalizedRoot = path11.resolve(vaultRoot);
-  const normalizedAbs = path11.resolve(absolute);
-  const rel = path11.relative(normalizedRoot, normalizedAbs);
-  if (rel === "" || rel.startsWith("..") || path11.isAbsolute(rel)) {
-    throw new Error(`VaultPath: "${absolute}" is outside vault root "${vaultRoot}"`);
+  /**
+   * Reset the path to empty.
+   */
+  reset() {
+    this._pathStringCache = null;
+    this.path = [];
+    this.siblingStacks = [];
   }
-  const forward = rel.split(path11.sep).join("/");
-  return Object.freeze({
-    relative: forward,
-    absolute: normalizedAbs,
-    stem: path11.basename(forward, path11.extname(forward))
-  });
-}
-
-// ../dist/src/domain/vault/WikilinkMatcher.js
-function matchWikilink(target, files, options2) {
-  const normalizedTarget = normalize5(target);
-  if (normalizedTarget === "")
-    return { kind: "not-found" };
-  const exact = files.find((f) => stripExt(f.relative) === normalizedTarget);
-  if (exact !== void 0)
-    return { kind: "resolved", path: exact, strategy: "exact" };
-  if (!options2.caseSensitive) {
-    const ci = files.find((f) => stripExt(f.relative).toLowerCase() === normalizedTarget.toLowerCase());
-    if (ci !== void 0)
-      return { kind: "resolved", path: ci, strategy: "case-insensitive" };
-  }
-  return matchByStem(normalizedTarget, files, options2);
-}
-function matchByStem(normalizedTarget, files, options2) {
-  const byStem = files.filter((f) => options2.caseSensitive ? f.stem === normalizedTarget : f.stem.toLowerCase() === normalizedTarget.toLowerCase());
-  if (byStem.length === 1)
-    return { kind: "resolved", path: byStem[0], strategy: "basename" };
-  if (byStem.length > 1)
-    return { kind: "ambiguous", candidates: byStem };
-  return { kind: "not-found" };
-}
-function normalize5(target) {
-  return target.replace(/\\/g, "/").replace(/\.md$/i, "");
-}
-function stripExt(relative2) {
-  return relative2.replace(/\.md$/i, "");
-}
-
-// ../dist/src/infrastructure/vault/FileIndexBuilder.js
-async function buildFileIndex(vaultRoot, options2) {
-  const resolvedRoot = path12.resolve(vaultRoot);
-  const absolutes = await globby(["**/*.md"], {
-    cwd: resolvedRoot,
-    absolute: true,
-    gitignore: true,
-    ignore: [...options2.ignores ?? [], "**/.obsidian/**", "**/node_modules/**"]
-  });
-  const paths = absolutes.map((abs) => makeVaultPath(resolvedRoot, abs));
-  const byRelative = new Set(paths.map((p) => p.relative));
-  return Object.freeze({
-    root: resolvedRoot,
-    all: () => paths,
-    has: (relative2) => byRelative.has(relative2),
-    resolve: (link2) => matchWikilink(link2.target, paths, { caseSensitive: options2.caseSensitive })
-  });
-}
-
-// ../dist/src/infrastructure/vault/BlockRefIndexBuilder.js
-async function buildBlockRefIndex(files, deps) {
-  const unique = /* @__PURE__ */ new Map();
-  const raw = /* @__PURE__ */ new Map();
-  for (const file of files) {
-    let parsed;
-    try {
-      const source = await deps.readFile(file.absolute);
-      parsed = deps.parser.parse(file.relative, source);
-    } catch {
-      continue;
+  /**
+   * Match current path against an Expression.
+   * @param {Expression} expression
+   * @returns {boolean}
+   */
+  matches(expression) {
+    const segments = expression.segments;
+    if (segments.length === 0) {
+      return false;
     }
-    const rawList = [];
-    const seen = /* @__PURE__ */ new Set();
-    for (const ref of parsed.blockRefs) {
-      rawList.push(ref.blockId);
-      seen.add(ref.blockId);
+    if (expression.hasDeepWildcard()) {
+      return this._matchWithDeepWildcard(segments);
     }
-    unique.set(file.relative, seen);
-    raw.set(file.relative, rawList);
+    return this._matchSimple(segments);
   }
-  return makeBlockRefIndex(unique, raw);
-}
-
-// ../dist/src/infrastructure/fs/NodeFsExistenceChecker.js
-var fs10 = __toESM(require("node:fs/promises"), 1);
-var path13 = __toESM(require("node:path"), 1);
-function resolveWithinRoot(vaultRoot, relative2) {
-  if (typeof vaultRoot !== "string" || vaultRoot.length === 0)
-    return null;
-  if (typeof relative2 !== "string" || relative2.length === 0)
-    return null;
-  const normalized = relative2.replace(/\\/g, "/");
-  const rootResolved = path13.resolve(vaultRoot);
-  const absolute = path13.resolve(rootResolved, normalized);
-  const withinRoot = absolute === rootResolved || absolute.startsWith(rootResolved + path13.sep);
-  return withinRoot ? absolute : null;
-}
-function makeNodeFsExistenceChecker() {
-  return {
-    async exists(vaultRoot, relative2) {
-      const absolute = resolveWithinRoot(vaultRoot, relative2);
-      if (absolute === null)
-        return false;
-      try {
-        await fs10.access(absolute);
-        return true;
-      } catch {
+  /**
+   * @private
+   */
+  _matchSimple(segments) {
+    if (this.path.length !== segments.length) {
+      return false;
+    }
+    for (let i = 0; i < segments.length; i++) {
+      if (!this._matchSegment(segments[i], this.path[i], i === this.path.length - 1)) {
         return false;
       }
     }
+    return true;
+  }
+  /**
+   * @private
+   */
+  _matchWithDeepWildcard(segments) {
+    let pathIdx = this.path.length - 1;
+    let segIdx = segments.length - 1;
+    while (segIdx >= 0 && pathIdx >= 0) {
+      const segment = segments[segIdx];
+      if (segment.type === "deep-wildcard") {
+        segIdx--;
+        if (segIdx < 0) {
+          return true;
+        }
+        const nextSeg = segments[segIdx];
+        let found = false;
+        for (let i = pathIdx; i >= 0; i--) {
+          if (this._matchSegment(nextSeg, this.path[i], i === this.path.length - 1)) {
+            pathIdx = i - 1;
+            segIdx--;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          return false;
+        }
+      } else {
+        if (!this._matchSegment(segment, this.path[pathIdx], pathIdx === this.path.length - 1)) {
+          return false;
+        }
+        pathIdx--;
+        segIdx--;
+      }
+    }
+    return segIdx < 0;
+  }
+  /**
+   * @private
+   */
+  _matchSegment(segment, node, isCurrentNode) {
+    if (segment.tag !== "*" && segment.tag !== node.tag) {
+      return false;
+    }
+    if (segment.namespace !== void 0) {
+      if (segment.namespace !== "*" && segment.namespace !== node.namespace) {
+        return false;
+      }
+    }
+    if (segment.attrName !== void 0) {
+      if (!isCurrentNode) {
+        return false;
+      }
+      if (!node.values || !(segment.attrName in node.values)) {
+        return false;
+      }
+      if (segment.attrValue !== void 0) {
+        if (String(node.values[segment.attrName]) !== String(segment.attrValue)) {
+          return false;
+        }
+      }
+    }
+    if (segment.position !== void 0) {
+      if (!isCurrentNode) {
+        return false;
+      }
+      const counter = node.counter ?? 0;
+      if (segment.position === "first" && counter !== 0) {
+        return false;
+      } else if (segment.position === "odd" && counter % 2 !== 1) {
+        return false;
+      } else if (segment.position === "even" && counter % 2 !== 0) {
+        return false;
+      } else if (segment.position === "nth" && counter !== segment.positionValue) {
+        return false;
+      }
+    }
+    return true;
+  }
+  /**
+   * Match any expression in the given set against the current path.
+   * @param {ExpressionSet} exprSet
+   * @returns {boolean}
+   */
+  matchesAny(exprSet) {
+    return exprSet.matchesAny(this);
+  }
+  /**
+   * Create a snapshot of current state.
+   * @returns {Object}
+   */
+  snapshot() {
+    return {
+      path: this.path.map((node) => ({ ...node })),
+      siblingStacks: this.siblingStacks.map((map3) => new Map(map3))
+    };
+  }
+  /**
+   * Restore state from snapshot.
+   * @param {Object} snapshot
+   */
+  restore(snapshot) {
+    this._pathStringCache = null;
+    this.path = snapshot.path.map((node) => ({ ...node }));
+    this.siblingStacks = snapshot.siblingStacks.map((map3) => new Map(map3));
+  }
+  /**
+   * Return the read-only {@link MatcherView} for this matcher.
+   *
+   * The same instance is returned on every call — no allocation occurs.
+   * It always reflects the current parser state and is safe to pass to
+   * user callbacks without risk of accidental mutation.
+   *
+   * @returns {MatcherView}
+   *
+   * @example
+   * const view = matcher.readOnly();
+   * // pass view to callbacks — it stays in sync automatically
+   * view.matches(expr);       // ✓
+   * view.getCurrentTag();     // ✓
+   * // view.push(...)         // ✗ method does not exist — caught by TypeScript
+   */
+  readOnly() {
+    return this._view;
+  }
+};
+
+// ../node_modules/fast-xml-builder/src/orderedJs2Xml.js
+var EOL = "\n";
+function toXml(jArray, options2) {
+  let indentation = "";
+  if (options2.format && options2.indentBy.length > 0) {
+    indentation = EOL;
+  }
+  const stopNodeExpressions = [];
+  if (options2.stopNodes && Array.isArray(options2.stopNodes)) {
+    for (let i = 0; i < options2.stopNodes.length; i++) {
+      const node = options2.stopNodes[i];
+      if (typeof node === "string") {
+        stopNodeExpressions.push(new Expression(node));
+      } else if (node instanceof Expression) {
+        stopNodeExpressions.push(node);
+      }
+    }
+  }
+  const matcher = new Matcher();
+  return arrToStr(jArray, options2, indentation, matcher, stopNodeExpressions);
+}
+function arrToStr(arr, options2, indentation, matcher, stopNodeExpressions) {
+  let xmlStr = "";
+  let isPreviousElementTag = false;
+  if (options2.maxNestedTags && matcher.getDepth() > options2.maxNestedTags) {
+    throw new Error("Maximum nested tags exceeded");
+  }
+  if (!Array.isArray(arr)) {
+    if (arr !== void 0 && arr !== null) {
+      let text5 = arr.toString();
+      text5 = replaceEntitiesValue(text5, options2);
+      return text5;
+    }
+    return "";
+  }
+  for (let i = 0; i < arr.length; i++) {
+    const tagObj = arr[i];
+    const tagName = propName(tagObj);
+    if (tagName === void 0)
+      continue;
+    const attrValues = extractAttributeValues(tagObj[":@"], options2);
+    matcher.push(tagName, attrValues);
+    const isStopNode = checkStopNode(matcher, stopNodeExpressions);
+    if (tagName === options2.textNodeName) {
+      let tagText = tagObj[tagName];
+      if (!isStopNode) {
+        tagText = options2.tagValueProcessor(tagName, tagText);
+        tagText = replaceEntitiesValue(tagText, options2);
+      }
+      if (isPreviousElementTag) {
+        xmlStr += indentation;
+      }
+      xmlStr += tagText;
+      isPreviousElementTag = false;
+      matcher.pop();
+      continue;
+    } else if (tagName === options2.cdataPropName) {
+      if (isPreviousElementTag) {
+        xmlStr += indentation;
+      }
+      xmlStr += `<![CDATA[${tagObj[tagName][0][options2.textNodeName]}]]>`;
+      isPreviousElementTag = false;
+      matcher.pop();
+      continue;
+    } else if (tagName === options2.commentPropName) {
+      xmlStr += indentation + `<!--${tagObj[tagName][0][options2.textNodeName]}-->`;
+      isPreviousElementTag = true;
+      matcher.pop();
+      continue;
+    } else if (tagName[0] === "?") {
+      const attStr2 = attr_to_str(tagObj[":@"], options2, isStopNode);
+      const tempInd = tagName === "?xml" ? "" : indentation;
+      let piTextNodeName = tagObj[tagName][0][options2.textNodeName];
+      piTextNodeName = piTextNodeName.length !== 0 ? " " + piTextNodeName : "";
+      xmlStr += tempInd + `<${tagName}${piTextNodeName}${attStr2}?>`;
+      isPreviousElementTag = true;
+      matcher.pop();
+      continue;
+    }
+    let newIdentation = indentation;
+    if (newIdentation !== "") {
+      newIdentation += options2.indentBy;
+    }
+    const attStr = attr_to_str(tagObj[":@"], options2, isStopNode);
+    const tagStart = indentation + `<${tagName}${attStr}`;
+    let tagValue;
+    if (isStopNode) {
+      tagValue = getRawContent(tagObj[tagName], options2);
+    } else {
+      tagValue = arrToStr(tagObj[tagName], options2, newIdentation, matcher, stopNodeExpressions);
+    }
+    if (options2.unpairedTags.indexOf(tagName) !== -1) {
+      if (options2.suppressUnpairedNode)
+        xmlStr += tagStart + ">";
+      else
+        xmlStr += tagStart + "/>";
+    } else if ((!tagValue || tagValue.length === 0) && options2.suppressEmptyNode) {
+      xmlStr += tagStart + "/>";
+    } else if (tagValue && tagValue.endsWith(">")) {
+      xmlStr += tagStart + `>${tagValue}${indentation}</${tagName}>`;
+    } else {
+      xmlStr += tagStart + ">";
+      if (tagValue && indentation !== "" && (tagValue.includes("/>") || tagValue.includes("</"))) {
+        xmlStr += indentation + options2.indentBy + tagValue + indentation;
+      } else {
+        xmlStr += tagValue;
+      }
+      xmlStr += `</${tagName}>`;
+    }
+    isPreviousElementTag = true;
+    matcher.pop();
+  }
+  return xmlStr;
+}
+function extractAttributeValues(attrMap, options2) {
+  if (!attrMap || options2.ignoreAttributes)
+    return null;
+  const attrValues = {};
+  let hasAttrs = false;
+  for (let attr in attrMap) {
+    if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
+      continue;
+    const cleanAttrName = attr.startsWith(options2.attributeNamePrefix) ? attr.substr(options2.attributeNamePrefix.length) : attr;
+    attrValues[cleanAttrName] = attrMap[attr];
+    hasAttrs = true;
+  }
+  return hasAttrs ? attrValues : null;
+}
+function getRawContent(arr, options2) {
+  if (!Array.isArray(arr)) {
+    if (arr !== void 0 && arr !== null) {
+      return arr.toString();
+    }
+    return "";
+  }
+  let content3 = "";
+  for (let i = 0; i < arr.length; i++) {
+    const item = arr[i];
+    const tagName = propName(item);
+    if (tagName === options2.textNodeName) {
+      content3 += item[tagName];
+    } else if (tagName === options2.cdataPropName) {
+      content3 += item[tagName][0][options2.textNodeName];
+    } else if (tagName === options2.commentPropName) {
+      content3 += item[tagName][0][options2.textNodeName];
+    } else if (tagName && tagName[0] === "?") {
+      continue;
+    } else if (tagName) {
+      const attStr = attr_to_str_raw(item[":@"], options2);
+      const nestedContent = getRawContent(item[tagName], options2);
+      if (!nestedContent || nestedContent.length === 0) {
+        content3 += `<${tagName}${attStr}/>`;
+      } else {
+        content3 += `<${tagName}${attStr}>${nestedContent}</${tagName}>`;
+      }
+    }
+  }
+  return content3;
+}
+function attr_to_str_raw(attrMap, options2) {
+  let attrStr = "";
+  if (attrMap && !options2.ignoreAttributes) {
+    for (let attr in attrMap) {
+      if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
+        continue;
+      let attrVal = attrMap[attr];
+      if (attrVal === true && options2.suppressBooleanAttributes) {
+        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}`;
+      } else {
+        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}="${attrVal}"`;
+      }
+    }
+  }
+  return attrStr;
+}
+function propName(obj) {
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (!Object.prototype.hasOwnProperty.call(obj, key))
+      continue;
+    if (key !== ":@")
+      return key;
+  }
+}
+function attr_to_str(attrMap, options2, isStopNode) {
+  let attrStr = "";
+  if (attrMap && !options2.ignoreAttributes) {
+    for (let attr in attrMap) {
+      if (!Object.prototype.hasOwnProperty.call(attrMap, attr))
+        continue;
+      let attrVal;
+      if (isStopNode) {
+        attrVal = attrMap[attr];
+      } else {
+        attrVal = options2.attributeValueProcessor(attr, attrMap[attr]);
+        attrVal = replaceEntitiesValue(attrVal, options2);
+      }
+      if (attrVal === true && options2.suppressBooleanAttributes) {
+        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}`;
+      } else {
+        attrStr += ` ${attr.substr(options2.attributeNamePrefix.length)}="${attrVal}"`;
+      }
+    }
+  }
+  return attrStr;
+}
+function checkStopNode(matcher, stopNodeExpressions) {
+  if (!stopNodeExpressions || stopNodeExpressions.length === 0)
+    return false;
+  for (let i = 0; i < stopNodeExpressions.length; i++) {
+    if (matcher.matches(stopNodeExpressions[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+function replaceEntitiesValue(textValue, options2) {
+  if (textValue && textValue.length > 0 && options2.processEntities) {
+    for (let i = 0; i < options2.entities.length; i++) {
+      const entity2 = options2.entities[i];
+      textValue = textValue.replace(entity2.regex, entity2.val);
+    }
+  }
+  return textValue;
+}
+
+// ../node_modules/fast-xml-builder/src/ignoreAttributes.js
+function getIgnoreAttributesFn(ignoreAttributes) {
+  if (typeof ignoreAttributes === "function") {
+    return ignoreAttributes;
+  }
+  if (Array.isArray(ignoreAttributes)) {
+    return (attrName) => {
+      for (const pattern of ignoreAttributes) {
+        if (typeof pattern === "string" && attrName === pattern) {
+          return true;
+        }
+        if (pattern instanceof RegExp && pattern.test(attrName)) {
+          return true;
+        }
+      }
+    };
+  }
+  return () => false;
+}
+
+// ../node_modules/fast-xml-builder/src/fxb.js
+var defaultOptions2 = {
+  attributeNamePrefix: "@_",
+  attributesGroupName: false,
+  textNodeName: "#text",
+  ignoreAttributes: true,
+  cdataPropName: false,
+  format: false,
+  indentBy: "  ",
+  suppressEmptyNode: false,
+  suppressUnpairedNode: true,
+  suppressBooleanAttributes: true,
+  tagValueProcessor: function(key, a) {
+    return a;
+  },
+  attributeValueProcessor: function(attrName, a) {
+    return a;
+  },
+  preserveOrder: false,
+  commentPropName: false,
+  unpairedTags: [],
+  entities: [
+    { regex: new RegExp("&", "g"), val: "&amp;" },
+    //it must be on top
+    { regex: new RegExp(">", "g"), val: "&gt;" },
+    { regex: new RegExp("<", "g"), val: "&lt;" },
+    { regex: new RegExp("'", "g"), val: "&apos;" },
+    { regex: new RegExp('"', "g"), val: "&quot;" }
+  ],
+  processEntities: true,
+  stopNodes: [],
+  // transformTagName: false,
+  // transformAttributeName: false,
+  oneListGroup: false,
+  maxNestedTags: 100,
+  jPath: true
+  // When true, callbacks receive string jPath; when false, receive Matcher instance
+};
+function Builder(options2) {
+  this.options = Object.assign({}, defaultOptions2, options2);
+  if (this.options.stopNodes && Array.isArray(this.options.stopNodes)) {
+    this.options.stopNodes = this.options.stopNodes.map((node) => {
+      if (typeof node === "string" && node.startsWith("*.")) {
+        return ".." + node.substring(2);
+      }
+      return node;
+    });
+  }
+  this.stopNodeExpressions = [];
+  if (this.options.stopNodes && Array.isArray(this.options.stopNodes)) {
+    for (let i = 0; i < this.options.stopNodes.length; i++) {
+      const node = this.options.stopNodes[i];
+      if (typeof node === "string") {
+        this.stopNodeExpressions.push(new Expression(node));
+      } else if (node instanceof Expression) {
+        this.stopNodeExpressions.push(node);
+      }
+    }
+  }
+  if (this.options.ignoreAttributes === true || this.options.attributesGroupName) {
+    this.isAttribute = function() {
+      return false;
+    };
+  } else {
+    this.ignoreAttributesFn = getIgnoreAttributesFn(this.options.ignoreAttributes);
+    this.attrPrefixLen = this.options.attributeNamePrefix.length;
+    this.isAttribute = isAttribute;
+  }
+  this.processTextOrObjNode = processTextOrObjNode;
+  if (this.options.format) {
+    this.indentate = indentate;
+    this.tagEndChar = ">\n";
+    this.newLine = "\n";
+  } else {
+    this.indentate = function() {
+      return "";
+    };
+    this.tagEndChar = ">";
+    this.newLine = "";
+  }
+}
+Builder.prototype.build = function(jObj) {
+  if (this.options.preserveOrder) {
+    return toXml(jObj, this.options);
+  } else {
+    if (Array.isArray(jObj) && this.options.arrayNodeName && this.options.arrayNodeName.length > 1) {
+      jObj = {
+        [this.options.arrayNodeName]: jObj
+      };
+    }
+    const matcher = new Matcher();
+    return this.j2x(jObj, 0, matcher).val;
+  }
+};
+Builder.prototype.j2x = function(jObj, level, matcher) {
+  let attrStr = "";
+  let val = "";
+  if (this.options.maxNestedTags && matcher.getDepth() >= this.options.maxNestedTags) {
+    throw new Error("Maximum nested tags exceeded");
+  }
+  const jPath = this.options.jPath ? matcher.toString() : matcher;
+  const isCurrentStopNode = this.checkStopNode(matcher);
+  for (let key in jObj) {
+    if (!Object.prototype.hasOwnProperty.call(jObj, key))
+      continue;
+    if (typeof jObj[key] === "undefined") {
+      if (this.isAttribute(key)) {
+        val += "";
+      }
+    } else if (jObj[key] === null) {
+      if (this.isAttribute(key)) {
+        val += "";
+      } else if (key === this.options.cdataPropName) {
+        val += "";
+      } else if (key[0] === "?") {
+        val += this.indentate(level) + "<" + key + "?" + this.tagEndChar;
+      } else {
+        val += this.indentate(level) + "<" + key + "/" + this.tagEndChar;
+      }
+    } else if (jObj[key] instanceof Date) {
+      val += this.buildTextValNode(jObj[key], key, "", level, matcher);
+    } else if (typeof jObj[key] !== "object") {
+      const attr = this.isAttribute(key);
+      if (attr && !this.ignoreAttributesFn(attr, jPath)) {
+        attrStr += this.buildAttrPairStr(attr, "" + jObj[key], isCurrentStopNode);
+      } else if (!attr) {
+        if (key === this.options.textNodeName) {
+          let newval = this.options.tagValueProcessor(key, "" + jObj[key]);
+          val += this.replaceEntitiesValue(newval);
+        } else {
+          matcher.push(key);
+          const isStopNode = this.checkStopNode(matcher);
+          matcher.pop();
+          if (isStopNode) {
+            const textValue = "" + jObj[key];
+            if (textValue === "") {
+              val += this.indentate(level) + "<" + key + this.closeTag(key) + this.tagEndChar;
+            } else {
+              val += this.indentate(level) + "<" + key + ">" + textValue + "</" + key + this.tagEndChar;
+            }
+          } else {
+            val += this.buildTextValNode(jObj[key], key, "", level, matcher);
+          }
+        }
+      }
+    } else if (Array.isArray(jObj[key])) {
+      const arrLen = jObj[key].length;
+      let listTagVal = "";
+      let listTagAttr = "";
+      for (let j = 0; j < arrLen; j++) {
+        const item = jObj[key][j];
+        if (typeof item === "undefined") {
+        } else if (item === null) {
+          if (key[0] === "?")
+            val += this.indentate(level) + "<" + key + "?" + this.tagEndChar;
+          else
+            val += this.indentate(level) + "<" + key + "/" + this.tagEndChar;
+        } else if (typeof item === "object") {
+          if (this.options.oneListGroup) {
+            matcher.push(key);
+            const result = this.j2x(item, level + 1, matcher);
+            matcher.pop();
+            listTagVal += result.val;
+            if (this.options.attributesGroupName && item.hasOwnProperty(this.options.attributesGroupName)) {
+              listTagAttr += result.attrStr;
+            }
+          } else {
+            listTagVal += this.processTextOrObjNode(item, key, level, matcher);
+          }
+        } else {
+          if (this.options.oneListGroup) {
+            let textValue = this.options.tagValueProcessor(key, item);
+            textValue = this.replaceEntitiesValue(textValue);
+            listTagVal += textValue;
+          } else {
+            matcher.push(key);
+            const isStopNode = this.checkStopNode(matcher);
+            matcher.pop();
+            if (isStopNode) {
+              const textValue = "" + item;
+              if (textValue === "") {
+                listTagVal += this.indentate(level) + "<" + key + this.closeTag(key) + this.tagEndChar;
+              } else {
+                listTagVal += this.indentate(level) + "<" + key + ">" + textValue + "</" + key + this.tagEndChar;
+              }
+            } else {
+              listTagVal += this.buildTextValNode(item, key, "", level, matcher);
+            }
+          }
+        }
+      }
+      if (this.options.oneListGroup) {
+        listTagVal = this.buildObjectNode(listTagVal, key, listTagAttr, level);
+      }
+      val += listTagVal;
+    } else {
+      if (this.options.attributesGroupName && key === this.options.attributesGroupName) {
+        const Ks = Object.keys(jObj[key]);
+        const L = Ks.length;
+        for (let j = 0; j < L; j++) {
+          attrStr += this.buildAttrPairStr(Ks[j], "" + jObj[key][Ks[j]], isCurrentStopNode);
+        }
+      } else {
+        val += this.processTextOrObjNode(jObj[key], key, level, matcher);
+      }
+    }
+  }
+  return { attrStr, val };
+};
+Builder.prototype.buildAttrPairStr = function(attrName, val, isStopNode) {
+  if (!isStopNode) {
+    val = this.options.attributeValueProcessor(attrName, "" + val);
+    val = this.replaceEntitiesValue(val);
+  }
+  if (this.options.suppressBooleanAttributes && val === "true") {
+    return " " + attrName;
+  } else
+    return " " + attrName + '="' + val + '"';
+};
+function processTextOrObjNode(object, key, level, matcher) {
+  const attrValues = this.extractAttributes(object);
+  matcher.push(key, attrValues);
+  const isStopNode = this.checkStopNode(matcher);
+  if (isStopNode) {
+    const rawContent = this.buildRawContent(object);
+    const attrStr = this.buildAttributesForStopNode(object);
+    matcher.pop();
+    return this.buildObjectNode(rawContent, key, attrStr, level);
+  }
+  const result = this.j2x(object, level + 1, matcher);
+  matcher.pop();
+  if (object[this.options.textNodeName] !== void 0 && Object.keys(object).length === 1) {
+    return this.buildTextValNode(object[this.options.textNodeName], key, result.attrStr, level, matcher);
+  } else {
+    return this.buildObjectNode(result.val, key, result.attrStr, level);
+  }
+}
+Builder.prototype.extractAttributes = function(obj) {
+  if (!obj || typeof obj !== "object")
+    return null;
+  const attrValues = {};
+  let hasAttrs = false;
+  if (this.options.attributesGroupName && obj[this.options.attributesGroupName]) {
+    const attrGroup = obj[this.options.attributesGroupName];
+    for (let attrKey in attrGroup) {
+      if (!Object.prototype.hasOwnProperty.call(attrGroup, attrKey))
+        continue;
+      const cleanKey = attrKey.startsWith(this.options.attributeNamePrefix) ? attrKey.substring(this.options.attributeNamePrefix.length) : attrKey;
+      attrValues[cleanKey] = attrGroup[attrKey];
+      hasAttrs = true;
+    }
+  } else {
+    for (let key in obj) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key))
+        continue;
+      const attr = this.isAttribute(key);
+      if (attr) {
+        attrValues[attr] = obj[key];
+        hasAttrs = true;
+      }
+    }
+  }
+  return hasAttrs ? attrValues : null;
+};
+Builder.prototype.buildRawContent = function(obj) {
+  if (typeof obj === "string") {
+    return obj;
+  }
+  if (typeof obj !== "object" || obj === null) {
+    return String(obj);
+  }
+  if (obj[this.options.textNodeName] !== void 0) {
+    return obj[this.options.textNodeName];
+  }
+  let content3 = "";
+  for (let key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key))
+      continue;
+    if (this.isAttribute(key))
+      continue;
+    if (this.options.attributesGroupName && key === this.options.attributesGroupName)
+      continue;
+    const value = obj[key];
+    if (key === this.options.textNodeName) {
+      content3 += value;
+    } else if (Array.isArray(value)) {
+      for (let item of value) {
+        if (typeof item === "string" || typeof item === "number") {
+          content3 += `<${key}>${item}</${key}>`;
+        } else if (typeof item === "object" && item !== null) {
+          const nestedContent = this.buildRawContent(item);
+          const nestedAttrs = this.buildAttributesForStopNode(item);
+          if (nestedContent === "") {
+            content3 += `<${key}${nestedAttrs}/>`;
+          } else {
+            content3 += `<${key}${nestedAttrs}>${nestedContent}</${key}>`;
+          }
+        }
+      }
+    } else if (typeof value === "object" && value !== null) {
+      const nestedContent = this.buildRawContent(value);
+      const nestedAttrs = this.buildAttributesForStopNode(value);
+      if (nestedContent === "") {
+        content3 += `<${key}${nestedAttrs}/>`;
+      } else {
+        content3 += `<${key}${nestedAttrs}>${nestedContent}</${key}>`;
+      }
+    } else {
+      content3 += `<${key}>${value}</${key}>`;
+    }
+  }
+  return content3;
+};
+Builder.prototype.buildAttributesForStopNode = function(obj) {
+  if (!obj || typeof obj !== "object")
+    return "";
+  let attrStr = "";
+  if (this.options.attributesGroupName && obj[this.options.attributesGroupName]) {
+    const attrGroup = obj[this.options.attributesGroupName];
+    for (let attrKey in attrGroup) {
+      if (!Object.prototype.hasOwnProperty.call(attrGroup, attrKey))
+        continue;
+      const cleanKey = attrKey.startsWith(this.options.attributeNamePrefix) ? attrKey.substring(this.options.attributeNamePrefix.length) : attrKey;
+      const val = attrGroup[attrKey];
+      if (val === true && this.options.suppressBooleanAttributes) {
+        attrStr += " " + cleanKey;
+      } else {
+        attrStr += " " + cleanKey + '="' + val + '"';
+      }
+    }
+  } else {
+    for (let key in obj) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key))
+        continue;
+      const attr = this.isAttribute(key);
+      if (attr) {
+        const val = obj[key];
+        if (val === true && this.options.suppressBooleanAttributes) {
+          attrStr += " " + attr;
+        } else {
+          attrStr += " " + attr + '="' + val + '"';
+        }
+      }
+    }
+  }
+  return attrStr;
+};
+Builder.prototype.buildObjectNode = function(val, key, attrStr, level) {
+  if (val === "") {
+    if (key[0] === "?")
+      return this.indentate(level) + "<" + key + attrStr + "?" + this.tagEndChar;
+    else {
+      return this.indentate(level) + "<" + key + attrStr + this.closeTag(key) + this.tagEndChar;
+    }
+  } else {
+    let tagEndExp = "</" + key + this.tagEndChar;
+    let piClosingChar = "";
+    if (key[0] === "?") {
+      piClosingChar = "?";
+      tagEndExp = "";
+    }
+    if ((attrStr || attrStr === "") && val.indexOf("<") === -1) {
+      return this.indentate(level) + "<" + key + attrStr + piClosingChar + ">" + val + tagEndExp;
+    } else if (this.options.commentPropName !== false && key === this.options.commentPropName && piClosingChar.length === 0) {
+      return this.indentate(level) + `<!--${val}-->` + this.newLine;
+    } else {
+      return this.indentate(level) + "<" + key + attrStr + piClosingChar + this.tagEndChar + val + this.indentate(level) + tagEndExp;
+    }
+  }
+};
+Builder.prototype.closeTag = function(key) {
+  let closeTag = "";
+  if (this.options.unpairedTags.indexOf(key) !== -1) {
+    if (!this.options.suppressUnpairedNode)
+      closeTag = "/";
+  } else if (this.options.suppressEmptyNode) {
+    closeTag = "/";
+  } else {
+    closeTag = `></${key}`;
+  }
+  return closeTag;
+};
+Builder.prototype.checkStopNode = function(matcher) {
+  if (!this.stopNodeExpressions || this.stopNodeExpressions.length === 0)
+    return false;
+  for (let i = 0; i < this.stopNodeExpressions.length; i++) {
+    if (matcher.matches(this.stopNodeExpressions[i])) {
+      return true;
+    }
+  }
+  return false;
+};
+Builder.prototype.buildTextValNode = function(val, key, attrStr, level, matcher) {
+  if (this.options.cdataPropName !== false && key === this.options.cdataPropName) {
+    return this.indentate(level) + `<![CDATA[${val}]]>` + this.newLine;
+  } else if (this.options.commentPropName !== false && key === this.options.commentPropName) {
+    return this.indentate(level) + `<!--${val}-->` + this.newLine;
+  } else if (key[0] === "?") {
+    return this.indentate(level) + "<" + key + attrStr + "?" + this.tagEndChar;
+  } else {
+    let textValue = this.options.tagValueProcessor(key, val);
+    textValue = this.replaceEntitiesValue(textValue);
+    if (textValue === "") {
+      return this.indentate(level) + "<" + key + attrStr + this.closeTag(key) + this.tagEndChar;
+    } else {
+      return this.indentate(level) + "<" + key + attrStr + ">" + textValue + "</" + key + this.tagEndChar;
+    }
+  }
+};
+Builder.prototype.replaceEntitiesValue = function(textValue) {
+  if (textValue && textValue.length > 0 && this.options.processEntities) {
+    for (let i = 0; i < this.options.entities.length; i++) {
+      const entity2 = this.options.entities[i];
+      textValue = textValue.replace(entity2.regex, entity2.val);
+    }
+  }
+  return textValue;
+};
+function indentate(level) {
+  return this.options.indentBy.repeat(level);
+}
+function isAttribute(name) {
+  if (name.startsWith(this.options.attributeNamePrefix) && name !== this.options.textNodeName) {
+    return name.substr(this.attrPrefixLen);
+  } else {
+    return false;
+  }
+}
+
+// ../node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js
+var json2xml_default = Builder;
+
+// ../packages/core/dist/src/infrastructure/formatters/JUnitFormatter.js
+var builder = new json2xml_default({
+  ignoreAttributes: false,
+  format: true,
+  suppressEmptyNode: false
+});
+function formatJUnit(results) {
+  const suites = results.map(toTestSuite);
+  const doc = {
+    "?xml": { "@_version": "1.0", "@_encoding": "UTF-8" },
+    testsuites: { testsuite: suites }
+  };
+  return builder.build(doc);
+}
+function toTestSuite(result) {
+  const cases = result.errors.map((e) => ({
+    "@_name": `${e.ruleCode} ${e.ruleName}`,
+    "@_classname": result.filePath,
+    failure: {
+      "@_message": e.message,
+      "#text": `${result.filePath}:${e.line}:${e.column} ${e.ruleCode} ${e.message}`
+    }
+  }));
+  if (cases.length === 0) {
+    cases.push({ "@_name": "clean", "@_classname": result.filePath });
+  }
+  return {
+    "@_name": result.filePath,
+    "@_tests": cases.length,
+    "@_failures": result.errors.length,
+    "@_errors": 0,
+    testcase: cases
   };
 }
 
-// ../dist/src/cli/main.js
+// ../packages/core/dist/src/infrastructure/formatters/SarifFormatter.js
+var import_node_module2 = require("node:module");
+var import_meta2 = {};
+var require3 = (0, import_node_module2.createRequire)(import_meta2.url);
+var { version: TOOL_VERSION } = require3("../../../package.json");
+var TOOL_NAME = "markdownlint-obsidian";
+var INFORMATION_URI = "https://github.com/alisonaquinas/markdownlint-obsidian";
+var SARIF_SCHEMA = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
+function formatSarif(results) {
+  const { rules: rules2, sarifResults } = collectRulesAndResults(results);
+  const doc = {
+    $schema: SARIF_SCHEMA,
+    version: "2.1.0",
+    runs: [
+      {
+        tool: {
+          driver: {
+            name: TOOL_NAME,
+            version: TOOL_VERSION,
+            informationUri: INFORMATION_URI,
+            rules: rules2
+          }
+        },
+        results: sarifResults
+      }
+    ]
+  };
+  return JSON.stringify(doc, null, 2);
+}
+function collectRulesAndResults(results) {
+  const rulesById = /* @__PURE__ */ new Map();
+  const sarifResults = [];
+  for (const file of results) {
+    for (const err of file.errors) {
+      if (!rulesById.has(err.ruleCode)) {
+        rulesById.set(err.ruleCode, toSarifRule(err));
+      }
+      sarifResults.push(toSarifResult(file.filePath, err));
+    }
+  }
+  return { rules: [...rulesById.values()], sarifResults };
+}
+function toSarifResult(filePath, err) {
+  return {
+    ruleId: err.ruleCode,
+    level: err.severity,
+    message: { text: err.message },
+    locations: [
+      {
+        physicalLocation: {
+          artifactLocation: { uri: filePath },
+          region: { startLine: err.line, startColumn: err.column }
+        }
+      }
+    ]
+  };
+}
+function toSarifRule(err) {
+  return {
+    id: err.ruleCode,
+    name: err.ruleName,
+    shortDescription: { text: err.ruleName },
+    defaultConfiguration: { level: err.severity }
+  };
+}
+
+// ../packages/core/dist/src/infrastructure/formatters/FormatterRegistry.js
+var FORMATTERS = Object.freeze({
+  default: formatDefault,
+  json: formatJson,
+  junit: formatJUnit,
+  sarif: formatSarif
+});
+function getFormatter(name) {
+  const formatter = FORMATTERS[name];
+  if (!formatter) {
+    throw new Error(`OFM901: unknown formatter "${name}"`);
+  }
+  return formatter;
+}
+
+// ../packages/core/dist/src/engine/index.js
+async function lint(options2) {
+  const cwd = options2.cwd ?? process.cwd();
+  const config2 = await loadConfig(options2.config ?? cwd);
+  const effectiveConfig = {
+    ...config2,
+    ...options2.vaultRoot !== void 0 && { vaultRoot: options2.vaultRoot },
+    ...options2.resolve !== void 0 && { resolve: options2.resolve }
+  };
+  const effectiveGlobs = options2.globs.length > 0 ? options2.globs : effectiveConfig.globs;
+  const filePaths = await discoverFiles(effectiveGlobs, effectiveConfig.ignores, cwd);
+  if (filePaths.length === 0)
+    return [];
+  const parser = makeMarkdownItParser();
+  const registry = makeRuleRegistry();
+  registerBuiltinRules(registry);
+  const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
+  for (const err of customRuleResult.errors) {
+    options2.onCustomRuleError?.(err.modulePath, err.message);
+  }
+  registerCustomRules(registry, customRuleResult.rules);
+  let vaultResult = null;
+  try {
+    vaultResult = await bootstrapVault(cwd, effectiveConfig, {
+      detector: makeNodeFsVaultDetector(),
+      buildIndex: buildFileIndex,
+      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
+    });
+  } catch {
+  }
+  return runLint(filePaths, effectiveConfig, registry, {
+    parser,
+    readFile: readMarkdownFile,
+    vault: vaultResult?.vault ?? null,
+    blockRefIndex: vaultResult?.blockRefs ?? null,
+    fsCheck: makeNodeFsExistenceChecker()
+  });
+}
+async function fix(options2) {
+  const cwd = options2.cwd ?? process.cwd();
+  const config2 = await loadConfig(options2.config ?? cwd);
+  const effectiveConfig = {
+    ...config2,
+    ...options2.vaultRoot !== void 0 && { vaultRoot: options2.vaultRoot },
+    ...options2.resolve !== void 0 && { resolve: options2.resolve }
+  };
+  const effectiveGlobs = options2.globs.length > 0 ? options2.globs : effectiveConfig.globs;
+  const filePaths = await discoverFiles(effectiveGlobs, effectiveConfig.ignores, cwd);
+  if (filePaths.length === 0) {
+    return { firstPass: [], finalPass: [], filesFixed: [], conflicts: [] };
+  }
+  const parser = makeMarkdownItParser();
+  const registry = makeRuleRegistry();
+  registerBuiltinRules(registry);
+  const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
+  for (const err of customRuleResult.errors) {
+    options2.onCustomRuleError?.(err.modulePath, err.message);
+  }
+  registerCustomRules(registry, customRuleResult.rules);
+  let vaultResult = null;
+  try {
+    vaultResult = await bootstrapVault(cwd, effectiveConfig, {
+      detector: makeNodeFsVaultDetector(),
+      buildIndex: buildFileIndex,
+      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
+    });
+  } catch {
+  }
+  const deps = {
+    parser,
+    readFile: readMarkdownFile,
+    writeFile: options2.check ? async (_, __) => {
+    } : writeMarkdownFile,
+    vault: vaultResult?.vault ?? null,
+    blockRefIndex: vaultResult?.blockRefs ?? null,
+    fsCheck: makeNodeFsExistenceChecker()
+  };
+  const outcome = await runFix(filePaths, effectiveConfig, registry, deps);
+  return outcome;
+}
+
+// ../packages/cli/dist/src/main.js
 var EXIT_CODES = Object.freeze({
   CLEAN: 0,
   LINT_ERRORS: 1,
@@ -58649,12 +58730,8 @@ async function main(argv) {
     return parsed.terminal;
   const opts = program2.opts();
   const cwd = process.cwd();
-  const config2 = await loadConfig(opts.config ?? cwd).catch(() => null);
-  if (!config2) {
-    process.stderr.write("OFM901: failed to load configuration\n");
-    return EXIT_CODES.TOOL_FAILURE;
-  }
-  return runPipeline(program2.args, opts, config2, cwd);
+  const globs = program2.args;
+  return runPipeline(globs, opts, cwd);
 }
 function parseArgv(program2, argv) {
   try {
@@ -58667,39 +58744,6 @@ function parseArgv(program2, argv) {
     }
     return { terminal: EXIT_CODES.TOOL_FAILURE };
   }
-}
-function applyCliOverrides(config2, opts) {
-  const patch = {};
-  if (opts.vaultRoot !== void 0)
-    patch.vaultRoot = opts.vaultRoot;
-  if (opts.resolve === false)
-    patch.resolve = false;
-  return Object.freeze({ ...config2, ...patch });
-}
-async function bootstrapVaultOrExit(cwd, config2) {
-  try {
-    const parser = makeMarkdownItParser();
-    const result = await bootstrapVault(cwd, config2, {
-      detector: makeNodeFsVaultDetector(),
-      buildIndex: buildFileIndex,
-      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
-    });
-    return { result };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`${message}
-`);
-    return { exitCode: EXIT_CODES.TOOL_FAILURE };
-  }
-}
-function buildLintDeps(ok) {
-  return {
-    parser: makeMarkdownItParser(),
-    readFile: readMarkdownFile,
-    vault: ok.result?.vault ?? null,
-    blockRefIndex: ok.result?.blockRefs ?? null,
-    fsCheck: makeNodeFsExistenceChecker()
-  };
 }
 function resolveFormatter(name) {
   try {
@@ -58722,49 +58766,61 @@ function emitAndExit(results, formatterName) {
 function fmtRange(col, del) {
   return del === 0 ? `col ${col}` : `col ${col}\u2013${col + del - 1}`;
 }
-async function runPipeline(globArgs, opts, rawConfig, cwd) {
-  const config2 = applyCliOverrides(rawConfig, opts);
+async function runPipeline(globArgs, opts, cwd) {
   if (opts.fix && opts.fixCheck) {
     process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
-  const effectiveGlobs = globArgs.length > 0 ? globArgs : config2.globs;
-  const files = await discoverFiles(effectiveGlobs, config2.ignores, cwd);
-  const registry = await setupRegistry(config2, cwd);
-  const bootstrapResult = await bootstrapVaultOrExit(cwd, config2);
-  if ("exitCode" in bootstrapResult)
-    return bootstrapResult.exitCode;
-  const lintDeps = buildLintDeps(bootstrapResult);
+  const formatter = resolveFormatter(opts.outputFormatter);
+  if (formatter === null)
+    return EXIT_CODES.TOOL_FAILURE;
+  const config2 = await loadConfig(opts.config ?? cwd).catch(() => null);
+  if (!config2) {
+    process.stderr.write("OFM901: failed to load configuration\n");
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config2.globs;
+  const engineOptions = {
+    globs: effectiveGlobs,
+    cwd,
+    ...opts.vaultRoot !== void 0 && { vaultRoot: opts.vaultRoot },
+    ...opts.resolve === false && { resolve: false },
+    ...opts.config !== void 0 && { config: opts.config },
+    onCustomRuleError: (modulePath, message) => {
+      process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}
+`);
+    }
+  };
   if (opts.fix || opts.fixCheck) {
-    return runFixPipeline(files, opts, config2, registry, lintDeps);
-  }
-  const results = await runLint(files, config2, registry, lintDeps);
-  return emitAndExit(results, opts.outputFormatter);
-}
-async function setupRegistry(config2, cwd) {
-  const registry = makeRuleRegistry();
-  registerBuiltinRules(registry);
-  const { rules: customRules, errors: customErrors } = await loadCustomRules(config2.customRules, cwd);
-  for (const err of customErrors) {
-    process.stderr.write(`OFM905: failed to load custom rule module "${err.modulePath}": ${err.message}
+    try {
+      const outcome = await fix({ ...engineOptions, check: opts.fixCheck });
+      if (outcome.filesFixed.length > 0) {
+        process.stderr.write(`${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)
 `);
-  }
-  registerCustomRules(registry, customRules);
-  return registry;
-}
-async function runFixPipeline(files, opts, config2, registry, lintDeps) {
-  const writeFile2 = opts.fixCheck ? (_path, _content) => Promise.resolve() : writeMarkdownFile;
-  const outcome = await runFix(files, config2, registry, { ...lintDeps, writeFile: writeFile2 });
-  if (outcome.filesFixed.length > 0)
-    process.stderr.write(`${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)
+      }
+      for (const conflict of outcome.conflicts) {
+        const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+        const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+        process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})
 `);
-  for (const conflict of outcome.conflicts) {
-    const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
-    const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
-    process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})
+      }
+      return emitAndExit(outcome.finalPass, opts.outputFormatter);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      process.stderr.write(`${message}
 `);
+      return EXIT_CODES.TOOL_FAILURE;
+    }
   }
-  return emitAndExit(outcome.finalPass, opts.outputFormatter);
+  try {
+    const results = await lint(engineOptions);
+    return emitAndExit(results, opts.outputFormatter);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`${message}
+`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
 }
 
 // src/main.ts
