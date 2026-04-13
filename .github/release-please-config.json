@@ -18,7 +18,7 @@
   },
   "plugins": ["node-workspace"],
   "separate-pull-requests": true,
-  "bootstrap-sha": "PLACEHOLDER_SET_AFTER_MERGE",
+  "bootstrap-sha": "0cca8ae4ac87449544dfa8f8886669f18ce4efad",
   "tag-separator": "",
   "include-component-in-tag": true
 }
