@@ -58636,84 +58636,83 @@ function getFormatter(name) {
 }
 
 // ../packages/core/dist/src/engine/index.js
-async function lint(options2) {
-  const cwd = options2.cwd ?? process.cwd();
-  const config2 = await loadConfig(options2.config ?? cwd);
-  const effectiveConfig = {
+function applyOverrides(config2, options2) {
+  return {
     ...config2,
     ...options2.vaultRoot !== void 0 && { vaultRoot: options2.vaultRoot },
     ...options2.resolve !== void 0 && { resolve: options2.resolve }
   };
+}
+async function buildRegistry(config2, cwd, onError) {
+  const registry = makeRuleRegistry();
+  registerBuiltinRules(registry);
+  const customRuleResult = await loadCustomRules(config2.customRules, cwd);
+  for (const err of customRuleResult.errors) {
+    onError?.(err.modulePath, err.message);
+  }
+  registerCustomRules(registry, customRuleResult.rules);
+  return registry;
+}
+function toVaultContext(result) {
+  return { vault: result?.vault ?? null, blockRefIndex: result?.blockRefs ?? null };
+}
+async function tryBootstrapVault(cwd, config2, parser) {
+  try {
+    const result = await bootstrapVault(cwd, config2, {
+      detector: makeNodeFsVaultDetector(),
+      buildIndex: buildFileIndex,
+      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
+    });
+    return toVaultContext(result);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.startsWith("OFM9"))
+      throw err;
+    return { vault: null, blockRefIndex: null };
+  }
+}
+async function lint(options2) {
+  const cwd = options2.cwd ?? process.cwd();
+  const config2 = await loadConfig(options2.config ?? cwd);
+  const effectiveConfig = applyOverrides(config2, options2);
   const effectiveGlobs = options2.globs.length > 0 ? options2.globs : effectiveConfig.globs;
   const filePaths = await discoverFiles(effectiveGlobs, effectiveConfig.ignores, cwd);
   if (filePaths.length === 0)
     return [];
   const parser = makeMarkdownItParser();
-  const registry = makeRuleRegistry();
-  registerBuiltinRules(registry);
-  const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
-  for (const err of customRuleResult.errors) {
-    options2.onCustomRuleError?.(err.modulePath, err.message);
-  }
-  registerCustomRules(registry, customRuleResult.rules);
-  let vaultResult = null;
-  try {
-    vaultResult = await bootstrapVault(cwd, effectiveConfig, {
-      detector: makeNodeFsVaultDetector(),
-      buildIndex: buildFileIndex,
-      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
-    });
-  } catch {
-  }
+  const registry = await buildRegistry(effectiveConfig, cwd, options2.onCustomRuleError);
+  const { vault, blockRefIndex } = await tryBootstrapVault(cwd, effectiveConfig, parser);
   return runLint(filePaths, effectiveConfig, registry, {
     parser,
     readFile: readMarkdownFile,
-    vault: vaultResult?.vault ?? null,
-    blockRefIndex: vaultResult?.blockRefs ?? null,
+    vault,
+    blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker()
   });
 }
 async function fix(options2) {
   const cwd = options2.cwd ?? process.cwd();
   const config2 = await loadConfig(options2.config ?? cwd);
-  const effectiveConfig = {
-    ...config2,
-    ...options2.vaultRoot !== void 0 && { vaultRoot: options2.vaultRoot },
-    ...options2.resolve !== void 0 && { resolve: options2.resolve }
-  };
+  const effectiveConfig = applyOverrides(config2, options2);
   const effectiveGlobs = options2.globs.length > 0 ? options2.globs : effectiveConfig.globs;
   const filePaths = await discoverFiles(effectiveGlobs, effectiveConfig.ignores, cwd);
   if (filePaths.length === 0) {
     return { firstPass: [], finalPass: [], filesFixed: [], conflicts: [] };
   }
   const parser = makeMarkdownItParser();
-  const registry = makeRuleRegistry();
-  registerBuiltinRules(registry);
-  const customRuleResult = await loadCustomRules(effectiveConfig.customRules, cwd);
-  for (const err of customRuleResult.errors) {
-    options2.onCustomRuleError?.(err.modulePath, err.message);
-  }
-  registerCustomRules(registry, customRuleResult.rules);
-  let vaultResult = null;
-  try {
-    vaultResult = await bootstrapVault(cwd, effectiveConfig, {
-      detector: makeNodeFsVaultDetector(),
-      buildIndex: buildFileIndex,
-      buildBlockRefIndex: (files) => buildBlockRefIndex(files, { parser, readFile: readMarkdownFile })
-    });
-  } catch {
-  }
+  const registry = await buildRegistry(effectiveConfig, cwd, options2.onCustomRuleError);
+  const { vault, blockRefIndex } = await tryBootstrapVault(cwd, effectiveConfig, parser);
+  const noOpWrite = async (_path, _content) => {
+  };
   const deps = {
     parser,
     readFile: readMarkdownFile,
-    writeFile: options2.check ? async (_, __) => {
-    } : writeMarkdownFile,
-    vault: vaultResult?.vault ?? null,
-    blockRefIndex: vaultResult?.blockRefs ?? null,
+    writeFile: options2.check ? noOpWrite : writeMarkdownFile,
+    vault,
+    blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker()
   };
-  const outcome = await runFix(filePaths, effectiveConfig, registry, deps);
-  return outcome;
+  return runFix(filePaths, effectiveConfig, registry, deps);
 }
 
 // ../packages/cli/dist/src/main.js
@@ -58766,61 +58765,75 @@ function emitAndExit(results, formatterName) {
 function fmtRange(col, del) {
   return del === 0 ? `col ${col}` : `col ${col}\u2013${col + del - 1}`;
 }
-async function runPipeline(globArgs, opts, cwd) {
+function onCustomRuleError(modulePath, message) {
+  process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}
+`);
+}
+function buildEngineOptions(globArgs, config2, opts, cwd) {
+  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config2.globs;
+  return {
+    globs: effectiveGlobs,
+    cwd,
+    ...opts.vaultRoot !== void 0 && { vaultRoot: opts.vaultRoot },
+    ...opts.resolve === false && { resolve: false },
+    ...opts.config !== void 0 && { config: opts.config },
+    onCustomRuleError
+  };
+}
+async function runFixBranch(engineOptions, opts) {
+  try {
+    const outcome = await fix({
+      ...engineOptions,
+      check: opts.fixCheck
+    });
+    if (outcome.filesFixed.length > 0) {
+      const verb = opts.fixCheck ? "Would fix" : "Fixed";
+      process.stderr.write(`${verb} ${outcome.filesFixed.length} file(s)
+`);
+    }
+    for (const conflict of outcome.conflicts) {
+      const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+      const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+      process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})
+`);
+    }
+    return emitAndExit(outcome.finalPass, opts.outputFormatter);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}
+`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+}
+async function runLintBranch(engineOptions, opts) {
+  try {
+    const results = await lint(engineOptions);
+    return emitAndExit(results, opts.outputFormatter);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}
+`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+}
+function checkMutualExclusion(opts) {
   if (opts.fix && opts.fixCheck) {
     process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
-  const formatter = resolveFormatter(opts.outputFormatter);
-  if (formatter === null)
+  return null;
+}
+async function runPipeline(globArgs, opts, cwd) {
+  const exclusionCode = checkMutualExclusion(opts);
+  if (exclusionCode !== null)
+    return exclusionCode;
+  if (resolveFormatter(opts.outputFormatter) === null)
     return EXIT_CODES.TOOL_FAILURE;
   const config2 = await loadConfig(opts.config ?? cwd).catch(() => null);
   if (!config2) {
     process.stderr.write("OFM901: failed to load configuration\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
-  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config2.globs;
-  const engineOptions = {
-    globs: effectiveGlobs,
-    cwd,
-    ...opts.vaultRoot !== void 0 && { vaultRoot: opts.vaultRoot },
-    ...opts.resolve === false && { resolve: false },
-    ...opts.config !== void 0 && { config: opts.config },
-    onCustomRuleError: (modulePath, message) => {
-      process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}
-`);
-    }
-  };
-  if (opts.fix || opts.fixCheck) {
-    try {
-      const outcome = await fix({ ...engineOptions, check: opts.fixCheck });
-      if (outcome.filesFixed.length > 0) {
-        process.stderr.write(`${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)
-`);
-      }
-      for (const conflict of outcome.conflicts) {
-        const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
-        const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
-        process.stderr.write(`[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})
-`);
-      }
-      return emitAndExit(outcome.finalPass, opts.outputFormatter);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`${message}
-`);
-      return EXIT_CODES.TOOL_FAILURE;
-    }
-  }
-  try {
-    const results = await lint(engineOptions);
-    return emitAndExit(results, opts.outputFormatter);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`${message}
-`);
-    return EXIT_CODES.TOOL_FAILURE;
-  }
+  const engineOptions = buildEngineOptions(globArgs, config2, opts, cwd);
+  return opts.fix || opts.fixCheck ? runFixBranch(engineOptions, opts) : runLintBranch(engineOptions, opts);
 }
 
 // src/main.ts
