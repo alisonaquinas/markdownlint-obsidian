@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export interface SpawnResult {
   readonly exitCode: number;
@@ -7,7 +8,7 @@ export interface SpawnResult {
   readonly stderr: string;
 }
 
-const BIN = new URL("../../../bin/markdownlint-obsidian.js", import.meta.url).pathname;
+const BIN = fileURLToPath(new URL("../../../bin/markdownlint-obsidian.js", import.meta.url));
 
 /**
  * Run the markdownlint-obsidian dev binary with the given args in `cwd`.

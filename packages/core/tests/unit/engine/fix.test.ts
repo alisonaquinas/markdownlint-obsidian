@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import * as os from "node:os";
 import * as fs from "node:fs/promises";
-import { fix } from "../../src/engine/index.js";
+import { fix } from "../../../src/engine/index.js";
 
 describe("engine.fix()", () => {
   it("returns FixOutcome with firstPass and finalPass arrays", async () => {

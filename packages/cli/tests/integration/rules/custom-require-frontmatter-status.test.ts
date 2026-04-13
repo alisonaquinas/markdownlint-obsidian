@@ -2,9 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { spawnCli } from "../helpers/spawnCli.js";
 
-const RULE_PATH = new URL("../../../../core/examples/rules/require-frontmatter-status.ts", import.meta.url).pathname;
+const RULE_PATH = fileURLToPath(new URL("../../../../core/examples/rules/require-frontmatter-status.ts", import.meta.url));
 
 let vault: string;
 beforeEach(async () => {

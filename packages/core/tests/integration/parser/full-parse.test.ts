@@ -1,9 +1,10 @@
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";
 
-const FIXTURES = new URL("../../fixtures/parser", import.meta.url).pathname;
+const FIXTURES = fileURLToPath(new URL("../../fixtures/parser", import.meta.url));
 
 describe("full parse integration", () => {
   const parser = makeMarkdownItParser();

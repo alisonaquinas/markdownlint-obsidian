@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import * as os from "node:os";
 import * as fs from "node:fs/promises";
-import { lint } from "../../src/engine/index.js";
+import { lint } from "../../../src/engine/index.js";
 
 describe("engine.lint()", () => {
   it("returns an empty array when no files match globs", async () => {
@@ -22,8 +22,8 @@ describe("engine.lint()", () => {
       await fs.writeFile(path.join(tmpDir, "b.md"), "# World\n");
       const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
       expect(results).toHaveLength(2);
-      expect(results.every((r) => "filePath" in r)).toBe(true);
-      expect(results.every((r) => "hasErrors" in r)).toBe(true);
+      expect(results.every((r: unknown) => typeof r === "object" && r !== null && "filePath" in r)).toBe(true);
+      expect(results.every((r: unknown) => typeof r === "object" && r !== null && "hasErrors" in r)).toBe(true);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
