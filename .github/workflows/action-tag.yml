@@ -1,0 +1,28 @@
+name: Advance action version tags
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Advance major and minor tags
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          MAJOR=$(echo "$TAG" | cut -d. -f1)
+          MINOR=$(echo "$TAG" | cut -d. -f1,2)
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f "$MAJOR"
+          git tag -f "$MINOR"
+          git push origin "$MAJOR" --force
+          git push origin "$MINOR" --force
