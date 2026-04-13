@@ -1,0 +1,68 @@
+name: Release verify
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  verify-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for npm CDN propagation
+        run: sleep 90
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install cli from npmjs.org and verify version
+        if: startsWith(github.event.release.tag_name, 'packages/cli')
+        run: |
+          VERSION="${GITHUB_REF_NAME#packages/cli}"
+          VERSION="${VERSION#v}"
+          npm install -g "markdownlint-obsidian-cli@${VERSION}"
+          OUT=$(markdownlint-obsidian --version)
+          echo "$OUT"
+          echo "$OUT" | grep -q "${VERSION}"
+
+      - name: Audit npm signatures (verifies provenance)
+        if: startsWith(github.event.release.tag_name, 'packages/cli')
+        run: npm audit signatures
+
+  verify-ghcr-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for GitHub Packages propagation
+        run: sleep 90
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@alisonaquinas"
+
+      - name: Install cli from GitHub Packages and verify
+        if: startsWith(github.event.release.tag_name, 'packages/cli')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#packages/cli}"
+          VERSION="${VERSION#v}"
+          npm install -g "@alisonaquinas/markdownlint-obsidian-cli@${VERSION}"
+          markdownlint-obsidian --version
+
+  verify-ghcr-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Pull, verify signature, and smoke-test image
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          IMG="ghcr.io/alisonaquinas/markdownlint-obsidian:${TAG}"
+          docker pull "$IMG"
+          cosign verify \
+            --certificate-identity-regexp '^https://github\.com/alisonaquinas/markdownlint-obsidian/' \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$IMG"
+          docker run --rm "$IMG" --version
