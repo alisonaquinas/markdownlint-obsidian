@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM104Rule } from "../../../../src/infrastructure/rules/ofm/block-references/OFM104-block-id-format.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

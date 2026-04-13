@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM063Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM063-trailing-slash.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

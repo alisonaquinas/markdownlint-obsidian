@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeBlockRefIndex } from "../../../../src/domain/vault/BlockRefIndex.js";
 
 describe("BlockRefIndex", () => {

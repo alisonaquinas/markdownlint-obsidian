@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM103Rule } from "../../../../src/infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

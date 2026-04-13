@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM060Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM060-invalid-tag-format.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

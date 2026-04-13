@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM086Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

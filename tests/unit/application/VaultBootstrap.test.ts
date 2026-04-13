@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from "bun:test";
 import { bootstrapVault } from "../../../src/application/VaultBootstrap.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import type { VaultIndex } from "../../../src/domain/vault/VaultIndex.js";

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { discoverFiles } from "../../../src/infrastructure/discovery/FileDiscovery.js";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";

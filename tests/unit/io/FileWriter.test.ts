@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { writeMarkdownFile } from "../../../src/infrastructure/io/FileWriter.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";
 import * as fs from "node:fs/promises";

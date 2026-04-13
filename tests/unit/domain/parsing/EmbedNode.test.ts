@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeEmbedNode } from "../../../../src/domain/parsing/EmbedNode.js";
 
 describe("EmbedNode", () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM004Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { stubVault } from "../helpers/stubVault.js";

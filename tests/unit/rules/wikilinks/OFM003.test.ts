@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { OFM003Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

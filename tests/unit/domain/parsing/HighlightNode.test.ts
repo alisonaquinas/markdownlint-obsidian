@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeHighlightNode } from "../../../../src/domain/parsing/HighlightNode.js";
 
 describe("HighlightNode", () => {

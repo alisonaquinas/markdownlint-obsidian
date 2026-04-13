@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM043Rule } from "../../../../src/infrastructure/rules/ofm/callouts/OFM043-callout-in-list.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

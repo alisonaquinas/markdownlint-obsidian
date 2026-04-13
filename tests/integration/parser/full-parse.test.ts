@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM001Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM001-broken-wikilink.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { stubVault } from "../helpers/stubVault.js";

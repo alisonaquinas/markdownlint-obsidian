@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { extractComments } from "../../../../src/infrastructure/parser/ofm/CommentExtractor.js";
 
 function run(src: string): ReturnType<typeof extractComments> {

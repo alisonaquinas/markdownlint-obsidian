@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { isIsoDate } from "../../../../../src/infrastructure/rules/ofm/frontmatter/shared/DateFormat.js";
 
 describe("isIsoDate", () => {

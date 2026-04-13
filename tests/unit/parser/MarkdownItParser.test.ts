@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 
 describe("MarkdownItParser", () => {

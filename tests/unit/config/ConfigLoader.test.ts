@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { loadConfig } from "../../../src/infrastructure/config/ConfigLoader.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import * as fs from "node:fs/promises";

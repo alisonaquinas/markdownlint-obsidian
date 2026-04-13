@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM085Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 import { makeParseResult } from "../../../../src/domain/parsing/ParseResult.js";

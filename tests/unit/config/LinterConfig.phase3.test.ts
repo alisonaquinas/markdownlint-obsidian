@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 
 describe("DEFAULT_CONFIG (phase 3)", () => {

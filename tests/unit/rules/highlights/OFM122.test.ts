@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM122Rule } from "../../../../src/infrastructure/rules/ofm/highlights/OFM122-malformed-highlight.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

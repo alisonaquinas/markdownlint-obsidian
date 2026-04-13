@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM121Rule } from "../../../../src/infrastructure/rules/ofm/highlights/OFM121-disallowed-comment.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM021Rule } from "../../../../src/infrastructure/rules/ofm/embeds/OFM021-invalid-embed-syntax.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

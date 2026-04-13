@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { buildCalloutTypeRegistry } from "../../../../../src/infrastructure/rules/ofm/callouts/shared/CalloutTypeRegistry.js";
 import type { CalloutConfig } from "../../../../../src/domain/config/LinterConfig.js";
 

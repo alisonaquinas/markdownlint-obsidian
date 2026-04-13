@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach } from "bun:test";
 import { registerCustomRules } from "../../../../src/infrastructure/rules/registerCustom.js";
 import { makeRuleRegistry } from "../../../../src/domain/linting/RuleRegistry.js";
 import type { OFMRule } from "../../../../src/domain/linting/OFMRule.js";

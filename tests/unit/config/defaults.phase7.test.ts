@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import { OFM_MD_CONFLICTS } from "../../../src/infrastructure/rules/standard/OFM_MD_CONFLICTS.js";
 

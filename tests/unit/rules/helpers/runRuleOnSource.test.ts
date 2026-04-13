@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { runRuleOnSource } from "./runRuleOnSource.js";
 import type { OFMRule } from "../../../../src/domain/linting/OFMRule.js";
 

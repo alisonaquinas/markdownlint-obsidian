@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { matchWikilink } from "../../../../src/domain/vault/WikilinkMatcher.js";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM006Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM006-empty-heading.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

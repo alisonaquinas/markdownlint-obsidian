@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeWikilinkNode } from "../../../../src/domain/parsing/WikilinkNode.js";
 
 describe("WikilinkNode", () => {

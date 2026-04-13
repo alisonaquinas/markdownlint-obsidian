@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { formatSarif } from "../../../src/infrastructure/formatters/SarifFormatter.js";
 import { makeLintError, type LintError } from "../../../src/domain/linting/LintError.js";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";

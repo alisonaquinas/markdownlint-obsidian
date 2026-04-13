@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { classifyEmbed } from "../../../../../src/infrastructure/rules/ofm/embeds/shared/EmbedClassifier.js";
 import type { EmbedNode } from "../../../../../src/domain/parsing/EmbedNode.js";
 import { makeSourcePosition } from "../../../../../src/domain/parsing/SourcePosition.js";

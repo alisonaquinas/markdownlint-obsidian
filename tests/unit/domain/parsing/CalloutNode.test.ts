@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeCalloutNode } from "../../../../src/domain/parsing/CalloutNode.js";
 
 describe("CalloutNode", () => {

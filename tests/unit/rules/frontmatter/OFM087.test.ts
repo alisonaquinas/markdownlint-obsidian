@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { OFM087Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM087-non-string-tag-entry.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
 

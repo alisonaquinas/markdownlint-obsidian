@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { frontmatterParseErrorRule } from "../../../src/infrastructure/rules/ofm/system/FrontmatterParseError.js";
 
 describe("OFM902 frontmatter-parse-error", () => {

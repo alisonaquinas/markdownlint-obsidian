@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { formatDefault } from "../../../src/infrastructure/formatters/DefaultFormatter.js";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";
 import { makeLintError } from "../../../src/domain/linting/LintError.js";

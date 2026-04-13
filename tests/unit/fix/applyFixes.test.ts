@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { makeFix } from "../../../src/domain/linting/Fix.js";
 import { applyFixes } from "../../../src/domain/fix/applyFixes.js";
 

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import * as api from "../../../src/public/index.js";
 import * as rules from "../../../src/public/rules.js";
 // Compile-time assertion: if FileExistenceChecker is not exported, tsc fails here
