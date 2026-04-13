@@ -1,23 +1,16 @@
-FROM node:20-alpine AS build
+FROM oven/bun:1-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json tsconfig.json tsconfig.build.json ./
+COPY package.json bun.lock tsconfig.json tsconfig.build.json ./
 COPY src ./src
 COPY bin ./bin
-RUN npm ci
-RUN npm run build
-
-# The dev bin script uses tsx at runtime to execute TypeScript sources.
-# For the hermetic runtime image we ship the TypeScript output from
-# `dist/` under a pure-Node bin so the image does not need tsx or any
-# devDependencies at run time.
-RUN printf '#!/usr/bin/env node\nimport("../dist/src/cli/main.js").then(async (m) => { const code = await m.main(process.argv); process.exit(code); }).catch((err) => { console.error(err); process.exit(2); });\n' \
-      > dist/bin.mjs && chmod +x dist/bin.mjs
+COPY scripts ./scripts
+RUN bun install --frozen-lockfile
+RUN bun run build
 
 # Strip dev dependencies from node_modules so they do not bloat the
-# runtime stage. Runtime only needs chalk, commander, cosmiconfig,
-# globby, gray-matter, js-yaml, jsonc-parser, markdown-it, markdownlint,
-# minimatch, and fast-xml-parser.
-RUN npm prune --omit=dev
+# runtime stage. Runtime only needs chalk, commander, globby, gray-matter,
+# js-yaml, jsonc-parser, markdown-it, markdownlint, minimatch, and fast-xml-parser.
+RUN bun install --production --frozen-lockfile
 
 FROM node:20-alpine AS runtime
 WORKDIR /workdir
