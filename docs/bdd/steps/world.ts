@@ -18,7 +18,7 @@ export interface CLIResult {
   readonly stderr: string;
 }
 
-const BIN_PATH = path.resolve("bin/markdownlint-obsidian.js");
+const BIN_PATH = path.resolve("packages/cli/bin/markdownlint-obsidian.js");
 const BUN = process.execPath;
 
 export class OFMWorld extends World {

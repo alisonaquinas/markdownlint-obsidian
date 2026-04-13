@@ -104,6 +104,10 @@ interface VaultContext {
   readonly blockRefIndex: BlockRefIndex | null;
 }
 
+function toVaultContext(result: Awaited<ReturnType<typeof bootstrapVault>>): VaultContext {
+  return { vault: result?.vault ?? null, blockRefIndex: result?.blockRefs ?? null };
+}
+
 async function tryBootstrapVault(
   cwd: string,
   config: LinterConfig,
@@ -116,10 +120,12 @@ async function tryBootstrapVault(
       buildBlockRefIndex: (files) =>
         buildBlockRefIndex(files, { parser, readFile: readMarkdownFile }),
     });
-    return { vault: result?.vault ?? null, blockRefIndex: result?.blockRefs ?? null };
-  } catch {
-    // vault bootstrap failure is non-fatal; rules that need vault context
-    // will degrade gracefully
+    return toVaultContext(result);
+  } catch (err) {
+    // OFM900 (no vault root found) is a hard error — rethrow so callers can
+    // surface it. Other bootstrap failures (permissions, etc.) are non-fatal.
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.startsWith("OFM9")) throw err;
     return { vault: null, blockRefIndex: null };
   }
 }
