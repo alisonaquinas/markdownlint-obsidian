@@ -12,7 +12,7 @@ const NODE_ARGS = ["--import", TSX_URL, BIN];
 // Dogfood spawns the full CLI with a `docs/**/*.md` glob — tsx loader import
 // plus 30+ markdown files is noticeably slower than a single-file integration
 // test, so we give this case a 20s budget to match the other integration suites.
-describe("dogfood", { timeout: 20000 }, () => {
+describe("dogfood", () => {
   it("docs/ directory passes the linter (Phase 1: no rules active)", async () => {
     const result = await execAsync("node", [...NODE_ARGS, "**/*.md"], {
       cwd: path.resolve("docs"),

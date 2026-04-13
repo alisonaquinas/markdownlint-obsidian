@@ -12,7 +12,7 @@ afterEach(async () => {
   await fs.rm(tmp, { recursive: true, force: true });
 });
 
-describe("vault detection integration", { timeout: 20000 }, () => {
+describe("vault detection integration", () => {
   it("detects vault root via .obsidian/ ancestor", async () => {
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
     await fs.mkdir(path.join(tmp, "notes"), { recursive: true });

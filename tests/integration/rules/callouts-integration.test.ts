@@ -13,7 +13,7 @@ afterEach(async () => {
   await fs.rm(vault, { recursive: true, force: true });
 });
 
-describe("callout rules integration", { timeout: 20000 }, () => {
+describe("callout rules integration", () => {
   it("known callout type passes", async () => {
     await fs.writeFile(path.join(vault, "note.md"), "> [!NOTE] Title\n> body\n");
     const r = await spawnCli(["**/*.md"], vault);

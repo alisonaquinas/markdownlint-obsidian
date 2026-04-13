@@ -22,7 +22,7 @@ afterEach(async () => {
   await fs.rm(vault, { recursive: true, force: true });
 });
 
-describe("custom rule: banned-wikilink-targets", { timeout: 20000 }, () => {
+describe("custom rule: banned-wikilink-targets", () => {
   it("passes when no banned targets are linked", async () => {
     await fs.writeFile(path.join(vault, "note.md"), "# Hi\n\nSee [[allowed-page]].\n");
     const r = await spawnCli(["**/*.md"], vault);

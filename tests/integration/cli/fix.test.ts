@@ -5,7 +5,7 @@ import * as os from "node:os";
 import { spawnCli } from "../helpers/spawnCli.js";
 
 // Increase timeout for integration tests that spawn real processes
-describe("--fix and --fix-check round-trip", { timeout: 30000 }, () => {
+describe("--fix and --fix-check round-trip", () => {
   let tmp: string;
 
   beforeEach(async () => {

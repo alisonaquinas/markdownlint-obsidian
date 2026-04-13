@@ -55,7 +55,7 @@ describe("registerCustomRules", () => {
 
     registerCustomRules(registry, [duplicate]);
 
-    expect(stderrSpy).toHaveBeenCalledOnce();
+    expect(stderrSpy).toHaveBeenCalledTimes(1);
     const written = stderrSpy.mock.calls[0]?.[0] as string;
     expect(written).toMatch(/^OFM904:/);
     // The label must be the *colliding* name, not the rule's primary name.
@@ -78,6 +78,6 @@ describe("registerCustomRules", () => {
 
     expect(registry.get("OFM102")).toBe(good);
     expect(registry.all()).toHaveLength(2); // original + good
-    expect(stderrSpy).toHaveBeenCalledOnce();
+    expect(stderrSpy).toHaveBeenCalledTimes(1);
   });
 });

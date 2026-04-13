@@ -16,7 +16,7 @@ afterEach(async () => {
 
 // Cold-start CLI + temp vault → keep the timeout generous for the slower
 // Windows CI lanes.
-describe("block-reference rules integration", { timeout: 20000 }, () => {
+describe("block-reference rules integration", () => {
   it("valid [[a#^one]] exits 0", async () => {
     await fs.writeFile(path.join(vault, "notes", "a.md"), "# A\n\nParagraph ^one\n");
     await fs.writeFile(path.join(vault, "notes", "b.md"), "See [[a#^one]]\n");

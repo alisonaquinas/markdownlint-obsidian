@@ -16,7 +16,8 @@
     "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["@types/bun"]
   },
-  "include": ["src", "tests", "bin", "vitest.config.ts", "eslint.config.js"]
+  "include": ["src", "tests", "bin", "eslint.config.js"]
 }

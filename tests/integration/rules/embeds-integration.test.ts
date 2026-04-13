@@ -14,7 +14,7 @@ afterEach(async () => {
   await fs.rm(vault, { recursive: true, force: true });
 });
 
-describe("embed rules integration", { timeout: 20000 }, () => {
+describe("embed rules integration", () => {
   it("valid image embed passes", async () => {
     await fs.writeFile(path.join(vault, "note.md"), "![[image.png]]\n");
     const r = await spawnCli(["**/*.md"], vault);

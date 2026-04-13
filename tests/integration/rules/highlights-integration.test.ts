@@ -14,7 +14,7 @@ afterEach(async () => {
   await fs.rm(vault, { recursive: true, force: true });
 });
 
-describe("highlight rules integration", { timeout: 20000 }, () => {
+describe("highlight rules integration", () => {
   it("default config allows highlights", async () => {
     await fs.writeFile(path.join(vault, "notes", "x.md"), "value ==one==\n");
     const r = await spawnCli(["**/*.md"], vault);

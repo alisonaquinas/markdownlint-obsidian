@@ -17,7 +17,7 @@ afterEach(async () => {
 
 // CLI spawns are slow on Windows under parallel execution; 15s gives the
 // runner enough headroom for the slowest cold-start case.
-describe("wikilink rules integration", { timeout: 20000 }, () => {
+describe("wikilink rules integration", () => {
   it("broken link exits 1 with OFM001", async () => {
     await fs.writeFile(path.join(vault, "notes", "index.md"), "[[missing]]\n");
     const r = await spawnCli(["**/*.md"], vault);

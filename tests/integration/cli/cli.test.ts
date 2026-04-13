@@ -16,7 +16,7 @@ const NODE_ARGS = ["--import", TSX_URL, BIN];
 // embed integration tests. On Windows the cold-start plus loader import can
 // blow past the default 5s timeout under load, so we give every case the
 // same generous window we use for the other integration suites.
-describe("CLI", { timeout: 20000 }, () => {
+describe("CLI", () => {
   it("--help exits 0 and prints usage", async () => {
     const { stdout } = await execAsync("node", [...NODE_ARGS, "--help"]);
     expect(stdout).toContain("markdownlint-obsidian");

@@ -14,7 +14,7 @@ const NODE_ARGS = ["--import", TSX_URL, BIN];
 // Stand up a tiny vault with one broken wikilink so each formatter has
 // at least one lint error to render. The broken wikilink points at a
 // file that does not exist, tripping OFM001.
-describe("CLI formatter wiring", { timeout: 20000 }, () => {
+describe("CLI formatter wiring", () => {
   let tmp: string;
 
   beforeAll(async () => {

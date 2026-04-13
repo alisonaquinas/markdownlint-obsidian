@@ -27,10 +27,10 @@ describe("classifyEmbed", () => {
     ["loop.ogg", "audio", "ogg"],
     ["doc.pdf", "pdf", "pdf"],
     ["script.exe", "unknown", "exe"],
-  ])("%s -> %s/%s", (target, expectedKind, expectedExt) => {
+  ])("%s -> %s/%s", (target: string, expectedKind: string, expectedExt: string) => {
     const result = classifyEmbed(embed(target));
-    expect(result.kind).toBe(expectedKind);
-    expect(result.extension).toBe(expectedExt);
+    expect(result.kind as string).toBe(expectedKind);
+    expect(result.extension as string).toBe(expectedExt);
   });
 
   it("treats extensionless targets as markdown", () => {

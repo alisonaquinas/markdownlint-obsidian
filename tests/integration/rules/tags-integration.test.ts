@@ -16,7 +16,7 @@ afterEach(async () => {
 
 // CLI spawns are slow on Windows under parallel execution; 15s gives the
 // runner enough headroom for the slowest cold-start case.
-describe("tag rules integration", { timeout: 15000 }, () => {
+describe("tag rules integration", () => {
   it("fails with OFM060 on a malformed tag", async () => {
     await fs.copyFile(
       path.resolve("tests/fixtures/rules/tags/bad-format.md"),

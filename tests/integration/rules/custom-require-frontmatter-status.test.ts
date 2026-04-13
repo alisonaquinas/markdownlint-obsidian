@@ -19,7 +19,7 @@ afterEach(async () => {
   await fs.rm(vault, { recursive: true, force: true });
 });
 
-describe("custom rule: require-frontmatter-status", { timeout: 20000 }, () => {
+describe("custom rule: require-frontmatter-status", () => {
   it("passes when status is a valid value", async () => {
     await fs.writeFile(path.join(vault, "note.md"), "---\nstatus: draft\n---\n\nbody\n");
     const r = await spawnCli(["**/*.md"], vault);

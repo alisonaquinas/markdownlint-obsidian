@@ -15,7 +15,7 @@ afterEach(async () => {
 
 // CLI spawn + tmp-dir cleanup races under parallel Windows load; 20s is
 // the same budget the other integration suites use.
-describe("spawnCli", { timeout: 20000 }, () => {
+describe("spawnCli", () => {
   it("returns exit 0 for a clean vault", async () => {
     await fs.writeFile(path.join(tmp, "ok.md"), "# ok\n");
     const r = await spawnCli(["**/*.md"], tmp);

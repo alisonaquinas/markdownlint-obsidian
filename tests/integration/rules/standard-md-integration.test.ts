@@ -18,7 +18,7 @@ afterEach(async () => {
 // Each test spawns the full CLI binary; Windows cold-starts take 3-5s, so
 // this suite runs with a generous timeout to avoid flakes under parallel
 // execution.
-describe("standard MD integration", { timeout: 20000 }, () => {
+describe("standard MD integration", () => {
   it("MD001 (heading-increment) fires on a skipped heading level", async () => {
     await fs.writeFile(path.join(vault, "note.md"), "# h1\n\n### h3 (skips h2)\n");
     const r = await spawnCli(["**/*.md"], vault);
