@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/obsidian-linter-logo-dark-transparent.png">
+  <img alt="Obsidian Linter" src="docs/assets/obsidian-linter-logo-light-transparent.png" width="280">
+</picture>
+
 # markdownlint-obsidian
 
 Obsidian Flavored Markdown linter for CI pipelines. Catches broken
