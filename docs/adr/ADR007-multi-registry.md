@@ -16,7 +16,9 @@ As the project publishes to a public registry for the first time, two supply-cha
 
 In parallel, the project ships a Docker image to `ghcr.io` for users who run the linter in containers. The same authenticity concern applies: consumers should be able to verify the image was built from a known commit, without the project needing to manage signing keys.
 
-## Decision 1 — npm provenance via `bun publish --provenance`
+## Decision
+
+### 1. npm provenance via `bun publish --provenance`
 
 Enable npm provenance on every npm publish by passing `--provenance` to `bun publish`.
 
@@ -35,7 +37,7 @@ npm audit signatures
 
 No long-lived secrets are required. The OIDC token is ephemeral and scoped to the single workflow run.
 
-## Decision 2 — GitHub Packages npm mirror under `@alisonaquinas/` scope
+### 2. GitHub Packages npm mirror under `@alisonaquinas/` scope
 
 Publish both packages to `npm.pkg.github.com` as a secondary registry alongside `registry.npmjs.org`.
 
@@ -46,7 +48,7 @@ The mirror serves two purposes:
 - **Redundancy.** When `registry.npmjs.org` is unavailable, consumers and CI pipelines can fall back to the GitHub Packages endpoint by adding `@alisonaquinas:registry=https://npm.pkg.github.com` to their `.npmrc`.
 - **Auditability.** Every published version is linked to the exact GitHub release and commit via the GitHub Packages UI.
 
-## Decision 3 — cosign keyless signing for Docker images on `ghcr.io`
+### 3. cosign keyless signing for Docker images on `ghcr.io`
 
 Sign every Docker image pushed to `ghcr.io` using Sigstore cosign in keyless mode.
 
@@ -63,7 +65,7 @@ cosign verify \
 
 The verification chain runs entirely through Sigstore's public Rekor transparency log and Fulcio CA — no project-specific key material is involved.
 
-## Decision 4 — `bun publish` over `npm publish`
+### 4. `bun publish` over `npm publish`
 
 Use `bun publish` (Bun 1.2+) as the publish command throughout the CD pipeline rather than invoking `npm publish`.
 
@@ -88,14 +90,14 @@ GitHub Packages requires that npm packages be published under a scope matching t
 
 ## Consequences
 
-- **Two npm registries to keep in sync.** If the publish step for one registry succeeds and the other fails, the two registries will drift. This is an acceptable known risk: the failure is logged in the GitHub Actions summary, the release is not tagged until both succeed, and consumers relying on the npmjs.org copy are unaffected. The drift scenario is documented in `docs/runbooks/publish-failure.md`.
+- **Two npm registries to keep in sync.** If the publish step for one registry succeeds and the other fails, the two registries will drift. The GitHub Packages mirror job runs with `fail-fast: false` and is deliberately non-blocking: a GitHub Packages outage does not block the primary npm release or the release tag. The failure is logged in the GitHub Actions summary, and consumers relying on the npmjs.org copy are unaffected. Registries may remain out of sync until the next release; this is acceptable and the drift scenario is documented in the Known gaps section of the phase-14 plan.
 - **Verifiable attestations on every release.** Every published npm package and Docker image carries a cryptographically verifiable provenance statement. Consumers who do not verify attestations are unaffected — verification is opt-in. Consumers who do verify gain a strong supply-chain guarantee with no additional workflow changes on their side.
 - **Slightly larger CI publish job.** The publish job grows by approximately 3–5 minutes: cosign install and image signing (~1 min), second-registry publish (~1–2 min), and provenance generation overhead (~1 min). This is within acceptable CI budget for a release-only job that does not run on every pull request.
 - **Scoped names on GitHub Packages.** The secondary registry packages are `@alisonaquinas/markdownlint-obsidian` and `@alisonaquinas/markdownlint-obsidian-cli`, which differ from the primary registry names. Consumers using the mirror must reference the scoped names in their `.npmrc`. This difference is documented in the installation guide.
 
 ## Related
 
-- [[plans/phase-14-multi-registry]]
+- [[plans/phase-14-multi-registry-cd]]
 - [[plans/phase-12-cd-automation]]
 - [[adr/ADR006-package-split]]
 - [[adr/ADR005-node-path-in-domain]]
