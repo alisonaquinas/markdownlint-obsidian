@@ -10,8 +10,12 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
+
+      - uses: sigstore/cosign-installer@v3
 
       - uses: docker/login-action@v3
         with:
@@ -19,7 +23,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v5
+      - id: build
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/Dockerfile
@@ -27,3 +32,19 @@ jobs:
           tags: |
             ghcr.io/alisonaquinas/markdownlint-obsidian:latest
             ghcr.io/alisonaquinas/markdownlint-obsidian:${{ github.event.release.tag_name }}
+          sbom: true
+          provenance: mode=max
+
+      - name: Sign image with cosign (keyless, OIDC)
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          cosign sign --yes \
+            "ghcr.io/alisonaquinas/markdownlint-obsidian@${DIGEST}"
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ghcr.io/alisonaquinas/markdownlint-obsidian
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
