@@ -1,8 +1,7 @@
 import * as core from "@actions/core";
 // Resolved at bundle time by esbuild via the `file:..` dev-dependency on
 // the root markdownlint-obsidian package.
-// @ts-expect-error -- no type declarations published under this entry yet.
-import { main as runLinter } from "markdownlint-obsidian/src/cli/main.js";
+import { main as runLinter } from "markdownlint-obsidian/cli";
 
 interface ActionInputs {
   readonly globs: readonly string[];

@@ -33,6 +33,9 @@ jobs:
       - name: Dogfood docs/
         run: bun run test:dogfood
 
+      - name: Build
+        run: bun run build
+
       - name: Verify action bundle is up-to-date
         run: |
           cd action

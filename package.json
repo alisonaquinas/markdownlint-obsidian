@@ -18,6 +18,10 @@
     "./rules": {
       "types": "./dist/src/public/rules.d.ts",
       "default": "./dist/src/public/rules.js"
+    },
+    "./cli": {
+      "types": "./dist/src/cli/main.d.ts",
+      "default": "./dist/src/cli/main.js"
     }
   },
   "files": [
