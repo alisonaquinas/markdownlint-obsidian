@@ -6,7 +6,12 @@
 
 **Architecture:** A new adapter `MarkdownLintAdapter` runs the upstream library once per file and translates each violation into a `LintError`. Rule registration happens via a generated map (names, severity, description) so the registry sees every MD rule as a first-class `OFMRule`. A curated list of OFM-conflicting rules is disabled in `DEFAULT_CONFIG.rules`, each with a `docs/rules/standard-md/<rule>.md` page explaining the conflict.
 
-**Tech Stack:** Phase 6 stack plus `markdownlint@0.34+` (ESM-ready). Consider `markdownlint-rule-helpers` if the lint helpers simplify adaptation — optional, not required.
+**Tech Stack:** Phase 6 stack plus `markdownlint@0.40+` (ESM-only, named exports).
+The sync API lives at `markdownlint/sync` as a named export `lint` (aliased from
+`lintSync`). Configuration type is `Configuration`. `LintError.fixInfo` is
+preserved in `StandardViolation` for Phase 9 autofix. Consider
+`markdownlint-rule-helpers` if helpers simplify adaptation — optional, not
+required.
 
 ---
 
@@ -41,6 +46,7 @@ tests/
 ### Task 1: Install markdownlint
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Install runtime dep**
@@ -63,6 +69,7 @@ git commit -m "chore(deps): add markdownlint"
 ### Task 2: MarkdownLintAdapter — run-once-per-file
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/MarkdownLintAdapter.ts`
 - Create: `tests/unit/rules/standard/MarkdownLintAdapter.test.ts`
 
@@ -98,7 +105,8 @@ describe("MarkdownLintAdapter", () => {
 - [ ] **Implement `MarkdownLintAdapter.ts`**
 
 ```ts
-import markdownlint from "markdownlint";
+import { lint as lintSync } from "markdownlint/sync";
+import type { Configuration, FixInfo } from "markdownlint";
 
 export interface StandardViolation {
   readonly ruleNames: readonly string[];
@@ -107,19 +115,21 @@ export interface StandardViolation {
   readonly errorContext?: string;
   readonly errorDetail?: string;
   readonly errorRange?: readonly [number, number];
+  readonly fixInfo?: FixInfo;
 }
 
 export interface MarkdownLintAdapter {
   runOnce(
     filePath: string,
     content: string,
-    config: Readonly<Record<string, unknown>>,
+    config: Configuration,
   ): readonly StandardViolation[];
 }
 
 /**
- * Thin adapter over markdownlint.sync with per-file memoization so multiple
- * rules sharing the same file each consume the cached violation list.
+ * Thin adapter over markdownlint/sync with per-(filePath, contentHash)
+ * memoization so multiple rules sharing the same file each consume the
+ * cached violation list.
  */
 export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
   const cache = new Map<string, readonly StandardViolation[]>();
@@ -130,17 +140,18 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
 
-      const raw = markdownlint.sync({
+      const results = lintSync({
         strings: { [filePath]: content },
-        config: config as markdownlint.Configuration,
+        config,
       });
-      const list: StandardViolation[] = (raw[filePath] ?? []).map((r) => ({
+      const list: StandardViolation[] = (results[filePath] ?? []).map((r) => ({
         ruleNames: r.ruleNames,
         ruleDescription: r.ruleDescription,
         lineNumber: r.lineNumber,
         errorContext: r.errorContext ?? undefined,
         errorDetail: r.errorDetail ?? undefined,
-        errorRange: r.errorRange ?? undefined,
+        errorRange: (r.errorRange as [number, number] | null) ?? undefined,
+        fixInfo: r.fixInfo ?? undefined,
       }));
       const frozen = Object.freeze(list);
       cache.set(key, frozen);
@@ -171,6 +182,7 @@ git commit -m "feat(rules): add MarkdownLintAdapter with per-file memoization"
 ### Task 3: StandardRuleAdapter — one OFMRule per MD rule
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/StandardRuleAdapter.ts`
 - Create: `tests/unit/rules/standard/StandardRuleAdapter.test.ts`
 
@@ -246,6 +258,7 @@ git commit -m "feat(rules): add StandardRuleAdapter"
 ### Task 4: OFM_MD_CONFLICTS curated list
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/OFM_MD_CONFLICTS.ts`
 
 - [ ] **Implement**
@@ -304,6 +317,7 @@ git commit -m "feat(rules): enumerate OFM/MD rule conflicts"
 ### Task 5: registerStandard — all MD001..MD049 entries
 
 **Files:**
+
 - Create: `src/infrastructure/rules/standard/registerStandard.ts`
 - Create: `tests/unit/rules/standard/registerStandard.test.ts`
 
@@ -385,6 +399,7 @@ git commit -m "feat(rules): registerStandard for MD001..MD049"
 ### Task 6: Disable conflicting rules in defaults
 
 **Files:**
+
 - Modify: `src/infrastructure/config/defaults.ts`
 
 - [ ] **Expand `DEFAULT_CONFIG.rules`** to disable each entry from `OFM_MD_CONFLICTS`:
@@ -416,6 +431,7 @@ git commit -m "feat(config): disable OFM-conflicting MD rules by default"
 ### Task 7: Wire registerStandard into registerBuiltin
 
 **Files:**
+
 - Modify: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 
 - [ ] **Update**
@@ -444,6 +460,7 @@ git commit -m "feat(rules): register standard markdownlint rules alongside OFM r
 ### Task 8: Integration test
 
 **Files:**
+
 - Create: `tests/integration/rules/standard-md-integration.test.ts`
 
 - [ ] **Write**
@@ -503,6 +520,7 @@ git commit -m "test(rules): standard MD integration with OFM conflict coverage"
 ### Task 9: Documentation — standard-md catalog
 
 **Files:**
+
 - Create: `docs/rules/standard-md/index.md`
 - Create: one page per conflict (`MD013.md`, `MD033.md`, `MD034.md`, `MD041.md`, `MD042.md`)
 - Modify: `docs/rules/index.md`

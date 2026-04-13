@@ -1,3 +1,4 @@
+@smoke
 Feature: Wikilink linting
 
   Background:

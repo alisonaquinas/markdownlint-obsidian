@@ -3,6 +3,7 @@
 ## Value Objects
 
 ### LintError
+
 Immutable. Identifies one rule violation in one file.
 
 ```typescript
@@ -19,6 +20,7 @@ interface LintError {
 ```
 
 ### LintResult
+
 Immutable. All errors for one file.
 
 ```typescript
@@ -31,6 +33,7 @@ interface LintResult {
 ## Domain Services
 
 ### RuleRegistry
+
 Registers and retrieves rules. Validates no duplicate codes.
 
 ```typescript

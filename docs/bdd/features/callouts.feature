@@ -1,3 +1,4 @@
+@smoke
 Feature: Callout linting
 
   Scenario: Unknown callout type reports OFM040

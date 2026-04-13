@@ -89,6 +89,7 @@ reports/                                  Created in Task 14 (gitignored)
 ### Task 1: package.json and npm scripts
 
 **Files:**
+
 - Create: `package.json`
 
 - [ ] **Write `package.json`**
@@ -110,7 +111,7 @@ reports/                                  Created in Task 14 (gitignored)
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:bdd": "cucumber-js",
+    "test:bdd": "node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js --tags @smoke",
     "test:all": "npm run typecheck && npm run lint && npm run test && npm run test:bdd",
     "prepublishOnly": "npm run build && npm run test:all"
   },
@@ -126,8 +127,8 @@ reports/                                  Created in Task 14 (gitignored)
     "@cucumber/cucumber": "^10.0.0",
     "@types/js-yaml": "^4.0.0",
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "@vitest/coverage-v8": "^2.0.0",
     "eslint": "^9.0.0",
     "fast-check": "^3.0.0",
@@ -162,6 +163,7 @@ git commit -m "feat: add package.json with deps and scripts"
 ### Task 2: TypeScript configuration
 
 **Files:**
+
 - Create: `tsconfig.json`
 - Create: `tsconfig.build.json`
 
@@ -222,6 +224,7 @@ git commit -m "feat: add TypeScript strict config"
 ### Task 3: ESLint and Prettier
 
 **Files:**
+
 - Create: `eslint.config.js`
 - Create: `.prettierrc.json`
 - Create: `.editorconfig`
@@ -296,6 +299,7 @@ git commit -m "feat: add ESLint flat config and Prettier"
 ### Task 4: Vitest configuration
 
 **Files:**
+
 - Create: `vitest.config.ts`
 
 - [ ] **Write `vitest.config.ts`**
@@ -355,6 +359,7 @@ git commit -m "feat: add Vitest config and smoke test"
 ### Task 5: Domain value objects — LintError and LintResult
 
 **Files:**
+
 - Create: `src/domain/linting/LintError.ts`
 - Create: `src/domain/linting/LintResult.ts`
 - Create: `tests/unit/domain/LintError.test.ts`
@@ -363,6 +368,7 @@ git commit -m "feat: add Vitest config and smoke test"
 - [ ] **Write failing tests first**
 
 `tests/unit/domain/LintError.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeLintError } from "../../../src/domain/linting/LintError.js";
@@ -395,6 +401,7 @@ describe("LintError", () => {
 ```
 
 `tests/unit/domain/LintResult.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";
@@ -500,6 +507,7 @@ git commit -m "feat: add LintError and LintResult domain value objects"
 ### Task 6: Domain — OFMRule interface and RuleRegistry
 
 **Files:**
+
 - Create: `src/domain/linting/OFMRule.ts`
 - Create: `src/domain/linting/RuleRegistry.ts`
 - Create: `tests/unit/domain/RuleRegistry.test.ts`
@@ -507,6 +515,7 @@ git commit -m "feat: add LintError and LintResult domain value objects"
 - [ ] **Write failing test**
 
 `tests/unit/domain/RuleRegistry.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeRuleRegistry } from "../../../src/domain/linting/RuleRegistry.js";
@@ -617,6 +626,7 @@ git commit -m "feat: add OFMRule interface and RuleRegistry domain service"
 ### Task 7: Domain config value objects
 
 **Files:**
+
 - Create: `src/domain/config/RuleConfig.ts`
 - Create: `src/domain/config/LinterConfig.ts`
 
@@ -688,6 +698,7 @@ git commit -m "feat: add LinterConfig and RuleConfig domain types"
 ### Task 8: Default config and config validator
 
 **Files:**
+
 - Create: `src/infrastructure/config/defaults.ts`
 - Create: `src/infrastructure/config/ConfigValidator.ts`
 - Create: `tests/unit/config/ConfigValidator.test.ts`
@@ -695,6 +706,7 @@ git commit -m "feat: add LinterConfig and RuleConfig domain types"
 - [ ] **Write failing test**
 
 `tests/unit/config/ConfigValidator.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { validateConfig } from "../../../src/infrastructure/config/ConfigValidator.js";
@@ -773,12 +785,14 @@ git commit -m "feat: add default config and ConfigValidator"
 ### Task 9: Config loader
 
 **Files:**
+
 - Create: `src/infrastructure/config/ConfigLoader.ts`
 - Create: `tests/unit/config/ConfigLoader.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/config/ConfigLoader.test.ts`:
+
 ```ts
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { loadConfig } from "../../../src/infrastructure/config/ConfigLoader.js";
@@ -889,12 +903,14 @@ git commit -m "feat: add ConfigLoader with cascading config file discovery"
 ### Task 10: File discovery
 
 **Files:**
+
 - Create: `src/infrastructure/discovery/FileDiscovery.ts`
 - Create: `tests/unit/discovery/FileDiscovery.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/discovery/FileDiscovery.test.ts`:
+
 ```ts
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { discoverFiles } from "../../../src/infrastructure/discovery/FileDiscovery.js";
@@ -978,6 +994,7 @@ git commit -m "feat: add FileDiscovery with globby and gitignore support"
 ### Task 11: Default and JSON formatters
 
 **Files:**
+
 - Create: `src/infrastructure/formatters/DefaultFormatter.ts`
 - Create: `src/infrastructure/formatters/JsonFormatter.ts`
 - Create: `src/infrastructure/formatters/FormatterRegistry.ts`
@@ -987,6 +1004,7 @@ git commit -m "feat: add FileDiscovery with globby and gitignore support"
 - [ ] **Write failing tests**
 
 `tests/unit/formatters/DefaultFormatter.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { formatDefault } from "../../../src/infrastructure/formatters/DefaultFormatter.js";
@@ -1015,6 +1033,7 @@ describe("DefaultFormatter", () => {
 ```
 
 `tests/unit/formatters/JsonFormatter.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { formatJson } from "../../../src/infrastructure/formatters/JsonFormatter.js";
@@ -1115,12 +1134,14 @@ git commit -m "feat: add DefaultFormatter, JsonFormatter, FormatterRegistry"
 ### Task 12: LintUseCase stub
 
 **Files:**
+
 - Create: `src/application/LintUseCase.ts`
 - Create: `tests/unit/application/LintUseCase.test.ts`
 
 - [ ] **Write failing test**
 
 `tests/unit/application/LintUseCase.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { runLint } from "../../../src/application/LintUseCase.js";
@@ -1173,6 +1194,7 @@ git commit -m "feat: add LintUseCase stub"
 ### Task 13: CLI entry point
 
 **Files:**
+
 - Create: `src/cli/args.ts`
 - Create: `src/cli/main.ts`
 - Create: `bin/markdownlint-obsidian.js`
@@ -1180,27 +1202,31 @@ git commit -m "feat: add LintUseCase stub"
 
 - [ ] **Write failing integration tests**
 
-`tests/integration/cli/cli.test.ts`:
+`tests/integration/cli/cli.test.ts` — note the `--import` prefix pointing at the absolute tsx loader path so the shipped-as-TS source can run under `node` without a build step:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { pathToFileURL } from "node:url";
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 
 const execAsync = promisify(execFile);
 const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const TSX_URL = pathToFileURL(path.resolve("node_modules/tsx/dist/loader.mjs")).href;
+const NODE_ARGS = ["--import", TSX_URL, BIN];
 
 describe("CLI", () => {
   it("--help exits 0 and prints usage", async () => {
-    const { stdout } = await execAsync("node", [BIN, "--help"]);
+    const { stdout } = await execAsync("node", [...NODE_ARGS, "--help"]);
     expect(stdout).toContain("markdownlint-obsidian");
     expect(stdout).toContain("--fix");
   });
 
   it("--version exits 0 and prints semver", async () => {
-    const { stdout } = await execAsync("node", [BIN, "--version"]);
+    const { stdout } = await execAsync("node", [...NODE_ARGS, "--version"]);
     expect(stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
   });
 
@@ -1208,7 +1234,7 @@ describe("CLI", () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
     await fs.writeFile(path.join(tmp, "clean.md"), "# Clean\n");
     try {
-      const { stdout } = await execAsync("node", [BIN, "**/*.md"], { cwd: tmp });
+      const { stdout } = await execAsync("node", [...NODE_ARGS, "**/*.md"], { cwd: tmp });
       expect(stdout.trim()).toBe("");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });
@@ -1308,14 +1334,22 @@ export async function main(argv: string[]): Promise<number> {
 }
 ```
 
+- [ ] **Install tsx as a dev dep** (also used by cucumber-js in Task 14)
+
+```bash
+npm install --save-dev tsx
+```
+
 - [ ] **Create `bin/markdownlint-obsidian.js`**
 
 ```js
-#!/usr/bin/env node
-import { main } from "../src/cli/main.js";
+#!/usr/bin/env -S node --import tsx
+import { main } from "../src/cli/main.ts";
 const code = await main(process.argv);
 process.exit(code);
 ```
+
+The bin file is imported as a TS module via `tsx`. On Unix the shebang provides the loader for `./bin/markdownlint-obsidian.js`. On Windows (and in tests) callers invoke it as `node --import <abs-path>/node_modules/tsx/dist/loader.mjs bin/markdownlint-obsidian.js` — the absolute loader path is necessary because `--import tsx` resolves relative to cwd, not the bin script.
 
 - [ ] **Run — expect PASS**
 
@@ -1345,6 +1379,7 @@ git commit -m "feat: wire CLI entry point — --help, --version, file discovery,
 ### Task 14: BDD harness setup
 
 **Files:**
+
 - Update: `docs/bdd/steps/world.ts` (already scaffolded — verify contents match below)
 - Create: `cucumber.json`
 - Create: `docs/bdd/steps/file-steps.ts`
@@ -1409,13 +1444,13 @@ export class OFMWorld extends World {
 setWorldConstructor(OFMWorld);
 ```
 
-- [ ] **Install tsx for TypeScript ESM support in cucumber-js**
+- [ ] **Install tsx for TypeScript ESM support in cucumber-js** (already installed in Task 13 for the CLI bin — skip if present)
 
 ```bash
 npm install --save-dev tsx
 ```
 
-`tsx` handles TypeScript ESM natively without extra loader configuration — preferred over `ts-node/esm` for ESM projects.
+`tsx` handles TypeScript ESM natively without extra loader configuration — preferred over `ts-node/esm` for ESM projects. Note: both the CLI integration tests and the BDD world spawn `node --import <abs-path-to-tsx/dist/loader.mjs> bin/markdownlint-obsidian.js` so that the shipped-as-TS source can be executed without a build step.
 
 - [ ] **Create `reports/` directory and gitignore it** (must exist before cucumber.json references it)
 
@@ -1431,13 +1466,12 @@ echo "reports/" >> .gitignore
   "default": {
     "paths": ["docs/bdd/features/**/*.feature"],
     "import": ["docs/bdd/steps/**/*.ts"],
-    "loader": ["tsx"],
     "format": ["progress-bar", "json:reports/cucumber.json"]
   }
 }
 ```
 
-Note: use `import` (not `require`) and `loader` (not `requireModule`) for ESM + cucumber-js 10.
+Note: use `import` (not `require`) for ESM + cucumber-js 10. Do NOT put `"loader": ["tsx"]` in the config — cucumber-js wires that to the deprecated `--loader` flag which tsx rejects on Node 20+. Instead, update the `test:bdd` npm script to launch cucumber-js via `node --import tsx node_modules/@cucumber/cucumber/bin/cucumber.js` so tsx is registered before cucumber-js reads step files.
 
 - [ ] **Implement `docs/bdd/steps/file-steps.ts`**
 
@@ -1512,10 +1546,10 @@ The feature file already exists from the DDD/BDD scaffold commit. Add `@smoke` t
 - [ ] **Run the `@smoke` BDD scenario**
 
 ```bash
-npm run test:bdd -- --tags "@smoke"
+npm run test:bdd
 ```
 
-Expected: 1 scenario, 1 passing.
+Expected: 1 scenario, 1 passing. The `test:bdd` script hard-codes `--tags @smoke` for Phase 1 so `test:all` stays green even though the other feature files (wikilinks, callouts, frontmatter, etc.) describe Phase 2+ behaviour. Later phases will expand the tag filter or drop it entirely.
 
 - [ ] **Commit**
 
@@ -1529,6 +1563,7 @@ git commit -m "feat: wire cucumber-js BDD harness with World, file, CLI, asserti
 ### Task 15: Markdown lint configs and dogfood stub
 
 **Files:**
+
 - Create: `.markdownlint-cli2.jsonc`
 - Create: `docs/.obsidian-linter.jsonc`
 - Create: `tests/integration/dogfood/dogfood.test.ts`
@@ -1562,6 +1597,7 @@ git commit -m "feat: wire cucumber-js BDD harness with World, file, CLI, asserti
 - [ ] **Write dogfood integration test**
 
 `tests/integration/dogfood/dogfood.test.ts`:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";
@@ -1601,6 +1637,7 @@ git commit -m "feat: add markdownlint configs and dogfood integration test"
 ### Task 16: CI workflow
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Write `.github/workflows/ci.yml`**

@@ -74,6 +74,7 @@ docs/
 ### Task 1: Record the OFM regex-vs-plugin ADR
 
 **Files:**
+
 - Create: `docs/adr/ADR004-ofm-regex-over-plugins.md`
 
 - [ ] **Write the ADR**
@@ -135,6 +136,7 @@ git commit -m "docs(adr): record ADR004 OFM regex extractors over plugins"
 ### Task 2: Install parser dependencies
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Install runtime deps**
@@ -177,6 +179,7 @@ git commit -m "chore(deps): add markdown-it and gray-matter"
 ### Task 3: SourcePosition shared value object
 
 **Files:**
+
 - Create: `src/domain/parsing/SourcePosition.ts`
 - Create: `tests/unit/domain/parsing/SourcePosition.test.ts`
 
@@ -241,6 +244,7 @@ git commit -m "feat(domain): add SourcePosition value object"
 ### Task 4: WikilinkNode value object
 
 **Files:**
+
 - Create: `src/domain/parsing/WikilinkNode.ts`
 - Create: `tests/unit/domain/parsing/WikilinkNode.test.ts`
 
@@ -337,6 +341,7 @@ git commit -m "feat(domain): add WikilinkNode value object"
 ### Task 5: Remaining parse node value objects
 
 **Files:**
+
 - Create: `src/domain/parsing/EmbedNode.ts`
 - Create: `src/domain/parsing/CalloutNode.ts`
 - Create: `src/domain/parsing/TagNode.ts`
@@ -378,6 +383,7 @@ export function makeEmbedNode(fields: EmbedNode): EmbedNode {
 ```
 
 Test:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeEmbedNode } from "../../../../src/domain/parsing/EmbedNode.js";
@@ -424,6 +430,7 @@ export function makeCalloutNode(fields: CalloutNode): CalloutNode {
 ```
 
 Test:
+
 ```ts
 import { describe, it, expect } from "vitest";
 import { makeCalloutNode } from "../../../../src/domain/parsing/CalloutNode.js";
@@ -545,6 +552,7 @@ git commit -m "feat(domain): add EmbedNode, CalloutNode, TagNode, BlockRefNode, 
 ### Task 6: ParseResult aggregate
 
 **Files:**
+
 - Create: `src/domain/parsing/ParseResult.ts`
 - Create: `tests/unit/domain/parsing/ParseResult.test.ts`
 
@@ -674,6 +682,7 @@ git commit -m "feat(domain): add ParseResult aggregate"
 ### Task 7: Parser interface (DIP boundary)
 
 **Files:**
+
 - Create: `src/domain/parsing/Parser.ts`
 
 - [ ] **Implement `Parser.ts`**
@@ -715,6 +724,7 @@ git commit -m "feat(domain): add Parser interface (DIP boundary)"
 ### Task 8: CodeRegionMap — exclude fenced and inline code
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/CodeRegionMap.ts`
 - Create: `tests/unit/parser/ofm/CodeRegionMap.test.ts`
 
@@ -848,6 +858,7 @@ git commit -m "feat(parser): add CodeRegionMap for fenced + inline code exclusio
 ### Task 9: WikilinkExtractor
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/WikilinkExtractor.ts`
 - Create: `tests/unit/parser/ofm/WikilinkExtractor.test.ts`
 
@@ -1006,6 +1017,7 @@ git commit -m "feat(parser): add WikilinkExtractor"
 ### Task 10: EmbedExtractor
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/EmbedExtractor.ts`
 - Create: `tests/unit/parser/ofm/EmbedExtractor.test.ts`
 
@@ -1105,6 +1117,7 @@ git commit -m "feat(parser): add EmbedExtractor"
 ### Task 11: CalloutExtractor
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/CalloutExtractor.ts`
 - Create: `tests/unit/parser/ofm/CalloutExtractor.test.ts`
 
@@ -1225,6 +1238,7 @@ git commit -m "feat(parser): add CalloutExtractor"
 ### Task 12: TagExtractor
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/TagExtractor.ts`
 - Create: `tests/unit/parser/ofm/TagExtractor.test.ts`
 
@@ -1325,6 +1339,7 @@ git commit -m "feat(parser): add TagExtractor"
 ### Task 13: BlockRef, Highlight, Comment extractors
 
 **Files:**
+
 - Create: `src/infrastructure/parser/ofm/BlockRefExtractor.ts`
 - Create: `src/infrastructure/parser/ofm/HighlightExtractor.ts`
 - Create: `src/infrastructure/parser/ofm/CommentExtractor.ts`
@@ -1332,7 +1347,7 @@ git commit -m "feat(parser): add TagExtractor"
 - Create: `tests/unit/parser/ofm/HighlightExtractor.test.ts`
 - Create: `tests/unit/parser/ofm/CommentExtractor.test.ts`
 
-Block reference *definitions* appear at end of line as ` ^blockid`. Block *links* (`[[page#^blockid]]`) are already captured by the wikilink extractor.
+Block reference *definitions* appear at end of line as a leading space followed by `^blockid`. Block *links* (`[[page#^blockid]]`) are already captured by the wikilink extractor.
 
 - [ ] **Implement `BlockRefExtractor.ts`**
 
@@ -1474,6 +1489,7 @@ git commit -m "feat(parser): add BlockRef, Highlight, Comment extractors"
 ### Task 14: FrontmatterParser adapter
 
 **Files:**
+
 - Create: `src/infrastructure/parser/FrontmatterParser.ts`
 - Create: `tests/unit/parser/FrontmatterParser.test.ts`
 
@@ -1557,6 +1573,7 @@ git commit -m "feat(parser): add FrontmatterParser adapter over gray-matter"
 ### Task 15: MarkdownItParser adapter
 
 **Files:**
+
 - Create: `src/infrastructure/parser/MarkdownItParser.ts`
 - Create: `tests/unit/parser/MarkdownItParser.test.ts`
 
@@ -1688,6 +1705,7 @@ git commit -m "feat(parser): add MarkdownItParser orchestrator"
 ### Task 16: FileReader adapter
 
 **Files:**
+
 - Create: `src/infrastructure/io/FileReader.ts`
 - Create: `tests/unit/io/FileReader.test.ts`
 
@@ -1755,6 +1773,7 @@ git commit -m "feat(io): add FileReader with BOM + CRLF normalization"
 ### Task 17: FrontmatterParseError rule (OFM902)
 
 **Files:**
+
 - Create: `src/infrastructure/rules/ofm/system/FrontmatterParseError.ts`
 - Create: `src/infrastructure/rules/ofm/registerBuiltin.ts`
 - Create: `tests/unit/rules/FrontmatterParseError.test.ts`
@@ -1845,6 +1864,7 @@ git commit -m "feat(rules): add OFM902 frontmatter-parse-error and registerBuilt
 ### Task 18: LintUseCase — wire parser + registry
 
 **Files:**
+
 - Modify: `src/application/LintUseCase.ts`
 - Modify: `src/cli/main.ts`
 - Create: `tests/unit/application/LintUseCase.parser.test.ts`
@@ -2046,6 +2066,7 @@ git commit -m "feat(application): wire Parser and RuleRegistry into LintUseCase"
 ### Task 19: Integration test — full OFM fixture parse
 
 **Files:**
+
 - Create: `tests/fixtures/parser/all-ofm-nodes.md`
 - Create: `tests/fixtures/parser/frontmatter-broken.md`
 - Create: `tests/fixtures/parser/clean.md`
@@ -2154,6 +2175,7 @@ git commit -m "test(parser): add full OFM fixture integration test"
 ### Task 20: BDD feature — parser pipeline smoke
 
 **Files:**
+
 - Create: `docs/bdd/features/parser-pipeline.feature`
 - Modify: `docs/bdd/steps/file-steps.ts` (add docstring form)
 

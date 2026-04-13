@@ -27,4 +27,4 @@ Central phase plan index for `markdownlint-obsidian`. Each phase produces workin
 
 - [[ddd/ubiquitous-language]] — Canonical glossary; all code defers to these terms
 - [[ddd/bounded-contexts]] — Context map: linting / vault / config
-- [[bdd/features/]] — Gherkin feature files; source of truth for observable CLI behaviour
+- `docs/bdd/features/` — Gherkin feature files; source of truth for observable CLI behaviour

@@ -1,0 +1,7 @@
+{
+  "default": {
+    "paths": ["docs/bdd/features/**/*.feature"],
+    "import": ["docs/bdd/steps/**/*.ts"],
+    "format": ["progress-bar", "json:reports/cucumber.json"]
+  }
+}

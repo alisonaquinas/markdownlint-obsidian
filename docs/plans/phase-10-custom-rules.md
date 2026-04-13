@@ -55,6 +55,7 @@ docs/
 ### Task 1: Public API barrel
 
 **Files:**
+
 - Create: `src/public/index.ts`
 - Create: `src/public/rules.ts`
 - Modify: `package.json` (`exports` field)
@@ -171,6 +172,7 @@ git commit -m "feat(public): add /api and /rules subpath exports"
 ### Task 2: CustomRuleLoader
 
 **Files:**
+
 - Create: `src/infrastructure/config/CustomRuleLoader.ts`
 - Create: `tests/unit/config/CustomRuleLoader.test.ts`
 
@@ -257,6 +259,7 @@ git commit -m "feat(config): add CustomRuleLoader"
 ### Task 3: registerCustom + CLI wiring
 
 **Files:**
+
 - Create: `src/infrastructure/rules/registerCustom.ts`
 - Modify: `src/cli/main.ts`
 
@@ -311,6 +314,7 @@ git commit -m "feat(cli): load and register custom rules at startup"
 ### Task 4: Example rule 1 — require-frontmatter-status
 
 **Files:**
+
 - Create: `examples/rules/require-frontmatter-status.ts`
 - Create: `tests/integration/rules/custom-require-frontmatter-status.test.ts`
 
@@ -408,6 +412,7 @@ git commit -m "feat(examples): custom rule require-frontmatter-status"
 ### Task 5: Example rule 2 — banned-wikilink-targets
 
 **Files:**
+
 - Create: `examples/rules/banned-wikilink-targets.ts`
 - Create: `tests/integration/rules/custom-banned-wikilink-targets.test.ts`
 
@@ -455,6 +460,7 @@ git commit -m "feat(examples): custom rule banned-wikilink-targets"
 ### Task 6: Examples README
 
 **Files:**
+
 - Create: `examples/README.md`
 
 - [ ] **Write**
@@ -509,6 +515,7 @@ git commit -m "docs(examples): README for custom rule examples"
 ### Task 7: Authoring guide
 
 **Files:**
+
 - Create: `docs/guides/custom-rules.md`
 - Create: `docs/guides/public-api.md`
 
@@ -538,6 +545,7 @@ git commit -m "docs(guides): custom rules authoring guide and public API referen
 ### Task 8: Rule catalog pages for examples
 
 **Files:**
+
 - Create: `docs/rules/custom/require-frontmatter-status.md`
 - Create: `docs/rules/custom/banned-wikilink-targets.md`
 - Modify: `docs/rules/index.md`
@@ -558,6 +566,7 @@ git commit -m "docs(rules): catalog pages for example custom rules"
 ### Task 9: Release + publish
 
 **Files:**
+
 - Modify: `package.json` (`version: "1.0.0"`)
 - Modify: `CHANGELOG.md`
 
