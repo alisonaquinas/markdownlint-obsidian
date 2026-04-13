@@ -4,14 +4,14 @@
     "packages/core": {
       "release-type": "node",
       "package-name": "markdownlint-obsidian",
-      "changelog-path": "packages/core/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true
     },
     "packages/cli": {
       "release-type": "node",
       "package-name": "markdownlint-obsidian-cli",
-      "changelog-path": "packages/cli/CHANGELOG.md",
+      "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true
     }
