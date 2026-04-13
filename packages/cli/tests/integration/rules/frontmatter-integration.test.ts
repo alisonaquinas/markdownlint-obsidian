@@ -5,7 +5,9 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnCli } from "../helpers/spawnCli.js";
 
-const FIXTURES = fileURLToPath(new URL("../../../../core/tests/fixtures/rules/frontmatter", import.meta.url));
+const FIXTURES = fileURLToPath(
+  new URL("../../../../core/tests/fixtures/rules/frontmatter", import.meta.url),
+);
 
 let tmp: string;
 beforeEach(async () => {
@@ -32,30 +34,21 @@ afterEach(async () => {
 // runner enough headroom for the slowest cold-start case.
 describe("frontmatter rules integration", () => {
   it("fails when required key missing", async () => {
-    await fs.copyFile(
-      path.join(FIXTURES, "missing-tags.md"),
-      path.join(tmp, "note.md"),
-    );
+    await fs.copyFile(path.join(FIXTURES, "missing-tags.md"), path.join(tmp, "note.md"));
     const r = await spawnCli(["**/*.md"], tmp);
     expect(r.exitCode).toBe(1);
     expect(r.stdout).toContain("OFM080");
   });
 
   it("fails on invalid date", async () => {
-    await fs.copyFile(
-      path.join(FIXTURES, "invalid-date.md"),
-      path.join(tmp, "note.md"),
-    );
+    await fs.copyFile(path.join(FIXTURES, "invalid-date.md"), path.join(tmp, "note.md"));
     const r = await spawnCli(["**/*.md"], tmp);
     expect(r.exitCode).toBe(1);
     expect(r.stdout).toContain("OFM081");
   });
 
   it("passes for valid file", async () => {
-    await fs.copyFile(
-      path.join(FIXTURES, "valid.md"),
-      path.join(tmp, "note.md"),
-    );
+    await fs.copyFile(path.join(FIXTURES, "valid.md"), path.join(tmp, "note.md"));
     const r = await spawnCli(["**/*.md"], tmp);
     expect(r.exitCode).toBe(0);
   });

@@ -1,7 +1,10 @@
 {
   "name": "markdownlint-obsidian-workspace",
   "private": true,
-  "workspaces": ["packages/*", "action"],
+  "workspaces": [
+    "packages/*",
+    "action"
+  ],
   "scripts": {
     "build": "bun run --filter '*' build",
     "typecheck": "bun run --filter '*' typecheck",

@@ -12,7 +12,14 @@
       "default": "./dist/src/main.js"
     }
   },
-  "files": ["dist/", "src/", "bin/", "README.md", "CHANGELOG.md", "LICENSE"],
+  "files": [
+    "dist/",
+    "src/",
+    "bin/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/gen-dist-bin.mjs",
     "typecheck": "tsc --noEmit",
@@ -38,5 +45,11 @@
   "bugs": {
     "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
   },
-  "keywords": ["markdown", "markdownlint", "obsidian", "linter", "cli"]
+  "keywords": [
+    "markdown",
+    "markdownlint",
+    "obsidian",
+    "linter",
+    "cli"
+  ]
 }

@@ -38,10 +38,11 @@ export default [
     },
   },
   {
-    // Data-table files: these are pure data with no real complexity
+    // DI wiring and data-table files that legitimately exceed the line limit
     files: [
       "docs/bdd/steps/file-steps.ts",
       "packages/core/src/infrastructure/rules/standard/registerStandard.ts",
+      "packages/core/src/engine/index.ts",
       "packages/cli/src/main.ts",
     ],
     rules: {

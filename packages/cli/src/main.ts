@@ -97,68 +97,87 @@ function fmtRange(col: number, del: number): string {
   return del === 0 ? `col ${col}` : `col ${col}–${col + del - 1}`;
 }
 
+function onCustomRuleError(modulePath: string, message: string): void {
+  process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}\n`);
+}
+
+function buildEngineOptions(
+  globArgs: readonly string[],
+  config: Awaited<ReturnType<typeof loadConfig>>,
+  opts: ParsedOptions,
+  cwd: string,
+): object {
+  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config.globs;
+  return {
+    globs: effectiveGlobs,
+    cwd,
+    ...(opts.vaultRoot !== undefined && { vaultRoot: opts.vaultRoot }),
+    ...(opts.resolve === false && { resolve: false }),
+    ...(opts.config !== undefined && { config: opts.config }),
+    onCustomRuleError,
+  };
+}
+
+async function runFixBranch(engineOptions: object, opts: ParsedOptions): Promise<number> {
+  try {
+    const outcome = await fix({
+      ...(engineOptions as Parameters<typeof fix>[0]),
+      check: opts.fixCheck,
+    });
+    if (outcome.filesFixed.length > 0) {
+      const verb = opts.fixCheck ? "Would fix" : "Fixed";
+      process.stderr.write(`${verb} ${outcome.filesFixed.length} file(s)\n`);
+    }
+    for (const conflict of outcome.conflicts) {
+      const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
+      const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+      process.stderr.write(
+        `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
+      );
+    }
+    return emitAndExit(outcome.finalPass, opts.outputFormatter);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+}
+
+async function runLintBranch(engineOptions: object, opts: ParsedOptions): Promise<number> {
+  try {
+    const results = await lint(engineOptions as Parameters<typeof lint>[0]);
+    return emitAndExit(results, opts.outputFormatter);
+  } catch (err) {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+}
+
+function checkMutualExclusion(opts: ParsedOptions): number | null {
+  if (opts.fix && opts.fixCheck) {
+    process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
+    return EXIT_CODES.TOOL_FAILURE;
+  }
+  return null;
+}
+
 async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
   cwd: string,
 ): Promise<number> {
-  if (opts.fix && opts.fixCheck) {
-    process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
-    return EXIT_CODES.TOOL_FAILURE;
-  }
+  const exclusionCode = checkMutualExclusion(opts);
+  if (exclusionCode !== null) return exclusionCode;
 
-  // Validate formatter before running the pipeline
-  const formatter = resolveFormatter(opts.outputFormatter);
-  if (formatter === null) return EXIT_CODES.TOOL_FAILURE;
+  if (resolveFormatter(opts.outputFormatter) === null) return EXIT_CODES.TOOL_FAILURE;
 
-  // Load config to determine effective globs (CLI glob args override config globs)
   const config = await loadConfig(opts.config ?? cwd).catch(() => null);
   if (!config) {
     process.stderr.write("OFM901: failed to load configuration\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
 
-  const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config.globs;
-  const engineOptions = {
-    globs: effectiveGlobs,
-    cwd,
-    ...(opts.vaultRoot !== undefined && { vaultRoot: opts.vaultRoot }),
-    ...(opts.resolve === false && { resolve: false }),
-    ...(opts.config !== undefined && { config: opts.config }),
-    onCustomRuleError: (modulePath: string, message: string) => {
-      process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}\n`);
-    },
-  };
-
-  if (opts.fix || opts.fixCheck) {
-    try {
-      const outcome = await fix({ ...engineOptions, check: opts.fixCheck });
-      if (outcome.filesFixed.length > 0) {
-        process.stderr.write(
-          `${opts.fixCheck ? "Would fix" : "Fixed"} ${outcome.filesFixed.length} file(s)\n`,
-        );
-      }
-      for (const conflict of outcome.conflicts) {
-        const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
-        const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
-        process.stderr.write(
-          `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
-        );
-      }
-      return emitAndExit(outcome.finalPass, opts.outputFormatter);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      process.stderr.write(`${message}\n`);
-      return EXIT_CODES.TOOL_FAILURE;
-    }
-  }
-
-  try {
-    const results = await lint(engineOptions);
-    return emitAndExit(results, opts.outputFormatter);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`${message}\n`);
-    return EXIT_CODES.TOOL_FAILURE;
-  }
+  const engineOptions = buildEngineOptions(globArgs, config, opts, cwd);
+  return opts.fix || opts.fixCheck
+    ? runFixBranch(engineOptions, opts)
+    : runLintBranch(engineOptions, opts);
 }

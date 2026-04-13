@@ -22,8 +22,12 @@ describe("engine.lint()", () => {
       await fs.writeFile(path.join(tmpDir, "b.md"), "# World\n");
       const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
       expect(results).toHaveLength(2);
-      expect(results.every((r: unknown) => typeof r === "object" && r !== null && "filePath" in r)).toBe(true);
-      expect(results.every((r: unknown) => typeof r === "object" && r !== null && "hasErrors" in r)).toBe(true);
+      expect(
+        results.every((r: unknown) => typeof r === "object" && r !== null && "filePath" in r),
+      ).toBe(true);
+      expect(
+        results.every((r: unknown) => typeof r === "object" && r !== null && "hasErrors" in r),
+      ).toBe(true);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
