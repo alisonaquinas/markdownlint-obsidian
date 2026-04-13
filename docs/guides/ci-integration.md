@@ -60,9 +60,30 @@ docker run --rm -v "$(pwd):/workdir" \
   "**/*.md"
 ```
 
+Note: `:latest` floats to the newest release. For reproducible CI builds, pin to a specific tag (e.g., `:v0.8.0`) or digest. See the [Installation guide](./install.md#pinning-by-digest-recommended-for-reproducible-ci) for details.
+
 The image is published to GitHub Container Registry on every release.
 Tag both `latest` and the release tag (e.g. `v0.8.0`) so you can pin
 versions in your pipeline.
+
+### Verifying the image before use
+
+Every release image is signed with [Sigstore cosign](https://github.com/sigstore/cosign).
+Add this step before running the image in security-sensitive pipelines:
+
+```yaml
+- uses: sigstore/cosign-installer@v3
+
+- name: Verify image signature
+  run: |
+    cosign verify \
+      --certificate-identity-regexp '^https://github\.com/alisonaquinas/markdownlint-obsidian/' \
+      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+      ghcr.io/alisonaquinas/markdownlint-obsidian:latest
+```
+
+For reproducible CI, replace `:latest` with a digest pin. See the
+[Installation guide](./install.md#pinning-by-digest-recommended-for-reproducible-ci) for details.
 
 ### GitLab CI example
 
