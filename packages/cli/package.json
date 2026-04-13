@@ -1,0 +1,42 @@
+{
+  "name": "markdownlint-obsidian-cli",
+  "version": "1.0.0",
+  "description": "CLI for markdownlint-obsidian — lint Obsidian Flavored Markdown from the command line",
+  "type": "module",
+  "bin": {
+    "markdownlint-obsidian": "./bin/markdownlint-obsidian.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/main.d.ts",
+      "default": "./dist/src/main.js"
+    }
+  },
+  "files": ["dist/", "src/", "bin/", "README.md", "CHANGELOG.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test --timeout 30000",
+    "test:watch": "bun test --watch --timeout 30000",
+    "prepublishOnly": "bun run build && bun run test"
+  },
+  "dependencies": {
+    "markdownlint-obsidian": "workspace:*",
+    "commander": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.1.30"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisonaquinas/markdownlint-obsidian.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/alisonaquinas/markdownlint-obsidian#readme",
+  "bugs": {
+    "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
+  },
+  "keywords": ["markdown", "markdownlint", "obsidian", "linter", "cli"]
+}
