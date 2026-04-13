@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import * as path from "node:path";
 
 const execAsync = promisify(execFile);
-const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const BIN = new URL("../../../../cli/bin/markdownlint-obsidian.js", import.meta.url).pathname;
 const BUN = process.execPath;
 
 // Dogfood spawns the full CLI with a `docs/**/*.md` glob — 30+ markdown files.

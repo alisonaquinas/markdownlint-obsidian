@@ -7,7 +7,7 @@ export interface SpawnResult {
   readonly stderr: string;
 }
 
-const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const BIN = new URL("../../../bin/markdownlint-obsidian.js", import.meta.url).pathname;
 
 /**
  * Run the markdownlint-obsidian dev binary with the given args in `cwd`.

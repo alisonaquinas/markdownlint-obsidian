@@ -6,7 +6,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 
 const execAsync = promisify(execFile);
-const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const BIN = new URL("../../../bin/markdownlint-obsidian.js", import.meta.url).pathname;
 const BUN = process.execPath;
 
 // Stand up a tiny vault with one broken wikilink so each formatter has

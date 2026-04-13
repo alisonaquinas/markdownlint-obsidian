@@ -10,9 +10,9 @@
  *
  * dist/package.json
  *   A minimal stub containing only { "version": "..." } so that the
- *   `createRequire`-based version lookup in dist/src/cli/args.js resolves
+ *   `createRequire`-based version lookup in dist/src/args.js resolves
  *   correctly.  The compiled code does:
- *     const require = createRequire(import.meta.url);   // url = dist/src/cli/args.js
+ *     const require = createRequire(import.meta.url);   // url = dist/src/args.js
  *     const { version } = require("../../package.json"); // resolves to dist/package.json
  */
 
@@ -23,7 +23,7 @@ const BIN = "dist/bin.mjs";
 
 const binContent = [
   "#!/usr/bin/env node",
-  'import { main } from "./src/cli/main.js";',
+  'import { main } from "./src/main.js";',
   "const code = await main(process.argv);",
   "process.exit(code);",
   "",

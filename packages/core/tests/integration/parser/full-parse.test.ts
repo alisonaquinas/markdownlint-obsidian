@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";
 
-const FIXTURES = path.resolve("tests/fixtures/parser");
+const FIXTURES = new URL("../../fixtures/parser", import.meta.url).pathname;
 
 describe("full parse integration", () => {
   const parser = makeMarkdownItParser();

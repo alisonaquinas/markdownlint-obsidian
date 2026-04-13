@@ -4,7 +4,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { spawnCli } from "../helpers/spawnCli.js";
 
-const RULE_PATH = path.resolve("examples/rules/require-frontmatter-status.ts");
+const RULE_PATH = new URL("../../../../core/examples/rules/require-frontmatter-status.ts", import.meta.url).pathname;
 
 let vault: string;
 beforeEach(async () => {

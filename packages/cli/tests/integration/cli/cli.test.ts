@@ -7,7 +7,7 @@ import * as os from "node:os";
 import { spawnCli } from "../helpers/spawnCli.js";
 
 const execAsync = promisify(execFile);
-const BIN = path.resolve("bin/markdownlint-obsidian.js");
+const BIN = new URL("../../../bin/markdownlint-obsidian.js", import.meta.url).pathname;
 
 // Under Bun, process.execPath is the Bun binary which executes the TypeScript
 // dev entry natively — no --import loader flag needed.
