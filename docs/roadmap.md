@@ -16,6 +16,10 @@ Central phase plan index for `markdownlint-obsidian`. Each phase produces workin
 | 8 | [[plans/phase-08-ci-delivery]] | JUnit + SARIF formatters, GitHub Action, pre-commit hook, Docker image | Planned |
 | 9 | [[plans/phase-09-autofix]] | Auto-fix support for fixable rules (`--fix` flag fully wired) | Planned |
 | 10 | [[plans/phase-10-custom-rules]] | Custom rules API, documentation, and worked examples | Planned |
+| 11 | [[plans/phase-11-bun-migration]] | Adopt Bun as primary dev/test/CI runtime; preserve Node for published consumers | Complete |
+| 12 | [[plans/phase-12-cd-automation]] | Full CD via release-please; npm publish, action-tag, docker-publish fan-out | Complete |
+| 13 | [[plans/phase-13-package-split]] | Split into `markdownlint-obsidian` (library) + `markdownlint-obsidian-cli` (CLI) as Bun workspace monorepo | Complete |
+| 14 | [[plans/phase-14-multi-registry-cd]] | Multi-registry publishing (npmjs.org, GitHub Packages, ghcr.io) + supply-chain hardening (provenance, cosign, SBOM) | Planned |
 
 ## Architecture Decision Records
 
