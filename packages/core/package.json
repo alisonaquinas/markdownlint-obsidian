@@ -1,6 +1,6 @@
 {
   "name": "markdownlint-obsidian",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Obsidian Flavored Markdown linting engine — programmatic API and rule set",
   "type": "module",
   "exports": {
