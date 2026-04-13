@@ -4,7 +4,8 @@ import tsparser from "@typescript-eslint/parser";
 export default [
   {
     ignores: [
-      "dist/",
+      "packages/*/dist/",
+      "packages/*/node_modules/",
       "node_modules/",
       "coverage/",
       "reports/",
@@ -31,17 +32,18 @@ export default [
   },
   {
     // Test files: relax function-size rule; describe() blocks grow past 30 lines.
-    files: ["tests/**/*.ts", "docs/bdd/**/*.ts"],
+    files: ["packages/*/tests/**/*.ts", "docs/bdd/**/*.ts"],
     rules: {
       "max-lines-per-function": "off",
     },
   },
   {
-    // Data-table files: these are pure data with no real complexity
+    // DI wiring and data-table files that legitimately exceed the line limit
     files: [
       "docs/bdd/steps/file-steps.ts",
-      "src/infrastructure/rules/standard/registerStandard.ts",
-      "src/cli/main.ts",
+      "packages/core/src/infrastructure/rules/standard/registerStandard.ts",
+      "packages/core/src/engine/index.ts",
+      "packages/cli/src/main.ts",
     ],
     rules: {
       "max-lines": "off",

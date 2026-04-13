@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('action pkg name:', d.get\\('name'\\)\\); print\\('lockfile version:', d.get\\('lockfileVersion'\\)\\)\")"
     ]
   }
 }
