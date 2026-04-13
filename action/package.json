@@ -7,10 +7,10 @@
     "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=cjs --main-fields=module,main --outfile=dist/main.js"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0"
+    "@actions/core": "^1.10.0",
+    "markdownlint-obsidian-cli": "workspace:*"
   },
   "devDependencies": {
-    "esbuild": "^0.20.0",
-    "markdownlint-obsidian": "file:.."
+    "esbuild": "^0.20.0"
   }
 }

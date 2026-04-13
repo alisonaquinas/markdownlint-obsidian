@@ -1,0 +1,74 @@
+{
+  "name": "markdownlint-obsidian",
+  "version": "1.0.0",
+  "description": "Obsidian Flavored Markdown linting engine — programmatic API and rule set",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/public/index.d.ts",
+      "default": "./dist/src/public/index.js"
+    },
+    "./api": {
+      "types": "./dist/src/public/index.d.ts",
+      "default": "./dist/src/public/index.js"
+    },
+    "./rules": {
+      "types": "./dist/src/public/rules.d.ts",
+      "default": "./dist/src/public/rules.js"
+    },
+    "./engine": {
+      "types": "./dist/src/engine/index.d.ts",
+      "default": "./dist/src/engine/index.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "examples/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/gen-dist-pkg.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test --timeout 30000",
+    "test:watch": "bun test --watch --timeout 30000",
+    "test:coverage": "bun test --coverage --timeout 30000",
+    "prepublishOnly": "bun run build && bun run test"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "fast-xml-parser": "^5.5.11",
+    "globby": "^14.0.0",
+    "gray-matter": "^4.0.3",
+    "js-yaml": "^4.1.0",
+    "jsonc-parser": "^3.2.0",
+    "markdown-it": "^14.1.1",
+    "markdownlint": "^0.40.0",
+    "minimatch": "^10.2.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.1.30"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisonaquinas/markdownlint-obsidian.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/alisonaquinas/markdownlint-obsidian#readme",
+  "bugs": {
+    "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
+  },
+  "keywords": [
+    "markdown",
+    "markdownlint",
+    "obsidian",
+    "linter",
+    "ci",
+    "sarif",
+    "junit"
+  ]
+}

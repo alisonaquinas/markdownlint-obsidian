@@ -1,0 +1,24 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      core_release_created: ${{ steps.release.outputs['packages/core--release_created'] }}
+      cli_release_created: ${{ steps.release.outputs['packages/cli--release_created'] }}
+      core_tag_name: ${{ steps.release.outputs['packages/core--tag_name'] }}
+      cli_tag_name: ${{ steps.release.outputs['packages/cli--tag_name'] }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          config-file: .github/release-please-config.json
+          manifest-file: .github/.release-please-manifest.json
