@@ -5,14 +5,25 @@ wikilinks, unresolved embeds, malformed callouts, block-reference typos,
 and every standard `markdownlint` rule — with OFM-aware rule conflicts
 pre-wired.
 
+## Packages
+
+This monorepo publishes two packages:
+
+| Package | Description |
+| --- | --- |
+| [`markdownlint-obsidian`](packages/core) | Programmatic linting API — no CLI dependencies |
+| [`markdownlint-obsidian-cli`](packages/cli) | Command-line interface wrapping the library |
+
 ## Install
 
 ```bash
-# npm (Node 20+)
-npm install -D markdownlint-obsidian
+# Library only (programmatic API — no commander dep)
+npm install markdownlint-obsidian
+bun add markdownlint-obsidian
 
-# bun (Bun 1.1+)
-bun add -d markdownlint-obsidian
+# CLI (includes the library as a dep)
+npm install -g markdownlint-obsidian-cli
+bun add -g markdownlint-obsidian-cli
 ```
 
 Consumers: Node 20+ or Bun 1.1+ supported.
@@ -107,11 +118,12 @@ for GitLab CI, Jenkins, and Azure Pipelines recipes.
 
 ## Documentation
 
+- [`packages/core/README.md`](packages/core/README.md) — programmatic API reference.
+- [`packages/cli/README.md`](packages/cli/README.md) — CLI usage and flags.
 - [`docs/roadmap.md`](docs/roadmap.md) — phased delivery plan.
 - [`docs/rules/`](docs/rules) — per-rule catalog (OFM + standard MD).
 - [`docs/guides/ci-integration.md`](docs/guides/ci-integration.md) — CI
   integration cookbook.
-- [`CHANGELOG.md`](CHANGELOG.md) — release history.
 
 ## License
 
