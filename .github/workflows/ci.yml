@@ -50,3 +50,21 @@ jobs:
           cd action
           bun install
           bun run build
+
+  dogfood-published:
+    # Lint docs/ using the published markdownlint-obsidian-cli package on
+    # npmjs.org (not the local source). This catches release regressions that
+    # only manifest in the packaged artifact (missing files, broken bin entry,
+    # bad workspace dep resolution, etc.) and also verifies that consumers can
+    # install and run the CLI from a clean environment.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Lint docs/ with published markdownlint-obsidian-cli
+        working-directory: docs
+        run: npx -y markdownlint-obsidian-cli@latest "**/*.md"
