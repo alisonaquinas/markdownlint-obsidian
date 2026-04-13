@@ -4,7 +4,7 @@
   "description": "Obsidian Flavored Markdown linter for CI pipelines",
   "type": "module",
   "bin": {
-    "markdownlint-obsidian": "./bin/markdownlint-obsidian.js"
+    "markdownlint-obsidian": "./dist/bin.mjs"
   },
   "exports": {
     ".": {
@@ -21,7 +21,6 @@
     }
   },
   "files": [
-    "bin/",
     "dist/",
     "src/",
     "examples/",
@@ -47,7 +46,7 @@
     "junit"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/gen-dist-bin.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
@@ -82,7 +81,6 @@
     "eslint": "^9.0.0",
     "fast-check": "^3.0.0",
     "prettier": "^3.0.0",
-    "tsx": "^4.21.0",
     "typescript": "^5.4.0"
   },
   "engines": {
