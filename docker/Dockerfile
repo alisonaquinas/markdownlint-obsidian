@@ -2,9 +2,12 @@ FROM oven/bun:1-alpine AS build
 WORKDIR /app
 # Copy workspace root manifests and lock file
 COPY package.json bun.lock bunfig.toml tsconfig.json ./
-# Copy package manifests (bun resolves workspace:* links from these)
+# Copy all workspace package manifests so bun can resolve workspace:* links.
+# action/ is declared in the root workspaces array and must be present even
+# though we don't build it here.
 COPY packages/core/package.json packages/core/tsconfig.json packages/core/tsconfig.build.json ./packages/core/
 COPY packages/cli/package.json packages/cli/tsconfig.json packages/cli/tsconfig.build.json ./packages/cli/
+COPY action/package.json ./action/
 RUN bun install --frozen-lockfile
 # Copy source after install so layer caching is preserved
 COPY packages/core/src ./packages/core/src
