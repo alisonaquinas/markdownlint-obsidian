@@ -18,14 +18,14 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - name: Type check
-        run: bun run typecheck
+      - name: Type check (all packages)
+        run: bun run --filter '*' typecheck
 
       - name: Lint
         run: bun run lint
 
-      - name: Unit + integration tests
-        run: bun run test
+      - name: Unit + integration tests (all packages)
+        run: bun run --filter '*' test
 
       - name: BDD acceptance tests
         run: bun run test:bdd
@@ -33,8 +33,8 @@ jobs:
       - name: Dogfood docs/
         run: bun run test:dogfood
 
-      - name: Build
-        run: bun run build
+      - name: Build (all packages)
+        run: bun run --filter '*' build
 
       - name: Verify action bundle is up-to-date
         run: |
