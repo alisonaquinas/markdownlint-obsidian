@@ -1,7 +1,7 @@
 # Phase 14: Multi-Registry Publishing & Supply-Chain Hardening — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.
-
+>
 > **Pre-reading:** `docs/plans/phase-12-cd-automation.md` and `docs/plans/phase-13-package-split.md`. This phase extends the CD pipeline those phases established.
 
 **Goal:** Harden the release pipeline and distribute both workspace packages (`markdownlint-obsidian`, `markdownlint-obsidian-cli`) to three registries with cryptographic provenance:

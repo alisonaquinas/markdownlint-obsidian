@@ -1,7 +1,7 @@
 # Phase 11: Bun Migration — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.
-
+>
 > **Pre-reading:** `docs/research/bun-migration.md` — inventory of Node surface, Bun capabilities, gaps, and migration shape. Read it before starting Task 1.
 
 **Goal:** Adopt Bun 1.1+ as the primary development, test, and CI runtime for markdownlint-obsidian while preserving Node 20+ as a supported runtime for published CLI consumers. Replace tsx, Vitest, and the npm-driven CI path with Bun-native equivalents. Keep the GitHub Action's Node 20 target (Actions runners do not support Bun natively) and keep the published package's bin shebang Node-compatible.
