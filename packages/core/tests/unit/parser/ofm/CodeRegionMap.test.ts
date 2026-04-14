@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link buildCodeRegionMap}.
+ *
+ * @module tests/unit/parser/ofm/CodeRegionMap.test
+ */
 import { describe, it, expect } from "bun:test";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";
 

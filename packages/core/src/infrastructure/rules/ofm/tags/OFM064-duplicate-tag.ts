@@ -1,3 +1,13 @@
+/**
+ * Purpose: Lint rule that warns when the same tag value appears more than once in body text.
+ *
+ * Provides: {@link OFM064Rule}
+ *
+ * Role in system: Maintains a seen-map over the file's extracted tags and reports every
+ * repeat occurrence, with case-sensitivity controlled by `config.tags.caseSensitive`.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM064-duplicate-tag
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

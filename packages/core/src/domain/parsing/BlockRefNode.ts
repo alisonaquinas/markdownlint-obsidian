@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the value object representing an inline block-reference anchor (`^blockid`) found at the end of a line.
+ *
+ * Provides: {@link BlockRefNode}, {@link makeBlockRefNode}
+ *
+ * Role in system: One of the OFM-specific AST node types produced by the parser and stored on {@link ParseResult.blockRefs}; consumed by block-reference rules (OFM100–OFM104) and used to build the {@link BlockRefIndex} for cross-file lookups.
+ *
+ * @module domain/parsing/BlockRefNode
+ */
 import type { SourcePosition } from "./SourcePosition.js";
 
 /**

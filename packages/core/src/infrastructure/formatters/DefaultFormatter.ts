@@ -1,3 +1,15 @@
+/**
+ * Purpose: Formats lint results as human-readable plain text for terminal output.
+ *
+ * Provides: {@link formatDefault}
+ *
+ * Role in system: Infrastructure output adapter registered in {@link FormatterRegistry} as
+ * the `"default"` formatter; it converts per-file {@link LintResult} lists into
+ * `file:line:col CODE message` lines suitable for direct CLI display, emitting an empty
+ * string on a clean run.
+ *
+ * @module infrastructure/formatters/DefaultFormatter
+ */
 import type { LintResult } from "../../domain/linting/LintResult.js";
 
 /**

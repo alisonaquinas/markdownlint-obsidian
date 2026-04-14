@@ -1,3 +1,15 @@
+/**
+ * Purpose: Lint rule that detects lines with an odd number of `==` markers indicating an unterminated highlight.
+ *
+ * Provides: {@link OFM122Rule}
+ *
+ * Role in system: Scans body lines outside fenced code blocks (tracked via
+ * {@link updateFence}), strips inline backtick code via {@link stripInlineCode} to
+ * avoid false positives on `===` operators, then counts `==` markers per line to
+ * surface unterminated highlight spans.
+ *
+ * @module infrastructure/rules/ofm/highlights/OFM122-malformed-highlight
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
 

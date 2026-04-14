@@ -1,3 +1,15 @@
+/**
+ * Purpose: Builds a vault-wide block reference index by parsing every Markdown file once.
+ *
+ * Provides: {@link buildBlockRefIndex}, {@link BlockRefBuildDeps}
+ *
+ * Role in system: Bootstraps the cross-file `BlockRefIndex` consumed by OFM102; parse
+ * failures are silently skipped to avoid compounding OFM902 noise during the lint pass,
+ * and the parser and file-reader are injected so the builder stays unit-testable without
+ * touching the filesystem.
+ *
+ * @module infrastructure/vault/BlockRefIndexBuilder
+ */
 import type { Parser } from "../../domain/parsing/Parser.js";
 import type { VaultPath } from "../../domain/vault/VaultPath.js";
 import { makeBlockRefIndex, type BlockRefIndex } from "../../domain/vault/BlockRefIndex.js";

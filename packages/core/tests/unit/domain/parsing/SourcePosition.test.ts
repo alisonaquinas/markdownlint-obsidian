@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeSourcePosition}.
+ *
+ * @module tests/unit/domain/parsing/SourcePosition.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeSourcePosition } from "../../../../src/domain/parsing/SourcePosition.js";
 

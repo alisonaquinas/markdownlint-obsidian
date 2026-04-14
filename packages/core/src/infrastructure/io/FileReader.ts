@@ -1,3 +1,15 @@
+/**
+ * Purpose: Reads a Markdown file from disk as UTF-8, stripping BOM and normalising line endings.
+ *
+ * Provides: {@link readMarkdownFile}
+ *
+ * Role in system: Infrastructure I/O adapter that satisfies the `readFile` dependency injected
+ * into {@link LintDependencies} and {@link FixDependencies}; normalising to LF-only ensures
+ * every downstream parser and rule operates on a consistent input format regardless of the
+ * file's original line endings.
+ *
+ * @module infrastructure/io/FileReader
+ */
 import * as fs from "node:fs/promises";
 
 /**

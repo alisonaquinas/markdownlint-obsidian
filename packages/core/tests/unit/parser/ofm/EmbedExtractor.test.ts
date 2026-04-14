@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractEmbeds}.
+ *
+ * @module tests/unit/parser/ofm/EmbedExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractEmbeds } from "../../../../src/infrastructure/parser/ofm/EmbedExtractor.js";
 import { extractWikilinks } from "../../../../src/infrastructure/parser/ofm/WikilinkExtractor.js";

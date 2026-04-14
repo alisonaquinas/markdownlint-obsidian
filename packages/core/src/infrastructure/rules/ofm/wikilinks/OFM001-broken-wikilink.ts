@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect wikilinks whose target cannot be resolved in the vault index.
+ *
+ * Provides: {@link OFM001Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM001 — flags broken wikilinks whose target file is not found in the vault.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM001-broken-wikilink
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

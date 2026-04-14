@@ -8,9 +8,10 @@
   // without teaching the config loader to walk downward.
   "vaultRoot": "./docs",
   "resolve": true,
-  "globs": ["**/*.md", "!docs/**", "!node_modules/**"],
+  "globs": ["**/*.md", "!.github/**", "!docs/**", "!node_modules/**"],
   "config": {
     "default": true,
-    "MD013": false
+    "MD013": false,
+    "MD033": { "allowed_elements": ["picture", "source", "img", "div", "details", "summary"] }
   }
 }

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeNodeFsExistenceChecker}.
+ *
+ * @module tests/unit/infrastructure/fs/NodeFsExistenceChecker.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";

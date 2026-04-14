@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link runFix}.
+ *
+ * @module tests/unit/application/FixUseCase.test
+ */
 import { describe, it, expect } from "bun:test";
 import { runFix } from "../../../src/application/FixUseCase.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";

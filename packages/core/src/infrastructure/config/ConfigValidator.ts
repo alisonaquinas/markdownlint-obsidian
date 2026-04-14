@@ -1,3 +1,15 @@
+/**
+ * Purpose: Validates that a raw parsed object conforms to the expected {@link LinterConfig} shape.
+ *
+ * Provides: {@link validateConfig}
+ *
+ * Role in system: Infrastructure guard used by {@link ConfigLoader} after parsing each config
+ * layer; it narrows an unknown value to {@link LinterConfig} via an assertion function,
+ * throwing an OFM901-prefixed error on any unrecognised top-level key so misconfigured
+ * vaults surface a clear diagnostic rather than silent misbehaviour.
+ *
+ * @module infrastructure/config/ConfigValidator
+ */
 import type { LinterConfig } from "../../domain/config/LinterConfig.js";
 
 const KNOWN_KEYS: ReadonlySet<string> = new Set([

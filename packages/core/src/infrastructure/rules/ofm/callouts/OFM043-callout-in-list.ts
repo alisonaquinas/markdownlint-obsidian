@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect callouts that directly follow a list item without a blank line separator, causing incorrect rendering.
+ *
+ * Provides: {@link OFM043Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM043 — warns when a callout header immediately follows a list item, which causes Obsidian to render the callout as a list continuation.
+ *
+ * @module infrastructure/rules/ofm/callouts/OFM043-callout-in-list
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 // Matches bullet and ordered-list lines, with optional leading indentation.

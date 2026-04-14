@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM120Rule}.
+ *
+ * @module tests/unit/rules/highlights/OFM120.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM120Rule } from "../../../../src/infrastructure/rules/ofm/highlights/OFM120-disallowed-highlight.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

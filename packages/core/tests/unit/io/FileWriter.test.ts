@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link writeMarkdownFile}.
+ *
+ * @module tests/unit/io/FileWriter.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { writeMarkdownFile } from "../../../src/infrastructure/io/FileWriter.js";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";

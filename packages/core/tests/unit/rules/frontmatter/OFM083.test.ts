@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM083Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM083.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM083Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

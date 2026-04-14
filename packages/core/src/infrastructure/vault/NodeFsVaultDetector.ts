@@ -1,3 +1,15 @@
+/**
+ * Purpose: Filesystem-backed VaultDetector that locates an Obsidian vault root from a starting directory.
+ *
+ * Provides: {@link makeNodeFsVaultDetector}
+ *
+ * Role in system: Implements the `VaultDetector` domain port by walking upward for an
+ * `.obsidian/` directory first, then falling back to {@link findGitRoot}, and throwing
+ * OFM900 when neither is found; wires the real Node.js `fs` layer so the CLI can auto-detect
+ * the vault without requiring an explicit `--vault-root` flag.
+ *
+ * @module infrastructure/vault/NodeFsVaultDetector
+ */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { VaultDetector } from "../../domain/vault/VaultDetector.js";

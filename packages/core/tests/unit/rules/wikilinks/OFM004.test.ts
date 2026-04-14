@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM004Rule}.
+ *
+ * @module tests/unit/rules/wikilinks/OFM004.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM004Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

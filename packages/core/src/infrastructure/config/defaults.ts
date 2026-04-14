@@ -1,3 +1,15 @@
+/**
+ * Purpose: Declares the built-in default {@link LinterConfig} used when no config files are found.
+ *
+ * Provides: {@link DEFAULT_CONFIG}
+ *
+ * Role in system: Infrastructure constant that serves as the lowest-priority merge layer in
+ * {@link ConfigLoader}; it encodes all OFM-specific defaults (wikilinks, callouts, embeds,
+ * frontmatter, tags, block-refs, highlights, comments) and pre-disables every standard
+ * markdownlint rule that conflicts with Obsidian Flavored Markdown syntax.
+ *
+ * @module infrastructure/config/defaults
+ */
 import type { LinterConfig } from "../../domain/config/LinterConfig.js";
 import type { RuleConfig } from "../../domain/config/RuleConfig.js";
 import { OFM_MD_CONFLICTS } from "../rules/standard/OFM_MD_CONFLICTS.js";

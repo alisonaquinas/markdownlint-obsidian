@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect embed sizing hints that exceed the configured maximum width or height caps.
+ *
+ * Provides: {@link OFM023Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM023 — warns when an embed's width or height hint exceeds `config.embeds.maxWidth` or `maxHeight`.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM023-embed-size-invalid
+ */
 import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
 import type { EmbedNode } from "../../../../domain/parsing/EmbedNode.js";
 

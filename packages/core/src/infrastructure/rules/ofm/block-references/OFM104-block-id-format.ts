@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns when a block id contains uppercase letters.
+ *
+ * Provides: {@link OFM104Rule}
+ *
+ * Role in system: Enforces the convention that block ids should be fully lowercase to avoid
+ * case-sensitivity bugs in `[[page#^Id]]` vs `[[page#^id]]` links; emits a fixable warning
+ * whose Phase-9 autofix replaces the id with its lowercase equivalent.
+ *
+ * @module infrastructure/rules/ofm/block-references/OFM104-block-id-format
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 

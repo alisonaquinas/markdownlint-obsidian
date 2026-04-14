@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM081Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM081.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM081Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

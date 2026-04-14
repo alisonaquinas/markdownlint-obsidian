@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns when a frontmatter top-level key is not listed in the typeMap.
+ *
+ * Provides: {@link OFM082Rule}
+ *
+ * Role in system: Enforces strict frontmatter schemas by comparing each top-level key in the
+ * parsed frontmatter against `config.frontmatter.typeMap`; only active when
+ * `frontmatter.allowUnknown` is false, making it opt-in for vaults that want a closed schema.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM082-unknown-top-level-key
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

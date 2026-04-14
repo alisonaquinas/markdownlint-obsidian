@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM084Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM084.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM084Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

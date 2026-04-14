@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeNodeFsVaultDetector}.
+ *
+ * @module tests/unit/infrastructure/vault/NodeFsVaultDetector.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";

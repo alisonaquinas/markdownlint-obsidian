@@ -1,3 +1,12 @@
+/**
+ * Purpose: Classify embed nodes by their target file extension into coarse categories used by the OFM020-series rules.
+ *
+ * Provides: {@link classifyEmbed}, {@link EmbedKind}
+ *
+ * Role in system: Infrastructure-layer shared utility for OFM020–OFM025 — maps embed target extensions to a taxonomy (markdown, image, video, audio, pdf, unknown) so each rule can decide ownership.
+ *
+ * @module infrastructure/rules/ofm/embeds/shared/EmbedClassifier
+ */
 import type { EmbedNode } from "../../../../../domain/parsing/EmbedNode.js";
 
 /**

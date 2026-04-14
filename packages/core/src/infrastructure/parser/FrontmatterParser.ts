@@ -1,3 +1,14 @@
+/**
+ * Purpose: Parses YAML/TOML frontmatter from Markdown source strings using gray-matter.
+ *
+ * Provides: {@link parseFrontmatter}, {@link FrontmatterParseOutput}
+ *
+ * Role in system: Serves as the first stage of the infrastructure parsing pipeline,
+ * extracting structured frontmatter data and computing the body start line so downstream
+ * parsers and OFM extractors operate on the correct line offsets.
+ *
+ * @module infrastructure/parser/FrontmatterParser
+ */
 import matter from "gray-matter";
 
 export interface FrontmatterParseOutput {

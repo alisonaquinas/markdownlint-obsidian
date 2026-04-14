@@ -1,4 +1,14 @@
 /**
+ * Purpose: Defines the atomic text-edit value object emitted by fixable rules.
+ *
+ * Provides: {@link Fix}, {@link makeFix}
+ *
+ * Role in system: The smallest unit of autofix data in the domain — every fixable {@link LintError} carries a Fix that {@link applyFixes} consumes to patch the source file. The factory validates 1-based coordinates before freezing the object.
+ *
+ * @module domain/linting/Fix
+ */
+
+/**
  * An atomic text edit produced by a fixable rule. Immutable.
  *
  * The edit window is defined as "starting at column `editColumn` on line

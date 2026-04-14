@@ -1,3 +1,8 @@
+/**
+ * Unit tests for the public API surface of the core package.
+ *
+ * @module tests/unit/public/api-surface.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as api from "../../../src/public/index.js";
 import * as rules from "../../../src/public/rules.js";

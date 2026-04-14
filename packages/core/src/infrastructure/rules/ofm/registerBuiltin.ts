@@ -1,3 +1,15 @@
+/**
+ * Purpose: Registers every built-in OFM and standard markdownlint rule with the rule registry.
+ *
+ * Provides: {@link registerBuiltinRules}
+ *
+ * Role in system: Acts as the single assembly point that collects all Phase 2–6 OFM rules
+ * (wikilinks, embeds, callouts, tags, frontmatter, block references, highlights, system) and
+ * Phase 7 standard MD wrappers and registers them in a deterministic order so the CLI lists
+ * Obsidian-specific diagnostics before upstream MD rules.
+ *
+ * @module infrastructure/rules/ofm/registerBuiltin
+ */
 import type { RuleRegistry } from "../../../domain/linting/RuleRegistry.js";
 import { registerStandardRules } from "../standard/registerStandard.js";
 import { frontmatterParseErrorRule } from "./system/FrontmatterParseError.js";

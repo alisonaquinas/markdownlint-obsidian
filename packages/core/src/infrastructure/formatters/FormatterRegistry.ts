@@ -1,3 +1,15 @@
+/**
+ * Purpose: Maps formatter names to their implementation functions and provides a lookup entry point.
+ *
+ * Provides: {@link getFormatter}, {@link Formatter}
+ *
+ * Role in system: Infrastructure registry that decouples the CLI from individual formatter
+ * modules; the CLI passes the `outputFormatter` config string here to obtain a {@link Formatter}
+ * function, keeping all format-dispatch logic in one place and throwing a typed OFM901 error
+ * for unrecognised names.
+ *
+ * @module infrastructure/formatters/FormatterRegistry
+ */
 import { formatDefault } from "./DefaultFormatter.js";
 import { formatJson } from "./JsonFormatter.js";
 import { formatJUnit } from "./JUnitFormatter.js";

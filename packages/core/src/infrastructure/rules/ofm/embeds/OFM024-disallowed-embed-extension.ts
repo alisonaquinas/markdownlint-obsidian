@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect embeds whose file extension is not in the configured `allowedExtensions` list.
+ *
+ * Provides: {@link OFM024Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM024 — enforces a syntactic policy on embed file extensions without requiring vault index or filesystem access.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM024-disallowed-embed-extension
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { classifyEmbed } from "./shared/EmbedClassifier.js";
 

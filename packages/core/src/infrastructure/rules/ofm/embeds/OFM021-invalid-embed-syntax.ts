@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect malformed embed syntax patterns such as empty `![[]]` and unclosed `![[` that the parser never materialises as nodes.
+ *
+ * Provides: {@link OFM021Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM021 — flags embed syntax errors including whitespace-only bodies and missing closing brackets.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM021-invalid-embed-syntax
+ */
 import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
 import { updateFence } from "../shared/fenceStateMachine.js";
 

@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports Obsidian `%%...%%` comments when comments are disabled or multi-line comments are disallowed.
+ *
+ * Provides: {@link OFM121Rule}
+ *
+ * Role in system: Evaluates two independent config switches — `comments.allow` and
+ * `comments.disallowMultiline` — and flags the appropriate subset of parsed comment
+ * spans, giving teams fine-grained control over Obsidian's comment syntax.
+ *
+ * @module infrastructure/rules/ofm/highlights/OFM121-disallowed-comment
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

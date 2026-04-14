@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeMarkdownItParser}.
+ *
+ * @module tests/unit/parser/MarkdownItParser.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeMarkdownItParser } from "../../../src/infrastructure/parser/MarkdownItParser.js";
 

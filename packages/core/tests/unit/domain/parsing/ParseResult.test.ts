@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeParseResult}.
+ *
+ * @module tests/unit/domain/parsing/ParseResult.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeParseResult } from "../../../../src/domain/parsing/ParseResult.js";
 

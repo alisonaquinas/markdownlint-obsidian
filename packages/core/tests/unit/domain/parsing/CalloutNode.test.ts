@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeCalloutNode}.
+ *
+ * @module tests/unit/domain/parsing/CalloutNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeCalloutNode } from "../../../../src/domain/parsing/CalloutNode.js";
 

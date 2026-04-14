@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeFix}.
+ *
+ * @module tests/unit/domain/Fix.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeFix } from "../../../src/domain/linting/Fix.js";
 

@@ -1,3 +1,15 @@
+/**
+ * Purpose: Produces a SARIF 2.1.0 JSON document from lint results for GitHub code-scanning integration.
+ *
+ * Provides: {@link formatSarif}
+ *
+ * Role in system: Infrastructure output adapter registered in {@link FormatterRegistry} as
+ * the `"sarif"` formatter; it builds a spec-compliant SARIF run with deduplicated
+ * `tool.driver.rules` and per-location `results` entries, enabling GitHub Advanced Security
+ * and other SARIF consumers to annotate pull requests with OFM violations.
+ *
+ * @module infrastructure/formatters/SarifFormatter
+ */
 import { createRequire } from "node:module";
 import type { LintResult } from "../../domain/linting/LintResult.js";
 import type { LintError } from "../../domain/linting/LintError.js";

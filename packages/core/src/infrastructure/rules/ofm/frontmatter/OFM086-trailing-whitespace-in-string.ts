@@ -1,3 +1,15 @@
+/**
+ * Purpose: Lint rule that warns when any frontmatter string value ends with trailing whitespace.
+ *
+ * Provides: {@link OFM086Rule}
+ *
+ * Role in system: Recursively walks all string values in the parsed frontmatter object,
+ * computes accurate line numbers from `frontmatterRaw`, and emits fixable warnings for
+ * simple top-level scalar values while flagging nested values without a fix due to
+ * line-number ambiguity.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import type { Fix } from "../../../../domain/linting/Fix.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";

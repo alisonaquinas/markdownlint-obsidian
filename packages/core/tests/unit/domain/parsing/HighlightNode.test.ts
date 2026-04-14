@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeHighlightNode}.
+ *
+ * @module tests/unit/domain/parsing/HighlightNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeHighlightNode } from "../../../../src/domain/parsing/HighlightNode.js";
 

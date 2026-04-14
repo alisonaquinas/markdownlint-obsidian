@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that detects tags containing characters outside Obsidian's allowed set.
+ *
+ * Provides: {@link OFM060Rule}
+ *
+ * Role in system: Validates every body-text tag extracted by the parser against the
+ * canonical tag syntax defined in {@link isValidTag}, catching edge cases that slip past
+ * the extractor's own filters.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM060-invalid-tag-format
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { isValidTag } from "./shared/TagFormat.js";
 

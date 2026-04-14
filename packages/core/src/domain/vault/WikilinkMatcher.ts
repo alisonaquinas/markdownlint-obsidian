@@ -1,3 +1,12 @@
+/**
+ * Purpose: Implements Obsidian's wikilink resolution algorithm — exact path, case-insensitive path, then basename — as a pure function against a set of vault files.
+ *
+ * Provides: {@link matchWikilink}, {@link MatchResult}, {@link MatchOptions}
+ *
+ * Role in system: The pure core of wikilink resolution called by {@link VaultIndex.resolve}; keeping the algorithm in the domain means it can be unit-tested without any filesystem setup and reused by any rule that needs to verify link targets.
+ *
+ * @module domain/vault/WikilinkMatcher
+ */
 import type { VaultPath } from "./VaultPath.js";
 
 /**

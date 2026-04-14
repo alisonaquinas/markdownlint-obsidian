@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns when a frontmatter tag is never referenced in the document body.
+ *
+ * Provides: {@link OFM066Rule}
+ *
+ * Role in system: Cross-references the `tags` array in parsed frontmatter against body-text
+ * tags and reports any frontmatter-only tags, helping authors keep their tagging strategy
+ * consistent; disabled by default since many vaults intentionally use frontmatter-only tags.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM066-frontmatter-tag-not-in-body
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

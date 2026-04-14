@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeWikilinkNode}.
+ *
+ * @module tests/unit/domain/parsing/WikilinkNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeWikilinkNode } from "../../../../src/domain/parsing/WikilinkNode.js";
 

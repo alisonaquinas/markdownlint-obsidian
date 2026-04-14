@@ -1,3 +1,15 @@
+/**
+ * Purpose: Converts lint results into JUnit XML for consumption by CI dashboards and test reporters.
+ *
+ * Provides: {@link formatJUnit}
+ *
+ * Role in system: Infrastructure output adapter registered in {@link FormatterRegistry} as
+ * the `"junit"` formatter; it maps each file's {@link LintResult} to a `<testsuite>` element
+ * and each violation to a `<testcase>` with a `<failure>`, ensuring CI systems receive a
+ * well-formed suite count even on clean runs via a synthetic passing test case.
+ *
+ * @module infrastructure/formatters/JUnitFormatter
+ */
 import { XMLBuilder } from "fast-xml-parser";
 import type { LintResult } from "../../domain/linting/LintResult.js";
 

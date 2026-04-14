@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the value object representing an Obsidian callout (admonition) block.
+ *
+ * Provides: {@link CalloutNode}, {@link makeCalloutNode}
+ *
+ * Role in system: One of the OFM-specific AST node types stored on {@link ParseResult.callouts}; consumed by callout rules (OFM040–OFM044) that validate type membership, title presence, and foldability against {@link CalloutConfig}.
+ *
+ * @module domain/parsing/CalloutNode
+ */
 import type { SourcePosition } from "./SourcePosition.js";
 
 /**

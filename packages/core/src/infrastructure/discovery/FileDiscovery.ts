@@ -1,3 +1,14 @@
+/**
+ * Purpose: Discovers Markdown files in a directory by expanding glob patterns and honouring ignore rules.
+ *
+ * Provides: {@link discoverFiles}
+ *
+ * Role in system: Infrastructure adapter that wraps `globby` to translate the `globs` and
+ * `ignores` fields from {@link LinterConfig} into a stable, alphabetically-sorted list of
+ * absolute file paths supplied to the application-layer use cases.
+ *
+ * @module infrastructure/discovery/FileDiscovery
+ */
 import { globby } from "globby";
 
 /**

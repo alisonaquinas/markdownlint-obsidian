@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that validates frontmatter date fields contain parseable ISO-8601 values.
+ *
+ * Provides: {@link OFM081Rule}
+ *
+ * Role in system: For each key in `config.frontmatter.dateFields`, retrieves the value via
+ * {@link getByDotPath} and delegates format validation to {@link isIsoDate}, complementing
+ * OFM080 by checking the content of date fields rather than their presence.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM081-invalid-date-format
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { isIsoDate } from "./shared/DateFormat.js";
 import { getByDotPath } from "./shared/FrontmatterAccess.js";

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect callouts that have no title and no body content, or (when configured) callouts that have a body but no title.
+ *
+ * Provides: {@link OFM042Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM042 — warns on empty callouts that render as blank colored boxes and optionally enforces title discipline.
+ *
+ * @module infrastructure/rules/ofm/callouts/OFM042-empty-callout
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

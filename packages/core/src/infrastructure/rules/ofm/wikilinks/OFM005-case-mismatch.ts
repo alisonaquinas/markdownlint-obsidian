@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect wikilinks that resolve only via case-insensitive fallback, indicating a case mismatch with the canonical filename.
+ *
+ * Provides: {@link OFM005Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM005 — warns when a wikilink target only resolves case-insensitively and offers an autofix to the canonical spelling.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM005-case-mismatch
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 

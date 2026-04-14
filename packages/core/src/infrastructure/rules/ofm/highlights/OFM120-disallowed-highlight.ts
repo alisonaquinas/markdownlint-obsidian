@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports `==highlight==` spans when highlights are disabled by config.
+ *
+ * Provides: {@link OFM120Rule}
+ *
+ * Role in system: Applies a config-driven ban on Obsidian highlights with a per-glob escape
+ * hatch via `minimatch`, letting teams enforce a highlights-free style globally while
+ * exempting specific directories such as daily notes.
+ *
+ * @module infrastructure/rules/ofm/highlights/OFM120-disallowed-highlight
+ */
 import { minimatch } from "minimatch";
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 

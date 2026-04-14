@@ -1,3 +1,15 @@
+/**
+ * Purpose: Walks the directory tree upward to locate the nearest `.git/` repository root.
+ *
+ * Provides: {@link findGitRoot}
+ *
+ * Role in system: Provides the fallback vault-root detection strategy used by
+ * {@link makeNodeFsVaultDetector} when no `.obsidian/` directory is found; accepts both
+ * normal `.git` directories and worktree file links so monorepos and git worktrees are
+ * handled correctly.
+ *
+ * @module infrastructure/vault/GitRootFinder
+ */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 

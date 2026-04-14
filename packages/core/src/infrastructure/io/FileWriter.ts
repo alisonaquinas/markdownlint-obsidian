@@ -1,3 +1,14 @@
+/**
+ * Purpose: Atomically writes fixed Markdown content back to disk using a temp-file-and-rename strategy.
+ *
+ * Provides: {@link writeMarkdownFile}
+ *
+ * Role in system: Infrastructure I/O adapter that satisfies the `writeFile` dependency injected
+ * into {@link FixDependencies}; the atomic rename ensures a crash or power loss mid-write never
+ * leaves a partially-written file, protecting vault integrity during the fix pass.
+ *
+ * @module infrastructure/io/FileWriter
+ */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 

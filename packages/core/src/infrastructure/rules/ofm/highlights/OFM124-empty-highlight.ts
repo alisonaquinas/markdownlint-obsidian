@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns on highlight spans that contain no non-whitespace text.
+ *
+ * Provides: {@link OFM124Rule}
+ *
+ * Role in system: Iterates the parser's extracted highlight list and flags any whose `.text`
+ * trims to empty, catching leftover `====` or `==  ==` artifacts from refactors; emits a
+ * fixable warning whose Phase-9 autofix deletes the entire empty marker pair.
+ *
+ * @module infrastructure/rules/ofm/highlights/OFM124-empty-highlight
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 

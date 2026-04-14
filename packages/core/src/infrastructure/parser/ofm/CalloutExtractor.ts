@@ -1,3 +1,13 @@
+/**
+ * Purpose: Detects Obsidian callout blocks (`> [!TYPE]`) and collects their type, title, foldability, and body lines.
+ *
+ * Provides: {@link extractCallouts}
+ *
+ * Role in system: One of the OFM-specific extractors that contributes to `ParseResult.callouts`,
+ * allowing rules to inspect or transform callout structures without re-scanning the raw source.
+ *
+ * @module infrastructure/parser/ofm/CalloutExtractor
+ */
 import { makeCalloutNode, type CalloutNode } from "../../../domain/parsing/CalloutNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 import type { CodeRegionMap } from "./CodeRegionMap.js";

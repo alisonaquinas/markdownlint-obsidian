@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link lint} engine entry-point.
+ *
+ * @module tests/unit/engine/lint.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import * as os from "node:os";

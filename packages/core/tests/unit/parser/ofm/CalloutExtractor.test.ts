@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractCallouts}.
+ *
+ * @module tests/unit/parser/ofm/CalloutExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractCallouts } from "../../../../src/infrastructure/parser/ofm/CalloutExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the contract every Obsidian Flavored Markdown linting rule must satisfy.
+ *
+ * Provides: {@link OFMRule}, {@link RuleParams}, {@link OnErrorCallback}
+ *
+ * Role in system: The central extension point of the domain — infrastructure registers concrete rule classes against {@link RuleRegistry}, the application layer iterates them via {@link RuleRegistry.all}, and each rule receives a {@link RuleParams} bundle containing the parsed file, config, and optional vault context.
+ *
+ * @module domain/linting/OFMRule
+ */
 import type { LintError } from "./LintError.js";
 import type { ParseResult } from "../parsing/ParseResult.js";
 import type { LinterConfig } from "../config/LinterConfig.js";

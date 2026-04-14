@@ -1,3 +1,14 @@
+/**
+ * Purpose: Defines the CLI argument schema and builds the configured commander Command.
+ *
+ * Provides: {@link buildProgram}, {@link CLIArgs}
+ *
+ * Role in system: Declares every CLI flag that `markdownlint-obsidian` accepts and wires
+ * them into a commander `Command` instance; intentionally separated from `main` so the
+ * program object can be constructed in tests without spawning the full pipeline.
+ *
+ * @module args
+ */
 import { Command } from "commander";
 import { createRequire } from "node:module";
 

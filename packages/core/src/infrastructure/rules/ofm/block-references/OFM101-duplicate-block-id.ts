@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that detects identical `^blockid` declarations within a single file.
+ *
+ * Provides: {@link OFM101Rule}
+ *
+ * Role in system: Tracks seen block ids in a map and reports duplicates so that wikilink
+ * anchors (`[[page#^id]]`) always resolve to an unambiguous target; controlled by
+ * `config.blockRefs.requireUnique`.
+ *
+ * @module infrastructure/rules/ofm/block-references/OFM101-duplicate-block-id
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

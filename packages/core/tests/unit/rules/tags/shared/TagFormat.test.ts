@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link isValidTag} and {@link tagDepth}.
+ *
+ * @module tests/unit/rules/tags/shared/TagFormat.test
+ */
 import { describe, it, expect } from "bun:test";
 import fc from "fast-check";
 import {

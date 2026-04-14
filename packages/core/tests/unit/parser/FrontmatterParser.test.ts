@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link parseFrontmatter}.
+ *
+ * @module tests/unit/parser/FrontmatterParser.test
+ */
 import { describe, it, expect } from "bun:test";
 import { parseFrontmatter } from "../../../src/infrastructure/parser/FrontmatterParser.js";
 

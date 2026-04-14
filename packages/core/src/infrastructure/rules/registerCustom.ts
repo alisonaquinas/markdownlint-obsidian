@@ -1,3 +1,15 @@
+/**
+ * Purpose: Registers user-supplied custom rules with the rule registry, skipping name conflicts gracefully.
+ *
+ * Provides: {@link registerCustomRules}
+ *
+ * Role in system: Bridges the CLI's custom-rule loading path (which resolves external
+ * modules) with the central `RuleRegistry`, emitting OFM904 to stderr for each duplicate
+ * name rather than crashing the run, so a bad custom rule never silently blocks built-in
+ * rule execution.
+ *
+ * @module infrastructure/rules/registerCustom
+ */
 import type { RuleRegistry } from "../../domain/linting/RuleRegistry.js";
 import type { OFMRule } from "../../domain/linting/OFMRule.js";
 

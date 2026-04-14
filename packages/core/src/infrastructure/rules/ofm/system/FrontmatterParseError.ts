@@ -1,3 +1,15 @@
+/**
+ * Purpose: Registry entry for the OFM902 frontmatter-parse-error system rule.
+ *
+ * Provides: {@link frontmatterParseErrorRule}
+ *
+ * Role in system: Acts as a metadata-only rule whose `run` is intentionally a no-op;
+ * actual error emission is performed by `LintUseCase` which catches gray-matter parse
+ * failures and injects an OFM902 `LintError` directly, while this rule object provides
+ * discoverability via `--list-rules`.
+ *
+ * @module infrastructure/rules/ofm/system/FrontmatterParseError
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

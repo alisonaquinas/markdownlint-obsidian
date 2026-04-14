@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeBlockRefIndex}.
+ *
+ * @module tests/unit/domain/vault/BlockRefIndex.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeBlockRefIndex } from "../../../../src/domain/vault/BlockRefIndex.js";
 

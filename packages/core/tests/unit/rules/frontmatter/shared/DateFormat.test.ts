@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link isIsoDate}.
+ *
+ * @module tests/unit/rules/frontmatter/shared/DateFormat.test
+ */
 import { describe, it, expect } from "bun:test";
 import { isIsoDate } from "../../../../../src/infrastructure/rules/ofm/frontmatter/shared/DateFormat.js";
 

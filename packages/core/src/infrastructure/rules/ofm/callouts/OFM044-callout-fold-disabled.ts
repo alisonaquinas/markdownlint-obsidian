@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect foldable markers (`+`/`-`) on informational callout types when folding is disabled by configuration.
+ *
+ * Provides: {@link OFM044Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM044 — warns and provides an autofix when a NOTE/INFO/TIP/HINT callout carries a fold marker that `config.callouts.allowFold` prohibits.
+ *
+ * @module infrastructure/rules/ofm/callouts/OFM044-callout-fold-disabled
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import type { CalloutNode } from "../../../../domain/parsing/CalloutNode.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";

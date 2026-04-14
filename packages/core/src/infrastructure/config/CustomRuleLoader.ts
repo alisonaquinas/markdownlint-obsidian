@@ -1,3 +1,15 @@
+/**
+ * Purpose: Dynamically imports user-supplied custom rule modules and validates each exported rule object.
+ *
+ * Provides: {@link loadCustomRules}, {@link CustomRuleLoadResult}, {@link CustomRuleLoadError}
+ *
+ * Role in system: Infrastructure adapter that resolves `customRules` config entries to
+ * absolute file URLs, performs ESM dynamic imports at runtime, and validates that each
+ * export satisfies the {@link OFMRule} contract — accumulating load errors as non-fatal
+ * diagnostics rather than aborting the lint run.
+ *
+ * @module infrastructure/config/CustomRuleLoader
+ */
 import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { OFMRule } from "../../domain/linting/OFMRule.js";

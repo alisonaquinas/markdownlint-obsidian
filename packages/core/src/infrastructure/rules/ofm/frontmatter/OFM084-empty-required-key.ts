@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports required frontmatter keys that are present but hold no value.
+ *
+ * Provides: {@link OFM084Rule}
+ *
+ * Role in system: Complements OFM080 by checking that each required key is not only present
+ * but also non-empty (rejecting `null`, empty strings, and empty arrays), ensuring required
+ * fields carry meaningful data.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM084-empty-required-key
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { getByDotPath, typeOf } from "./shared/FrontmatterAccess.js";
 

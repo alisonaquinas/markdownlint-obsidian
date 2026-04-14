@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM023Rule}.
+ *
+ * @module tests/unit/rules/embeds/OFM023.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM023Rule } from "../../../../src/infrastructure/rules/ofm/embeds/OFM023-embed-size-invalid.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

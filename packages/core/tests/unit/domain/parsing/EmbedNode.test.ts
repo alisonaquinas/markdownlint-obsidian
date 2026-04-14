@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeEmbedNode}.
+ *
+ * @module tests/unit/domain/parsing/EmbedNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeEmbedNode } from "../../../../src/domain/parsing/EmbedNode.js";
 

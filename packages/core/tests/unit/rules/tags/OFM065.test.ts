@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM065Rule}.
+ *
+ * @module tests/unit/rules/tags/OFM065.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM065Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM065-mixed-case-tag.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

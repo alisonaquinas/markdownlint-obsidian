@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect wikilinks that resolve back to the same file they appear in.
+ *
+ * Provides: {@link OFM003Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM003 — warns on self-referential wikilinks whose resolved target is the containing file.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM003-self-link
+ */
 import * as path from "node:path";
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 

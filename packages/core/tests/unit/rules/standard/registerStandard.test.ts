@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link registerStandardRules}.
+ *
+ * @module tests/unit/rules/standard/registerStandard.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeRuleRegistry } from "../../../../src/domain/linting/RuleRegistry.js";
 import {

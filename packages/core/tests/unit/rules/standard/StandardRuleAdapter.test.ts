@@ -1,3 +1,4 @@
+/** Unit tests for {@link buildStandardRule} and {@link extractMdConfig}. @module tests/unit/rules/standard/StandardRuleAdapter.test */
 import { describe, it, expect } from "bun:test";
 import {
   buildStandardRule,

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link buildCalloutTypeRegistry}.
+ *
+ * @module tests/unit/rules/callouts/shared/CalloutTypeRegistry.test
+ */
 import { describe, it, expect } from "bun:test";
 import { buildCalloutTypeRegistry } from "../../../../../src/infrastructure/rules/ofm/callouts/shared/CalloutTypeRegistry.js";
 import type { CalloutConfig } from "../../../../../src/domain/config/LinterConfig.js";

@@ -1,3 +1,15 @@
+/**
+ * Purpose: Lint rule that validates each frontmatter key has the type declared in typeMap.
+ *
+ * Provides: {@link OFM083Rule}
+ *
+ * Role in system: For every entry in `config.frontmatter.typeMap`, fetches the value via
+ * {@link getByDotPath} and checks it against the expected type using {@link typeOf} (or
+ * {@link isIsoDate} for date fields), ensuring structured frontmatter conforms to the
+ * vault's declared schema.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM083-invalid-value-type
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { getByDotPath, typeOf } from "./shared/FrontmatterAccess.js";
 import { isIsoDate } from "./shared/DateFormat.js";

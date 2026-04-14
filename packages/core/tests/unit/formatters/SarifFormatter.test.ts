@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link formatSarif}.
+ *
+ * @module tests/unit/formatters/SarifFormatter.test
+ */
 import { describe, it, expect } from "bun:test";
 import { formatSarif } from "../../../src/infrastructure/formatters/SarifFormatter.js";
 import { makeLintError, type LintError } from "../../../src/domain/linting/LintError.js";

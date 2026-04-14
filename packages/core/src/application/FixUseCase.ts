@@ -1,3 +1,14 @@
+/**
+ * Purpose: Orchestrates the lint-then-fix workflow by applying rule-generated fixes to files.
+ *
+ * Provides: {@link runFix}, {@link FixDependencies}, {@link FixOutcome}
+ *
+ * Role in system: Application-layer use case that delegates linting to {@link runLint},
+ * collects fixable violations, patches file content via the injected writer, then performs
+ * a second lint pass to confirm the fixed state — all without touching I/O directly.
+ *
+ * @module application/FixUseCase
+ */
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { LintResult } from "../domain/linting/LintResult.js";
 import type { RuleRegistry } from "../domain/linting/RuleRegistry.js";

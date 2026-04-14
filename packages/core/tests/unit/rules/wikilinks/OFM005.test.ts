@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM005Rule}.
+ *
+ * @module tests/unit/rules/wikilinks/OFM005.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM005Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM005-case-mismatch.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";
