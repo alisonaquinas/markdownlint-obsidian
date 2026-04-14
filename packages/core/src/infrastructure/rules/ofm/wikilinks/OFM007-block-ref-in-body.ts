@@ -1,3 +1,12 @@
+/**
+ * Purpose: Provide a backward-compatible alias of OFM102 under the OFM007 name for block-reference wikilink validation.
+ *
+ * Provides: {@link OFM007Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM007 — deprecated alias that delegates block-reference wikilink validation to OFM102, preserving config compatibility.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { OFM102Rule } from "../block-references/OFM102-broken-block-link.js";
 

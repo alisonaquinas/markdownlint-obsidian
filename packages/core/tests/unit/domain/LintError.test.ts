@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeLintError}.
+ *
+ * @module tests/unit/domain/LintError.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeLintError } from "../../../src/domain/linting/LintError.js";
 

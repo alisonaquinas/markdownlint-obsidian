@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports tags whose nesting depth exceeds the configured maximum.
+ *
+ * Provides: {@link OFM061Rule}
+ *
+ * Role in system: Counts the `/`-separated segments of each body-text tag via
+ * {@link tagDepth} and fires when the count exceeds `config.tags.maxDepth`, enforcing
+ * vault-level tag hierarchy limits.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM061-tag-depth-exceeded
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { tagDepth } from "./shared/TagFormat.js";
 

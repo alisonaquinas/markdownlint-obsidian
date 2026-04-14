@@ -1,4 +1,16 @@
 /**
+ * Purpose: Precomputes which line/column positions fall inside fenced code blocks or inline code spans, providing O(1) suppression lookups for all OFM extractors.
+ *
+ * Provides: {@link buildCodeRegionMap}, {@link CodeRegionMap}
+ *
+ * Role in system: Shared prerequisite consumed by every OFM extractor; by centralising
+ * code-region detection here, individual extractors stay simple and avoid accidentally
+ * extracting OFM syntax from within code literals.
+ *
+ * @module infrastructure/parser/ofm/CodeRegionMap
+ */
+
+/**
  * Precomputes positions covered by fenced code blocks and inline code spans
  * so OFM extractors can skip them in O(1) lookups.
  *

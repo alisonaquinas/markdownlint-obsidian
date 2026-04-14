@@ -1,3 +1,14 @@
+/**
+ * Purpose: Orchestrates linting by running every active rule against each file path.
+ *
+ * Provides: {@link runLint}, {@link LintDependencies}
+ *
+ * Role in system: Application-layer use case that coordinates the parser, rule registry,
+ * and infrastructure adapters (file reader, existence checker, vault index) to produce
+ * per-file {@link LintResult} lists without performing any direct I/O itself.
+ *
+ * @module application/LintUseCase
+ */
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { LintError } from "../domain/linting/LintError.js";
 import { makeLintError } from "../domain/linting/LintError.js";

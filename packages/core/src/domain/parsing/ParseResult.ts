@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the fully parsed representation of a single Markdown file, containing all extracted OFM node arrays alongside raw text and frontmatter.
+ *
+ * Provides: {@link ParseResult}, {@link makeParseResult}
+ *
+ * Role in system: The primary input to every {@link OFMRule} — produced by the infrastructure parser and passed through {@link RuleParams.parsed}. Keeping the token stream typed as `unknown[]` at this boundary prevents the domain from importing markdown-it types directly.
+ *
+ * @module domain/parsing/ParseResult
+ */
 import type { WikilinkNode } from "./WikilinkNode.js";
 import type { EmbedNode } from "./EmbedNode.js";
 import type { CalloutNode } from "./CalloutNode.js";

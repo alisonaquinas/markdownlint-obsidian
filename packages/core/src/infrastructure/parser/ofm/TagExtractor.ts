@@ -1,3 +1,14 @@
+/**
+ * Purpose: Extracts Obsidian inline tags (`#tag`, `#nested/tag`) from document lines, skipping code regions and pure-numeric tokens.
+ *
+ * Provides: {@link extractTags}
+ *
+ * Role in system: One of the OFM-specific extractors that populates `ParseResult.tags`,
+ * providing rules with a pre-built list of tag nodes so they can validate or normalise
+ * tagging conventions without re-scanning the source.
+ *
+ * @module infrastructure/parser/ofm/TagExtractor
+ */
 import { makeTagNode, type TagNode } from "../../../domain/parsing/TagNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 import type { CodeRegionMap } from "./CodeRegionMap.js";

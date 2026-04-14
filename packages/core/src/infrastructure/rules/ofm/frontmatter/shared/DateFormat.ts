@@ -1,4 +1,15 @@
 /**
+ * Purpose: Shared utility for testing whether a value is a parseable ISO-8601 date.
+ *
+ * Provides: {@link isIsoDate}
+ *
+ * Role in system: Centralises ISO-8601 validation logic reused by OFM081 and OFM083,
+ * handling both raw string dates and `Date` objects coerced by gray-matter so the two
+ * rules stay in sync without duplicating the regex or parse logic.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/shared/DateFormat
+ */
+/**
  * Test whether a value is a parseable ISO-8601 date.
  *
  * Accepts:

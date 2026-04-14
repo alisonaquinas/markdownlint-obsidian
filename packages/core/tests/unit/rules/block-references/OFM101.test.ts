@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM101Rule}.
+ *
+ * @module tests/unit/rules/block-references/OFM101.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM101Rule } from "../../../../src/infrastructure/rules/ofm/block-references/OFM101-duplicate-block-id.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

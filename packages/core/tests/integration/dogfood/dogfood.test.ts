@@ -1,3 +1,8 @@
+/**
+ * Integration tests for the CLI dogfood scenario (linting real project files).
+ *
+ * @module tests/integration/dogfood/dogfood.test
+ */
 import { describe, it, expect } from "bun:test";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";

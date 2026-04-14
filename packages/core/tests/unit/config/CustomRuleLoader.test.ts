@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link loadCustomRules}.
+ *
+ * @module tests/unit/config/CustomRuleLoader.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as path from "node:path";
 import * as os from "node:os";

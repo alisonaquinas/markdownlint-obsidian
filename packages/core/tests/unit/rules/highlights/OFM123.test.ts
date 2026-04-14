@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM123Rule}.
+ *
+ * @module tests/unit/rules/highlights/OFM123.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM123Rule } from "../../../../src/infrastructure/rules/ofm/highlights/OFM123-nested-highlight.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

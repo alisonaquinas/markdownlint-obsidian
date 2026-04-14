@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM103Rule}.
+ *
+ * @module tests/unit/rules/block-references/OFM103.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM103Rule } from "../../../../src/infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractTags}.
+ *
+ * @module tests/unit/parser/ofm/TagExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractTags } from "../../../../src/infrastructure/parser/ofm/TagExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";

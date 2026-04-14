@@ -1,3 +1,14 @@
+/**
+ * Purpose: Scans document lines for Obsidian block-reference anchors (`^identifier`) and produces typed domain nodes.
+ *
+ * Provides: {@link extractBlockRefs}
+ *
+ * Role in system: One of the OFM-specific extractors that runs after code-region detection;
+ * its output populates `ParseResult.blockRefs`, enabling rules to locate and validate
+ * block-reference anchors without re-parsing the source.
+ *
+ * @module infrastructure/parser/ofm/BlockRefExtractor
+ */
 import { makeBlockRefNode, type BlockRefNode } from "../../../domain/parsing/BlockRefNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 import type { CodeRegionMap } from "./CodeRegionMap.js";

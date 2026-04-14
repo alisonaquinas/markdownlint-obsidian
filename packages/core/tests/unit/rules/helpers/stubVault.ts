@@ -1,3 +1,8 @@
+/**
+ * In-memory VaultIndex stub for use in rule unit tests.
+ *
+ * @module tests/unit/rules/helpers/stubVault
+ */
 import * as path from "node:path";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";
 import { matchWikilink } from "../../../../src/domain/vault/WikilinkMatcher.js";

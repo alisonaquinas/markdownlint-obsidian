@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link runLint}.
+ *
+ * @module tests/unit/application/LintUseCase.test
+ */
 import { describe, it, expect } from "bun:test";
 import { runLint } from "../../../src/application/LintUseCase.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";

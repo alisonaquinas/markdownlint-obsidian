@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM064Rule}.
+ *
+ * @module tests/unit/rules/tags/OFM064.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM064Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM064-duplicate-tag.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

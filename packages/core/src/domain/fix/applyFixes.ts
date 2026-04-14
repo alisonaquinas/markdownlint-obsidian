@@ -1,3 +1,12 @@
+/**
+ * Purpose: Applies a list of text-edit fixes to raw file content, resolving conflicts between overlapping edits.
+ *
+ * Provides: {@link applyFixes}, {@link ApplyResult}
+ *
+ * Role in system: The sole pure algorithm in the fix pipeline — called by the application layer after rules have emitted their {@link Fix} objects. Has no I/O and no external dependencies, making it trivially testable and safe to run in any environment.
+ *
+ * @module domain/fix/applyFixes
+ */
 import type { Fix } from "../linting/Fix.js";
 import type { FixConflict } from "../linting/FixConflict.js";
 

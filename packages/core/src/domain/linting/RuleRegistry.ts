@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the domain service that stores and retrieves registered linting rules by name or code.
+ *
+ * Provides: {@link RuleRegistry}, {@link makeRuleRegistry}
+ *
+ * Role in system: The in-memory registry populated at startup by the DI root in `engine/`; the application use case asks it for `all()` rules to run. Rules may register multiple aliases, and the registry enforces uniqueness to catch configuration mistakes early.
+ *
+ * @module domain/linting/RuleRegistry
+ */
 import type { OFMRule } from "./OFMRule.js";
 
 /**

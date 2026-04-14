@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractWikilinks}.
+ *
+ * @module tests/unit/parser/ofm/WikilinkExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractWikilinks } from "../../../../src/infrastructure/parser/ofm/WikilinkExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";

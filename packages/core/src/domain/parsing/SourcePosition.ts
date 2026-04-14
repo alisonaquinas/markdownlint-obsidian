@@ -1,4 +1,14 @@
 /**
+ * Purpose: Defines the shared 1-based line/column position value object used by all OFM parse nodes.
+ *
+ * Provides: {@link SourcePosition}, {@link makeSourcePosition}
+ *
+ * Role in system: A tiny foundational value object embedded in every parse node (wikilinks, embeds, callouts, tags, etc.) so that rules can emit precise {@link LintError} locations without any additional coordinate tracking.
+ *
+ * @module domain/parsing/SourcePosition
+ */
+
+/**
  * 1-based source position, shared by every OFM parse node.
  * Immutable; both line and column must be positive.
  */

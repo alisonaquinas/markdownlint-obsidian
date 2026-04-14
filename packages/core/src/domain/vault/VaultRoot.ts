@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the branded `VaultRoot` string type and its factory, ensuring callers cannot pass an unvalidated path where a vault root is expected.
+ *
+ * Provides: {@link VaultRoot}, {@link toVaultRoot}
+ *
+ * Role in system: Established at the infrastructure boundary (after `VaultDetector.detect` resolves the vault root) and propagated into domain services; the nominal brand prevents accidentally passing an arbitrary string as a trusted vault root at compile time.
+ *
+ * @module domain/vault/VaultRoot
+ */
 import * as path from "node:path";
 
 /**

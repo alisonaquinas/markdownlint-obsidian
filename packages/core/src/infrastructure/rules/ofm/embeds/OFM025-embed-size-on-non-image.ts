@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect sizing hints on embeds whose target type (video, audio, PDF, etc.) does not honour width/height hints.
+ *
+ * Provides: {@link OFM025Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM025 — warns when a `|WIDTH` or `|WIDTHxHEIGHT` sizing hint is applied to a non-image embed that Obsidian silently ignores.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM025-embed-size-on-non-image
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { classifyEmbed } from "./shared/EmbedClassifier.js";
 

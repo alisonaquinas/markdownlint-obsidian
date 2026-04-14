@@ -1,3 +1,14 @@
+/**
+ * Purpose: Derives embed nodes from already-extracted wikilinks by filtering for the embed flag and parsing optional `WxH` dimension syntax from the alias.
+ *
+ * Provides: {@link extractEmbeds}
+ *
+ * Role in system: A secondary OFM extractor that reuses `WikilinkExtractor` output rather
+ * than re-scanning lines, keeping embed detection free of regex duplication and ensuring
+ * `ParseResult.embeds` stays consistent with `ParseResult.wikilinks`.
+ *
+ * @module infrastructure/parser/ofm/EmbedExtractor
+ */
 import { makeEmbedNode, type EmbedNode } from "../../../domain/parsing/EmbedNode.js";
 import type { WikilinkNode } from "../../../domain/parsing/WikilinkNode.js";
 

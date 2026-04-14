@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the fully merged, validated configuration shape for a single lint run.
+ *
+ * Provides: {@link LinterConfig}, {@link WikilinkConfig}, {@link CalloutConfig}, {@link EmbedConfig}, {@link FrontmatterConfig}, {@link TagConfig}, {@link BlockRefConfig}, {@link HighlightConfig}, {@link CommentConfig}
+ *
+ * Role in system: The top-level configuration contract consumed by every use case and rule in the system. Produced by the infrastructure config loader after cascading file discovery and default injection; the domain layer treats all fields as immutable and always-present.
+ *
+ * @module domain/config/LinterConfig
+ */
 import type { RuleConfig } from "./RuleConfig.js";
 
 /** OFM wikilink resolution behaviour. */

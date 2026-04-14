@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeBlockRefNode}.
+ *
+ * @module tests/unit/domain/parsing/BlockRefNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeBlockRefNode } from "../../../../src/domain/parsing/BlockRefNode.js";
 

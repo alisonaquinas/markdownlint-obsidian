@@ -1,3 +1,14 @@
+/**
+ * Purpose: Entry point for the `markdownlint-obsidian` CLI binary.
+ *
+ * Provides: {@link main}, {@link EXIT_CODES}
+ *
+ * Role in system: Parses arguments via {@link buildProgram}, loads config, selects the
+ * lint or fix pipeline branch, formats and prints results, and returns a POSIX exit code
+ * (0 = clean, 1 = lint errors, 2 = tool failure) that the bin shim passes to `process.exit`.
+ *
+ * @module main
+ */
 import type { Command } from "commander";
 import { buildProgram } from "./args.js";
 import {

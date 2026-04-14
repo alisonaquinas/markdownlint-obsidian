@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM007Rule}.
+ *
+ * @module tests/unit/rules/wikilinks/OFM007.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM007Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM007-block-ref-in-body.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

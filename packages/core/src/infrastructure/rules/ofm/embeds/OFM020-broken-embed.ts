@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect embed transclusions (`![[target]]`) whose markdown target does not exist in the vault.
+ *
+ * Provides: {@link OFM020Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM020 — flags broken markdown embed targets that cannot be resolved in the vault index.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM020-broken-embed
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { classifyEmbed } from "./shared/EmbedClassifier.js";
 

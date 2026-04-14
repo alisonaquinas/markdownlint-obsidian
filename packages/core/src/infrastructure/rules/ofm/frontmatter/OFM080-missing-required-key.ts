@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that fires for every required frontmatter key that is absent from a file.
+ *
+ * Provides: {@link OFM080Rule}
+ *
+ * Role in system: Iterates `config.frontmatter.required` and uses {@link getByDotPath} to
+ * look up each entry (including dotted paths) in the parsed frontmatter, reporting any
+ * that are missing so schema-mandatory metadata is never omitted.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM080-missing-required-key
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { getByDotPath } from "./shared/FrontmatterAccess.js";
 

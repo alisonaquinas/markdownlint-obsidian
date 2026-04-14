@@ -1,3 +1,15 @@
+/**
+ * Purpose: Assembles the concrete {@link Parser} implementation by wiring gray-matter, markdown-it, and all OFM extractors into a single parse call.
+ *
+ * Provides: {@link makeMarkdownItParser}
+ *
+ * Role in system: Acts as the infrastructure composition root for document parsing —
+ * it is the only place that knows about every extractor and hands the fully populated
+ * {@link ParseResult} back to the domain, keeping all third-party library dependencies
+ * out of the domain layer.
+ *
+ * @module infrastructure/parser/MarkdownItParser
+ */
 import MarkdownIt from "markdown-it";
 import type { Parser } from "../../domain/parsing/Parser.js";
 import { makeParseResult, type ParseResult } from "../../domain/parsing/ParseResult.js";

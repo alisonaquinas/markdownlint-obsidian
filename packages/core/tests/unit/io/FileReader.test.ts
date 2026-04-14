@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link readMarkdownFile}.
+ *
+ * @module tests/unit/io/FileReader.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { readMarkdownFile } from "../../../src/infrastructure/io/FileReader.js";
 import * as fs from "node:fs/promises";

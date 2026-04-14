@@ -1,3 +1,15 @@
+/**
+ * Purpose: Lint rule that reports wikilinks whose block reference targets a missing block id.
+ *
+ * Provides: {@link OFM102Rule}
+ *
+ * Role in system: Performs a cross-file check using the shared `BlockRefIndex` and `vault`
+ * resolver; for each `[[page#^blockid]]` link whose target page resolves successfully it
+ * verifies the block id exists in the index, catching broken anchors that only surface at
+ * read time.
+ *
+ * @module infrastructure/rules/ofm/block-references/OFM102-broken-block-link
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

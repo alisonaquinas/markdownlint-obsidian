@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM061Rule}.
+ *
+ * @module tests/unit/rules/tags/OFM061.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM061Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM061-tag-depth-exceeded.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

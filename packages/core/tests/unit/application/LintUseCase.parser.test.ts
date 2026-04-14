@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link runLint} parser integration behaviour.
+ *
+ * @module tests/unit/application/LintUseCase.parser.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";

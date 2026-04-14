@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that catches tags whose value ends with a trailing slash.
+ *
+ * Provides: {@link OFM063Rule}
+ *
+ * Role in system: Identifies the narrow pattern of tags like `#area/` and emits a
+ * fixable error; the autofix in Phase 9 trims the trailing slash to produce a valid
+ * Obsidian tag.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM063-trailing-slash
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM024Rule}.
+ *
+ * @module tests/unit/rules/embeds/OFM024.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM024Rule } from "../../../../src/infrastructure/rules/ofm/embeds/OFM024-disallowed-embed-extension.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

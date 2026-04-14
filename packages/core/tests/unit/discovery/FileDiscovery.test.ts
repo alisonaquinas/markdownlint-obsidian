@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link discoverFiles}.
+ *
+ * @module tests/unit/discovery/FileDiscovery.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { discoverFiles } from "../../../src/infrastructure/discovery/FileDiscovery.js";
 import * as fs from "node:fs/promises";

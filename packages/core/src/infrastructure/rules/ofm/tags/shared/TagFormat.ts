@@ -1,4 +1,15 @@
 /**
+ * Purpose: Shared utilities for validating and measuring Obsidian tag syntax.
+ *
+ * Provides: {@link isValidTag}, {@link tagDepth}
+ *
+ * Role in system: Acts as the single authoritative source of tag-validation logic reused
+ * by OFM060 (format check) and OFM061 (depth check), preventing duplication of the
+ * character-allowlist and segment-counting rules across the tag rule family.
+ *
+ * @module infrastructure/rules/ofm/tags/shared/TagFormat
+ */
+/**
  * Validate Obsidian tag syntax against a value with no leading `#`.
  *
  * Allowed characters: A-Z, a-z, 0-9, `_`, `-`, `/`.

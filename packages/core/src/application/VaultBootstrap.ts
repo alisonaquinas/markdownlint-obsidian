@@ -1,3 +1,15 @@
+/**
+ * Purpose: Resolves the vault root and builds both the vault index and block-reference index in one pass.
+ *
+ * Provides: {@link bootstrapVault}, {@link emptyBlockRefIndex}, {@link BootstrapResult}, {@link BootstrapDeps}
+ *
+ * Role in system: Application-layer bootstrap step that wraps vault detection and index
+ * construction behind injected dependencies, so the CLI can thread a fully-initialised
+ * {@link VaultIndex} and {@link BlockRefIndex} into every rule without coupling the use
+ * cases to Node.js filesystem APIs.
+ *
+ * @module application/VaultBootstrap
+ */
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { VaultDetector } from "../domain/vault/VaultDetector.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";

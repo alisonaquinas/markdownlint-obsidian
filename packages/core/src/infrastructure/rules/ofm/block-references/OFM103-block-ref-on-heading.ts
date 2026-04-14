@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns when a block reference is attached to a heading line.
+ *
+ * Provides: {@link OFM103Rule}
+ *
+ * Role in system: Detects the common mistake of appending `^blockid` to an ATX heading,
+ * which Obsidian silently ignores in favour of the heading's own navigation target,
+ * guiding authors toward proper paragraph anchors or heading links.
+ *
+ * @module infrastructure/rules/ofm/block-references/OFM103-block-ref-on-heading
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 const HEADING_PREFIX = /^#{1,6}\s/;

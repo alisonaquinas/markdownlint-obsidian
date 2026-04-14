@@ -1,3 +1,13 @@
+/**
+ * Purpose: Extracts every `[[wikilink]]` and `![[embed]]` from document lines, decomposing each into target, heading, block-ref, alias, and embed flag components.
+ *
+ * Provides: {@link extractWikilinks}
+ *
+ * Role in system: The primary OFM link extractor; its output drives both `ParseResult.wikilinks`
+ * and, downstream, `EmbedExtractor`, making it the foundation for all link-aware linting rules.
+ *
+ * @module infrastructure/parser/ofm/WikilinkExtractor
+ */
 import { makeWikilinkNode, type WikilinkNode } from "../../../domain/parsing/WikilinkNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 import type { CodeRegionMap } from "./CodeRegionMap.js";

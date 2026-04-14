@@ -1,3 +1,15 @@
+/**
+ * Purpose: Walks the directory tree upward from a start path, reads and merges every discovered config file into a single validated {@link LinterConfig}.
+ *
+ * Provides: {@link loadConfig}
+ *
+ * Role in system: Infrastructure adapter that bridges the filesystem and the domain config
+ * model; it reads JSONC/YAML config files, applies precedence-ordered layer merging on top
+ * of {@link DEFAULT_CONFIG}, and delegates shape validation to {@link validateConfig} before
+ * returning a fully-typed config to the application layer.
+ *
+ * @module infrastructure/config/ConfigLoader
+ */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { parse as parseJsonc } from "jsonc-parser";

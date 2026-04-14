@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM060Rule}.
+ *
+ * @module tests/unit/rules/tags/OFM060.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM060Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM060-invalid-tag-format.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

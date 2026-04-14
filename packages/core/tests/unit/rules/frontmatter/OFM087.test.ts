@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM087Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM087.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM087Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM087-non-string-tag-entry.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect callouts whose type is not present in the configured `callouts.allowList`.
+ *
+ * Provides: {@link OFM040Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM040 — flags callouts with unrecognised types that Obsidian silently degrades to plain quote blocks.
+ *
+ * @module infrastructure/rules/ofm/callouts/OFM040-unknown-callout-type
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { buildCalloutTypeRegistry } from "./shared/CalloutTypeRegistry.js";
 

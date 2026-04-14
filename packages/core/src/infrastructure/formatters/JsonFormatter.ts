@@ -1,3 +1,15 @@
+/**
+ * Purpose: Serialises lint results as a pretty-printed JSON array for machine-readable output.
+ *
+ * Provides: {@link formatJson}
+ *
+ * Role in system: Infrastructure output adapter registered in {@link FormatterRegistry} as
+ * the `"json"` formatter; it produces a stable, always-valid JSON document from
+ * {@link LintResult} data, enabling downstream tools and scripts to parse lint output
+ * without text-scraping.
+ *
+ * @module infrastructure/formatters/JsonFormatter
+ */
 import type { LintResult } from "../../domain/linting/LintResult.js";
 
 /**

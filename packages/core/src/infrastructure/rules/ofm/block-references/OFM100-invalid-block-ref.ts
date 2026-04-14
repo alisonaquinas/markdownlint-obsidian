@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports block reference ids not matching the configured id pattern.
+ *
+ * Provides: {@link OFM100Rule}
+ *
+ * Role in system: Validates every `^blockid` in the parsed document against the regex in
+ * `config.blockRefs.idPattern`, enforcing a consistent id format across the vault's
+ * block references.
+ *
+ * @module infrastructure/rules/ofm/block-references/OFM100-invalid-block-ref
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

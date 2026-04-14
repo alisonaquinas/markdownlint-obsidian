@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link classifyEmbed}.
+ *
+ * @module tests/unit/rules/embeds/shared/EmbedClassifier.test
+ */
 import { describe, it, expect } from "bun:test";
 import { classifyEmbed } from "../../../../../src/infrastructure/rules/ofm/embeds/shared/EmbedClassifier.js";
 import type { EmbedNode } from "../../../../../src/domain/parsing/EmbedNode.js";

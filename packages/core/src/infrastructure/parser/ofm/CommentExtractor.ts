@@ -1,3 +1,14 @@
+/**
+ * Purpose: Extracts Obsidian `%% ... %%` comment regions, including multi-line spans, and maps them to typed domain nodes with precise source positions.
+ *
+ * Provides: {@link extractComments}
+ *
+ * Role in system: One of the OFM-specific extractors whose output populates
+ * `ParseResult.comments`, giving rules visibility into comment boundaries without
+ * needing to re-scan the raw source string.
+ *
+ * @module infrastructure/parser/ofm/CommentExtractor
+ */
 import { makeCommentNode, type CommentNode } from "../../../domain/parsing/CommentNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 

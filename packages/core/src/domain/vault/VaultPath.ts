@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the immutable value object representing the identity of a single Markdown file within a vault, with both platform-native and POSIX-normalised paths.
+ *
+ * Provides: {@link VaultPath}, {@link makeVaultPath}
+ *
+ * Role in system: The canonical file reference used throughout the domain and application layers — stored in {@link VaultIndex}, embedded in {@link MatchResult}, and used by rules to compare paths without platform-path concerns. The factory validates that the file resolves within the vault root.
+ *
+ * @module domain/vault/VaultPath
+ */
 import * as path from "node:path";
 
 /**

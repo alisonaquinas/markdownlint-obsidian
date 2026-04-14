@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeRuleRegistry}.
+ *
+ * @module tests/unit/domain/RuleRegistry.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeRuleRegistry } from "../../../src/domain/linting/RuleRegistry.js";
 import type { OFMRule } from "../../../src/domain/linting/OFMRule.js";

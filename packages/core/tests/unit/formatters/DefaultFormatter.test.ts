@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link formatDefault}.
+ *
+ * @module tests/unit/formatters/DefaultFormatter.test
+ */
 import { describe, it, expect } from "bun:test";
 import { formatDefault } from "../../../src/infrastructure/formatters/DefaultFormatter.js";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";

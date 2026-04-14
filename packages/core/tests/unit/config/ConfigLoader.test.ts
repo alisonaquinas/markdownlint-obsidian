@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link loadConfig}.
+ *
+ * @module tests/unit/config/ConfigLoader.test
+ */
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { loadConfig } from "../../../src/infrastructure/config/ConfigLoader.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM043Rule}.
+ *
+ * @module tests/unit/rules/callouts/OFM043.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM043Rule } from "../../../../src/infrastructure/rules/ofm/callouts/OFM043-callout-in-list.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

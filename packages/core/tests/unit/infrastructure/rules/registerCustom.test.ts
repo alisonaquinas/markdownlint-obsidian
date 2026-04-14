@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link registerCustomRules}.
+ *
+ * @module tests/unit/infrastructure/rules/registerCustom.test
+ */
 import { describe, it, expect, vi, afterEach } from "bun:test";
 import { registerCustomRules } from "../../../../src/infrastructure/rules/registerCustom.js";
 import { makeRuleRegistry } from "../../../../src/domain/linting/RuleRegistry.js";

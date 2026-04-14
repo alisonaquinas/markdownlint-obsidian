@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeVaultPath}.
+ *
+ * @module tests/unit/domain/vault/VaultPath.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";

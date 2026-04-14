@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that reports highlight spans that contain another `==` marker inside them.
+ *
+ * Provides: {@link OFM123Rule}
+ *
+ * Role in system: Uses an alternating-segments algorithm to distinguish genuinely nested
+ * highlights from adjacent valid spans, skipping fenced code blocks and inline code via the
+ * shared fence state machine and strip utilities.
+ *
+ * @module infrastructure/rules/ofm/highlights/OFM123-nested-highlight
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
 

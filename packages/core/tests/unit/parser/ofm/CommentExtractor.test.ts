@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractComments}.
+ *
+ * @module tests/unit/parser/ofm/CommentExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractComments } from "../../../../src/infrastructure/parser/ofm/CommentExtractor.js";
 

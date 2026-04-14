@@ -1,4 +1,14 @@
 /**
+ * Purpose: Defines the per-vault block-reference index interface and its factory, enabling cross-file block-id existence and duplicate queries.
+ *
+ * Provides: {@link BlockRefIndex}, {@link makeBlockRefIndex}
+ *
+ * Role in system: Built once per lint run by the application bootstrap and passed to every rule via {@link RuleParams.blockRefIndex}. Keeps cross-file block-id resolution inside the domain without any filesystem access — the infrastructure layer feeds the pre-extracted id maps.
+ *
+ * @module domain/vault/BlockRefIndex
+ */
+
+/**
  * Per-vault index of block-reference ids. Built once per LintRun by
  * {@link bootstrapVault} using {@link buildBlockRefIndex} and passed to every
  * rule via {@link RuleParams}. `null` is threaded through when

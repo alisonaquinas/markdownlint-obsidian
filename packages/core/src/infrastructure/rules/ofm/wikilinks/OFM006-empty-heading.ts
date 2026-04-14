@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect wikilinks that declare a heading fragment `#` with no heading text following it.
+ *
+ * Provides: {@link OFM006Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM006 — flags wikilinks with an empty heading anchor such as `[[page#]]`.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM006-empty-heading
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

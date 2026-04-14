@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect non-markdown embed targets (images, PDFs, audio, video) that do not exist on the filesystem beneath the vault root.
+ *
+ * Provides: {@link OFM022Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM022 — asynchronously probes the filesystem for missing non-markdown embedded asset files.
+ *
+ * @module infrastructure/rules/ofm/embeds/OFM022-embed-target-missing
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { classifyEmbed } from "./shared/EmbedClassifier.js";
 

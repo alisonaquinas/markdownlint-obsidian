@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the immutable value object that aggregates all lint errors for a single file.
+ *
+ * Provides: {@link LintResult}, {@link makeLintResult}
+ *
+ * Role in system: The per-file output of the linting use case, consumed by formatters and the CLI exit-code logic. The `hasErrors` flag follows the severity policy (warnings do not fail the run), keeping that decision in the domain rather than scattered across consumers.
+ *
+ * @module domain/linting/LintResult
+ */
 import type { LintError } from "./LintError.js";
 
 /**

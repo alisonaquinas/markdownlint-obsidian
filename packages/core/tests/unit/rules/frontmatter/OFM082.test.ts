@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM082Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM082.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM082Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM082-unknown-top-level-key.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

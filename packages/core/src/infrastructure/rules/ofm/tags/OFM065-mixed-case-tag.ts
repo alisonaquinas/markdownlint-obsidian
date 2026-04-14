@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that warns when a tag's casing differs from its first occurrence in the file.
+ *
+ * Provides: {@link OFM065Rule}
+ *
+ * Role in system: Builds a canonical-casing map from the first encounter of each lowercased
+ * tag value and emits a fixable warning for subsequent occurrences whose casing diverges,
+ * keeping tag spelling consistent across a file.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM065-mixed-case-tag
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 

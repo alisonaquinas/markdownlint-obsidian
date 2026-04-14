@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM066Rule}.
+ *
+ * @module tests/unit/rules/tags/OFM066.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM066Rule } from "../../../../src/infrastructure/rules/ofm/tags/OFM066-frontmatter-tag-not-in-body.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

@@ -1,3 +1,14 @@
+/**
+ * Purpose: Shared fence-tracking state machine and inline-code stripper used by highlight rules.
+ *
+ * Provides: {@link updateFence}, {@link stripInlineCode}, {@link FenceResult}
+ *
+ * Role in system: Supplies the minimal stateful helpers needed for rules that must skip
+ * content inside fenced code blocks (`updateFence`) and ignore `==` operators in inline
+ * code spans (`stripInlineCode`), keeping this plumbing out of individual rule files.
+ *
+ * @module infrastructure/rules/ofm/shared/fenceStateMachine
+ */
 // Opening or closing fence line (```, ~~~, or longer). Matched against the
 // line's leading whitespace so indented fences still close properly.
 const FENCE_PATTERN = /^(\s*)(`{3,}|~{3,})/;

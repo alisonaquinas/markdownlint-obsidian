@@ -1,3 +1,8 @@
+/**
+ * Helper that runs a single OFM rule against a raw Markdown string and returns its errors.
+ *
+ * @module tests/unit/rules/helpers/runRuleOnSource
+ */
 import type { OFMRule } from "../../../../src/domain/linting/OFMRule.js";
 import type { LintError } from "../../../../src/domain/linting/LintError.js";
 import { makeLintError } from "../../../../src/domain/linting/LintError.js";

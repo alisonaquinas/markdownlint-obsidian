@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractHighlights}.
+ *
+ * @module tests/unit/parser/ofm/HighlightExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractHighlights } from "../../../../src/infrastructure/parser/ofm/HighlightExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect lines that resemble a callout header but do not conform to Obsidian's callout grammar.
+ *
+ * Provides: {@link OFM041Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM041 — flags malformed callout headers (e.g. missing space, missing type) that the extractor cannot parse.
+ *
+ * @module infrastructure/rules/ofm/callouts/OFM041-malformed-callout
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { updateFence } from "../shared/fenceStateMachine.js";
 

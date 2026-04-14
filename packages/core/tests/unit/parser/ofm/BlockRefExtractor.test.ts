@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link extractBlockRefs}.
+ *
+ * @module tests/unit/parser/ofm/BlockRefExtractor.test
+ */
 import { describe, it, expect } from "bun:test";
 import { extractBlockRefs } from "../../../../src/infrastructure/parser/ofm/BlockRefExtractor.js";
 import { buildCodeRegionMap } from "../../../../src/infrastructure/parser/ofm/CodeRegionMap.js";

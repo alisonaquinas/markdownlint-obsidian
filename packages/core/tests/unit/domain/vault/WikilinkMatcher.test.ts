@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link matchWikilink}.
+ *
+ * @module tests/unit/domain/vault/WikilinkMatcher.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { matchWikilink } from "../../../../src/domain/vault/WikilinkMatcher.js";

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the value object representing an Obsidian inline tag (`#tag` or `#nested/tag`) found in document body text.
+ *
+ * Provides: {@link TagNode}, {@link makeTagNode}
+ *
+ * Role in system: One of the OFM-specific AST node types stored on {@link ParseResult.tags}; consumed by tag rules that validate depth, casing, and allow/deny lists against {@link TagConfig}.
+ *
+ * @module domain/parsing/TagNode
+ */
 import type { SourcePosition } from "./SourcePosition.js";
 
 /**

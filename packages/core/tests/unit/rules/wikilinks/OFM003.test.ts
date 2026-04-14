@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM003Rule}.
+ *
+ * @module tests/unit/rules/wikilinks/OFM003.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { OFM003Rule } from "../../../../src/infrastructure/rules/ofm/wikilinks/OFM003-self-link.js";

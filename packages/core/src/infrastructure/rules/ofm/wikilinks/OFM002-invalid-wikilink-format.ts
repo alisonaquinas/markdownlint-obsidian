@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect malformed wikilink patterns (empty, unclosed, or nested) that the extractor silently discards.
+ *
+ * Provides: {@link OFM002Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM002 — flags wikilinks with invalid syntax such as `[[]]`, unclosed `[[`, or nested `[[ ... [[`.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM002-invalid-wikilink-format
+ */
 import type { OFMRule, OnErrorCallback } from "../../../../domain/linting/OFMRule.js";
 import { buildCodeRegionMap, type CodeRegionMap } from "../../../parser/ofm/CodeRegionMap.js";
 

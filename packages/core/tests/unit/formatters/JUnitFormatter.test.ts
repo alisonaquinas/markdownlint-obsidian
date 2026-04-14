@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link formatJUnit}.
+ *
+ * @module tests/unit/formatters/JUnitFormatter.test
+ */
 import { describe, it, expect } from "bun:test";
 import { formatJUnit } from "../../../src/infrastructure/formatters/JUnitFormatter.js";
 import { makeLintError } from "../../../src/domain/linting/LintError.js";

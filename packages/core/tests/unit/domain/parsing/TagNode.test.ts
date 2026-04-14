@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeTagNode}.
+ *
+ * @module tests/unit/domain/parsing/TagNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeTagNode } from "../../../../src/domain/parsing/TagNode.js";
 

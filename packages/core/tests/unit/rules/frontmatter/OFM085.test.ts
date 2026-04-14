@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM085Rule}.
+ *
+ * @module tests/unit/rules/frontmatter/OFM085.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM085Rule } from "../../../../src/infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

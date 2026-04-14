@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link updateFence} and {@link stripInlineCode}.
+ *
+ * @module tests/unit/rules/ofm/shared/fenceStateMachine.test
+ */
 import { describe, it, expect } from "bun:test";
 import {
   updateFence,

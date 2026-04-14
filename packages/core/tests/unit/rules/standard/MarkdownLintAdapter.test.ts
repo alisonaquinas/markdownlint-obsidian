@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeMarkdownLintAdapter}.
+ *
+ * @module tests/unit/rules/standard/MarkdownLintAdapter.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeMarkdownLintAdapter } from "../../../../src/infrastructure/rules/standard/MarkdownLintAdapter.js";
 

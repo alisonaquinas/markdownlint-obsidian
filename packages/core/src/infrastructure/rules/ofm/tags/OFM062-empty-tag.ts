@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that detects lone `#` or `#/` tokens that are not valid tags.
+ *
+ * Provides: {@link OFM062Rule}
+ *
+ * Role in system: Scans raw body lines for empty-tag tokens that the extractor silently
+ * drops, distinguishing them from ATX heading markers so only genuine abandoned-tag
+ * attempts are reported.
+ *
+ * @module infrastructure/rules/ofm/tags/OFM062-empty-tag
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 const EMPTY_TAG = /(\s)(#\/?)(?:\s|$)/;

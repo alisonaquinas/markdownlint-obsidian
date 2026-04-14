@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link makeCommentNode}.
+ *
+ * @module tests/unit/domain/parsing/CommentNode.test
+ */
 import { describe, it, expect } from "bun:test";
 import { makeCommentNode } from "../../../../src/domain/parsing/CommentNode.js";
 

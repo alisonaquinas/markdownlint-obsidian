@@ -1,3 +1,15 @@
+/**
+ * Purpose: Implements the {@link FileExistenceChecker} domain port using Node.js `fs.access`.
+ *
+ * Provides: {@link makeNodeFsExistenceChecker}
+ *
+ * Role in system: Infrastructure adapter that fulfils the `fsCheck` dependency injected into
+ * lint rules; it confines path resolution strictly within the vault root to prevent
+ * path-traversal leaks, and converts any I/O error into a safe `false` return so rules never
+ * observe filesystem exceptions.
+ *
+ * @module infrastructure/fs/NodeFsExistenceChecker
+ */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { FileExistenceChecker } from "../../domain/fs/FileExistenceChecker.js";

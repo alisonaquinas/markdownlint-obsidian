@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link runRuleOnSource} test helper.
+ *
+ * @module tests/unit/rules/helpers/runRuleOnSource.test
+ */
 import { describe, it, expect } from "bun:test";
 import { runRuleOnSource } from "./runRuleOnSource.js";
 import type { OFMRule } from "../../../../src/domain/linting/OFMRule.js";

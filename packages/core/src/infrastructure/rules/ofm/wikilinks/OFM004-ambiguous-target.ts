@@ -1,3 +1,12 @@
+/**
+ * Purpose: Detect wikilinks whose basename matches more than one file in the vault, making the target ambiguous.
+ *
+ * Provides: {@link OFM004Rule}
+ *
+ * Role in system: Infrastructure-layer implementation of OFM004 — flags wikilinks with ambiguous targets that match multiple vault files.
+ *
+ * @module infrastructure/rules/ofm/wikilinks/OFM004-ambiguous-target
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 /**

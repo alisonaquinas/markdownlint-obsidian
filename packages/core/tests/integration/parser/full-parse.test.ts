@@ -1,3 +1,8 @@
+/**
+ * Integration tests for the full Markdown parse pipeline.
+ *
+ * @module tests/integration/parser/full-parse.test
+ */
 import { describe, it, expect } from "bun:test";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link OFM022Rule}.
+ *
+ * @module tests/unit/rules/embeds/OFM022.test
+ */
 import { describe, it, expect } from "bun:test";
 import { OFM022Rule } from "../../../../src/infrastructure/rules/ofm/embeds/OFM022-embed-target-missing.js";
 import { runRuleOnSource } from "../helpers/runRuleOnSource.js";

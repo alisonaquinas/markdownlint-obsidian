@@ -1,3 +1,14 @@
+/**
+ * Purpose: Scans document lines for Obsidian `==highlighted text==` spans, skipping any that fall inside code regions.
+ *
+ * Provides: {@link extractHighlights}
+ *
+ * Role in system: One of the OFM-specific extractors that populates `ParseResult.highlights`,
+ * enabling rules to detect, count, or reformat highlight syntax across the document without
+ * re-parsing the source.
+ *
+ * @module infrastructure/parser/ofm/HighlightExtractor
+ */
 import { makeHighlightNode, type HighlightNode } from "../../../domain/parsing/HighlightNode.js";
 import { makeSourcePosition } from "../../../domain/parsing/SourcePosition.js";
 import type { CodeRegionMap } from "./CodeRegionMap.js";

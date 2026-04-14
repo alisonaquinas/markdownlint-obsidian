@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link LinterConfig} defaults — phase 3 (tags).
+ *
+ * @module tests/unit/config/LinterConfig.phase3.test
+ */
 import { describe, it, expect } from "bun:test";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 

@@ -1,3 +1,14 @@
+/**
+ * Purpose: Lint rule that detects duplicate top-level keys in raw frontmatter YAML.
+ *
+ * Provides: {@link OFM085Rule}
+ *
+ * Role in system: Scans `parsed.frontmatterRaw` line-by-line to surface duplicate top-level
+ * keys that a tolerant future YAML parser might accept silently; acts as a forward-compat
+ * safety net since gray-matter currently surfaces this as an OFM902 parse error.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/OFM085-duplicate-key
+ */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 
 const KEY_LINE = /^([A-Za-z0-9_-]+)\s*:/;

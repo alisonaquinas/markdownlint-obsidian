@@ -1,4 +1,15 @@
 /**
+ * Purpose: Shared utilities for traversing and typing frontmatter values.
+ *
+ * Provides: {@link getByDotPath}, {@link typeOf}, {@link FrontmatterValueType}
+ *
+ * Role in system: Provides the dotted-path lookup and stable type-classification helpers
+ * consumed by the entire OFM08x frontmatter rule family, keeping traversal and type-tagging
+ * logic in one place so schema validation rules stay free of repeated boilerplate.
+ *
+ * @module infrastructure/rules/ofm/frontmatter/shared/FrontmatterAccess
+ */
+/**
  * Traverse an object using a dotted path. Returns `undefined` if any
  * intermediate segment is missing or non-object.
  *

@@ -1,3 +1,12 @@
+/**
+ * Purpose: Defines the immutable value object representing a single rule violation in a Markdown file.
+ *
+ * Provides: {@link LintError}, {@link makeLintError}
+ *
+ * Role in system: The canonical output of every {@link OFMRule}; collected per file into a {@link LintResult} and ultimately reported by formatters or used to drive autofix. Structural identity means two errors with identical fields are considered equal.
+ *
+ * @module domain/linting/LintError
+ */
 import type { Fix } from "./Fix.js";
 export type { Fix } from "./Fix.js";
 

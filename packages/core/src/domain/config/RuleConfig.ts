@@ -1,4 +1,14 @@
 /**
+ * Purpose: Defines the per-rule configuration value object and its default value.
+ *
+ * Provides: {@link RuleConfig}, {@link DEFAULT_RULE_CONFIG}
+ *
+ * Role in system: The smallest unit of configuration in the domain — each entry in {@link LinterConfig.rules} is a RuleConfig. Infrastructure layers read these to decide whether to run a rule, at what severity, and with which options.
+ *
+ * @module domain/config/RuleConfig
+ */
+
+/**
  * Immutable value object describing a single rule's configuration.
  *
  * `enabled` controls whether the rule runs. `severity` allows overriding

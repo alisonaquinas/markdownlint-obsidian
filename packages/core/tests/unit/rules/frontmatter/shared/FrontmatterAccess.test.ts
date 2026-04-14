@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link getByDotPath} and {@link typeOf}.
+ *
+ * @module tests/unit/rules/frontmatter/shared/FrontmatterAccess.test
+ */
 import { describe, it, expect } from "bun:test";
 import {
   getByDotPath,

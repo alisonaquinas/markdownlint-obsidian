@@ -1,3 +1,14 @@
+/**
+ * Purpose: Scans a vault root for all Markdown files and returns an in-memory VaultIndex.
+ *
+ * Provides: {@link buildFileIndex}, {@link BuildOptions}
+ *
+ * Role in system: Entry point for vault discovery used by the CLI bootstrap phase; honours
+ * `.gitignore` and always excludes `.obsidian/` and `node_modules/`, then wraps the
+ * resulting file list with wikilink resolution logic from the domain's `WikilinkMatcher`.
+ *
+ * @module infrastructure/vault/FileIndexBuilder
+ */
 import * as path from "node:path";
 import { globby } from "globby";
 import type { VaultIndex } from "../../domain/vault/VaultIndex.js";

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link formatJson}.
+ *
+ * @module tests/unit/formatters/JsonFormatter.test
+ */
 import { describe, it, expect } from "bun:test";
 import { formatJson } from "../../../src/infrastructure/formatters/JsonFormatter.js";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";

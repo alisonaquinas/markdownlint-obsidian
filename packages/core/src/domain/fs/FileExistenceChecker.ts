@@ -1,4 +1,14 @@
 /**
+ * Purpose: Defines the domain-level interface for probing whether a non-markdown asset exists in the vault.
+ *
+ * Provides: {@link FileExistenceChecker}
+ *
+ * Role in system: A Dependency Inversion Point that keeps rules free of any Node.js `fs` import. The infrastructure layer supplies a real implementation; tests use a lightweight stub. Rules receive the checker through {@link RuleParams} so they can validate embed targets without coupling to the filesystem.
+ *
+ * @module domain/fs/FileExistenceChecker
+ */
+
+/**
  * DIP boundary for checking whether an asset file exists beneath the vault
  * root. The {@link VaultIndex} only tracks `.md` files; embedded assets
  * (images, PDFs, audio, video) need the real filesystem. Rules never import

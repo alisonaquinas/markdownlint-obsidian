@@ -1,3 +1,8 @@
+/**
+ * Unit tests for {@link frontmatterParseErrorRule}.
+ *
+ * @module tests/unit/rules/FrontmatterParseError.test
+ */
 import { describe, it, expect } from "bun:test";
 import { frontmatterParseErrorRule } from "../../../src/infrastructure/rules/ofm/system/FrontmatterParseError.js";
 
