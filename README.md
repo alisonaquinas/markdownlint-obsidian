@@ -7,12 +7,14 @@ pre-wired.
 
 ## Packages
 
-This monorepo publishes two packages:
+This monorepo publishes two npm packages:
 
 | Package | Description |
 | --- | --- |
 | [`markdownlint-obsidian`](packages/core) | Programmatic linting API — no CLI dependencies |
 | [`markdownlint-obsidian-cli`](packages/cli) | Command-line interface wrapping the library |
+
+The repo also ships a JavaScript GitHub Action in [`action/`](action/README.md).
 
 ## Install
 
@@ -42,12 +44,12 @@ bun run test:all
 ## Quick start
 
 ```bash
-# Lint every markdown file under the current directory.
-npx markdownlint-obsidian "**/*.md"
+# One-off run without installing the package globally.
+npx markdownlint-obsidian-cli "**/*.md"
 
-# Machine-readable output for CI dashboards.
-npx markdownlint-obsidian --output-formatter junit "**/*.md" > junit.xml
-npx markdownlint-obsidian --output-formatter sarif "**/*.md" > report.sarif
+# After a global install or when the CLI is already on PATH.
+markdownlint-obsidian --output-formatter junit "**/*.md" > junit.xml
+markdownlint-obsidian --output-formatter sarif "**/*.md" > report.sarif
 ```
 
 The CLI auto-detects the Obsidian vault root by walking up from the
@@ -75,7 +77,7 @@ project root.
 ### GitHub Actions
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   with:
     globs: "**/*.md"
     format: sarif
@@ -120,6 +122,8 @@ for GitLab CI, Jenkins, and Azure Pipelines recipes.
 
 - [`packages/core/README.md`](packages/core/README.md) — programmatic API reference.
 - [`packages/cli/README.md`](packages/cli/README.md) — CLI usage and flags.
+- [`action/README.md`](action/README.md) — GitHub Action inputs, outputs, and build notes.
+- [`docs/guides/install.md`](docs/guides/install.md) — registry and container install matrix.
 - [`docs/roadmap.md`](docs/roadmap.md) — phased delivery plan.
 - [`docs/rules/`](docs/rules) — per-rule catalog (OFM + standard MD).
 - [`docs/guides/ci-integration.md`](docs/guides/ci-integration.md) — CI

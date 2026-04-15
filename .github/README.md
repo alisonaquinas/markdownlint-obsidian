@@ -51,15 +51,13 @@ bun add markdownlint-obsidian
 ## Quick start
 
 ```bash
-# Lint every Markdown file under the current directory
-npx markdownlint-obsidian "**/*.md"
+# One-off run without installing globally
+npx markdownlint-obsidian-cli "**/*.md"
 
-# Fix auto-fixable issues in place
-npx markdownlint-obsidian --fix "**/*.md"
-
-# Machine-readable output for CI dashboards
-npx markdownlint-obsidian --output-formatter junit  "**/*.md" > junit.xml
-npx markdownlint-obsidian --output-formatter sarif  "**/*.md" > report.sarif
+# After a global or local install, invoke the published binary directly
+markdownlint-obsidian --fix "**/*.md"
+markdownlint-obsidian --output-formatter junit  "**/*.md" > junit.xml
+markdownlint-obsidian --output-formatter sarif  "**/*.md" > report.sarif
 ```
 
 The CLI auto-detects the Obsidian vault root by walking up from the
@@ -115,7 +113,7 @@ flowchart LR
 <summary>GitHub Actions — lint + upload SARIF to code scanning</summary>
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   id: lint
   with:
     globs: "**/*.md"

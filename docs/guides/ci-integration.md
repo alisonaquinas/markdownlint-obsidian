@@ -9,7 +9,7 @@ Pick whichever matches your pipeline's existing style.
 Drop this step into any workflow:
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   with:
     globs: "**/*.md"
     format: default
@@ -26,7 +26,7 @@ Inputs:
 ### SARIF + code scanning
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   id: lint
   with:
     format: sarif
@@ -107,15 +107,15 @@ If your pipeline already has Bun, swap `setup-node` for `setup-bun` and use
   with:
     bun-version: "1.1.30"
 - run: bun add -d markdownlint-obsidian
-- run: bunx markdownlint-obsidian "**/*.md"
+- run: bunx markdownlint-obsidian-cli "**/*.md"
 ```
 
 The published `dist/bin.mjs` carries a `#!/usr/bin/env node` shebang, which
-Bun respects. `bunx markdownlint-obsidian` works identically to
-`npx markdownlint-obsidian`.
+Bun respects. `bunx markdownlint-obsidian-cli` works identically to
+`npx markdownlint-obsidian-cli`.
 
 Consumer pipelines that use Node are **not affected** — the existing
-`npx markdownlint-obsidian` invocation continues to work as before.
+`npx markdownlint-obsidian-cli` invocation continues to work as before.
 
 ## Output formatters
 

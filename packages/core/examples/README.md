@@ -30,5 +30,5 @@ npx tsc examples/rules/require-frontmatter-status.ts \
 Or run the linter via `tsx` to load `.ts` files directly (dev only):
 
 ```bash
-npx tsx bin/markdownlint-obsidian.js "**/*.md"
+npx tsx packages/cli/bin/markdownlint-obsidian.js "**/*.md"
 ```
