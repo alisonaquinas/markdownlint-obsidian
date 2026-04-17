@@ -106,7 +106,7 @@ If your pipeline already has Bun, swap `setup-node` for `setup-bun` and use
 - uses: oven-sh/setup-bun@v2
   with:
     bun-version: "1.1.30"
-- run: bun add -d markdownlint-obsidian
+- run: bun add -d markdownlint-obsidian-cli
 - run: bunx markdownlint-obsidian-cli "**/*.md"
 ```
 
