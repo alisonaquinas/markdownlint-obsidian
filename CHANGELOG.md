@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-04-18
+
+### Fixed
+
+- MD028 (`no-blanks-blockquote`) added to `OFM_MD_CONFLICTS` and disabled by
+  default. Blank `>` lines between paragraphs inside OFM callouts are required
+  syntax — Obsidian needs them to keep paragraphs inside the callout. MD028
+  produced a false positive on every multi-paragraph callout.
+
 ### Changed
 
 - Development toolchain migrated to Bun 1.1+. CI, tests, and local dev scripts

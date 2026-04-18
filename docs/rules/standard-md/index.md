@@ -40,7 +40,7 @@ re-enable the rule if you need it.
 | MD025 | single-title                 | enabled   | —                                  |
 | MD026 | no-trailing-punctuation      | enabled   | —                                  |
 | MD027 | no-multiple-space-blockquote | enabled   | —                                  |
-| MD028 | no-blanks-blockquote         | enabled   | —                                  |
+| MD028 | no-blanks-blockquote         | **disabled** | [[MD028]]                       |
 | MD029 | ol-prefix                    | enabled   | —                                  |
 | MD030 | list-marker-space            | enabled   | —                                  |
 | MD031 | blanks-around-fences         | enabled   | —                                  |

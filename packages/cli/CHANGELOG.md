@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.8](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.0.7...markdownlint-obsidian-cliv1.0.8) (2026-04-18)
+
+### Bug Fixes
+
+* **core:** disable MD028 by default — blank `>` lines between paragraphs inside OFM callouts are required syntax; MD028 produced false positives on every multi-paragraph callout ([c6c1a09](https://github.com/alisonaquinas/markdownlint-obsidian/commit/c6c1a09c3c92e340cdc4ed82bf86f3408b6634ae))
+
 ## [1.0.7](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.0.6...markdownlint-obsidian-cliv1.0.7) (2026-04-14)
 
 
