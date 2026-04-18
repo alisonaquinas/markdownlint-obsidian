@@ -1,5 +1,10 @@
 # AGENTS.md — Guide for AI Agents Working in this Repository
 
+> **Scope guard** — This repository is at `C:\Users\aaqui\obsidian-stack\markdownlint-obsidian`.
+> It is a fully independent git repo. Never `cd` to the parent (`obsidian-stack/`) or run
+> any git, build, or file commands outside this directory. `origin` is
+> `git@github.com:alisonaquinas/markdownlint-obsidian.git`.
+
 Monorepo for `markdownlint-obsidian`: an Obsidian Flavored Markdown linter
 that runs in CI pipelines. Publishes two npm packages and one GitHub Action.
 
