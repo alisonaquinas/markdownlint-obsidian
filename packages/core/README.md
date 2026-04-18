@@ -12,6 +12,8 @@ npm install markdownlint-obsidian
 bun add markdownlint-obsidian
 ```
 
+Consumers can run the library under Node.js 20+ or Bun 1.1+.
+
 ## Programmatic API
 
 ```typescript
@@ -41,6 +43,16 @@ const formatter = getFormatter("sarif");
 const sarif = formatter(results);
 ```
 
+## Configuration and formatters
+
+- `loadConfig(cwd)` loads `.obsidian-linter.jsonc` from the working tree and
+  applies defaults.
+- `getFormatter(name)` returns one of the built-in output adapters:
+  `default`, `json`, `junit`, or `sarif`.
+- The public rule-authoring surface lives under
+  `markdownlint-obsidian/api`; the built-in rule catalog lives under
+  `markdownlint-obsidian/rules`.
+
 ## Exports
 
 | Sub-path | Contents |
@@ -49,6 +61,18 @@ const sarif = formatter(results);
 | `markdownlint-obsidian/api` | `LinterConfig`, `LintResult`, helpers |
 | `markdownlint-obsidian/rules` | Built-in rule definitions |
 | `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()` |
+
+## Developing in this monorepo
+
+```bash
+bun install
+cd packages/core
+bun test
+bun run build
+```
+
+See [`src/README.md`](src/README.md) for the layer map and
+[`examples/README.md`](examples/README.md) for custom-rule examples.
 
 ## License
 

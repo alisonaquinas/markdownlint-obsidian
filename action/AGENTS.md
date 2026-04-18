@@ -35,14 +35,14 @@ updating action dependencies.
 
 ### Adding an input
 
-1. Declare the input in `action.yml` (at the repo root).
+1. Declare the input in `../action.yml`.
 2. Read it with `core.getInput('<name>')` in `src/main.ts`.
 3. Pass it as a CLI flag to the spawned process.
 4. Document it in `action/README.md`.
 
 ### Adding an output
 
-1. Declare the output in `action.yml`.
+1. Declare the output in `../action.yml`.
 2. Set it with `core.setOutput('<name>', value)` in `src/main.ts`.
 3. Document it in `action/README.md`.
 

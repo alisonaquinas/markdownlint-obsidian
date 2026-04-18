@@ -80,7 +80,7 @@ Two fixes applied: OFM086 removed trailing whitespace from the `title` value; OF
 
 ```yaml
 - name: Check for auto-fixable violations
-  run: npx markdownlint-obsidian --fix-check "**/*.md"
+  run: npx markdownlint-obsidian-cli --fix-check "**/*.md"
   # Exits 1 if any fixable violation is present; forces authors to run --fix locally
 ```
 

@@ -169,14 +169,14 @@ Add your custom rule paths to `.obsidian-linter.jsonc` in your vault root. Paths
 
 ## Development Workflow
 
-### TypeScript — Bun (recommended)
+### Repo-local TypeScript development — Bun (recommended)
 
-With Bun as your runtime you can reference `.ts` rule files directly — no
-compilation or loader flags needed:
+From this monorepo checkout, Bun can execute the dev CLI entry directly, so
+you can reference `.ts` rule files without compiling them first:
 
 ```bash
 # Bun executes TypeScript natively
-bun /path/to/bin/markdownlint-obsidian.js "**/*.md"
+bun packages/cli/bin/markdownlint-obsidian.js "**/*.md"
 ```
 
 Your config can point at `.ts` source files as-is:
@@ -189,19 +189,20 @@ Your config can point at `.ts` source files as-is:
 }
 ```
 
-### TypeScript — Node + tsx (legacy)
+### Repo-local TypeScript development — Node + tsx
 
 If you are using Node without Bun, run the linter through `tsx` to load
 `.ts` rule files without a compile step:
 
 ```bash
 # Requires tsx installed: npm install -D tsx
-node --import tsx /path/to/bin/markdownlint-obsidian.js "**/*.md"
+node --import tsx packages/cli/bin/markdownlint-obsidian.js "**/*.md"
 ```
 
 ### Production Compilation
 
-For production, compile your rules to JavaScript first:
+For a published package or any non-repo-local workflow, compile your rules to
+JavaScript first and then invoke the installed CLI binary:
 
 ```bash
 tsc --module nodenext --outDir dist/rules src/rules/*.ts
@@ -215,6 +216,12 @@ Then update your config to reference the compiled output:
     "./dist/rules/require-frontmatter-status.js"
   ]
 }
+```
+
+Then run:
+
+```bash
+markdownlint-obsidian "**/*.md"
 ```
 
 ## Examples

@@ -46,6 +46,7 @@ reports/cucumber.json
 .eslintcache
 .stylelintcache
 .prettiercache
+.pre-commit-cache/
 .cache/
 .parcel-cache/
 .turbo/

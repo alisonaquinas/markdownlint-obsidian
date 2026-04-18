@@ -6,7 +6,7 @@ A JavaScript GitHub Action that lints Obsidian Flavored Markdown with
 ## Usage
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   with:
     globs: "**/*.md"
     format: default
@@ -33,7 +33,7 @@ A JavaScript GitHub Action that lints Obsidian Flavored Markdown with
 ## SARIF upload recipe
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
   with:
     format: sarif
   id: lint
@@ -54,3 +54,6 @@ npm run build
 ```
 
 CI enforces that `action/dist` is up to date via `git diff --exit-code`.
+
+The live action metadata is stored in [`action.yml`](action.yml), so consumer
+workflows must reference the subdirectory action path shown above.
