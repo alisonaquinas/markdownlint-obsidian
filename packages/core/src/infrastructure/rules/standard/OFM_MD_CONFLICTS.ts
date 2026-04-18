@@ -61,4 +61,11 @@ export const OFM_MD_CONFLICTS: readonly MdConflict[] = Object.freeze([
       "look like malformed ATX headings to markdownlint",
     docPage: "rules/standard-md/MD018.md",
   }),
+  Object.freeze({
+    code: "MD028",
+    reason:
+      "no-blanks-blockquote — blank lines between `>` lines are required " +
+      "OFM callout multi-paragraph syntax; removing them breaks rendering",
+    docPage: "rules/standard-md/MD028.md",
+  }),
 ]);
