@@ -121,7 +121,7 @@ jobs:
       matrix:
         pkg:
           - { dir: packages/core, tag_prefix: "packages/core" }
-          - { dir: packages/cli,  tag_prefix: "packages/cli"  }
+          - { dir: packages/cli, tag_prefix: "packages/cli" }
     steps:
       - uses: actions/checkout@v4
         if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)

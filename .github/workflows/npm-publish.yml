@@ -11,9 +11,9 @@ jobs:
   publish:
     uses: ./.github/workflows/_publish-packages.yml
     permissions:
-      id-token: write  # propagated to the reusable workflow's publish job for --provenance
+      id-token: write # propagated to the reusable workflow's publish job for --provenance
       contents: read
-      packages: write  # propagated to the reusable workflow's publish-ghcr-npm job
+      packages: write # propagated to the reusable workflow's publish-ghcr-npm job
     with:
       dry_run: false
       tag_name: ${{ github.event.release.tag_name }}
