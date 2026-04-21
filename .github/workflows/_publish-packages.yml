@@ -1,0 +1,162 @@
+name: Publish packages (reusable)
+
+# Reusable workflow — called by npm-publish.yml (real releases) and ci.yml
+# (dry-run on every PR/push).  Both paths exercise the same build and
+# prepare-publish logic; the only difference is the final npm publish flag.
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        description: >
+          When true, runs `npm publish --dry-run` so the full build +
+          prepare-publish pipeline is exercised without touching any registry.
+        type: boolean
+        default: false
+      tag_name:
+        description: >
+          Release tag name (e.g. packages/core@v1.0.3).  Determines which
+          package to publish.  Ignored when dry_run is true — both packages
+          are exercised.
+        type: string
+        default: ""
+
+jobs:
+  # ── Real publish ────────────────────────────────────────────────────────────
+  # Runs only when dry_run is false.  Uses the 'npm' environment for
+  # OIDC-based tokenless provenance publishing.
+  publish:
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write  # required for --provenance
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Upgrade npm to latest (required for tokenless provenance publishing)
+        run: npm install -g npm@latest
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.12"
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build core
+        run: bun run --filter markdownlint-obsidian build
+
+      - name: Build cli
+        run: bun run --filter markdownlint-obsidian-cli build
+
+      - name: Rewrite workspace:* deps to actual versions (core)
+        if: startsWith(inputs.tag_name, 'packages/core')
+        run: node scripts/prepare-publish.mjs packages/core
+
+      - name: Publish core
+        if: startsWith(inputs.tag_name, 'packages/core')
+        run: npm publish --access public --provenance
+        working-directory: packages/core
+
+      - name: Rewrite workspace:* deps to actual versions (cli)
+        if: startsWith(inputs.tag_name, 'packages/cli')
+        run: node scripts/prepare-publish.mjs packages/cli
+
+      - name: Publish cli
+        if: startsWith(inputs.tag_name, 'packages/cli')
+        run: npm publish --access public --provenance
+        working-directory: packages/cli
+
+  # ── Dry-run publish ─────────────────────────────────────────────────────────
+  # Runs only when dry_run is true.  No 'npm' environment, no OIDC token,
+  # no network publishing.  Both packages are always exercised so the full
+  # prepare-publish.mjs + tarball-creation path is validated on every PR.
+  publish-dry-run:
+    if: ${{ inputs.dry_run }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.12"
+
+      - run: bun install --frozen-lockfile
+
+      - name: Build core
+        run: bun run --filter markdownlint-obsidian build
+
+      - name: Build cli
+        run: bun run --filter markdownlint-obsidian-cli build
+
+      - name: Rewrite workspace:* deps to actual versions (core)
+        run: node scripts/prepare-publish.mjs packages/core
+
+      - name: Publish core [dry-run]
+        run: npm publish --access public --dry-run
+        working-directory: packages/core
+
+      - name: Rewrite workspace:* deps to actual versions (cli)
+        run: node scripts/prepare-publish.mjs packages/cli
+
+      - name: Publish cli [dry-run]
+        run: npm publish --access public --dry-run
+        working-directory: packages/cli
+
+  # ── GHCR npm publish ────────────────────────────────────────────────────────
+  # Runs only on real releases (after the npm publish succeeds).
+  # Publishes scoped @alisonaquinas variants to GitHub Packages.
+  publish-ghcr-npm:
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
+    needs: publish
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        pkg:
+          - { dir: packages/core, tag_prefix: "packages/core" }
+          - { dir: packages/cli,  tag_prefix: "packages/cli"  }
+    steps:
+      - uses: actions/checkout@v4
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+
+      - uses: oven-sh/setup-bun@v2
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+        with:
+          bun-version: "1.3.12"
+
+      - uses: actions/setup-node@v4
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+        with:
+          node-version: "20"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@alisonaquinas"
+
+      - name: Build
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+        run: bun install --frozen-lockfile && bun run --filter '*' build
+
+      - name: Rewrite workspace:* deps and name for scoped publish
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+        run: node scripts/prepare-publish.mjs ${{ matrix.pkg.dir }} @alisonaquinas
+
+      - name: Publish to GitHub Packages
+        if: startsWith(inputs.tag_name, matrix.pkg.tag_prefix)
+        working-directory: ${{ matrix.pkg.dir }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --access public

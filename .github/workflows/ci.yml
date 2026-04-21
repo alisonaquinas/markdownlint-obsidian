@@ -68,3 +68,16 @@ jobs:
       - name: Lint docs/ with published markdownlint-obsidian-cli
         working-directory: docs
         run: npx -y markdownlint-obsidian-cli@latest "**/*.md"
+
+  publish-dry-run:
+    # Dry-run the full publish pipeline (build → prepare-publish.mjs → npm
+    # publish --dry-run) for both packages on every PR and push.  Exercises
+    # the same code path as a real release without touching any registry, so
+    # packaging failures surface before merge rather than at release time.
+    needs: build-and-test
+    uses: ./.github/workflows/_publish-packages.yml
+    permissions:
+      contents: read
+    with:
+      dry_run: true
+      tag_name: ""

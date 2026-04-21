@@ -1,95 +1,19 @@
 name: Publish to npm
 
+# Thin caller — all publish logic lives in _publish-packages.yml so the same
+# pipeline can be dry-run in CI (ci.yml) and executed here on real releases.
+
 on:
   release:
     types: [published]
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    environment: npm
+    uses: ./.github/workflows/_publish-packages.yml
     permissions:
-      id-token: write
+      id-token: write  # propagated to the reusable workflow's publish job for --provenance
       contents: read
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Upgrade npm to latest (for tokenless trusted publishing)
-        run: npm install -g npm@latest
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: "1.3.12"
-
-      - run: bun install --frozen-lockfile
-
-      - name: Build core
-        run: bun run --filter markdownlint-obsidian build
-
-      - name: Build cli
-        run: bun run --filter markdownlint-obsidian-cli build
-
-      - name: Rewrite workspace:* deps to actual versions (core)
-        if: startsWith(github.event.release.tag_name, 'packages/core')
-        run: node scripts/prepare-publish.mjs packages/core
-
-      - name: Publish core (if core release tag)
-        if: startsWith(github.event.release.tag_name, 'packages/core')
-        run: npm publish --access public --provenance
-        working-directory: packages/core
-
-      - name: Rewrite workspace:* deps to actual versions (cli)
-        if: startsWith(github.event.release.tag_name, 'packages/cli')
-        run: node scripts/prepare-publish.mjs packages/cli
-
-      - name: Publish cli (if cli release tag)
-        if: startsWith(github.event.release.tag_name, 'packages/cli')
-        run: npm publish --access public --provenance
-        working-directory: packages/cli
-
-  publish-ghcr-npm:
-    runs-on: ubuntu-latest
-    needs: publish
-    permissions:
-      contents: read
-      packages: write
-    strategy:
-      fail-fast: false
-      matrix:
-        pkg:
-          - { dir: packages/core, tag_prefix: "packages/core" }
-          - { dir: packages/cli, tag_prefix: "packages/cli" }
-    steps:
-      - uses: actions/checkout@v4
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-
-      - uses: oven-sh/setup-bun@v2
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-        with:
-          bun-version: "1.3.12"
-
-      - uses: actions/setup-node@v4
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-        with:
-          node-version: "20"
-          registry-url: "https://npm.pkg.github.com"
-          scope: "@alisonaquinas"
-
-      - name: Build
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-        run: bun install --frozen-lockfile && bun run --filter '*' build
-
-      - name: Rewrite workspace:* deps and name for scoped publish
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-        run: node scripts/prepare-publish.mjs ${{ matrix.pkg.dir }} @alisonaquinas
-
-      - name: Publish to GitHub Packages
-        if: startsWith(github.event.release.tag_name, matrix.pkg.tag_prefix)
-        working-directory: ${{ matrix.pkg.dir }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --access public
+      packages: write  # propagated to the reusable workflow's publish-ghcr-npm job
+    with:
+      dry_run: false
+      tag_name: ${{ github.event.release.tag_name }}
