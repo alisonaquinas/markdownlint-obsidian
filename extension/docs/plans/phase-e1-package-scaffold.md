@@ -54,6 +54,24 @@ will contain production extension source.
 - contribute configuration keys with documented defaults;
 - point `main` at generated build output.
 
+## Build Script Requirements
+
+Match the Flavor Grenade extension package shape unless an ADR records a
+different extension toolchain:
+
+- `main` points to `./dist/extension.js`;
+- `vscode:prepublish` runs the extension build;
+- `compile` runs typecheck and build;
+- `check-types` runs `tsc --noEmit`;
+- `build:extension` bundles `src/extension.ts` with esbuild for Node and marks
+  `vscode` external;
+- `@vscode/vsce` is the packaging tool used by release automation.
+
+The Flavor Grenade extension also cross-compiles and bundles a platform server
+binary before packaging. This extension should not copy that step while
+Flavor Grenade remains an installed extension dependency and
+`markdownlint-obsidian` runs as TypeScript/JavaScript in the extension host.
+
 ## Implementation Tasks
 
 - [ ] Add `extension` to the root workspace list if the package should be
@@ -62,6 +80,8 @@ will contain production extension source.
   dependencies, and extension manifest fields.
 - [ ] Add TypeScript configs extending the root strict baseline.
 - [ ] Add bundler configuration or build script.
+- [ ] Add `vscode:prepublish`, `compile`, `check-types`, and
+  `build:extension` scripts aligned with Flavor Grenade's extension package.
 - [ ] Add minimal `activate` and `deactivate` exports.
 - [ ] Register placeholder output channel and command handlers.
 - [ ] Add unit test harness with Bun.

@@ -17,7 +17,7 @@ classification through the `ofmarkdown` language id.
 | E4 | [Fixes and rule help](plans/phase-e4-fixes-and-rule-help.md) | quick fixes, fix-all, fix preview, and rule documentation links work |
 | E5 | [Workspace commands and trust](plans/phase-e5-workspace-commands-and-trust.md) | command palette workflows, output channel, trust policy, and unsupported mode handling work |
 | E6 | [Packaging and CI](plans/phase-e6-packaging-and-ci.md) | CI runs extension gates and produces a locally smoke-tested VSIX |
-| E7 | [Hardening and marketplace readiness](plans/phase-e7-hardening-and-marketplace.md) | release metadata, docs, telemetry posture, and manual validation are ready for Marketplace publication |
+| E7 | [Hardening and marketplace readiness](plans/phase-e7-hardening-and-marketplace.md) | release metadata, docs, telemetry posture, Flavor Grenade-aligned publishing, and manual validation are ready for Marketplace publication |
 
 ## Delivery Principles
 
@@ -54,7 +54,7 @@ E0 planning
 | live diagnostics pass extension-host smoke tests | E4 and E5 start |
 | command and trust behavior has integration coverage | E6 starts |
 | VSIX package installs and activates locally | E7 starts |
-| release checklist and metadata checks pass | Marketplace release |
+| Flavor Grenade-aligned `ext-v*` workflow, release checklist, and metadata checks pass | Marketplace release |
 
 ## Current Status
 
