@@ -13,7 +13,10 @@ import { describe, expect, it } from "bun:test";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { runAction, type ActionRuntime } from "../src/main.js";
+
+const ACTION_ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 interface Harness {
   readonly outputs: Map<string, string>;
@@ -93,7 +96,7 @@ function fakeNpxContent(): string {
 }
 
 function nodeSmokeCommand(bundle: string): string[] {
-  if (process.platform !== "win32") return ["node", bundle];
+  if (process.platform !== "win32") return ["/usr/bin/env", "node", bundle];
   return [process.env.ComSpec ?? "C:\\Windows\\System32\\cmd.exe", "/d", "/c", "node", bundle];
 }
 
@@ -167,10 +170,10 @@ describe("GitHub Action wrapper", () => {
     const output = path.join(tmp, "github-output.txt");
     try {
       await installFakeNpx(tmp);
-      const bundle = path.resolve("action", "dist", "main.mjs");
+      const bundle = path.join(ACTION_ROOT, "dist", "main.mjs");
       const proc = Bun.spawn({
         cmd: nodeSmokeCommand(bundle),
-        cwd: path.resolve("action"),
+        cwd: ACTION_ROOT,
         env: smokeEnv(tmp, output),
         stdout: "pipe",
         stderr: "pipe",
