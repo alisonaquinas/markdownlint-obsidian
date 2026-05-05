@@ -13,6 +13,7 @@ language modes, packaging, tests, and release behavior.
 | Directory / File | Contents |
 | :--- | :--- |
 | [architecture/](architecture/overview.md) | Extension architecture, boundaries, and data flow |
+| [bdd/](bdd/README.md) | Behavior-domain scenarios and traceability |
 | [ddd/](ddd/README.md) | Extension bounded contexts and ubiquitous language |
 | [requirements/](requirements/index.md) | User and functional requirements for the extension |
 | [plans/](plans/index.md) | Extension delivery plans and execution notes |

@@ -12,6 +12,7 @@ extension/docs/
 ├── README.md              # index of this extension documentation tree
 ├── AGENTS.md              # this file
 ├── architecture/          # extension architecture and data-flow notes
+├── bdd/                   # behavior scenarios and traceability
 ├── ddd/                   # extension bounded contexts and ubiquitous language
 ├── requirements/          # user and functional requirements
 ├── plans/                 # delivery plans and execution notes
@@ -35,6 +36,14 @@ extension/docs/
    when the requirement describes commands, settings, diagnostics, lifecycle,
    packaging, or integration behavior.
 3. Link functional requirements back to user requirements when possible.
+
+### Adding Extension BDD
+
+1. Add shared-review behavior scenarios under `extension/docs/bdd/features/`.
+2. Use terms from `extension/docs/ddd/ubiquitous-language.md`.
+3. Link new scenarios to requirements in `extension/docs/bdd/traceability.md`.
+4. Keep core lint-rule examples in root `docs/bdd/`; extension BDD should cover
+   editor integration behavior.
 
 ### Adding Extension Plans
 
