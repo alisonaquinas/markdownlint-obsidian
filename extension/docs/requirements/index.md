@@ -27,16 +27,12 @@ User requirements live under [user/](user/index.md).
 
 ## Functional Requirements
 
-Planned functional requirement documents should live under
-`extension/docs/requirements/functional/`.
+Functional requirements live under [functional/](functional/index.md).
 
-Initial functional needs:
-
-- Declare `alisonaquinas.flavor-grenade-lsp` as an installed extension dependency.
-- Activate live linting for `ofmarkdown` files.
-- Maintain a `DiagnosticCollection` owned by the extension.
-- Debounce document linting to avoid excessive work while typing.
-- Convert core line and column positions into VS Code ranges.
-- Register code actions only for diagnostics that carry safe fixes.
-- Respect workspace trust and virtual workspace declarations.
-- Provide testable adapters around VS Code APIs.
+| File | Focus |
+| :--- | :--- |
+| [functional/editing-linting.md](functional/editing-linting.md) | Flavor Grenade dependency, activation, eligibility, triggers, config, diagnostics |
+| [functional/fixes-formatting.md](functional/fixes-formatting.md) | Code actions, quick fixes, fix-all, fix-check preview, formatting boundary, rule help |
+| [functional/workspace-commands.md](functional/workspace-commands.md) | Workspace lint, config opening, temporary disable, config watchers |
+| [functional/contributions-and-trust.md](functional/contributions-and-trust.md) | Manifest contributions, schemas, workspace trust, custom rule trust, file-system strategy |
+| [functional/test-derived.md](functional/test-derived.md) | Error reporting and metadata consistency |
