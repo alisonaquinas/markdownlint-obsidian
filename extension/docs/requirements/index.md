@@ -13,6 +13,7 @@ Requirements for the planned VS Code extension.
 | Workspace trust | Define behavior in trusted, untrusted, local, remote, and virtual workspaces |
 | Packaging | Define VSIX contents, build artifacts, and CI checks |
 | Testing | Cover activation, diagnostics, fixes, config, and workspace command smoke paths |
+| Architecture | Define extension structure, dependency boundaries, and quality gates |
 
 ## User Requirements
 
@@ -36,3 +37,7 @@ Functional requirements live under [functional/](functional/index.md).
 | [functional/workspace-commands.md](functional/workspace-commands.md) | Workspace lint, config opening, temporary disable, config watchers |
 | [functional/contributions-and-trust.md](functional/contributions-and-trust.md) | Manifest contributions, schemas, workspace trust, custom rule trust, file-system strategy |
 | [functional/test-derived.md](functional/test-derived.md) | Error reporting and metadata consistency |
+
+## Architecture Requirements
+
+Architecture requirements live under [architecture/](architecture/index.md).

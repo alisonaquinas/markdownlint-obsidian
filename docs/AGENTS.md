@@ -32,6 +32,7 @@ docs/
 │   ├── custom-rules.md
 │   └── public-api.md
 ├── adr/                   # Architecture Decision Records (ADR001–ADR007)
+├── architecture/          # Binding architecture policy docs
 ├── ddd/
 │   ├── ubiquitous-language.md
 │   ├── bounded-contexts.md

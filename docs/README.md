@@ -9,6 +9,7 @@ Long-form reference and design documentation for `markdownlint-obsidian`.
 | [rules/](rules/index.md) | Per-rule reference for every OFM and standard-MD override rule |
 | [guides/](guides/) | Task-oriented guides for users and integrators |
 | [adr/](adr/) | Architecture Decision Records |
+| [architecture/](architecture/README.md) | Binding architecture policies for source, docs, tests, and tooling |
 | [ddd/](ddd/) | Domain model, bounded contexts, ubiquitous language |
 | [plans/](plans/) | Phase execution plans and the delivery ledger |
 | [bdd/](bdd/) | Acceptance features and step definitions used by the smoke suite |
