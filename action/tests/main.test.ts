@@ -170,6 +170,9 @@ describe("GitHub Action wrapper", () => {
     const output = path.join(tmp, "github-output.txt");
     try {
       await installFakeNpx(tmp);
+      // @actions/core expects the runner-provided GITHUB_OUTPUT file to exist
+      // before setOutput writes file commands into it.
+      await Bun.write(output, "");
       const bundle = path.join(ACTION_ROOT, "dist", "main.mjs");
       const proc = Bun.spawn({
         cmd: nodeSmokeCommand(bundle),
