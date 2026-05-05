@@ -11,6 +11,14 @@
 import * as path from "node:path";
 import { makeVaultPath, type VaultPath } from "../../domain/vault/VaultPath.js";
 
+/**
+ * Convert an absolute filesystem path into a domain {@link VaultPath}.
+ *
+ * @param vaultRoot - Absolute or process-relative vault root.
+ * @param absolute - Absolute or process-relative file path expected inside the vault.
+ * @returns A frozen VaultPath with POSIX-relative identity and native absolute path.
+ * @throws Error when `absolute` resolves outside `vaultRoot`.
+ */
 export function makeNodeVaultPath(vaultRoot: string, absolute: string): VaultPath {
   const normalizedRoot = path.resolve(vaultRoot);
   const normalizedAbs = path.resolve(absolute);

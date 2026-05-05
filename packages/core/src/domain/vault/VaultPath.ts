@@ -24,6 +24,13 @@ export interface VaultPath {
 /**
  * Construct a {@link VaultPath} from boundary-normalised path fields.
  *
+ * This factory deliberately does not resolve filesystem paths. Infrastructure
+ * adapters must prove containment and pass a vault-relative path here so the
+ * domain layer stays independent of Node.js runtime APIs.
+ *
+ * @param relative - Vault-relative path, accepted with either slash style.
+ * @param absolute - Boundary-provided absolute path retained for I/O adapters.
+ * @returns Frozen VaultPath with POSIX-style `relative` and derived `stem`.
  * @throws Error when `relative` is empty or attempts to escape the vault.
  */
 export function makeVaultPath(relative: string, absolute: string): VaultPath {

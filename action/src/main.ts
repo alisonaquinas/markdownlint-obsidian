@@ -1,3 +1,17 @@
+/**
+ * Purpose: GitHub Action adapter for the npm-distributed markdownlint-obsidian CLI.
+ *
+ * Provides: {@link runAction}, {@link ActionRuntime}
+ *
+ * Role in system: Reads action metadata inputs, invokes `markdownlint-obsidian-cli`
+ * through `npx`, emits GitHub Action outputs, and translates CLI exit semantics into
+ * workflow pass/fail status without reimplementing linting or formatting logic.
+ *
+ * Constraints: The default runtime must stay Node 20-compatible and ESM-safe because
+ * `action/action.yml` points directly at the bundled `dist/main.mjs` file.
+ *
+ * @module action/main
+ */
 import * as core from "@actions/core";
 import { spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -18,6 +32,12 @@ interface CommandResult {
   readonly stderr: string;
 }
 
+/**
+ * Runtime boundary for tests and production action execution.
+ *
+ * Production uses `@actions/core`, process streams, and `npx`; tests inject this
+ * interface so action behavior can be verified without shelling out to npm.
+ */
 export interface ActionRuntime {
   readonly cwd: string;
   readonly getInput: (name: string) => string;
@@ -70,6 +90,7 @@ function countJsonResults(stdout: string): Counts {
   );
 }
 
+/** Run one CLI invocation using the same argument shape exposed by the action inputs. */
 async function runCli(
   runtime: ActionRuntime,
   inputs: ActionInputs,
@@ -100,6 +121,9 @@ async function runCountPass(
   runtime: ActionRuntime,
   inputs: ActionInputs,
 ): Promise<{ readonly counts: Counts; readonly jsonRun: CommandResult } | null> {
+  // The JSON pass is the action's only structured data source. Human-readable
+  // formatters are intentionally not parsed because their output is a UI
+  // contract, not a stable machine contract.
   const jsonRun = await runCli(runtime, inputs, "json");
   if (jsonRun.exitCode === 2) {
     if (jsonRun.stderr) runtime.writeStderr(jsonRun.stderr);
@@ -174,6 +198,8 @@ function runNpxCli(args: readonly string[], cwd: string): Promise<CommandResult>
   return new Promise((resolve) => {
     const baseArgs = ["-y", "markdownlint-obsidian-cli@latest", ...args];
     const command = process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "npx";
+    // npm installs `npx.cmd` on Windows. Launching it through cmd.exe avoids
+    // CreateProcess failures that can occur when spawning .cmd files directly.
     const finalArgs =
       process.platform === "win32" ? ["/d", "/c", "npx.cmd", ...baseArgs] : baseArgs;
     const child = spawn(command, finalArgs, {

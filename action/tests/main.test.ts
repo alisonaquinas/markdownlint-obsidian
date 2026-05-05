@@ -1,3 +1,14 @@
+/**
+ * Purpose: Unit and smoke tests for the GitHub Action adapter.
+ *
+ * Provides: runtime-injected tests for outputs, failure semantics, SARIF output,
+ * and a Node startup smoke for the committed action bundle.
+ *
+ * Role in system: Proves the action remains a thin wrapper around CLI invocations
+ * while its GitHub-specific contract stays testable without network or npm access.
+ *
+ * @module action/tests/main.test
+ */
 import { describe, expect, it } from "bun:test";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import * as os from "node:os";
@@ -13,6 +24,13 @@ interface Harness {
   readonly runtime: ActionRuntime;
 }
 
+/**
+ * Build an injected action runtime that records GitHub Action side effects.
+ *
+ * @param inputs - Action input values returned by `core.getInput`.
+ * @param runs - Ordered fake CLI command results consumed by `runCommand`.
+ * @returns Captured outputs, failures, streams, writes, and runtime adapter.
+ */
 function makeHarness(
   inputs: Record<string, string>,
   runs: readonly { readonly exitCode: number; readonly stdout: string; readonly stderr?: string }[],
@@ -63,10 +81,12 @@ async function installFakeNpx(dir: string): Promise<void> {
   }
 }
 
+/** Platform-specific executable name used by the action's default npx runner. */
 function fakeNpxName(): string {
   return process.platform === "win32" ? "npx.cmd" : "npx";
 }
 
+/** Minimal `npx` replacement used by the built-bundle smoke test. */
 function fakeNpxContent(): string {
   if (process.platform === "win32") return "@echo off\r\necho []\r\nexit /b 0\r\n";
   return "#!/usr/bin/env sh\necho '[]'\nexit 0\n";

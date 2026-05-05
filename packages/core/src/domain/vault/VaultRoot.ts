@@ -16,7 +16,12 @@
  */
 export type VaultRoot = string & { readonly __brand: "VaultRoot" };
 
-/** Brand a boundary-normalised absolute directory as a {@link VaultRoot}. */
+/**
+ * Brand a boundary-normalised absolute directory as a {@link VaultRoot}.
+ *
+ * This function is intentionally a cast only. Filesystem resolution belongs at
+ * the infrastructure boundary so domain code can stay runtime-neutral.
+ */
 export function toVaultRoot(absoluteDir: string): VaultRoot {
   return absoluteDir as VaultRoot;
 }

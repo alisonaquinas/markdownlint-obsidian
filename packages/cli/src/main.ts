@@ -49,17 +49,26 @@ export const EXIT_CODES = Object.freeze({
 } as const);
 
 export interface CliRunResult {
+  /** CLI-compatible exit code: 0 for clean, 1 for lint findings, 2 for tool failure. */
   readonly exitCode: number;
+  /** Formatter output that the binary would write to stdout. */
   readonly stdout: string;
+  /** Diagnostics that the binary would write to stderr. */
   readonly stderr: string;
+  /** Final lint results after the requested lint or fix pipeline completes. */
   readonly results: readonly LintResult[];
+  /** Initial lint results before fixes are applied; empty for plain lint runs. */
   readonly firstPass: readonly LintResult[];
+  /** Vault-relative files changed, or that would change under `--fix-check`. */
   readonly filesFixed: readonly string[];
+  /** Count of final-pass findings with `severity: "error"`. */
   readonly errorCount: number;
+  /** Count of final-pass findings with `severity: "warning"`. */
   readonly warningCount: number;
 }
 
 export interface RunCliOptions {
+  /** Working directory used for config discovery and glob resolution. */
   readonly cwd?: string;
 }
 
@@ -79,6 +88,17 @@ export async function main(argv: string[]): Promise<number> {
   return result.exitCode;
 }
 
+/**
+ * Programmatic CLI entry point.
+ *
+ * Uses the same parser, config loading, lint/fix pipeline, formatter output,
+ * and exit-code semantics as the binary, but captures stdout/stderr and returns
+ * structured results for adapters such as the GitHub Action.
+ *
+ * @param argv - Full argument vector, including node/script placeholders.
+ * @param options.cwd - Optional working directory override for tests/adapters.
+ * @returns Captured output, final results, fix metadata, counts, and exit code.
+ */
 export async function runCli(argv: string[], options: RunCliOptions = {}): Promise<CliRunResult> {
   const sink = makeOutputSink();
   const program = buildProgram();

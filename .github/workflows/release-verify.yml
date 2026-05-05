@@ -32,6 +32,9 @@ jobs:
           mkdir /tmp/core-export-test && cd /tmp/core-export-test
           npm init -y
           npm install "markdownlint-obsidian@${VERSION}"
+          # Verify every documented subpath export from a clean consumer project,
+          # not from the monorepo checkout. This catches missing dist files and
+          # package `exports` drift after publish.
           node --input-type=module <<'EOF'
           await import('markdownlint-obsidian');
           await import('markdownlint-obsidian/api');

@@ -1,4 +1,16 @@
 #!/usr/bin/env node
+/**
+ * Purpose: Verify npm tarball contents before publish.
+ *
+ * Provides: package-level `npm pack --dry-run --json` assertions for core and CLI.
+ *
+ * Role in system: Runs in CI and `bun run test:packaging` to catch missing
+ * runtime files, missing LICENSE files, agent-only documentation leaks, and a
+ * broken CLI bin shebang before release.
+ *
+ * Constraints: Uses npm's pack metadata instead of filesystem globs so the
+ * check reflects the actual package `files` rules consumers receive.
+ */
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -21,6 +33,8 @@ let failed = false;
 
 for (const pkg of packages) {
   const command = process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "npm";
+  // On Windows, npm is commonly a .cmd shim; running through cmd.exe keeps the
+  // packaging check usable in the same local shell developers use for releases.
   const args =
     process.platform === "win32"
       ? ["/d", "/c", "npm", "pack", "--dry-run", "--json"]
@@ -40,6 +54,8 @@ for (const pkg of packages) {
   }
 
   for (const filePath of paths) {
+    // `files` entries can include nested paths, so test suffixes rather than
+    // just basenames to catch `src/AGENTS.md` and similar agent-only leaks.
     if (pkg.forbidden.some((forbidden) => filePath.endsWith(forbidden))) {
       console.error(`${pkg.dir}: forbidden file ${filePath}`);
       failed = true;
