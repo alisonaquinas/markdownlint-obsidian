@@ -17,9 +17,9 @@ on:
         default: false
       tag_name:
         description: >
-          Release tag name (e.g. packages/core@v1.0.3).  Determines which
-          package to publish.  Ignored when dry_run is true — both packages
-          are exercised.
+          Release tag name. Determines which package to publish. Core tags use
+          markdownlint-obsidianv* and CLI tags use markdownlint-obsidian-cliv*.
+          Ignored when dry_run is true — both packages are exercised.
         type: string
         default: ""
 
@@ -54,20 +54,20 @@ jobs:
         run: bun run --filter markdownlint-obsidian-cli build
 
       - name: Rewrite workspace:* deps to actual versions (core)
-        if: startsWith(inputs.tag_name, 'packages/core')
+        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
         run: node scripts/prepare-publish.mjs packages/core
 
       - name: Publish core
-        if: startsWith(inputs.tag_name, 'packages/core')
+        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
         run: npm publish --access public --provenance
         working-directory: packages/core
 
       - name: Rewrite workspace:* deps to actual versions (cli)
-        if: startsWith(inputs.tag_name, 'packages/cli')
+        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
         run: node scripts/prepare-publish.mjs packages/cli
 
       - name: Publish cli
-        if: startsWith(inputs.tag_name, 'packages/cli')
+        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
         run: npm publish --access public --provenance
         working-directory: packages/cli
 

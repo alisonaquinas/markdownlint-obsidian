@@ -17,20 +17,18 @@ jobs:
           node-version: "20"
 
       - name: Install cli from npmjs.org and verify version
-        if: startsWith(github.event.release.tag_name, 'packages/cli')
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')
         run: |
-          VERSION="${GITHUB_REF_NAME#packages/cli}"
-          VERSION="${VERSION#v}"
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidian-cliv}"
           npm install -g "markdownlint-obsidian-cli@${VERSION}"
           OUT=$(markdownlint-obsidian --version)
           echo "$OUT"
           echo "$OUT" | grep -q "${VERSION}"
 
       - name: Audit npm signatures (verifies provenance)
-        if: startsWith(github.event.release.tag_name, 'packages/cli')
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')
         run: |
-          VERSION="${GITHUB_REF_NAME#packages/cli}"
-          VERSION="${VERSION#v}"
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidian-cliv}"
           mkdir /tmp/audit-test && cd /tmp/audit-test
           npm init -y
           npm install "markdownlint-obsidian-cli@${VERSION}"
