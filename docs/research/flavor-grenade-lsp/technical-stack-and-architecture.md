@@ -189,7 +189,7 @@ to reopen the document. It also registers the language client for both
 `markdown` and `ofmarkdown`, so LSP features continue during and after
 promotion.
 
-This is directly relevant to `markdownlint-obsidian`: a future extension should
+This is directly relevant to `markdownlint-obsidian`: the extension should
 avoid hijacking generic Markdown files unless the repo explicitly decides that
 all Markdown should receive Obsidian-aware linting.
 

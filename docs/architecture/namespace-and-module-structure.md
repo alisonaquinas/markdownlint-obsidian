@@ -20,7 +20,7 @@ map to one domain or adapter concept.
 | `packages/core/src/public/` | Stable public API exports |
 | `packages/cli/` | Commander CLI adapter |
 | `action/` | GitHub Action adapter and bundled artifact |
-| `extension/` | Future VS Code extension and extension docs |
+| `extension/` | VS Code extension package and extension docs |
 
 ## Design Rules
 

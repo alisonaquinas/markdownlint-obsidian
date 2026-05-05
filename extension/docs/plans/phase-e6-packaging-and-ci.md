@@ -76,7 +76,7 @@ adapter to a packaged binary or server runtime.
 - [ ] Skip Marketplace publish for `ext-v*...-test*` tags after package,
   checksum, and attestation steps complete.
 - [ ] Add metadata consistency checks for package version, engine version,
-  schema version, README links, changelog links, and rule docs.
+  schema path, README links, changelog links, and rule docs.
 - [ ] Update [../tests/automation.md](../tests/automation.md) with final
   commands.
 - [ ] Update pre-commit documentation if extension source adds new fast hooks.

@@ -217,6 +217,7 @@ class ExtensionRuntime {
   private async fixAll(): Promise<void> {
     const doc = vscode.window.activeTextEditor?.document;
     if (doc === undefined) return;
+    if (!this.canWriteFixes()) return;
     const fixed = await this.fixedText(doc);
     if (fixed === null || fixed === doc.getText()) return;
     const full = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
@@ -274,7 +275,7 @@ class ExtensionRuntime {
       (entry) => entry.ruleCode === code && entry.message === diagnostic.message,
     );
     const actions: vscode.CodeAction[] = [];
-    if (error?.fix !== undefined)
+    if (error?.fix !== undefined && vscode.workspace.isTrusted)
       actions.push(this.quickFixAction(document, diagnostic, error as FixableError));
     const helpUrl = ruleDocumentationUrl(code);
     if (helpUrl !== null) actions.push(this.helpAction(code, helpUrl));
@@ -319,6 +320,13 @@ class ExtensionRuntime {
     );
     action.command = { command: COMMANDS.fixAll, title: "Fix All" };
     return action;
+  }
+
+  private canWriteFixes(): boolean {
+    if (vscode.workspace.isTrusted) return true;
+    this.output.appendLine("Workspace trust is required before applying file-writing fixes.");
+    this.output.show(true);
+    return false;
   }
 
   private async openRuleHelp(code: string, explicitUrl?: string): Promise<void> {

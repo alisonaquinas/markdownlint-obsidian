@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/alisonaquinas/markdownlint-obsidian/main/extension/schemas/obsidian-linter.schema.json",
+  "title": "markdownlint-obsidian configuration",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "vaultRoot": {
+      "type": "string",
+      "description": "Workspace-relative or absolute Obsidian vault root."
+    },
+    "resolve": {
+      "type": "boolean",
+      "description": "Enable vault-aware wikilink, embed, and block-reference resolution."
+    },
+    "globs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Markdown file globs to lint."
+    },
+    "ignores": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Glob patterns excluded from linting."
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "description": "Rule toggles and per-rule options keyed by rule code."
+    },
+    "customRules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Module paths for custom OFM rules. Loaded only when workspace trust allows it."
+    },
+    "wikilinks": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "embeds": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "callouts": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "tags": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "frontmatter": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "blockRefs": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "highlights": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "comments": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

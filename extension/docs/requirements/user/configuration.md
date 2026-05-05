@@ -25,9 +25,9 @@ Source trace:
 
 ```text
 Tag: UserMarkdownlintObsidian.SchemaAssistance
-Need: As a repository maintainer, I need schema validation and completion while editing linter config, so bad config is caught before diagnostics disappear or drift from CI.
+Need: As a repository maintainer, I need schema validation and completion while editing JSON or JSONC linter config, so bad config is caught before diagnostics disappear or drift from CI.
 Capability basis: `LinterConfig` is a typed, validated shape consumed by every lint run.
-Acceptance cue: Supported JSONC and YAML config filenames receive schema-backed validation for top-level config, rule toggles, globs, ignores, vault root, and family options.
+Acceptance cue: Supported JSON and JSONC config filenames receive schema-backed validation for top-level config, rule toggles, globs, ignores, vault root, and family options. YAML config files remain loadable by the core engine but are not schema-backed by the first VS Code package.
 ```
 
 Source trace:

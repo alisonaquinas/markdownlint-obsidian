@@ -72,6 +72,45 @@
       {
         "command": "markdownlintObsidian.previewFixes",
         "title": "markdownlint Obsidian: Preview Fixes"
+      },
+      {
+        "command": "markdownlintObsidian.fixAll",
+        "title": "markdownlint Obsidian: Fix All Problems"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "markdownlintObsidian.lintWorkspace"
+        },
+        {
+          "command": "markdownlintObsidian.openConfig"
+        },
+        {
+          "command": "markdownlintObsidian.disable"
+        },
+        {
+          "command": "markdownlintObsidian.enable"
+        },
+        {
+          "command": "markdownlintObsidian.previewFixes"
+        },
+        {
+          "command": "markdownlintObsidian.fixAll"
+        }
+      ]
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "**/.obsidian-linter.jsonc",
+          "**/.obsidian-linter.json",
+          "**/.markdownlint-cli2.jsonc",
+          "**/.markdownlint.jsonc",
+          "**/obsidian-linter.config.jsonc",
+          "**/obsidian-linter.config.json"
+        ],
+        "url": "./schemas/obsidian-linter.schema.json"
       }
     ],
     "configuration": {

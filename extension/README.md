@@ -23,6 +23,7 @@ Flavor Grenade extension.
 - Workspace lint command.
 - Open configuration command for `.obsidian-linter.jsonc` and related config
   names.
+- JSON schema validation for supported JSON and JSONC config filenames.
 - Session-only live diagnostics disable and enable commands.
 - Rule documentation links for built-in OFM and standard Markdown rules.
 
@@ -40,6 +41,8 @@ Flavor Grenade extension.
 
 Built-in linting can run in restricted mode. Custom rules are blocked unless
 the workspace is trusted, because custom rule modules execute workspace code.
+Applying fixes also requires a trusted workspace. Fix preview remains available
+because it does not edit the document.
 
 Virtual and untitled documents are not linted automatically. The extension
 reports unsupported document modes instead of probing or writing unexpectedly.

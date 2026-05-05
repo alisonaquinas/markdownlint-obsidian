@@ -17,9 +17,9 @@ of the package workspace.
 ```text
 Tag: PackageArchitecture.CoreOwnsLinting
 Gist: Keep all linting behavior in the core package.
-Ambition: The CLI, GitHub Action, and future VS Code extension reuse one rule engine instead of duplicating behavior.
+Ambition: The CLI, GitHub Action, and VS Code extension reuse one rule engine instead of duplicating behavior.
 Scale: Percentage of linting, parsing, rule, fix, config, vault, and formatter behavior implemented in `packages/core` or exposed through its public engine/API.
-Meter: Import-boundary review and tests for changes touching `packages/cli`, `action`, or future `extension` code, verifying they call core APIs rather than reimplementing lint behavior.
+Meter: Import-boundary review and tests for changes touching `packages/cli`, `action`, or `extension` code, verifying they call core APIs rather than reimplementing lint behavior.
 Fail: Any adapter package implements OFM parsing, rule logic, config merging, vault resolution, or fix application outside core.
 Goal: 100% of lint behavior lives in `packages/core` or is delegated to `packages/core`.
 Stakeholders: Package consumers, CLI users, extension maintainers.

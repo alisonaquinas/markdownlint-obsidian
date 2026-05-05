@@ -9,7 +9,7 @@ the TinyQuant architecture policy set and translated to this TypeScript/Bun
 monorepo.
 
 These policies are not aspirational notes. They define the shape code should
-take in `packages/core`, `packages/cli`, `action`, and future extension work.
+take in `packages/core`, `packages/cli`, `action`, and extension work.
 When a policy conflicts with practical reality, update the policy instead of
 silently bypassing it.
 

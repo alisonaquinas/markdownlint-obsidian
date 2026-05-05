@@ -20,4 +20,15 @@ describe("extension manifest", () => {
     expect(dependencies["markdownlint-obsidian"]).toBeDefined();
     expect(dependencies["markdownlint-obsidian-cli"]).toBeUndefined();
   });
+
+  it("contributes command palette entries and config schema validation", () => {
+    const commands = manifest.contributes.commands.map((command) => command.command);
+    const palette = manifest.contributes.menus.commandPalette.map((entry) => entry.command);
+
+    expect(commands).toContain("markdownlintObsidian.fixAll");
+    expect(palette).toEqual(expect.arrayContaining(commands));
+    expect(manifest.contributes.jsonValidation[0]?.url).toBe(
+      "./schemas/obsidian-linter.schema.json",
+    );
+  });
 });

@@ -64,6 +64,15 @@ if (existsSync(extensionPackagePath)) {
   if (!activationEvents.includes("onLanguage:ofmarkdown")) {
     failures.push("extension/package.json is missing onLanguage:ofmarkdown");
   }
+
+  if (!Array.isArray(packageJson.contributes?.jsonValidation)) {
+    failures.push("extension/package.json is missing JSON validation contributions");
+  }
+
+  const paletteCommands = packageJson.contributes?.menus?.commandPalette ?? [];
+  if (paletteCommands.length === 0) {
+    failures.push("extension/package.json is missing commandPalette menu contributions");
+  }
 } else {
   console.log("skip: extension/package.json is absent in this checkout.");
 }

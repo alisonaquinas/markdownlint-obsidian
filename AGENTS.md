@@ -29,7 +29,7 @@ markdownlint-obsidian/
 │       └── AGENTS.md
 ├── action/                # GitHub Action wrapper (esbuild bundle)
 │   ├── src/main.ts        # action entry point
-│   ├── dist/main.js       # pre-built bundle — must be committed
+│   ├── dist/main.mjs      # pre-built bundle — must be committed
 │   └── AGENTS.md
 ├── docs/
 │   ├── rules/             # per-rule reference docs (OFM* + standard-md overrides)
@@ -106,12 +106,12 @@ cd packages/cli && bun run build
 
 ```bash
 cd action
-npm install
+npm install --workspaces=false
 npm run build
 ```
 
-The `action/dist/main.js` bundle must be committed. CI enforces this with
-`git diff --exit-code action/dist/`.
+The `action/dist/main.mjs` bundle must be committed. CI rebuilds and smoke
+tests it with `node dist/main.mjs`.
 
 ### Publishing
 
@@ -138,7 +138,7 @@ checks.
   for filesystem access.
 - Every rule must be stateless: the same `RuleParams` must produce the same
   `LintError` set on every call. Mutable rule state is forbidden.
-- `action/dist/main.js` is a committed build artifact. Modify only via
+- `action/dist/main.mjs` is a committed build artifact. Modify only via
   `npm run build` inside `action/`. Do not edit the dist file by hand.
 - Never publish from the workspace root. The root `package.json` has a
   `prepublishOnly` guard that exits 1 to enforce this.

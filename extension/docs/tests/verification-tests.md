@@ -23,7 +23,7 @@ Automated checks inspect:
 - activation includes OFMarkdown behavior, such as `onLanguage:ofmarkdown`;
 - contributed commands match functional requirements;
 - configuration properties preserve documented defaults and scopes;
-- schema contributions cover supported linter config filenames;
+- schema contributions cover supported JSON and JSONC linter config filenames;
 - extension capabilities declare workspace trust and virtual workspace posture;
 - package entry points point to generated build output.
 
@@ -46,7 +46,7 @@ Release package checks must prove:
 - VSIX contents exclude tests, fixtures, and source-only files unless intended;
 - bundled entry point loads in an Extension Development Host;
 - source-map and declaration policies match docs;
-- declared `markdownlint-obsidian` version matches metadata and schema docs;
+- declared `markdownlint-obsidian` version matches metadata and schema-path docs;
 - generated files are produced by scripts, not edited by hand.
 
 ## Current Automation

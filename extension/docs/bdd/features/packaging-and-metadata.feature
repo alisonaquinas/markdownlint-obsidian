@@ -28,5 +28,5 @@ Feature: Packaging and metadata
   Scenario: Published metadata matches the declared lint engine
     Given the extension package is prepared for release
     When release metadata checks run
-    Then the extension package version, declared markdownlint-obsidian engine version, schema version, README links, changelog links, and rule docs agree
+    Then the extension package version, declared markdownlint-obsidian engine version, schema path, README links, changelog links, and rule docs agree
     And release checks fail if any checked metadata describes a different engine behavior

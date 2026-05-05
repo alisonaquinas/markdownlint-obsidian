@@ -13,8 +13,8 @@ Feature: Configuration and trust
     And the output does not report a configuration mismatch with the core package
 
   @MarkdownlintObsidian.SchemaValidation @UserMarkdownlintObsidian.SchemaAssistance
-  Scenario: Supported config files receive schema assistance
-    Given the author opens a supported JSONC or YAML linter config file
+  Scenario: Supported JSON config files receive schema assistance
+    Given the author opens a supported JSON or JSONC linter config file
     When VS Code asks for validation metadata
     Then the extension provides the markdownlint-obsidian schema for that config file
     And unsupported config filenames are not claimed by the schema contribution

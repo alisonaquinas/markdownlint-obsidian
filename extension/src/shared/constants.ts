@@ -31,7 +31,12 @@ export const COMMANDS = Object.freeze({
 /** Config filenames the open-config command searches before creating a draft. */
 export const SUPPORTED_CONFIG_FILES = Object.freeze([
   ".obsidian-linter.jsonc",
+  ".obsidian-linter.yaml",
   ".obsidian-linter.json",
+  ".markdownlint-cli2.jsonc",
+  ".markdownlint-cli2.yaml",
+  ".markdownlint.jsonc",
+  ".markdownlint.yaml",
   "obsidian-linter.config.jsonc",
   "obsidian-linter.config.json",
 ]);

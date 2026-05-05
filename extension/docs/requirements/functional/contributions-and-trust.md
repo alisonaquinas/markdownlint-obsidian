@@ -7,7 +7,7 @@ Tag: MarkdownlintObsidian.ManifestContributions
 Gist: Contribute extension dependency, activation, commands, configuration, and UI entries to VS Code.
 Ambition: VS Code exposes markdownlint-obsidian behavior through native contribution points.
 Scale: Percentage of documented manifest contribution points present with expected ids, titles, defaults, scopes, activation events, dependency ids, and paths.
-Meter: Manifest inspection test against extension `package.json` for `extensionDependencies`, `activationEvents`, commands, command-palette menus, configuration properties, JSON/YAML validation, problem matchers if used, and extension kind/capabilities.
+Meter: Manifest inspection test against extension `package.json` for `extensionDependencies`, `activationEvents`, commands, command-palette menus, configuration properties, JSON validation, problem matchers if used, and extension kind/capabilities.
 Fail: Any documented contribution is missing, renamed without migration, scoped incorrectly, has wrong defaults, or points to missing files.
 Goal: 100% manifest contribution match for documented contribution inventory.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
@@ -21,12 +21,12 @@ User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-f
 
 ```text
 Tag: MarkdownlintObsidian.SchemaValidation
-Gist: Attach markdownlint-obsidian schemas to supported JSONC and YAML config files.
+Gist: Attach markdownlint-obsidian schemas to supported JSON and JSONC config files.
 Ambition: Users receive editor validation while authoring linter configuration.
-Scale: Percentage of supported config filenames that receive the correct schema for the current extension version.
-Meter: Manifest inspection and VS Code smoke test for `.obsidian-linter.jsonc`, `.obsidian-linter.yaml`, `.markdownlint-cli2.jsonc`, `.markdownlint-cli2.yaml`, `.markdownlint.jsonc`, and `.markdownlint.yaml`.
-Fail: Any supported config file lacks schema validation, points to the wrong schema, or validates against stale config fields.
-Goal: 100% of supported JSONC and YAML config filenames receive the expected schema.
+Scale: Percentage of supported JSON and JSONC config filenames that receive the correct schema for the current extension version.
+Meter: Manifest inspection and VS Code smoke test for `.obsidian-linter.jsonc`, `.obsidian-linter.json`, `.markdownlint-cli2.jsonc`, `.markdownlint.jsonc`, `obsidian-linter.config.jsonc`, and `obsidian-linter.config.json`.
+Fail: Any supported JSON or JSONC config file lacks schema validation, points to the wrong schema, or validates against stale config fields.
+Goal: 100% of supported JSON and JSONC config filenames receive the expected schema.
 Stakeholders: Repository maintainers, Markdown authors.
 Owner: markdownlint-obsidian VS Code extension.
 Source: [SchemaAssistance user requirement](../user/configuration.md); [LinterConfig](../../../../packages/core/src/domain/config/LinterConfig.ts).

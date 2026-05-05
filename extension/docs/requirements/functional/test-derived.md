@@ -22,10 +22,10 @@ User trace: [UserMarkdownlintObsidian.ActionableErrors](../user/workspace-and-tr
 ```text
 Tag: MarkdownlintObsidian.MetadataConsistency
 Gist: Keep extension metadata consistent with the bundled or declared markdownlint-obsidian engine.
-Ambition: Published extension UI, docs, changelog, schemas, and rule links describe the rule behavior actually running.
-Scale: Percentage of checked metadata references that match the extension package version, bundled or declared `markdownlint-obsidian` version, schema version, rule docs, and changelog entry.
+Ambition: Published extension UI, docs, changelog, schema path, and rule links describe the rule behavior actually running.
+Scale: Percentage of checked metadata references that match the extension package version, bundled or declared `markdownlint-obsidian` version, schema path, rule docs, and changelog entry.
 Meter: Node unit test reading extension `package.json`, extension README, extension changelog if present, generated schemas, root rule docs, and installed package metadata.
-Fail: Any checked version, schema, rule-doc, or changelog reference differs from the package actually bundled or declared by the extension.
+Fail: Any checked version, schema path, rule-doc, or changelog reference differs from the package actually bundled or declared by the extension.
 Goal: 100% of checked metadata references match expected package and docs versions.
 Stakeholders: Extension users, maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.

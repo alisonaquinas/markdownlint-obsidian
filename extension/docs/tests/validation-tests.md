@@ -20,7 +20,7 @@ just technical gates.
 | Extension-host smoke tests | activation, diagnostics, code actions, commands, config watchers |
 | Fixture workspaces | trusted local vault, untrusted workspace, generic Markdown workspace, unsupported URI |
 | Smoke install | packaged VSIX loads, registers commands, reports Flavor Grenade dependency state |
-| Metadata validation | manifest, README, schema, rule docs, and changelog agree |
+| Metadata validation | manifest, README, schema path, rule docs, and changelog agree |
 
 ## Validation Scenarios
 
@@ -29,9 +29,9 @@ just technical gates.
 | Activation and eligibility | OFMarkdown document activates feedback; generic Markdown is skipped by default |
 | Live diagnostics | current diagnostics match latest eligible text and effective config |
 | Fixes and formatting | quick fix, fix all, preview, rule help, and formatting boundary behave as documented |
-| Configuration and trust | config schemas, custom rules, trust policy, and unsupported workspaces are visible |
+| Configuration and trust | JSON config schemas, custom rules, trust policy, and unsupported workspaces are visible |
 | Workspace commands | workspace lint, open config, temporary disable, and configuration watchers report outcomes |
-| Packaging and metadata | dependency, command, schema, and version metadata match documented behavior |
+| Packaging and metadata | dependency, command, schema-path, and version metadata match documented behavior |
 
 ## Manual Validation Checkpoints
 
