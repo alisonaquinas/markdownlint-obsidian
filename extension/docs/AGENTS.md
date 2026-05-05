@@ -12,6 +12,7 @@ extension/docs/
 ├── README.md              # index of this extension documentation tree
 ├── AGENTS.md              # this file
 ├── architecture/          # extension architecture and data-flow notes
+├── ddd/                   # extension bounded contexts and ubiquitous language
 ├── requirements/          # user and functional requirements
 ├── plans/                 # delivery plans and execution notes
 ├── research/              # supporting research for extension decisions
