@@ -1,7 +1,23 @@
 # Changelog
 
-## [1.0.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.0.1...markdownlint-obsidianv1.0.2) (2026-04-18)
+<!-- markdownlint-configure-file {
+  "MD013": false,
+  "MD024": {
+    "siblings_only": true
+  }
+} -->
 
+## [1.1.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.0.2...markdownlint-obsidianv1.1.0) (2026-05-04)
+
+### Features
+
+* add `wikilinks.resolveMode = "obsidian-fuzzy"` for mixed-namespace vaults ([89d45ad](https://github.com/alisonaquinas/markdownlint-obsidian/commit/89d45ad))
+
+### Bug Fixes
+
+* handle markdownlint `deleteCount = -1` sentinel without crashing ([27f845e](https://github.com/alisonaquinas/markdownlint-obsidian/commit/27f845e))
+
+## [1.0.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.0.1...markdownlint-obsidianv1.0.2) (2026-04-18)
 
 ### Bug Fixes
 
@@ -10,7 +26,6 @@
 * disable MD028 by default (OFM callout multi-paragraph conflict) ([c6c1a09](https://github.com/alisonaquinas/markdownlint-obsidian/commit/c6c1a09c3c92e340cdc4ed82bf86f3408b6634ae))
 
 ## [1.0.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.0.0...markdownlint-obsidianv1.0.1) (2026-04-14)
-
 
 ### Bug Fixes
 
