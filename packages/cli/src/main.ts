@@ -1,7 +1,7 @@
 /**
  * Purpose: Entry point for the `markdownlint-obsidian` CLI binary.
  *
- * Provides: {@link main}, {@link EXIT_CODES}
+ * Provides: {@link main}, {@link runCli}, {@link EXIT_CODES}
  *
  * Role in system: Parses arguments via {@link buildProgram}, loads config, selects the
  * lint or fix pipeline branch, formats and prints results, and returns a POSIX exit code
@@ -18,6 +18,7 @@ import {
   loadConfig,
   type Formatter,
   type LintResult,
+  type FixOutcome,
 } from "markdownlint-obsidian/engine";
 
 interface ParsedOptions {
@@ -47,6 +48,21 @@ export const EXIT_CODES = Object.freeze({
   TOOL_FAILURE: 2,
 } as const);
 
+export interface CliRunResult {
+  readonly exitCode: number;
+  readonly stdout: string;
+  readonly stderr: string;
+  readonly results: readonly LintResult[];
+  readonly firstPass: readonly LintResult[];
+  readonly filesFixed: readonly string[];
+  readonly errorCount: number;
+  readonly warningCount: number;
+}
+
+export interface RunCliOptions {
+  readonly cwd?: string;
+}
+
 /**
  * Entry point called by `bin/markdownlint-obsidian.js`.
  *
@@ -57,17 +73,79 @@ export const EXIT_CODES = Object.freeze({
  * @returns Resolved exit code (0, 1, or 2).
  */
 export async function main(argv: string[]): Promise<number> {
+  const result = await runCli(argv);
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  return result.exitCode;
+}
+
+export async function runCli(argv: string[], options: RunCliOptions = {}): Promise<CliRunResult> {
+  const sink = makeOutputSink();
   const program = buildProgram();
+  program.configureOutput({
+    writeOut: sink.writeStdout,
+    writeErr: sink.writeStderr,
+  });
   program.exitOverride();
 
   const parsed = parseArgv(program, argv);
-  if (parsed.terminal !== null) return parsed.terminal;
+  if (parsed.terminal !== null) {
+    return makeCliRunResult(parsed.terminal, sink, [], [], []);
+  }
 
   const opts = program.opts<ParsedOptions>();
-  const cwd = process.cwd();
+  const cwd = options.cwd ?? process.cwd();
   const globs = program.args as string[];
 
-  return runPipeline(globs, opts, cwd);
+  return runPipeline(globs, opts, cwd, sink);
+}
+
+interface OutputSink {
+  readonly stdout: () => string;
+  readonly stderr: () => string;
+  readonly writeStdout: (value: string) => void;
+  readonly writeStderr: (value: string) => void;
+}
+
+function makeOutputSink(): OutputSink {
+  let stdout = "";
+  let stderr = "";
+  return {
+    stdout: () => stdout,
+    stderr: () => stderr,
+    writeStdout: (value: string): void => {
+      stdout += value;
+    },
+    writeStderr: (value: string): void => {
+      stderr += value;
+    },
+  };
+}
+
+function makeCliRunResult(
+  exitCode: number,
+  sink: OutputSink,
+  results: readonly LintResult[],
+  firstPass: readonly LintResult[],
+  filesFixed: readonly string[],
+): CliRunResult {
+  return {
+    exitCode,
+    stdout: sink.stdout(),
+    stderr: sink.stderr(),
+    results,
+    firstPass,
+    filesFixed,
+    errorCount: countSeverity(results, "error"),
+    warningCount: countSeverity(results, "warning"),
+  };
+}
+
+function countSeverity(results: readonly LintResult[], severity: "error" | "warning"): number {
+  return results.reduce(
+    (sum, result) => sum + result.errors.filter((error) => error.severity === severity).length,
+    0,
+  );
 }
 
 interface ParseResult {
@@ -87,20 +165,24 @@ function parseArgv(program: Command, argv: string[]): ParseResult {
   }
 }
 
-function resolveFormatter(name: string): Formatter | null {
+function resolveFormatter(name: string, sink: OutputSink): Formatter | null {
   try {
     return getFormatter(name);
   } catch (err) {
-    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    sink.writeStderr(`${err instanceof Error ? err.message : String(err)}\n`);
     return null;
   }
 }
 
-function emitAndExit(results: readonly LintResult[], formatterName: string): number {
-  const formatter = resolveFormatter(formatterName);
+function emitAndExit(
+  results: readonly LintResult[],
+  formatterName: string,
+  sink: OutputSink,
+): number {
+  const formatter = resolveFormatter(formatterName, sink);
   if (formatter === null) return EXIT_CODES.TOOL_FAILURE;
   const output = formatter(results);
-  if (output) process.stdout.write(output + "\n");
+  if (output) sink.writeStdout(output + "\n");
   return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }
 
@@ -108,8 +190,8 @@ function fmtRange(col: number, del: number): string {
   return del === 0 ? `col ${col}` : `col ${col}–${col + del - 1}`;
 }
 
-function onCustomRuleError(modulePath: string, message: string): void {
-  process.stderr.write(`OFM905: failed to load custom rule module "${modulePath}": ${message}\n`);
+function writeCustomRuleError(sink: OutputSink, modulePath: string, message: string): void {
+  sink.writeStderr(`OFM905: failed to load custom rule module "${modulePath}": ${message}\n`);
 }
 
 function buildEngineOptions(
@@ -117,6 +199,7 @@ function buildEngineOptions(
   config: Awaited<ReturnType<typeof loadConfig>>,
   opts: ParsedOptions,
   cwd: string,
+  sink: OutputSink,
 ): object {
   const effectiveGlobs = globArgs.length > 0 ? [...globArgs] : config.globs;
   return {
@@ -125,11 +208,16 @@ function buildEngineOptions(
     ...(opts.vaultRoot !== undefined && { vaultRoot: opts.vaultRoot }),
     ...(opts.resolve === false && { resolve: false }),
     ...(opts.config !== undefined && { config: opts.config }),
-    onCustomRuleError,
+    onCustomRuleError: (modulePath: string, message: string): void =>
+      writeCustomRuleError(sink, modulePath, message),
   };
 }
 
-async function runFixBranch(engineOptions: object, opts: ParsedOptions): Promise<number> {
+async function runFixBranch(
+  engineOptions: object,
+  opts: ParsedOptions,
+  sink: OutputSink,
+): Promise<FixOutcome | Error> {
   try {
     const outcome = await fix({
       ...(engineOptions as Parameters<typeof fix>[0]),
@@ -137,35 +225,32 @@ async function runFixBranch(engineOptions: object, opts: ParsedOptions): Promise
     });
     if (outcome.filesFixed.length > 0) {
       const verb = opts.fixCheck ? "Would fix" : "Fixed";
-      process.stderr.write(`${verb} ${outcome.filesFixed.length} file(s)\n`);
+      sink.writeStderr(`${verb} ${outcome.filesFixed.length} file(s)\n`);
     }
     for (const conflict of outcome.conflicts) {
       const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
       const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
-      process.stderr.write(
+      sink.writeStderr(
         `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
       );
     }
-    return emitAndExit(outcome.finalPass, opts.outputFormatter);
+    return outcome;
   } catch (err) {
-    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
-    return EXIT_CODES.TOOL_FAILURE;
+    return err instanceof Error ? err : new Error(String(err));
   }
 }
 
-async function runLintBranch(engineOptions: object, opts: ParsedOptions): Promise<number> {
+async function runLintBranch(engineOptions: object): Promise<readonly LintResult[] | Error> {
   try {
-    const results = await lint(engineOptions as Parameters<typeof lint>[0]);
-    return emitAndExit(results, opts.outputFormatter);
+    return await lint(engineOptions as Parameters<typeof lint>[0]);
   } catch (err) {
-    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
-    return EXIT_CODES.TOOL_FAILURE;
+    return err instanceof Error ? err : new Error(String(err));
   }
 }
 
-function checkMutualExclusion(opts: ParsedOptions): number | null {
+function checkMutualExclusion(opts: ParsedOptions, sink: OutputSink): number | null {
   if (opts.fix && opts.fixCheck) {
-    process.stderr.write("OFM902: --fix and --fix-check are mutually exclusive\n");
+    sink.writeStderr("OFM902: --fix and --fix-check are mutually exclusive\n");
     return EXIT_CODES.TOOL_FAILURE;
   }
   return null;
@@ -175,20 +260,49 @@ async function runPipeline(
   globArgs: readonly string[],
   opts: ParsedOptions,
   cwd: string,
-): Promise<number> {
-  const exclusionCode = checkMutualExclusion(opts);
-  if (exclusionCode !== null) return exclusionCode;
+  sink: OutputSink,
+): Promise<CliRunResult> {
+  const exclusionCode = checkMutualExclusion(opts, sink);
+  if (exclusionCode !== null) return makeCliRunResult(exclusionCode, sink, [], [], []);
 
-  if (resolveFormatter(opts.outputFormatter) === null) return EXIT_CODES.TOOL_FAILURE;
+  if (resolveFormatter(opts.outputFormatter, sink) === null) {
+    return makeCliRunResult(EXIT_CODES.TOOL_FAILURE, sink, [], [], []);
+  }
 
   const config = await loadConfig(opts.config ?? cwd).catch(() => null);
   if (!config) {
-    process.stderr.write("OFM901: failed to load configuration\n");
-    return EXIT_CODES.TOOL_FAILURE;
+    sink.writeStderr("OFM901: failed to load configuration\n");
+    return makeCliRunResult(EXIT_CODES.TOOL_FAILURE, sink, [], [], []);
   }
 
-  const engineOptions = buildEngineOptions(globArgs, config, opts, cwd);
-  return opts.fix || opts.fixCheck
-    ? runFixBranch(engineOptions, opts)
-    : runLintBranch(engineOptions, opts);
+  const engineOptions = buildEngineOptions(globArgs, config, opts, cwd, sink);
+  if (opts.fix || opts.fixCheck) return runFixPipeline(engineOptions, opts, sink);
+  return runLintPipeline(engineOptions, opts, sink);
+}
+
+async function runFixPipeline(
+  engineOptions: object,
+  opts: ParsedOptions,
+  sink: OutputSink,
+): Promise<CliRunResult> {
+  const outcome = await runFixBranch(engineOptions, opts, sink);
+  if (outcome instanceof Error) return toolFailure(outcome, sink);
+  const exitCode = emitAndExit(outcome.finalPass, opts.outputFormatter, sink);
+  return makeCliRunResult(exitCode, sink, outcome.finalPass, outcome.firstPass, outcome.filesFixed);
+}
+
+async function runLintPipeline(
+  engineOptions: object,
+  opts: ParsedOptions,
+  sink: OutputSink,
+): Promise<CliRunResult> {
+  const results = await runLintBranch(engineOptions);
+  if (results instanceof Error) return toolFailure(results, sink);
+  const exitCode = emitAndExit(results, opts.outputFormatter, sink);
+  return makeCliRunResult(exitCode, sink, results, [], []);
+}
+
+function toolFailure(err: Error, sink: OutputSink): CliRunResult {
+  sink.writeStderr(`${err.message}\n`);
+  return makeCliRunResult(EXIT_CODES.TOOL_FAILURE, sink, [], [], []);
 }

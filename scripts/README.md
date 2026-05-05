@@ -7,7 +7,8 @@ they are not part of the shipped npm packages.
 
 | Script | When it runs | Purpose |
 | :--- | :--- | :--- |
-| `prepare-publish.mjs` | Manual, before `npm publish` | Rewrites `workspace:*` deps to real semver ranges in the package's `dist/package.json` so npm consumers get pinned versions rather than workspace-local references |
+| `prepare-publish.mjs` | Release workflow, before `npm publish` | Rewrites `workspace:*` deps to real semver ranges in the package-root `package.json` inside the CI checkout |
+| `verify-package-contents.mjs` | CI packaging check | Dry-runs npm package creation and verifies required files, excluded agent docs, and CLI shebang |
 
 ## Adding a script
 
@@ -19,6 +20,8 @@ they are not part of the shipped npm packages.
 
 - Scripts here are run by Bun (`.mjs`) or via `bun run <script>` in a
   package workspace. Do not use CommonJS `require()` — use ESM `import`.
-- `prepare-publish.mjs` must be run before any `npm publish` from
-  `packages/core` or `packages/cli`. The root `prepublishOnly` guard
-  prevents accidental publishing from the workspace root.
+- `prepare-publish.mjs` must run before any `npm publish` from
+  `packages/core` or `packages/cli`. It mutates the package-root manifest in
+  the release checkout; do not run it casually in a working tree. The root
+  `prepublishOnly` guard prevents accidental publishing from the workspace
+  root.

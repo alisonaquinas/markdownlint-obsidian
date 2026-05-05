@@ -25,6 +25,29 @@ jobs:
           echo "$OUT"
           echo "$OUT" | grep -q "${VERSION}"
 
+      - name: Install core from npmjs.org and verify exports
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidianv')
+        run: |
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidianv}"
+          mkdir /tmp/core-export-test && cd /tmp/core-export-test
+          npm init -y
+          npm install "markdownlint-obsidian@${VERSION}"
+          node --input-type=module <<'EOF'
+          await import('markdownlint-obsidian');
+          await import('markdownlint-obsidian/api');
+          await import('markdownlint-obsidian/rules');
+          await import('markdownlint-obsidian/engine');
+          EOF
+
+      - name: Audit core npm signatures (verifies provenance)
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidianv')
+        run: |
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidianv}"
+          mkdir /tmp/core-audit-test && cd /tmp/core-audit-test
+          npm init -y
+          npm install "markdownlint-obsidian@${VERSION}"
+          npm audit signatures
+
       - name: Audit npm signatures (verifies provenance)
         if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')
         run: |

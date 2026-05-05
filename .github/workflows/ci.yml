@@ -41,15 +41,23 @@ jobs:
       - name: Build (all packages)
         run: bun run --filter '*' build
 
-      - name: Verify action bundle builds without errors
-        # esbuild module-ordering is platform-specific (Linux vs macOS/Windows),
-        # so a bit-for-bit git diff would always fail on cross-platform teams.
-        # We verify the bundle compiles cleanly; source correctness is covered
-        # by the typecheck step above.
+      - name: Verify package tarball contents
+        run: bun run test:packaging
+
+      - name: Build and test GitHub Action
         run: |
           cd action
-          bun install
-          bun run build
+          npm install --workspaces=false
+          npm run build
+          bun test --timeout 30000
+          mkdir -p ../tmp-action-bin
+          printf '#!/usr/bin/env sh\necho "[]"\n' > ../tmp-action-bin/npx
+          chmod +x ../tmp-action-bin/npx
+          PATH="$(pwd)/../tmp-action-bin:$PATH" node dist/main.mjs
+        env:
+          INPUT_GLOBS: "**/*.md"
+          INPUT_FORMAT: json
+          GITHUB_WORKSPACE: ${{ github.workspace }}
 
   dogfood-published:
     # Lint docs/ and extension/docs/ using the published

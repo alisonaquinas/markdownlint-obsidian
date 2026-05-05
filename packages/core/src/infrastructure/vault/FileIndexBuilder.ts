@@ -12,7 +12,8 @@
 import * as path from "node:path";
 import { globby } from "globby";
 import type { VaultIndex } from "../../domain/vault/VaultIndex.js";
-import { makeVaultPath, type VaultPath } from "../../domain/vault/VaultPath.js";
+import type { VaultPath } from "../../domain/vault/VaultPath.js";
+import { makeNodeVaultPath } from "./VaultPathFactory.js";
 import {
   matchWikilink,
   type MatchResult,
@@ -45,7 +46,7 @@ export async function buildFileIndex(
     gitignore: true,
     ignore: [...(options.ignores ?? []), "**/.obsidian/**", "**/node_modules/**"],
   });
-  const paths: VaultPath[] = absolutes.map((abs) => makeVaultPath(resolvedRoot, abs));
+  const paths: VaultPath[] = absolutes.map((abs) => makeNodeVaultPath(resolvedRoot, abs));
   const byRelative = new Set(paths.map((p) => p.relative));
 
   return Object.freeze({

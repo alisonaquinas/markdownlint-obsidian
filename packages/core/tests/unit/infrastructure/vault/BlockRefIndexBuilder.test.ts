@@ -9,7 +9,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { buildBlockRefIndex } from "../../../../src/infrastructure/vault/BlockRefIndexBuilder.js";
 import { makeMarkdownItParser } from "../../../../src/infrastructure/parser/MarkdownItParser.js";
-import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";
+import { makeNodeVaultPath } from "../../../../src/infrastructure/vault/VaultPathFactory.js";
 import type { VaultPath } from "../../../../src/domain/vault/VaultPath.js";
 
 let tmp: string;
@@ -24,7 +24,7 @@ async function writeVaultFile(rel: string, body: string): Promise<VaultPath> {
   const abs = path.join(tmp, rel);
   await fs.mkdir(path.dirname(abs), { recursive: true });
   await fs.writeFile(abs, body);
-  return makeVaultPath(tmp, abs);
+  return makeNodeVaultPath(tmp, abs);
 }
 
 const readFile = async (abs: string): Promise<string> => fs.readFile(abs, "utf-8");

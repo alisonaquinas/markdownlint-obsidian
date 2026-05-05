@@ -44,5 +44,5 @@ bun run test:bdd
 bun run test:dogfood
 ```
 
-For action changes, rebuild inside `action/` and ensure `action/dist/main.js`
+For action changes, rebuild inside `action/` and ensure `action/dist/main.mjs`
 is committed only from the build output.

@@ -82,7 +82,8 @@ bun run build
 ```
 
 Outputs to `dist/`. The post-build script `scripts/gen-dist-pkg.mjs`
-rewrites `package.json` inside `dist/` to resolve `workspace:*` deps.
+creates `dist/package.json` as a minimal runtime version/type stub for
+compiled code that reads package metadata.
 
 ### Adding a formatter
 

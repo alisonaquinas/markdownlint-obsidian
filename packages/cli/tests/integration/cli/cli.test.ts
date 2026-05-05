@@ -6,6 +6,7 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import { fileURLToPath } from "node:url";
 import { spawnCli } from "../helpers/spawnCli.js";
+import { runCli } from "../../../src/main.js";
 
 const execAsync = promisify(execFile);
 const BIN = fileURLToPath(new URL("../../../bin/markdownlint-obsidian.js", import.meta.url));
@@ -76,6 +77,22 @@ describe("CLI", () => {
     try {
       const { stdout } = await execAsync(BUN, [BIN, "**/*.md"], { cwd: tmp });
       expect(stdout.trim()).toBe("");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("runCli returns structured counts without writing to process streams", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    await fs.writeFile(path.join(tmp, "note.md"), "#tag #Tag\n");
+    try {
+      const result = await runCli(["node", "markdownlint-obsidian", "**/*.md"], { cwd: tmp });
+      expect(result.exitCode).toBe(0);
+      expect(result.warningCount).toBeGreaterThan(0);
+      expect(result.errorCount).toBe(0);
+      expect(result.results).toHaveLength(1);
+      expect(result.stdout).toContain("OFM064");
     } finally {
       await fs.rm(tmp, { recursive: true, force: true });
     }

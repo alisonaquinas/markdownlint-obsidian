@@ -3,11 +3,10 @@
  *
  * Provides: {@link VaultRoot}, {@link toVaultRoot}
  *
- * Role in system: Established at the infrastructure boundary (after `VaultDetector.detect` resolves the vault root) and propagated into domain services; the nominal brand prevents accidentally passing an arbitrary string as a trusted vault root at compile time.
+ * Role in system: Established at the infrastructure boundary after path resolution and propagated into domain services; the nominal brand prevents accidentally passing an arbitrary string as a trusted vault root at compile time.
  *
  * @module domain/vault/VaultRoot
  */
-import * as path from "node:path";
 
 /**
  * Nominal type over `string` that signals "this has been validated as a
@@ -17,8 +16,7 @@ import * as path from "node:path";
  */
 export type VaultRoot = string & { readonly __brand: "VaultRoot" };
 
-/** Normalise `absoluteDir` and brand it as a {@link VaultRoot}. */
+/** Brand a boundary-normalised absolute directory as a {@link VaultRoot}. */
 export function toVaultRoot(absoluteDir: string): VaultRoot {
-  const normalized = path.resolve(absoluteDir);
-  return normalized as VaultRoot;
+  return absoluteDir as VaultRoot;
 }

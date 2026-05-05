@@ -1,13 +1,12 @@
 /**
- * Purpose: Defines the immutable value object representing the identity of a single Markdown file within a vault, with both platform-native and POSIX-normalised paths.
+ * Purpose: Defines the immutable value object representing the identity of a single Markdown file within a vault.
  *
  * Provides: {@link VaultPath}, {@link makeVaultPath}
  *
- * Role in system: The canonical file reference used throughout the domain and application layers — stored in {@link VaultIndex}, embedded in {@link MatchResult}, and used by rules to compare paths without platform-path concerns. The factory validates that the file resolves within the vault root.
+ * Role in system: The canonical file reference used throughout the domain and application layers — stored in {@link VaultIndex}, embedded in {@link MatchResult}, and used by rules to compare paths without platform-path concerns.
  *
  * @module domain/vault/VaultPath
  */
-import * as path from "node:path";
 
 /**
  * Immutable identity of a single markdown file inside a vault.
@@ -23,22 +22,29 @@ export interface VaultPath {
 }
 
 /**
- * Construct a {@link VaultPath} from an absolute vault root and an absolute
- * file path inside it.
+ * Construct a {@link VaultPath} from boundary-normalised path fields.
  *
- * @throws Error when `absolute` resolves outside `vaultRoot`.
+ * @throws Error when `relative` is empty or attempts to escape the vault.
  */
-export function makeVaultPath(vaultRoot: string, absolute: string): VaultPath {
-  const normalizedRoot = path.resolve(vaultRoot);
-  const normalizedAbs = path.resolve(absolute);
-  const rel = path.relative(normalizedRoot, normalizedAbs);
-  if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) {
-    throw new Error(`VaultPath: "${absolute}" is outside vault root "${vaultRoot}"`);
+export function makeVaultPath(relative: string, absolute: string): VaultPath {
+  const normalizedRelative = relative.replace(/\\/g, "/");
+  if (
+    normalizedRelative === "" ||
+    normalizedRelative.startsWith("../") ||
+    normalizedRelative === ".." ||
+    normalizedRelative.startsWith("/")
+  ) {
+    throw new Error(`VaultPath: invalid vault-relative path "${relative}"`);
   }
-  const forward = rel.split(path.sep).join("/");
   return Object.freeze({
-    relative: forward,
-    absolute: normalizedAbs,
-    stem: path.basename(forward, path.extname(forward)),
+    relative: normalizedRelative,
+    absolute,
+    stem: stemOf(normalizedRelative),
   });
+}
+
+function stemOf(relative: string): string {
+  const basename = relative.slice(relative.lastIndexOf("/") + 1);
+  const dot = basename.lastIndexOf(".");
+  return dot <= 0 ? basename : basename.slice(0, dot);
 }

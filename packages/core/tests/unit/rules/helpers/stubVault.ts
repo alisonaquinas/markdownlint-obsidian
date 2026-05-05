@@ -22,7 +22,7 @@ export function stubVault(
 ): VaultIndex {
   const root = path.resolve(options.root ?? "/v");
   const caseSensitive = options.caseSensitive ?? false;
-  const paths = files.map((rel) => makeVaultPath(root, path.join(root, rel)));
+  const paths = files.map((rel) => makeVaultPath(rel, path.join(root, rel)));
   const byRelative = new Set(paths.map((p) => p.relative));
   return Object.freeze({
     root,
