@@ -12,3 +12,4 @@ extension-specific requirements.
 | :--- | :--- |
 | [quality-gates.md](quality-gates.md) | `ExtensionArchitecture.TDD`, `ExtensionArchitecture.Tooling`, `ExtensionArchitecture.TypeSafety`, `ExtensionArchitecture.Documentation` |
 | [structure.md](structure.md) | `ExtensionArchitecture.Coherence`, `ExtensionArchitecture.LowCoupling`, `ExtensionArchitecture.ModuleStructure`, `ExtensionArchitecture.DependencyBoundary` |
+| [vscode-extension-specifics.md](vscode-extension-specifics.md) | `ExtensionArchitecture.PackageBoundary`, `ExtensionArchitecture.ManifestSpecifics`, `ExtensionArchitecture.BuildAndBundle`, `ExtensionArchitecture.DependencyRuntime`, `ExtensionArchitecture.TestHarness` |

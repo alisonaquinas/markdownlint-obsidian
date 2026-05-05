@@ -24,6 +24,7 @@ silently bypassing it.
 7. [Documentation Policy](documentation-policy.md)
 8. [Type Safety](type-safety.md)
 9. [Namespace and Module Structure](namespace-and-module-structure.md)
+10. [npm Package Architecture Requirements](npm-packages.md)
 
 ## Relationship
 
