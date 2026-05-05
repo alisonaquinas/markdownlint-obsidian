@@ -9,12 +9,27 @@ Tag: ExtensionArchitecture.PackageBoundary
 Gist: Keep the VS Code extension as an editor adapter around core lint behavior.
 Ambition: Extension code owns VS Code integration while `packages/core` owns lint semantics.
 Scale: Percentage of extension production modules whose behavior is editor integration, dependency detection, document eligibility, diagnostic mapping, code-action mapping, command registration, settings, packaging, or tests.
-Meter: Source review and import-boundary tests verifying extension modules call public core APIs and do not implement OFM rules, parser extractors, config merging, vault indexing, or fix algorithms.
-Fail: Extension source duplicates core lint behavior or imports core internals instead of public APIs.
-Goal: 100% of extension lint behavior is delegated to public core APIs.
+Meter: Source review and import-boundary tests verifying extension modules call bundled `markdownlint-obsidian` public APIs and do not implement OFM rules, parser extractors, config merging, vault indexing, or fix algorithms.
+Fail: Extension source duplicates core lint behavior, imports core internals instead of public APIs, or shells out to a user-installed CLI for runtime behavior.
+Goal: 100% of extension lint behavior is delegated to bundled `markdownlint-obsidian` public APIs.
 Stakeholders: Extension users, core maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
 Source: [root architecture policy](../../../../docs/architecture/README.md); [extension architecture overview](../../architecture/overview.md).
+```
+
+## ExtensionArchitecture.LibraryRuntime
+
+```text
+Tag: ExtensionArchitecture.LibraryRuntime
+Gist: Bundle the markdownlint-obsidian library into the VS Code extension runtime.
+Ambition: Editor linting, fixes, preview, and workspace commands work without requiring users to install the CLI.
+Scale: Percentage of runtime lint and fix paths that invoke bundled library APIs instead of spawning `markdownlint-obsidian-cli`.
+Meter: Manifest and package dependency review, bundle inspection, import-boundary tests, and VS Code integration tests on a clean machine with no global CLI installed.
+Fail: Any extension runtime path requires a globally installed CLI, a workspace-installed CLI, or a shell subprocess for normal lint/fix behavior.
+Goal: 100% of normal extension lint/fix behavior uses the bundled `markdownlint-obsidian` library.
+Stakeholders: Extension users, extension maintainers, release maintainers.
+Owner: markdownlint-obsidian VS Code extension.
+Source: [extension architecture overview](../../architecture/overview.md); [technical package contract](../technical/package-build-contract.md).
 ```
 
 ## ExtensionArchitecture.ManifestSpecifics
@@ -37,10 +52,10 @@ Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-d
 ```text
 Tag: ExtensionArchitecture.BuildAndBundle
 Gist: Build the extension into a small VS Code-compatible bundle.
-Ambition: Extension packaging is reproducible and excludes source-only or test-only files from VSIX output.
+Ambition: Extension packaging is reproducible, includes the library runtime needed by the extension, and excludes source-only or test-only files from VSIX output.
 Scale: Percentage of extension release builds that produce the expected bundled entry point, source map policy, package metadata, and VSIX contents.
-Meter: CI build and package inspection using extension build script, `vsce package`, `.vscodeignore`, and smoke install in an Extension Development Host.
-Fail: Build output is missing, VSIX includes unintended source/tests/node_modules, bundled code cannot load in VS Code, or package metadata points to nonexistent files.
+Meter: CI build and package inspection using extension build script, `vsce package`, `.vscodeignore`, bundle dependency review, and smoke install in an Extension Development Host.
+Fail: Build output is missing, VSIX omits the required `markdownlint-obsidian` library runtime, includes unintended source/tests/node_modules, bundled code cannot load in VS Code, or package metadata points to nonexistent files.
 Goal: 100% of release builds produce a loadable VSIX with expected contents.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.

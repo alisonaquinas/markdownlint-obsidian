@@ -24,8 +24,8 @@ Tag: MarkdownlintObsidianTechnical.ExtensionPackage
 Gist: The VS Code extension package owns editor integration only.
 Ambition: Extension source remains a typed adapter around public markdownlint-obsidian APIs and VS Code APIs.
 Scale: Percentage of extension production modules whose imports respect package and architecture boundaries.
-Meter: Import-boundary checks and source review verifying extension code imports public core APIs, VS Code APIs, local extension modules, and approved package dependencies only.
-Fail: Extension source imports core internals, duplicates rule algorithms, imports CLI process code for live linting, or causes core packages to depend on extension code.
+Meter: Import-boundary checks and source review verifying extension code imports bundled library public APIs, VS Code APIs, local extension modules, and approved package dependencies only.
+Fail: Extension source imports core internals, duplicates rule algorithms, imports CLI process code for runtime linting, shells out to a user-installed CLI, or causes core packages to depend on extension code.
 Goal: 100% of extension-code imports follow documented boundaries.
 Stakeholders: Extension maintainers, core maintainers.
 Owner: markdownlint-obsidian VS Code extension.
@@ -34,15 +34,32 @@ Source: [namespace and module structure](../../../../docs/architecture/namespace
 
 Architecture trace: [ExtensionArchitecture.PackageBoundary](../architecture/vscode-extension-specifics.md)
 
+## MarkdownlintObsidianTechnical.BundledLibraryRuntime
+
+```text
+Tag: MarkdownlintObsidianTechnical.BundledLibraryRuntime
+Gist: Bundle and call the markdownlint-obsidian library from inside the extension.
+Ambition: Extension users get lint diagnostics, fixes, previews, and workspace commands without installing `markdownlint-obsidian-cli`.
+Scale: Percentage of extension runtime lint/fix paths served by the packaged `markdownlint-obsidian` library dependency.
+Meter: `extension/package.json` dependency review, bundle inspection, source import-boundary tests, and extension-host smoke tests in an environment with no global or workspace CLI binary.
+Fail: Any normal extension feature requires `markdownlint-obsidian-cli` to be globally installed, installed in the workspace, or spawned as a subprocess.
+Goal: 100% of runtime lint/fix behavior uses the bundled library and 0 normal paths require CLI installation.
+Stakeholders: Extension users, extension maintainers, release maintainers.
+Owner: markdownlint-obsidian VS Code extension.
+Source: [extension architecture overview](../../architecture/overview.md); [public API guide](../../../../docs/guides/public-api.md).
+```
+
+Architecture trace: [ExtensionArchitecture.LibraryRuntime](../architecture/vscode-extension-specifics.md)
+
 ## MarkdownlintObsidianTechnical.BuildOutputs
 
 ```text
 Tag: MarkdownlintObsidianTechnical.BuildOutputs
 Gist: Extension build outputs must be reproducible and packageable.
-Ambition: The VSIX entry point, source maps, declaration policy, and packaged files are produced by scripts, not hand editing.
+Ambition: The VSIX entry point, bundled library runtime, source maps, declaration policy, and packaged files are produced by scripts, not hand editing.
 Scale: Percentage of extension release builds that produce expected artifacts from clean source and package only intended files.
 Meter: Extension build command, package inspection, `.vscodeignore`, VSIX smoke install, and source-map policy review.
-Fail: Extension package points to a missing entry point, includes tests or source-only files unintentionally, requires hand-edited build output, or cannot load in an Extension Development Host.
+Fail: Extension package points to a missing entry point, omits the bundled `markdownlint-obsidian` runtime, includes tests or source-only files unintentionally, requires hand-edited build output, or cannot load in an Extension Development Host.
 Goal: 100% of release builds produce a loadable VSIX with expected contents.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
