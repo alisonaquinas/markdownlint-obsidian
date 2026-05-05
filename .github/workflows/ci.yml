@@ -35,7 +35,7 @@ jobs:
       - name: BDD acceptance tests
         run: bun run test:bdd
 
-      - name: Dogfood docs/
+      - name: Dogfood docs/ and extension/docs/
         run: bun run test:dogfood
 
       - name: Build (all packages)
@@ -52,11 +52,12 @@ jobs:
           bun run build
 
   dogfood-published:
-    # Lint docs/ using the published markdownlint-obsidian-cli package on
-    # npmjs.org (not the local source). This catches release regressions that
-    # only manifest in the packaged artifact (missing files, broken bin entry,
-    # bad workspace dep resolution, etc.) and also verifies that consumers can
-    # install and run the CLI from a clean environment.
+    # Lint docs/ and extension/docs/ using the published
+    # markdownlint-obsidian-cli package on npmjs.org (not the local source).
+    # This catches release regressions that only manifest in the packaged
+    # artifact (missing files, broken bin entry, bad workspace dep resolution,
+    # etc.) and also verifies that consumers can install and run the CLI from a
+    # clean environment.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -65,9 +66,8 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Lint docs/ with published markdownlint-obsidian-cli
-        working-directory: docs
-        run: npx -y markdownlint-obsidian-cli@latest "**/*.md"
+      - name: Lint docs/ and extension/docs/ with published CLI
+        run: npm run test:dogfood:published
 
   publish-dry-run:
     # Dry-run the full publish pipeline (build → prepare-publish.mjs → npm
