@@ -63,9 +63,15 @@ extension/docs/
 ### Adding Extension Plans
 
 1. Create phase plans under `extension/docs/plans/`.
-2. Keep plans scoped to extension work.
-3. Do not retroactively rewrite shipped plans. Add execution notes instead.
-4. Update `extension/docs/roadmap.md` and `extension/docs/plans/index.md`
+2. Use `extension/docs/plans/phase-execution.md` for phase gate, ticket
+   lifecycle, and retrospective rules.
+3. Use `extension/docs/plans/templates/tickets/` for feature, task, bug, chore,
+   and spike ticket structure.
+4. Put phase-specific tickets in that phase folder under
+   `extension/docs/plans/phase-eN-*/`.
+5. Keep plans scoped to extension work.
+6. Do not retroactively rewrite shipped plans. Add execution notes instead.
+7. Update `extension/docs/roadmap.md` and `extension/docs/plans/index.md`
    when adding or changing phase boundaries.
 
 ### Adding Extension ADRs
