@@ -1,8 +1,8 @@
 name: Publish packages (reusable)
 
 # Reusable workflow — called by npm-publish.yml (real releases) and ci.yml
-# (dry-run on every PR/push).  Both paths exercise the same build and
-# prepare-publish logic; the only difference is the final npm publish flag.
+# (dry-run archive validation on every PR/push).  Both paths exercise the same
+# build and prepare-publish logic; only real releases call npm publish.
 # Real publishing is npm trusted publishing only: OIDC + provenance, never a
 # registry auth token.
 
@@ -11,8 +11,8 @@ on:
     inputs:
       dry_run:
         description: >
-          When true, runs `npm publish --dry-run` so the full build +
-          prepare-publish pipeline is exercised without touching any registry.
+          When true, runs `npm pack --dry-run --json` after dependency rewrite
+          so package archive creation is validated without touching any registry.
         type: boolean
         default: false
       tag_name:
@@ -89,10 +89,10 @@ jobs:
         if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
         run: gh release upload "${{ inputs.tag_name }}" packages/cli/*.tgz --clobber
 
-  # ── Dry-run publish ─────────────────────────────────────────────────────────
+  # ── Dry-run archive validation ──────────────────────────────────────────────
   # Runs only when dry_run is true.  No 'npm' environment, no OIDC token,
   # no network publishing.  Both packages are always exercised so the full
-  # prepare-publish.mjs + tarball-creation path is validated on every PR.
+  # prepare-publish.mjs + tarball metadata path is validated on every PR.
   publish-dry-run:
     if: ${{ inputs.dry_run }}
     runs-on: ubuntu-latest
@@ -118,13 +118,13 @@ jobs:
       - name: Rewrite workspace:* deps to actual versions (core)
         run: node scripts/prepare-publish.mjs packages/core
 
-      - name: Publish core [dry-run]
-        run: npm publish --access public --dry-run
+      - name: Pack core [dry-run]
+        run: npm pack --dry-run --json
         working-directory: packages/core
 
       - name: Rewrite workspace:* deps to actual versions (cli)
         run: node scripts/prepare-publish.mjs packages/cli
 
-      - name: Publish cli [dry-run]
-        run: npm publish --access public --dry-run
+      - name: Pack cli [dry-run]
+        run: npm pack --dry-run --json
         working-directory: packages/cli

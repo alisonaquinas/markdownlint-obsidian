@@ -82,10 +82,10 @@ jobs:
         run: npm run test:dogfood:published
 
   publish-dry-run:
-    # Dry-run the full publish pipeline (build → prepare-publish.mjs → npm
-    # publish --dry-run) for both packages on every PR and push.  Exercises
-    # the same code path as a real release without touching any registry, so
-    # packaging failures surface before merge rather than at release time.
+    # Dry-run the release archive path (build → prepare-publish.mjs → npm pack
+    # --dry-run) for both packages on every PR and push.  Exercises the same
+    # dependency rewrite and tarball metadata path as a real release without
+    # touching any registry.
     needs: build-and-test
     uses: ./.github/workflows/_publish-packages.yml
     permissions:
