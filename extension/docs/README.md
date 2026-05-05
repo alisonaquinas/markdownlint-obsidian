@@ -61,4 +61,5 @@ See [Flavor Grenade Dependency Contract](architecture/flavor-grenade-dependency.
 - Keep extension-specific docs here.
 - Link to root docs instead of copying rule reference text.
 - Keep research source-backed and dated.
-- Run markdown lint against `extension/docs/**/*.md` before commit.
+- Run `bun run test:dogfood:extension-docs` before commit. The aggregate
+  `bun run test:dogfood` runs both root docs and extension docs.

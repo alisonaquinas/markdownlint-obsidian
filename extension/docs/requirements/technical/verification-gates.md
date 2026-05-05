@@ -57,8 +57,8 @@ Architecture trace: [ExtensionArchitecture.TestHarness](../architecture/vscode-e
 Tag: MarkdownlintObsidianTechnical.DocsGate
 Gist: Extension docs must pass markdownlint-obsidian dogfood checks.
 Ambition: Extension planning and reference docs stay readable and compatible with repo documentation rules.
-Scale: Percentage of extension documentation changes that pass `markdownlint-obsidian` over `extension/docs/**/*.md`.
-Meter: Local and CI docs-lint command for extension docs, plus root `bun run test:dogfood` for root docs.
+Scale: Percentage of extension documentation changes that pass `bun run test:dogfood:extension-docs`.
+Meter: Local and CI docs-lint command for extension docs, plus aggregate `bun run test:dogfood`.
 Fail: Extension Markdown docs introduce lint violations, broken local references that reviewers can catch, or undocumented public behavior.
 Goal: 100% of extension docs changes pass the docs gate.
 Stakeholders: Extension maintainers, docs readers.

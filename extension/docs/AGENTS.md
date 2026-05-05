@@ -3,7 +3,9 @@
 Documentation tree for the planned `markdownlint-obsidian` VS Code extension.
 This directory is not extension source code. It is the planning and reference
 wiki for extension behavior, architecture, requirements, release decisions, and
-research.
+research. The extension docs dogfood lint run
+(`bun run test:dogfood:extension-docs`) lints this tree with
+`markdownlint-obsidian`; the aggregate `bun run test:dogfood` also runs it.
 
 ## Layout
 
@@ -78,7 +80,7 @@ extension/docs/
 - Keep source evidence for research claims.
 - Prefer stable markdown links over wiki-only links so GitHub rendering remains
   useful.
-- Extension docs should pass the repo markdown lint rules before commit.
+- Extension docs must pass `bun run test:dogfood:extension-docs` before commit.
 
 ## See Also
 

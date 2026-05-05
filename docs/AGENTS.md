@@ -2,8 +2,9 @@
 
 Reference and design documentation tree. This directory is not source code —
 it is the human-readable knowledge base for contributors and integrators.
-The dogfood lint run (`bun run test:dogfood`) lints `docs/**/*.md` with the
-built CLI, so every file here must pass the linter.
+The docs dogfood lint run (`bun run test:dogfood:docs`) lints `docs/**/*.md`
+with the built CLI, so every file here must pass the linter. The aggregate
+`bun run test:dogfood` also lints `extension/docs/`.
 
 ## Layout
 
@@ -51,13 +52,13 @@ docs/
 1. Create `docs/rules/<family>/OFMxxx.md` using an existing rule doc as a
    template.
 2. Add an entry to `docs/rules/index.md`.
-3. Run `bun run test:dogfood` to confirm the new file passes the linter.
+3. Run `bun run test:dogfood:docs` to confirm the new file passes the linter.
 
 ### Adding a guide
 
 1. Create `docs/guides/<slug>.md`.
 2. Add a row to the guides table in `docs/README.md`.
-3. Run `bun run test:dogfood`.
+3. Run `bun run test:dogfood:docs`.
 
 ### Adding an ADR
 
@@ -66,9 +67,9 @@ docs/
 
 ## Invariants — Do Not Violate
 
-- All markdown in `docs/` must pass `bun run test:dogfood` (which runs
-  `markdownlint-obsidian docs/**/*.md`). Do not add content that would
-  create a lint violation.
+- All markdown in `docs/` must pass `bun run test:dogfood:docs` (which runs
+  `markdownlint-obsidian docs/**/*.md`). Do not add content that would create
+  a lint violation.
 - ADRs are append-only. Once ratified, an ADR's decision section must not
   change. Write a superseding ADR instead.
 - `plans/` is a historical record. Plans are not retroactively edited;

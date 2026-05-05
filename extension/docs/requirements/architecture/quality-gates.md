@@ -22,7 +22,7 @@ Tag: ExtensionArchitecture.Tooling
 Gist: Extension code and docs pass local and CI checks.
 Ambition: Tooling catches formatting, lint, type, test, and docs issues before release.
 Scale: Percentage of required extension verification commands that pass for a release candidate.
-Meter: CI job running extension typecheck, lint, unit tests, integration smoke tests, package checks, and `markdownlint-obsidian` over `extension/docs/**/*.md`.
+Meter: CI job running extension typecheck, lint, unit tests, integration smoke tests, package checks, and `bun run test:dogfood:extension-docs`.
 Fail: Any required extension verification command fails or is absent from CI.
 Goal: 100% required extension verification commands pass in CI and are documented for local use.
 Stakeholders: Extension maintainers, release maintainers.

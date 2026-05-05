@@ -11,7 +11,7 @@ repository: strictly typed, linted, formatted, packaged, and documented.
 | Lint and format | `bun run lint` | `bun --cwd extension run lint` | `MarkdownlintObsidianTechnical.LintGate` |
 | Unit tests | `bun run test` | `bun --cwd extension test` | `MarkdownlintObsidianTechnical.TestGate` |
 | BDD smoke | `bun run test:bdd` | extension-host scenarios or tagged BDD smoke | `MarkdownlintObsidianTechnical.TestGate` |
-| Extension docs lint | `bun packages/cli/bin/markdownlint-obsidian.js "extension/docs/**/*.md"` | same | `MarkdownlintObsidianTechnical.DocsGate` |
+| Extension docs lint | `bun run test:dogfood:extension-docs` | same | `MarkdownlintObsidianTechnical.DocsGate` |
 | Build | `bun run build` | `bun --cwd extension run build` | `MarkdownlintObsidianTechnical.ReleaseGate` |
 | Package inspection | planned | `bun --cwd extension run package:check` | `MarkdownlintObsidianTechnical.ReleaseGate` |
 

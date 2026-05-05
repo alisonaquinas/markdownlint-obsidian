@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: markdownlint-obsidian-docs
+        name: markdownlint-obsidian docs/
+        entry: bash -c 'cd docs && bun ../packages/cli/bin/markdownlint-obsidian.js "**/*.md"'
+        language: system
+        files: ^docs/.*\.md$
+        pass_filenames: false
+
+      - id: markdownlint-obsidian-extension-docs
+        name: markdownlint-obsidian extension/docs/
+        entry: bash -c 'cd extension/docs && bun ../../packages/cli/bin/markdownlint-obsidian.js "**/*.md"'
+        language: system
+        files: ^extension/docs/.*\.md$
+        pass_filenames: false

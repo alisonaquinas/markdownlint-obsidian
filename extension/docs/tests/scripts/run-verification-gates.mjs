@@ -21,12 +21,9 @@ const run = (label, command, args, options = {}) => {
   }
 };
 
-run("extension docs lint", "bun", [
-  "packages/cli/bin/markdownlint-obsidian.js",
-  "extension/docs/**/*.md",
-]);
+run("docs lint", "bun", ["run", "test:dogfood:docs"]);
 
-run("root docs dogfood lint", "bun", ["run", "test:dogfood"]);
+run("extension docs lint", "bun", ["run", "test:dogfood:extension-docs"]);
 
 const extensionPackagePath = join(root, "extension/package.json");
 if (existsSync(extensionPackagePath)) {
