@@ -36,6 +36,9 @@ extension/docs/
    when the requirement describes commands, settings, diagnostics, lifecycle,
    packaging, or integration behavior.
 3. Link functional requirements back to user requirements when possible.
+4. Add technical constraints under `extension/docs/requirements/technical/`
+   when the requirement describes TypeScript, linting, packaging, build, or CI
+   gates.
 
 ### Adding Extension BDD
 

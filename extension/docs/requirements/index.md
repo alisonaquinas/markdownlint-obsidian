@@ -14,6 +14,7 @@ Requirements for the planned VS Code extension.
 | Packaging | Define VSIX contents, build artifacts, and CI checks |
 | Testing | Cover activation, diagnostics, fixes, config, and workspace command smoke paths |
 | Architecture | Define extension structure, dependency boundaries, and quality gates |
+| Technical | Define strict TypeScript, lint, format, package, build, and verification gates |
 
 ## User Requirements
 
@@ -37,6 +38,17 @@ Functional requirements live under [functional/](functional/index.md).
 | [functional/workspace-commands.md](functional/workspace-commands.md) | Workspace lint, config opening, temporary disable, config watchers |
 | [functional/contributions-and-trust.md](functional/contributions-and-trust.md) | Manifest contributions, schemas, workspace trust, custom rule trust, file-system strategy |
 | [functional/test-derived.md](functional/test-derived.md) | Error reporting and metadata consistency |
+
+## Technical Requirements
+
+Technical requirements live under [technical/](technical/index.md).
+
+| File | Focus |
+| :--- | :--- |
+| [technical/typescript-contract.md](technical/typescript-contract.md) | Strict TypeScript, NodeNext ESM, typed boundaries, public types |
+| [technical/lint-format-contract.md](technical/lint-format-contract.md) | ESLint flat config, no-any and return rules, complexity, formatting, suppressions |
+| [technical/package-build-contract.md](technical/package-build-contract.md) | Bun workspace fit, extension package boundary, build outputs, dependency boundary |
+| [technical/verification-gates.md](technical/verification-gates.md) | Typecheck, lint, tests, docs, and release gates |
 
 ## Architecture Requirements
 
