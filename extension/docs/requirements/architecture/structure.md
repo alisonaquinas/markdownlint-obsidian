@@ -21,10 +21,10 @@ Source: [High Coherence](../../../../docs/architecture/high-coherence.md).
 Tag: ExtensionArchitecture.LowCoupling
 Gist: Extension dependencies are explicit and acyclic.
 Ambition: Editor adapters can change without changing core lint rules, and core behavior can change without VS Code-specific imports.
-Scale: Percentage of extension-core interactions that pass through public core APIs or explicit adapter contracts.
+Scale: Percentage of extension-core interactions that pass through bundled library public APIs or explicit adapter contracts.
 Meter: Import-boundary test and source inspection verifying no core module imports extension code, no extension code imports core internals, and no import cycles exist in extension modules.
 Fail: Core imports extension code, extension imports core internals instead of public APIs, or extension modules form an import cycle.
-Goal: 100% of extension-core interactions use public APIs or explicit adapter contracts and 0 import cycles exist.
+Goal: 100% of extension-core interactions use bundled library public APIs or explicit adapter contracts and 0 import cycles exist.
 Stakeholders: Core maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
 Source: [Low Coupling](../../../../docs/architecture/low-coupling.md).

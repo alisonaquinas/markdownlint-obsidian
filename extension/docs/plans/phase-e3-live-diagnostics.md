@@ -3,7 +3,8 @@
 ## Goal
 
 Publish VS Code diagnostics for visible eligible `ofmarkdown` documents using
-the current document text, effective configuration, and core lint results.
+the current document text, effective configuration, and bundled library lint
+results.
 
 ## Scope
 
@@ -64,12 +65,14 @@ bun run test:dogfood
 - run mode controls when lint requests occur.
 - output reports actionable failures.
 - core rule behavior is not reimplemented in extension source.
+- diagnostics do not require `markdownlint-obsidian-cli` on `PATH` or in the
+  workspace.
 
 ## Risks
 
 | Risk | Mitigation |
 | :--- | :--- |
-| File-based core API cannot lint unsaved text accurately | add or request a public in-memory lint API before broadening live diagnostics |
+| File-based library API cannot lint unsaved text accurately | add or request a public in-memory lint API before broadening live diagnostics |
 | Large documents make on-type linting noisy | debounce and cancellation policy; add performance notes before tuning |
 | Vault-aware rules need workspace indexes | start with existing core behavior and document any limitations in output |
 

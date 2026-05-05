@@ -15,7 +15,7 @@ Delivery plans for the VS Code extension.
 | :--- | :--- | :--- |
 | E0 | [Planning readiness](phase-e0-planning-readiness.md) | finish planning docs and implementation-entry checks |
 | E1 | [Package scaffold and toolchain](phase-e1-package-scaffold.md) | create a buildable, testable VS Code extension package |
-| E2 | [Core adapter and configuration](phase-e2-core-adapter-and-config.md) | connect typed extension adapters to public core APIs |
+| E2 | [Core adapter and configuration](phase-e2-core-adapter-and-config.md) | connect typed extension adapters to bundled library APIs |
 | E3 | [Live diagnostics](phase-e3-live-diagnostics.md) | publish current diagnostics for eligible `ofmarkdown` documents |
 | E4 | [Fixes and rule help](phase-e4-fixes-and-rule-help.md) | expose quick fixes, fix-all, preview, and docs links |
 | E5 | [Workspace commands and trust](phase-e5-workspace-commands-and-trust.md) | add command workflows, config watchers, output, and trust policy |

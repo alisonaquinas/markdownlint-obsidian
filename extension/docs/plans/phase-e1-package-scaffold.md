@@ -14,6 +14,8 @@ TypeScript, lint, test, and packaging standards.
 - VS Code extension manifest contributions required for later phases.
 - local extension-host smoke harness.
 - package and docs scripts wired into root verification.
+- packaged `markdownlint-obsidian` library dependency for extension runtime
+  lint and fix behavior.
 
 ## Proposed File Layout
 
@@ -72,12 +74,24 @@ binary before packaging. This extension should not copy that step while
 Flavor Grenade remains an installed extension dependency and
 `markdownlint-obsidian` runs as TypeScript/JavaScript in the extension host.
 
+## Runtime Dependency Requirements
+
+- Add `markdownlint-obsidian` as an extension package dependency.
+- Do not add `markdownlint-obsidian-cli` as a runtime dependency.
+- Do not require users to install the CLI globally or in the workspace.
+- Bundle the library runtime into the VSIX or include it through the extension
+  package dependency layout.
+- Add a clean-machine smoke test where no CLI binary exists on `PATH` and the
+  extension still activates, lints, and fixes through the library.
+
 ## Implementation Tasks
 
 - [ ] Add `extension` to the root workspace list if the package should be
   managed by Bun workspaces.
 - [ ] Create `extension/package.json` with VS Code metadata, scripts, engines,
   dependencies, and extension manifest fields.
+- [ ] Declare `markdownlint-obsidian` as the runtime lint engine dependency and
+  keep `markdownlint-obsidian-cli` out of runtime dependencies.
 - [ ] Add TypeScript configs extending the root strict baseline.
 - [ ] Add bundler configuration or build script.
 - [ ] Add `vscode:prepublish`, `compile`, `check-types`, and
@@ -102,6 +116,7 @@ Flavor Grenade remains an installed extension dependency and
 | unit smoke | activation helpers can be imported |
 | extension-host smoke | extension loads without throwing |
 | package inspection | VSIX contains expected generated files only |
+| no CLI install smoke | extension loads and can reach library adapter with no CLI on `PATH` |
 
 ## Verification
 
@@ -119,6 +134,7 @@ bun --cwd extension run package:check
 - extension package loads in an Extension Development Host.
 - root CI runs extension typecheck, lint, tests, and build.
 - no extension source imports core internals.
+- no extension runtime path requires `markdownlint-obsidian-cli`.
 - no lint or type strictness rules are weakened.
 
 ## Risks
@@ -126,7 +142,7 @@ bun --cwd extension run package:check
 | Risk | Mitigation |
 | :--- | :--- |
 | VS Code extension tooling expects npm or Node scripts | keep Bun as repo orchestrator and use Node-compatible commands inside extension scripts where required |
-| Extension bundle pulls in too much of core or CLI | inspect bundle and import only public core APIs |
+| Extension bundle pulls in too much of core or accidentally includes CLI code | inspect bundle and import only public library APIs |
 | Manifest placeholders drift from requirements | add manifest inspection tests in this phase |
 
 ## Exit Criteria

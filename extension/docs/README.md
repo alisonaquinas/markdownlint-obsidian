@@ -25,16 +25,20 @@ language modes, packaging, tests, and release behavior.
 ## Initial Scope
 
 The extension should provide VS Code feedback for the existing
-`markdownlint-obsidian` engine without duplicating lint rules in editor code.
-The extension should depend on the Flavor Grenade LSP extension for OFMarkdown
-language detection, then lint documents that Flavor Grenade has promoted to the
-`ofmarkdown` language id.
+`markdownlint-obsidian` library without duplicating lint rules in editor code.
+The extension should bundle that library as its lint engine dependency. Users
+should not need to install the CLI globally or in their workspace for editor
+diagnostics, fixes, previews, or workspace commands. The extension should also
+depend on the Flavor Grenade LSP extension for OFMarkdown language detection,
+then lint documents that Flavor Grenade has promoted to the `ofmarkdown`
+language id.
 
 The desired direction is a `markdownlint-cli2`-style editing experience using a
 technology stack and document-selection model closer to `flavor-grenade-lsp`:
 
 - TypeScript VS Code extension client.
 - Clear boundary between editor UI and lint engine behavior.
+- Bundled `markdownlint-obsidian` library runtime, not a user-installed CLI.
 - Live diagnostics for `ofmarkdown` documents.
 - Installed extension dependency on `alisonaquinas.flavor-grenade-lsp`.
 - Commands for linting workspace content, applying fixes, opening config, and
@@ -43,15 +47,15 @@ technology stack and document-selection model closer to `flavor-grenade-lsp`:
 - Explicit workspace trust and virtual workspace posture.
 - Packaging and test workflows that can run in CI.
 
-## Open Architecture Question
+## Runtime Direction
 
-Flavor Grenade owns OFMarkdown language-mode detection. The remaining early
-decision is whether this extension should call `packages/core` in-process or
-communicate with a separate lint server process. The current planning bias is:
+Flavor Grenade owns OFMarkdown language-mode detection. The extension runtime
+should call the bundled `markdownlint-obsidian` library through public APIs.
+The current planning bias is:
 
-- start by documenting both options;
-- prefer the thinnest editor client that preserves core ownership of lint
-  behavior;
+- keep the first implementation in-process;
+- preserve core ownership of lint behavior through a thin library adapter;
+- do not shell out to `markdownlint-obsidian-cli` or require it to be installed;
 - choose an LSP boundary if live diagnostics, workspace indexing, or future
   cross-document editor features need persistent server state.
 

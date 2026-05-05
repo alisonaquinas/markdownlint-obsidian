@@ -3,8 +3,8 @@
 ## Purpose
 
 The VS Code extension should make `markdownlint-obsidian` useful while editing,
-not only in CI. It should surface the same rule behavior users get from the CLI
-and core package, with VS Code-native diagnostics, quick fixes, commands,
+not only in CI. It should surface the same rule behavior users get from the
+core package and CLI, with VS Code-native diagnostics, quick fixes, commands,
 settings, and output.
 
 The extension assumes `flavor-grenade-lsp` is installed as a VS Code extension
@@ -47,16 +47,22 @@ This extension must not duplicate that classification logic.
 
 | Shape | Summary | Fit |
 | :--- | :--- | :--- |
-| In-process client | Extension imports `packages/core` and lints `ofmarkdown` documents inside the extension host | Best first implementation if live linting can stay simple |
+| Bundled library client | Extension bundles the `markdownlint-obsidian` library package and lints `ofmarkdown` documents inside the extension host through public APIs | Required first implementation |
 | Local LSP server | Extension starts a Node or compiled server and talks through `vscode-languageclient` | Better if persistent workspace state, cross-document indexing, or future editor features grow |
-| CLI subprocess | Extension shells out to built CLI for each lint operation | Useful fallback for workspace commands, weak fit for fast live diagnostics |
+| CLI subprocess | Extension shells out to a CLI binary | Out of scope for runtime linting; do not require a user-installed CLI |
 
-## Initial Preference
+## Runtime Decision
 
-Start with the in-process shape unless requirements force an LSP boundary. It
-keeps packaging smaller and reuses the existing TypeScript package directly.
+Start with the bundled library client. The VSIX should include the
+`markdownlint-obsidian` library dependency needed for lint and fix behavior.
+Users must not need to install `markdownlint-obsidian-cli` globally or in the
+workspace for editor diagnostics, code actions, fix preview, or workspace lint
+commands.
+
 Keep the architecture compatible with a later LSP split by isolating editor
-adapters from lint orchestration.
+adapters from lint orchestration. A later LSP boundary may replace the
+in-process adapter, but a CLI subprocess remains a development or emergency
+debugging tool rather than the product runtime.
 
 ## Expected Components
 
@@ -64,7 +70,8 @@ adapters from lint orchestration.
 | :--- | :--- |
 | Extension activation | Register diagnostics, commands, config listeners, and `ofmarkdown` document listeners |
 | Flavor Grenade dependency check | Verify `alisonaquinas.flavor-grenade-lsp` is installed and explain missing dependency behavior |
-| Lint coordinator | Convert VS Code documents and settings into core lint requests |
+| Library adapter | Call bundled `markdownlint-obsidian` public APIs and hide package details from editor code |
+| Lint coordinator | Convert VS Code documents and settings into library lint requests |
 | Diagnostic mapper | Convert `LintError` values into VS Code diagnostics |
 | Fix provider | Convert core fixes into VS Code code actions and fix-all actions |
 | Config resolver | Merge VS Code settings with repo config files |
@@ -76,7 +83,7 @@ adapters from lint orchestration.
 ```text
 VS Code ofmarkdown document event
   -> extension lint coordinator
-  -> markdownlint-obsidian core engine
+  -> bundled markdownlint-obsidian library
   -> LintResult[]
   -> diagnostic mapper
   -> VS Code DiagnosticCollection
@@ -96,6 +103,8 @@ VS Code code action request
 
 - No separate rule implementation in the extension.
 - No duplicate implementation of Flavor Grenade's `ofmarkdown` promotion.
+- No dependency on a user-installed `markdownlint-obsidian-cli` binary for
+  extension runtime behavior.
 - No automatic live linting for generic `markdown` documents by default.
 - No Marketplace publishing flow until extension behavior and packaging are
   specified.

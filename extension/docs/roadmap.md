@@ -3,8 +3,8 @@
 Roadmap for building the `markdownlint-obsidian` VS Code extension.
 
 The roadmap assumes the extension remains an editor adapter around
-`markdownlint-obsidian` core, and that Flavor Grenade owns OFMarkdown document
-classification through the `ofmarkdown` language id.
+the bundled `markdownlint-obsidian` library, and that Flavor Grenade owns
+OFMarkdown document classification through the `ofmarkdown` language id.
 
 ## Phase Summary
 
@@ -12,7 +12,7 @@ classification through the `ofmarkdown` language id.
 | :--- | :--- | :--- |
 | E0 | [Planning readiness](plans/phase-e0-planning-readiness.md) | docs, ADRs, requirements, and test contracts are ready to drive implementation |
 | E1 | [Package scaffold and toolchain](plans/phase-e1-package-scaffold.md) | VS Code extension package builds, typechecks, lints, tests, and packages locally |
-| E2 | [Core adapter and configuration](plans/phase-e2-core-adapter-and-config.md) | extension can call public core APIs with typed settings and config resolution |
+| E2 | [Core adapter and configuration](plans/phase-e2-core-adapter-and-config.md) | extension can call bundled library APIs with typed settings and config resolution |
 | E3 | [Live diagnostics](plans/phase-e3-live-diagnostics.md) | eligible `ofmarkdown` documents receive current diagnostics |
 | E4 | [Fixes and rule help](plans/phase-e4-fixes-and-rule-help.md) | quick fixes, fix-all, fix preview, and rule documentation links work |
 | E5 | [Workspace commands and trust](plans/phase-e5-workspace-commands-and-trust.md) | command palette workflows, output channel, trust policy, and unsupported mode handling work |
@@ -22,8 +22,10 @@ classification through the `ofmarkdown` language id.
 ## Delivery Principles
 
 - Build one independently verifiable behavior slice per phase.
-- Keep lint semantics in `packages/core`; extension code owns editor
-  integration only.
+- Keep lint semantics in the bundled `markdownlint-obsidian` library;
+  extension code owns editor integration only.
+- Do not require `markdownlint-obsidian-cli` to be globally installed or
+  installed in the user's workspace.
 - Treat `ofmarkdown` as the live-lint eligibility signal.
 - Preserve the repository strict TypeScript, ESLint, Prettier, and dogfood
   docs gates.

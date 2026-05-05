@@ -12,7 +12,7 @@ toolchain unless an explicit ADR changes that baseline.
 | :--- | :--- |
 | [typescript-contract.md](typescript-contract.md) | `MarkdownlintObsidianTechnical.TypeScriptStrictness`, `MarkdownlintObsidianTechnical.NodeNextEsm`, `MarkdownlintObsidianTechnical.TypedBoundaries`, `MarkdownlintObsidianTechnical.PublicTypes` |
 | [lint-format-contract.md](lint-format-contract.md) | `MarkdownlintObsidianTechnical.EslintFlatConfig`, `MarkdownlintObsidianTechnical.NoAnyExplicitReturns`, `MarkdownlintObsidianTechnical.ComplexityAndSize`, `MarkdownlintObsidianTechnical.Formatting`, `MarkdownlintObsidianTechnical.Suppressions` |
-| [package-build-contract.md](package-build-contract.md) | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
+| [package-build-contract.md](package-build-contract.md) | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BundledLibraryRuntime`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
 | [verification-gates.md](verification-gates.md) | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` |
 
 ## Baseline Toolchain

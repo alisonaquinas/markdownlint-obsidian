@@ -2,9 +2,9 @@
 
 ## Goal
 
-Create typed extension adapters that call public `markdownlint-obsidian` core
-APIs and resolve effective extension configuration without publishing
-diagnostics yet.
+Create typed extension adapters that call the bundled `markdownlint-obsidian`
+library through public APIs and resolve effective extension configuration
+without publishing diagnostics yet.
 
 ## Scope
 
@@ -20,6 +20,8 @@ diagnostics yet.
 
 - Extension code imports from `markdownlint-obsidian/engine` or other public
   package exports only.
+- Extension code does not spawn `markdownlint-obsidian-cli` for runtime lint or
+  fix behavior.
 - VS Code inputs are narrowed before use.
 - config behavior matches core defaults unless extension-only settings are
   documented.
@@ -33,6 +35,8 @@ diagnostics yet.
 - [ ] Implement a VS Code settings reader with runtime validation.
 - [ ] Implement a core adapter for `lint`, `fix`, `loadConfig`, and
   `getFormatter`.
+- [ ] Add a no-CLI runtime test proving adapter behavior does not depend on a
+  global or workspace CLI binary.
 - [ ] Implement dependency-state detection for
   `alisonaquinas.flavor-grenade-lsp`.
 - [ ] Implement document eligibility for `ofmarkdown`, unsupported URI schemes,
@@ -52,6 +56,7 @@ diagnostics yet.
 | config adapter | supported config file names, explicit config, missing config, schema path |
 | output formatting | Error, non-Error thrown value, OFM system code, dependency message |
 | import boundary | no extension imports from `packages/core/src/` |
+| no CLI dependency | no runtime path spawns or resolves `markdownlint-obsidian-cli` |
 
 ## Verification
 
@@ -64,7 +69,7 @@ bun run typecheck
 
 ## Acceptance Criteria
 
-- core calls are hidden behind typed adapter interfaces.
+- bundled library calls are hidden behind typed adapter interfaces.
 - all external input is narrowed before becoming domain data.
 - eligibility decisions are deterministic and test-covered.
 - missing Flavor Grenade state is visible in output but does not crash
@@ -75,11 +80,12 @@ bun run typecheck
 
 | Risk | Mitigation |
 | :--- | :--- |
-| Public core APIs lack an editor-friendly entry point | add public core API improvements in a separate core-focused change |
+| Public library APIs lack an editor-friendly entry point | add public API improvements in a separate core-focused change |
 | Config loading needs document text rather than file paths for live lint | isolate the adapter so a later in-memory lint API can replace file-based calls |
 | Workspace trust policy blocks too much behavior | test trusted, untrusted, and no-workspace contexts independently |
 
 ## Exit Criteria
 
 E2 exits when the extension can decide whether a document should be linted,
-resolve effective config, and call core APIs through tested adapters.
+resolve effective config, and call bundled library APIs through tested
+adapters.
