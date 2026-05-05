@@ -22,12 +22,17 @@ language modes, packaging, tests, and release behavior.
 
 The extension should provide VS Code feedback for the existing
 `markdownlint-obsidian` engine without duplicating lint rules in editor code.
+The extension should depend on the Flavor Grenade LSP extension for OFMarkdown
+language detection, then lint documents that Flavor Grenade has promoted to the
+`ofmarkdown` language id.
+
 The desired direction is a `markdownlint-cli2`-style editing experience using a
-technology stack closer to `flavor-grenade-lsp`:
+technology stack and document-selection model closer to `flavor-grenade-lsp`:
 
 - TypeScript VS Code extension client.
 - Clear boundary between editor UI and lint engine behavior.
-- Live diagnostics for Markdown and Obsidian Flavored Markdown files.
+- Live diagnostics for `ofmarkdown` documents.
+- Installed extension dependency on `alisonaquinas.flavor-grenade-lsp`.
 - Commands for linting workspace content, applying fixes, opening config, and
   showing output.
 - Settings that mirror stable CLI and core options.
@@ -36,15 +41,17 @@ technology stack closer to `flavor-grenade-lsp`:
 
 ## Open Architecture Question
 
-The main early decision is whether the extension should call
-`packages/core` in-process or communicate with a separate language server
-process. The current planning bias is:
+Flavor Grenade owns OFMarkdown language-mode detection. The remaining early
+decision is whether this extension should call `packages/core` in-process or
+communicate with a separate lint server process. The current planning bias is:
 
 - start by documenting both options;
 - prefer the thinnest editor client that preserves core ownership of lint
   behavior;
 - choose an LSP boundary if live diagnostics, workspace indexing, or future
   cross-document editor features need persistent server state.
+
+See [Flavor Grenade Dependency Contract](architecture/flavor-grenade-dependency.md).
 
 ## Contributing
 

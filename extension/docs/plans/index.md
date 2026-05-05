@@ -15,7 +15,7 @@ Delivery plans for the VS Code extension.
 | :--- | :--- |
 | E0 | Documentation scaffold and architecture decision prep |
 | E1 | Extension package scaffold, build, and test harness |
-| E2 | Live diagnostics for open Markdown documents |
+| E2 | Live diagnostics for open `ofmarkdown` documents |
 | E3 | Code actions and fix-all support |
 | E4 | Workspace commands and output channel |
 | E5 | Configuration, trust posture, and unsupported mode handling |

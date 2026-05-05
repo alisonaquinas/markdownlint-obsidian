@@ -7,6 +7,11 @@ not only in CI. It should surface the same rule behavior users get from the CLI
 and core package, with VS Code-native diagnostics, quick fixes, commands,
 settings, and output.
 
+The extension assumes `flavor-grenade-lsp` is installed as a VS Code extension
+dependency. Flavor Grenade owns OFMarkdown language-mode detection and promotes
+eligible vault documents to the `ofmarkdown` language id. This extension uses
+that language id as the live-lint trigger.
+
 ## Boundary
 
 Editor code owns editor integration:
@@ -30,11 +35,19 @@ Core code owns linting behavior:
 
 The extension must not fork or reimplement rules.
 
+Flavor Grenade owns OFMarkdown document classification:
+
+- vault membership detection;
+- `markdown` to `ofmarkdown` promotion;
+- OFMarkdown grammar and language configuration.
+
+This extension must not duplicate that classification logic.
+
 ## Candidate Runtime Shapes
 
 | Shape | Summary | Fit |
 | :--- | :--- | :--- |
-| In-process client | Extension imports `packages/core` and lints documents inside the extension host | Best first implementation if live linting can stay simple |
+| In-process client | Extension imports `packages/core` and lints `ofmarkdown` documents inside the extension host | Best first implementation if live linting can stay simple |
 | Local LSP server | Extension starts a Node or compiled server and talks through `vscode-languageclient` | Better if persistent workspace state, cross-document indexing, or future editor features grow |
 | CLI subprocess | Extension shells out to built CLI for each lint operation | Useful fallback for workspace commands, weak fit for fast live diagnostics |
 
@@ -49,7 +62,8 @@ adapters from lint orchestration.
 
 | Component | Responsibility |
 | :--- | :--- |
-| Extension activation | Register diagnostics, commands, config listeners, and document listeners |
+| Extension activation | Register diagnostics, commands, config listeners, and `ofmarkdown` document listeners |
+| Flavor Grenade dependency check | Verify `alisonaquinas.flavor-grenade-lsp` is installed and explain missing dependency behavior |
 | Lint coordinator | Convert VS Code documents and settings into core lint requests |
 | Diagnostic mapper | Convert `LintError` values into VS Code diagnostics |
 | Fix provider | Convert core fixes into VS Code code actions and fix-all actions |
@@ -60,7 +74,7 @@ adapters from lint orchestration.
 ## Data Flow
 
 ```text
-VS Code document event
+VS Code ofmarkdown document event
   -> extension lint coordinator
   -> markdownlint-obsidian core engine
   -> LintResult[]
@@ -81,7 +95,13 @@ VS Code code action request
 ## Non-Goals
 
 - No separate rule implementation in the extension.
+- No duplicate implementation of Flavor Grenade's `ofmarkdown` promotion.
+- No automatic live linting for generic `markdown` documents by default.
 - No Marketplace publishing flow until extension behavior and packaging are
   specified.
 - No browser or virtual workspace support until file-system needs are designed.
 - No automatic migration of user config files without explicit requirements.
+
+## See Also
+
+- [Flavor Grenade Dependency Contract](flavor-grenade-dependency.md)

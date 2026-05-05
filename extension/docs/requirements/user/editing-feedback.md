@@ -1,10 +1,21 @@
 # Editing Feedback
 
 ```text
+Tag: UserMarkdownlintObsidian.FlavorGrenadeDependency
+Need: As an Obsidian vault author, I need the lint extension to use Flavor Grenade's OFMarkdown language mode, so only documents recognized as Obsidian-flavored vault notes receive automatic OFM lint feedback.
+Capability basis: Flavor Grenade contributes and assigns the `ofmarkdown` language id; VS Code supports extension dependencies by full `publisher.name` identifier.
+Acceptance cue: The extension declares `alisonaquinas.flavor-grenade-lsp` as an extension dependency and treats `languageId === "ofmarkdown"` as the primary live-lint eligibility signal.
+```
+
+Source trace:
+[Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md),
+[Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md)
+
+```text
 Tag: UserMarkdownlintObsidian.AutomaticActivation
-Need: As a Markdown author, I need Obsidian-aware linting to become available automatically when I open or edit a Markdown document, so I do not have to run the CLI while writing.
-Capability basis: VS Code can activate on Markdown documents; markdownlint-obsidian exposes core lint APIs and a CLI for Markdown globs.
-Acceptance cue: Opening a VS Code `markdown` document activates extension commands and diagnostics without a manual startup step.
+Need: As a Markdown author, I need Obsidian-aware linting to become available automatically when a document enters OFMarkdown mode, so I do not have to run the CLI while writing vault notes.
+Capability basis: VS Code can activate on contributed language ids; Flavor Grenade promotes qualifying documents to `ofmarkdown`; markdownlint-obsidian exposes core lint APIs.
+Acceptance cue: Opening a document that Flavor Grenade marks as `ofmarkdown` activates extension commands and diagnostics without a manual startup step.
 ```
 
 Source trace:
@@ -14,9 +25,9 @@ Source trace:
 
 ```text
 Tag: UserMarkdownlintObsidian.OFMRelevantDocuments
-Need: As a Markdown author, I need linting to target Markdown and Obsidian Flavored Markdown content, so unrelated document types are not noisy.
-Capability basis: markdownlint-obsidian discovers Markdown files through globs and parses OFM syntax inside `.md` files.
-Acceptance cue: Markdown documents are eligible; non-Markdown language ids are ignored unless a future OFM-specific language mode explicitly opts them in.
+Need: As a Markdown author, I need live linting to target Flavor Grenade-recognized OFMarkdown documents, so generic Markdown documents are not noisy.
+Capability basis: Flavor Grenade owns vault membership detection and `ofmarkdown` promotion; markdownlint-obsidian parses OFM syntax inside Markdown files.
+Acceptance cue: `ofmarkdown` documents are eligible for live linting; generic `markdown` documents are not linted live unless a separate explicit command or future opt-in setting covers them.
 ```
 
 Source trace:
@@ -27,7 +38,7 @@ Source trace:
 Tag: UserMarkdownlintObsidian.CurrentDiagnostics
 Need: As a Markdown author, I need diagnostics to reflect the current document content and configuration, so editor underlines and the Problems panel match what the CLI would report.
 Capability basis: core lint results expose file, line, column, rule code, severity, message, and fix metadata.
-Acceptance cue: Opening, editing, saving, closing, or changing relevant settings updates or clears diagnostics for affected Markdown documents.
+Acceptance cue: Opening, editing, saving, closing, language-mode changes, or changing relevant settings updates or clears diagnostics for affected `ofmarkdown` documents.
 ```
 
 Source trace:
@@ -47,9 +58,9 @@ Source trace:
 
 ```text
 Tag: UserMarkdownlintObsidian.VaultAwareFeedback
-Need: As an Obsidian vault maintainer, I need link, embed, and block-reference diagnostics to use the correct vault root, so broken-link feedback matches repository layout.
-Capability basis: markdownlint-obsidian supports vault root detection, explicit `--vault-root`, wikilink resolution, embed checks, and block-reference indexes.
-Acceptance cue: Diagnostics that depend on vault state honor detected or configured vault roots and clearly report when vault resolution is unavailable.
+Need: As an Obsidian vault maintainer, I need link, embed, and block-reference diagnostics to follow the same vault classification that produced OFMarkdown mode, so broken-link feedback matches repository layout.
+Capability basis: Flavor Grenade identifies OFMarkdown vault documents; markdownlint-obsidian supports vault root detection, explicit `--vault-root`, wikilink resolution, embed checks, and block-reference indexes.
+Acceptance cue: Diagnostics that depend on vault state run for `ofmarkdown` documents, honor detected or configured vault roots, and clearly report when vault resolution is unavailable.
 ```
 
 Source trace:
