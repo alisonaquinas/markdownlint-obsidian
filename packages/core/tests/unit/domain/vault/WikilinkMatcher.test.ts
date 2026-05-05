@@ -4,13 +4,11 @@
  * @module tests/unit/domain/vault/WikilinkMatcher.test
  */
 import { describe, it, expect } from "bun:test";
-import * as path from "node:path";
 import { matchWikilink } from "../../../../src/domain/vault/WikilinkMatcher.js";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";
 
-const ROOT = path.resolve("/vault");
-const INDEX = makeVaultPath(ROOT, path.resolve("/vault/notes/index.md"));
-const OTHER = makeVaultPath(ROOT, path.resolve("/vault/notes/Other.md"));
+const INDEX = makeVaultPath("notes/index.md", "/vault/notes/index.md");
+const OTHER = makeVaultPath("notes/Other.md", "/vault/notes/Other.md");
 
 describe("matchWikilink", () => {
   const all = [INDEX, OTHER];
@@ -53,8 +51,8 @@ describe("matchWikilink", () => {
   });
 
   it("ambiguous basename", () => {
-    const A = makeVaultPath(ROOT, path.resolve("/vault/a/same.md"));
-    const B = makeVaultPath(ROOT, path.resolve("/vault/b/same.md"));
+    const A = makeVaultPath("a/same.md", "/vault/a/same.md");
+    const B = makeVaultPath("b/same.md", "/vault/b/same.md");
     const r = matchWikilink("same", [A, B], { caseSensitive: false });
     expect(r.kind).toBe("ambiguous");
     if (r.kind === "ambiguous") {
@@ -77,11 +75,10 @@ describe("matchWikilink", () => {
 });
 
 describe("matchWikilink — obsidian-fuzzy resolveMode (issue #27)", () => {
-  const ROOT_M = path.resolve("/m");
-  const WIKI_SOURCES_FOO = makeVaultPath(ROOT_M, path.resolve("/m/wiki/sources/foo.md"));
-  const RAW_OTHER = makeVaultPath(ROOT_M, path.resolve("/m/raw/upnote/Other.md"));
-  const SUPER_FOO = makeVaultPath(ROOT_M, path.resolve("/m/super-sources/foo.md"));
-  const ALSO_SOURCES_FOO = makeVaultPath(ROOT_M, path.resolve("/m/other/sources/foo.md"));
+  const WIKI_SOURCES_FOO = makeVaultPath("wiki/sources/foo.md", "/m/wiki/sources/foo.md");
+  const RAW_OTHER = makeVaultPath("raw/upnote/Other.md", "/m/raw/upnote/Other.md");
+  const SUPER_FOO = makeVaultPath("super-sources/foo.md", "/m/super-sources/foo.md");
+  const ALSO_SOURCES_FOO = makeVaultPath("other/sources/foo.md", "/m/other/sources/foo.md");
 
   it("path-suffix match: [[sources/foo]] resolves to wiki/sources/foo.md", () => {
     const r = matchWikilink("sources/foo", [WIKI_SOURCES_FOO, RAW_OTHER], {
@@ -135,7 +132,7 @@ describe("matchWikilink — obsidian-fuzzy resolveMode (issue #27)", () => {
   });
 
   it("falls through to basename when no path-suffix match exists", () => {
-    const BARE = makeVaultPath(ROOT_M, path.resolve("/m/wiki/foo.md"));
+    const BARE = makeVaultPath("wiki/foo.md", "/m/wiki/foo.md");
     const r = matchWikilink("foo", [BARE, WIKI_SOURCES_FOO], {
       caseSensitive: false,
       resolveMode: "obsidian-fuzzy",
@@ -146,7 +143,7 @@ describe("matchWikilink — obsidian-fuzzy resolveMode (issue #27)", () => {
   });
 
   it("bare targets keep the basename strategy in fuzzy mode", () => {
-    const BARE = makeVaultPath(ROOT_M, path.resolve("/m/wiki/foo.md"));
+    const BARE = makeVaultPath("wiki/foo.md", "/m/wiki/foo.md");
     for (const target of ["foo", "foo.md"]) {
       const r = matchWikilink(target, [BARE], {
         caseSensitive: false,
@@ -160,8 +157,8 @@ describe("matchWikilink — obsidian-fuzzy resolveMode (issue #27)", () => {
   });
 
   it("bare targets remain ambiguous by basename in fuzzy mode", () => {
-    const A = makeVaultPath(ROOT_M, path.resolve("/m/wiki/foo.md"));
-    const B = makeVaultPath(ROOT_M, path.resolve("/m/archive/foo.md"));
+    const A = makeVaultPath("wiki/foo.md", "/m/wiki/foo.md");
+    const B = makeVaultPath("archive/foo.md", "/m/archive/foo.md");
     const r = matchWikilink("foo", [A, B], {
       caseSensitive: false,
       resolveMode: "obsidian-fuzzy",

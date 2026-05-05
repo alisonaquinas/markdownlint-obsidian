@@ -12,9 +12,9 @@ jobs:
         # npm-publish takes 3-10 min; add buffer for CDN propagation
         run: sleep 600
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install cli from npmjs.org and verify version
         if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')
@@ -24,6 +24,32 @@ jobs:
           OUT=$(markdownlint-obsidian --version)
           echo "$OUT"
           echo "$OUT" | grep -q "${VERSION}"
+
+      - name: Install core from npmjs.org and verify exports
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidianv')
+        run: |
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidianv}"
+          mkdir /tmp/core-export-test && cd /tmp/core-export-test
+          npm init -y
+          npm install "markdownlint-obsidian@${VERSION}"
+          # Verify every documented subpath export from a clean consumer project,
+          # not from the monorepo checkout. This catches missing dist files and
+          # package `exports` drift after publish.
+          node --input-type=module <<'EOF'
+          await import('markdownlint-obsidian');
+          await import('markdownlint-obsidian/api');
+          await import('markdownlint-obsidian/rules');
+          await import('markdownlint-obsidian/engine');
+          EOF
+
+      - name: Audit core npm signatures (verifies provenance)
+        if: startsWith(github.event.release.tag_name, 'markdownlint-obsidianv')
+        run: |
+          VERSION="${GITHUB_REF_NAME#markdownlint-obsidianv}"
+          mkdir /tmp/core-audit-test && cd /tmp/core-audit-test
+          npm init -y
+          npm install "markdownlint-obsidian@${VERSION}"
+          npm audit signatures
 
       - name: Audit npm signatures (verifies provenance)
         if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')

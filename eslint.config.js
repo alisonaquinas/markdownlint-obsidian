@@ -32,7 +32,7 @@ export default [
   },
   {
     // Test files: relax function-size rule; describe() blocks grow past 30 lines.
-    files: ["packages/*/tests/**/*.ts", "docs/bdd/**/*.ts"],
+    files: ["packages/*/tests/**/*.ts", "action/tests/**/*.ts", "docs/bdd/**/*.ts"],
     rules: {
       "max-lines-per-function": "off",
     },
@@ -44,6 +44,7 @@ export default [
       "packages/core/src/infrastructure/rules/standard/registerStandard.ts",
       "packages/core/src/engine/index.ts",
       "packages/cli/src/main.ts",
+      "action/src/main.ts",
     ],
     rules: {
       "max-lines": "off",

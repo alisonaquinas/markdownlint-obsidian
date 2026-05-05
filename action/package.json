@@ -3,12 +3,13 @@
   "version": "0.8.0",
   "private": true,
   "description": "GitHub Action wrapper for markdownlint-obsidian",
+  "type": "module",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --platform=node --target=node20 --format=cjs --main-fields=module,main --outfile=dist/main.js"
+    "build": "node scripts/build.mjs",
+    "test": "bun test --timeout 30000"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "markdownlint-obsidian-cli": "workspace:*"
+    "@actions/core": "^1.10.0"
   },
   "devDependencies": {
     "esbuild": "^0.20.0"

@@ -13,7 +13,7 @@ Source tree for the GitHub Action wrapper.
 - The action manifest lives at [`../action.yml`](../action.yml), so consumers
   reference this action as `alisonaquinas/markdownlint-obsidian/action@<tag>`.
 - Any edit to `main.ts` must be followed by `npm run build` from
-  [`../`](../README.md) so `dist/main.js` stays in sync.
+  [`../`](../README.md) so `dist/main.mjs` stays in sync.
 
 ## See also
 
