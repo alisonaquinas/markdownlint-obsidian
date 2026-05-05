@@ -1,0 +1,73 @@
+# Phase E0: Planning Readiness
+
+## Goal
+
+Prepare enough product, architecture, behavior, and test documentation that
+extension implementation can proceed without guessing the domain boundary.
+
+## Status
+
+Mostly complete. This phase remains open only for ADR cleanup and final
+implementation-entry review.
+
+## Scope
+
+- Extension documentation scaffold.
+- Flavor Grenade dependency contract.
+- user, functional, architecture, technical, DDD, and BDD documentation.
+- unit, verification, and validation test plans.
+- dogfood linting for `extension/docs/`.
+
+## Deliverables
+
+| Deliverable | Path | Status |
+| :--- | :--- | :--- |
+| Extension docs index | [../README.md](../README.md) | complete |
+| Architecture overview | [../architecture/overview.md](../architecture/overview.md) | complete |
+| Flavor Grenade contract | [../architecture/flavor-grenade-dependency.md](../architecture/flavor-grenade-dependency.md) | complete |
+| User requirements | [../requirements/user/index.md](../requirements/user/index.md) | complete |
+| Functional requirements | [../requirements/functional/index.md](../requirements/functional/index.md) | complete |
+| Technical requirements | [../requirements/technical/index.md](../requirements/technical/index.md) | complete |
+| DDD model | [../ddd/README.md](../ddd/README.md) | complete |
+| BDD model | [../bdd/README.md](../bdd/README.md) | complete |
+| Test plans | [../tests/README.md](../tests/README.md) | complete |
+| Extension docs dogfood config | [../.obsidian-linter.jsonc](../.obsidian-linter.jsonc) | complete |
+
+## Implementation Tasks
+
+- [x] Create extension docs scaffold.
+- [x] Document Flavor Grenade LSP technology stack and dependency role.
+- [x] Adapt user requirements from vscode-markdownlint research to
+  markdownlint-obsidian behavior.
+- [x] Add functional requirements linked to user requirements.
+- [x] Import architecture requirements and tailor them to npm packages and the
+  VS Code extension.
+- [x] Add DDD bounded contexts and ubiquitous language.
+- [x] Add BDD feature files and traceability.
+- [x] Add technical requirements for strict TypeScript and repository tooling.
+- [x] Add test plans and runnable planning checks.
+- [x] Configure `extension/docs/` dogfood linting in local scripts, CI, and
+  pre-commit.
+- [ ] Decide whether E1 needs an ADR for package location and extension build
+  tool before source is created.
+
+## Acceptance Criteria
+
+- `bun run test:dogfood:extension-docs` passes.
+- `bun extension/docs/tests/scripts/check-test-docs.mjs` passes.
+- `bun extension/docs/tests/scripts/check-validation-contracts.mjs` passes.
+- roadmap phases have clear entry and exit criteria.
+- implementation can start without changing core lint semantics.
+
+## Verification
+
+```bash
+bun run test:dogfood:extension-docs
+bun extension/docs/tests/scripts/check-test-docs.mjs
+bun extension/docs/tests/scripts/check-validation-contracts.mjs
+```
+
+## Exit Decision
+
+Proceed to E1 when maintainers accept the in-process extension package as the
+first implementation target, or when an ADR records a different runtime shape.

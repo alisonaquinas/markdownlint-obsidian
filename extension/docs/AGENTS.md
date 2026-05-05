@@ -13,6 +13,7 @@ research. The extension docs dogfood lint run
 extension/docs/
 ├── README.md              # index of this extension documentation tree
 ├── AGENTS.md              # this file
+├── roadmap.md             # extension implementation roadmap
 ├── architecture/          # extension architecture and data-flow notes
 ├── bdd/                   # behavior scenarios and traceability
 ├── ddd/                   # extension bounded contexts and ubiquitous language
@@ -64,6 +65,8 @@ extension/docs/
 1. Create phase plans under `extension/docs/plans/`.
 2. Keep plans scoped to extension work.
 3. Do not retroactively rewrite shipped plans. Add execution notes instead.
+4. Update `extension/docs/roadmap.md` and `extension/docs/plans/index.md`
+   when adding or changing phase boundaries.
 
 ### Adding Extension ADRs
 
