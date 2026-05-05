@@ -12,9 +12,9 @@ jobs:
         # npm-publish takes 3-10 min; add buffer for CDN propagation
         run: sleep 600
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install cli from npmjs.org and verify version
         if: startsWith(github.event.release.tag_name, 'markdownlint-obsidian-cliv')

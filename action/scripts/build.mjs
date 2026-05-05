@@ -5,8 +5,8 @@
  * Provides: an esbuild invocation that writes `dist/main.mjs`.
  *
  * Role in system: Keeps the action's checked-in runtime artifact in sync with
- * `src/main.ts` while preserving ESM semantics required by the Node 20 action
- * runtime.
+ * `src/main.ts` while preserving ESM semantics required by the GitHub Actions
+ * Node runtime.
  *
  * Constraints: Build warnings are treated as failures because GitHub Actions
  * executes the committed bundle directly.

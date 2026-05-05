@@ -28,7 +28,7 @@ outputs:
   sarif-path:
     description: "Path to the SARIF output file when format is sarif"
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/main.mjs"
 branding:
   icon: "book-open"

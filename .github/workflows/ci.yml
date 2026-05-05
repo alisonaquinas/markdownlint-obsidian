@@ -10,7 +10,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -68,11 +72,11 @@ jobs:
     # clean environment.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Lint docs/ and extension/docs/ with published CLI
         run: npm run test:dogfood:published

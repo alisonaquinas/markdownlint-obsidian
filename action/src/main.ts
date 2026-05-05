@@ -7,7 +7,7 @@
  * through `npx`, emits GitHub Action outputs, and translates CLI exit semantics into
  * workflow pass/fail status without reimplementing linting or formatting logic.
  *
- * Constraints: The default runtime must stay Node 20-compatible and ESM-safe because
+ * Constraints: The default runtime must stay ESM-safe because
  * `action/action.yml` points directly at the bundled `dist/main.mjs` file.
  *
  * @module action/main
