@@ -16,16 +16,14 @@ Requirements for the planned VS Code extension.
 
 ## User Requirements
 
-Planned user requirement documents should live under
-`extension/docs/requirements/user/`.
+User requirements live under [user/](user/index.md).
 
-Initial user needs:
-
-- See lint issues in open Markdown files without running the CLI manually.
-- Apply safe automatic fixes from the editor.
-- Run lint across a workspace from the Command Palette.
-- Use existing `.obsidian-linter.jsonc` configuration.
-- Understand why linting is unavailable in unsupported workspace modes.
+| File | Focus |
+| :--- | :--- |
+| [user/editing-feedback.md](user/editing-feedback.md) | Activation, document eligibility, current diagnostics, run modes, vault-aware feedback |
+| [user/fixes-formatting.md](user/fixes-formatting.md) | Quick fixes, fix-all, fix-check preview, rule docs, formatting limits |
+| [user/configuration.md](user/configuration.md) | Config discovery, schema help, custom rules, rule family visibility |
+| [user/workspace-and-trust.md](user/workspace-and-trust.md) | Workspace lint, temporary disable, trust, unsupported modes, actionable errors |
 
 ## Functional Requirements
 
