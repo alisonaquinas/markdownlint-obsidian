@@ -19,27 +19,27 @@ bun extension/docs/tests/scripts/run-verification-gates.mjs
 bun extension/docs/tests/scripts/check-validation-contracts.mjs
 ```
 
-## Future Extension Package Scripts
+## Extension Package Scripts
 
-When `extension/package.json` exists, it should expose:
+`extension/package.json` exposes:
 
 ```json
 {
   "scripts": {
-    "build": "extension build command",
+    "build": "build core public API and bundle extension",
+    "build:extension": "bundle extension source only",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . && prettier --check .",
-    "test": "bun test",
-    "test:unit": "bun test tests/unit",
-    "test:component": "bun test tests/component",
-    "test:integration": "extension-host test command",
+    "test": "bun test tests/unit tests/integration",
+    "test:integration": "bun test tests/integration",
+    "test:extension-host": "VS Code Extension Development Host smoke test",
     "package:check": "VSIX package inspection command"
   }
 }
 ```
 
-The exact build and extension-host tools should be chosen in an ADR when
-extension source is introduced.
+The build uses `esbuild` and `@vscode/vsce`. The Extension Development Host
+runner uses `@vscode/test-electron`.
 
 ## CI Placement
 
@@ -48,7 +48,7 @@ extension source is introduced.
 | docs-plan | test-docs script, extension docs lint |
 | verification | verification-gates script, root typecheck, root lint |
 | validation | validation-contracts script, BDD smoke, extension-host smoke when available |
-| release | package build, package inspection, smoke install, metadata consistency |
+| release | package build, package inspection, checksum, provenance, Marketplace publish |
 
 ## Script Behavior
 

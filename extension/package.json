@@ -1,0 +1,161 @@
+{
+  "name": "markdownlint-obsidian-vscode",
+  "displayName": "markdownlint Obsidian",
+  "description": "VS Code extension for linting Obsidian Flavored Markdown with markdownlint-obsidian.",
+  "version": "0.0.0",
+  "publisher": "alisonaquinas",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/extension.cjs",
+  "engines": {
+    "vscode": "^1.118.0",
+    "node": ">=20.0.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "markdown",
+    "markdownlint",
+    "obsidian",
+    "ofmarkdown",
+    "linter"
+  ],
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ],
+  "extensionDependencies": [
+    "alisonaquinas.flavor-grenade-lsp"
+  ],
+  "activationEvents": [
+    "onLanguage:ofmarkdown",
+    "onCommand:markdownlintObsidian.lintWorkspace",
+    "onCommand:markdownlintObsidian.openConfig",
+    "onCommand:markdownlintObsidian.disable",
+    "onCommand:markdownlintObsidian.enable",
+    "onCommand:markdownlintObsidian.fixAll",
+    "onCommand:markdownlintObsidian.previewFixes",
+    "onCommand:markdownlintObsidian.openRuleHelp"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Built-in linting works in restricted mode, but custom rules and file-writing fix commands require a trusted workspace.",
+      "restrictedConfigurations": [
+        "markdownlintObsidian.configPath"
+      ]
+    },
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "Live linting requires file-backed OFMarkdown documents. Virtual documents are reported as unsupported."
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "markdownlintObsidian.lintWorkspace",
+        "title": "markdownlint Obsidian: Lint Workspace"
+      },
+      {
+        "command": "markdownlintObsidian.openConfig",
+        "title": "markdownlint Obsidian: Open Configuration"
+      },
+      {
+        "command": "markdownlintObsidian.disable",
+        "title": "markdownlint Obsidian: Disable Live Diagnostics"
+      },
+      {
+        "command": "markdownlintObsidian.enable",
+        "title": "markdownlint Obsidian: Enable Live Diagnostics"
+      },
+      {
+        "command": "markdownlintObsidian.previewFixes",
+        "title": "markdownlint Obsidian: Preview Fixes"
+      }
+    ],
+    "configuration": {
+      "title": "markdownlint Obsidian",
+      "properties": {
+        "markdownlintObsidian.enabled": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Enable live diagnostics for OFMarkdown documents."
+        },
+        "markdownlintObsidian.runMode": {
+          "scope": "resource",
+          "type": "string",
+          "enum": [
+            "onType",
+            "onSave"
+          ],
+          "default": "onType",
+          "description": "Controls whether live linting runs while typing or only after save."
+        },
+        "markdownlintObsidian.debounceMs": {
+          "scope": "resource",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5000,
+          "default": 250,
+          "description": "Debounce delay for on-type linting."
+        },
+        "markdownlintObsidian.configPath": {
+          "scope": "resource",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "description": "Optional configuration file or directory passed to markdownlint-obsidian."
+        },
+        "markdownlintObsidian.workspaceGlobs": {
+          "scope": "resource",
+          "type": "array",
+          "default": [
+            "**/*.md"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Glob patterns used by the workspace lint command."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "bun run build",
+    "compile": "bun run check-types && bun run build",
+    "check-types": "tsc --noEmit",
+    "typecheck": "bun run check-types",
+    "build": "bun run --filter markdownlint-obsidian build && bun scripts/build-extension.mjs",
+    "build:extension": "bun scripts/build-extension.mjs",
+    "lint": "eslint src tests scripts && prettier --check package.json README.md CHANGELOG.md scripts src tests",
+    "test": "bun test tests/unit tests/integration --timeout 30000",
+    "test:integration": "bun test tests/integration --timeout 30000",
+    "test:extension-host": "node scripts/run-extension-tests.mjs",
+    "package:check": "bun scripts/package-check.mjs",
+    "package": "bun run build && vsce package --no-dependencies"
+  },
+  "dependencies": {
+    "markdownlint-obsidian": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.118.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisonaquinas/markdownlint-obsidian.git",
+    "directory": "extension"
+  },
+  "bugs": {
+    "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
+  },
+  "homepage": "https://github.com/alisonaquinas/markdownlint-obsidian#readme"
+}

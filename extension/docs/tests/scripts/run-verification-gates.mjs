@@ -29,9 +29,9 @@ const extensionPackagePath = join(root, "extension/package.json");
 if (existsSync(extensionPackagePath)) {
   const packageJson = JSON.parse(readFileSync(extensionPackagePath, "utf8"));
   const scripts = packageJson.scripts ?? {};
-  for (const scriptName of ["typecheck", "lint", "test", "build"]) {
+  for (const scriptName of ["typecheck", "lint", "test", "build", "package:check"]) {
     if (scripts[scriptName] !== undefined) {
-      run(`extension ${scriptName}`, "bun", ["--cwd", "extension", "run", scriptName]);
+      run(`extension ${scriptName}`, "bun", ["run", "--cwd", "extension", scriptName]);
     } else {
       failures.push(`extension/package.json is missing ${scriptName} script`);
     }

@@ -1,0 +1,12 @@
+src/**
+tests/**
+scripts/**
+docs/**
+tsconfig*.json
+*.vsix
+.vscode-test/**
+node_modules/**
+!dist/**
+!README.md
+!CHANGELOG.md
+!package.json

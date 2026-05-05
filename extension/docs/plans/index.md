@@ -7,6 +7,7 @@ Delivery plans for the VS Code extension.
 - Keep plans extension-specific.
 - Use [phase execution](phase-execution.md) for phase gate, ticket lifecycle,
   and retrospective rules.
+- Record execution evidence in [execution ledger](execution-ledger.md).
 - Use [ticket templates](templates/tickets/index.md) when adding new feature,
   task, bug, chore, or spike tickets.
 - Keep phase plans small enough to verify independently.
