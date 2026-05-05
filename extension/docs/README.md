@@ -16,6 +16,7 @@ language modes, packaging, tests, and release behavior.
 | [bdd/](bdd/README.md) | Behavior-domain scenarios and traceability |
 | [ddd/](ddd/README.md) | Extension bounded contexts and ubiquitous language |
 | [requirements/](requirements/index.md) | User and functional requirements for the extension |
+| [tests/](tests/README.md) | Unit, verification, validation, and automation test plans |
 | [plans/](plans/index.md) | Extension delivery plans and execution notes |
 | [research/](research/index.md) | Supporting research for extension decisions |
 | [adr/](adr/index.md) | Extension-specific Architecture Decision Records |

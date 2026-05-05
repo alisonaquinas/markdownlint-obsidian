@@ -15,6 +15,7 @@ extension/docs/
 ├── bdd/                   # behavior scenarios and traceability
 ├── ddd/                   # extension bounded contexts and ubiquitous language
 ├── requirements/          # user and functional requirements
+├── tests/                 # unit, verification, validation, and automation plans
 ├── plans/                 # delivery plans and execution notes
 ├── research/              # supporting research for extension decisions
 └── adr/                   # extension-specific Architecture Decision Records
@@ -47,6 +48,14 @@ extension/docs/
 3. Link new scenarios to requirements in `extension/docs/bdd/traceability.md`.
 4. Keep core lint-rule examples in root `docs/bdd/`; extension BDD should cover
    editor integration behavior.
+
+### Adding Extension Tests
+
+1. Add test strategy docs under `extension/docs/tests/`.
+2. Keep runnable helper scripts under `extension/docs/tests/scripts/`.
+3. Scripts must run from the repository root, avoid network access, and avoid
+   modifying files.
+4. Use planned skips for future extension source checks until source exists.
 
 ### Adding Extension Plans
 
