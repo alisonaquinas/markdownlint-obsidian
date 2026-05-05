@@ -29,7 +29,11 @@ Delivery plans for the VS Code extension.
 
 ## Current Status
 
-E0 is mostly complete. E1 is the first source-implementation phase.
+E0 through E7 have local implementation evidence on
+`feature/extension-project-management`. See
+[execution ledger](execution-ledger.md) for commands run, outcomes, and review
+state. Remote CI and Marketplace publication remain the authoritative release
+checks.
 
 ## See Also
 

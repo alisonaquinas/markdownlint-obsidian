@@ -13,15 +13,16 @@
 | Script | Evidence Produced |
 | :--- | :--- |
 | [scripts/check-test-docs.mjs](scripts/check-test-docs.mjs) | required test plan files exist and reference automation |
-| [scripts/run-verification-gates.mjs](scripts/run-verification-gates.mjs) | extension docs lint, root dogfood docs lint, optional extension package gate output |
-| [scripts/check-validation-contracts.mjs](scripts/check-validation-contracts.mjs) | BDD feature readiness, traceability coverage, Flavor Grenade dependency doc coverage, optional manifest checks |
+| [scripts/run-verification-gates.mjs](scripts/run-verification-gates.mjs) | extension docs lint, root dogfood docs lint, extension package gate output |
+| [scripts/check-validation-contracts.mjs](scripts/check-validation-contracts.mjs) | BDD feature readiness, traceability coverage, Flavor Grenade dependency doc coverage, manifest checks |
 
 ## Exit Criteria
 
-Extension work is ready for implementation planning when:
+Extension work is ready for review when:
 
 - unit, verification, and validation plans exist;
 - scripts run from the repository root;
 - BDD feature files have scenarios and requirement tags;
 - technical gates are traceable to requirements;
-- future package checks have clear planned-skip behavior.
+- package checks pass or explicitly skip only in checkouts without the
+  extension package.

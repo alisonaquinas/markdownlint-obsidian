@@ -2,8 +2,8 @@
 
 ## Scope
 
-These Planguage-style functional requirements define the planned VS Code
-extension behavior for `markdownlint-obsidian`.
+These Planguage-style functional requirements define the VS Code extension
+behavior for `markdownlint-obsidian`.
 
 They adapt the coverage model from
 [vscode-markdownlint functional research](../../../../docs/research/vscode-markdownlint/requirments/functional/index.md)
@@ -27,7 +27,8 @@ to this extension's architecture:
 
 ## Source Interpretation Notes
 
-- These are proposed requirements, not implementation claims.
+- These remain implementation requirements; current local evidence is tracked
+  in [execution ledger](../../plans/execution-ledger.md).
 - Targets use functional coverage scales because behavior can be tested against
   manifest entries, VS Code extension-host events, and core API outputs.
 - Numeric goals are limited to binary or coverage behaviors that can be tested.

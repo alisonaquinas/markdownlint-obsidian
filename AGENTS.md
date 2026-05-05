@@ -6,7 +6,8 @@
 > `git@github.com:alisonaquinas/markdownlint-obsidian.git`.
 
 Monorepo for `markdownlint-obsidian`: an Obsidian Flavored Markdown linter
-that runs in CI pipelines. Publishes two npm packages and one GitHub Action.
+that runs in CI pipelines and VS Code. Publishes two npm packages, one
+VS Code extension package, and one GitHub Action.
 
 ## Layout
 

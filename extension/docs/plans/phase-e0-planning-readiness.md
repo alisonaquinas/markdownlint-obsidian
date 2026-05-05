@@ -7,8 +7,8 @@ extension implementation can proceed without guessing the domain boundary.
 
 ## Status
 
-Mostly complete. This phase remains open only for ADR cleanup and final
-implementation-entry review.
+In review. The planning baseline is complete for the current implementation
+branch, with release acceptance deferred to PR and CI review.
 
 ## Scope
 
@@ -48,8 +48,8 @@ implementation-entry review.
 - [x] Add test plans and runnable planning checks.
 - [x] Configure `extension/docs/` dogfood linting in local scripts, CI, and
   pre-commit.
-- [ ] Decide whether E1 needs an ADR for package location and extension build
-  tool before source is created.
+- [x] Record the package location, build tool, dependency boundary, trust
+  posture, and packaging decisions.
 
 ## Acceptance Criteria
 
@@ -69,5 +69,5 @@ bun extension/docs/tests/scripts/check-validation-contracts.mjs
 
 ## Exit Decision
 
-Proceed to E1 when maintainers accept the in-process extension package as the
-first implementation target, or when an ADR records a different runtime shape.
+E1 proceeded with an in-process extension package, bundled library runtime, and
+Flavor Grenade as the OFMarkdown document-classification dependency.

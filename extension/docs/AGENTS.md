@@ -1,8 +1,8 @@
 # AGENTS.md - Guide for AI Agents Working in `extension/docs/`
 
-Documentation tree for the planned `markdownlint-obsidian` VS Code extension.
-This directory is not extension source code. It is the planning and reference
-wiki for extension behavior, architecture, requirements, release decisions, and
+Documentation tree for the `markdownlint-obsidian` VS Code extension. This
+directory is not extension source code. It is the planning and reference wiki
+for extension behavior, architecture, requirements, release decisions, and
 research. The extension docs dogfood lint run
 (`bun run test:dogfood:extension-docs`) lints this tree with
 `markdownlint-obsidian`; the aggregate `bun run test:dogfood` also runs it.
@@ -58,7 +58,7 @@ extension/docs/
 2. Keep runnable helper scripts under `extension/docs/tests/scripts/`.
 3. Scripts must run from the repository root, avoid network access, and avoid
    modifying files.
-4. Use planned skips for future extension source checks until source exists.
+4. Keep package-aware scripts deterministic and offline.
 
 ### Adding Extension Plans
 

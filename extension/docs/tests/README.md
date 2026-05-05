@@ -1,11 +1,10 @@
 # Extension Test Plans
 
-Test planning and automation entry points for the planned
-`markdownlint-obsidian` VS Code extension.
+Test planning and automation entry points for the `markdownlint-obsidian`
+VS Code extension.
 
-This tree describes how extension work should be tested once source exists, and
-it includes scripts that can run now against the current documentation and
-repository contracts.
+This tree describes how extension work is tested and includes scripts that run
+against the current documentation, package, and repository contracts.
 
 ## Inventory
 
@@ -14,9 +13,9 @@ repository contracts.
 | [unit-tests.md](unit-tests.md) | Unit and component test plan for extension domain adapters |
 | [verification-tests.md](verification-tests.md) | Technical verification plan for typecheck, lint, build, package, and docs gates |
 | [validation-tests.md](validation-tests.md) | User-facing validation plan for BDD, extension-host, and manual smoke coverage |
-| [automation.md](automation.md) | Script catalog, local commands, CI placement, and planned package scripts |
+| [automation.md](automation.md) | Script catalog, local commands, CI placement, and package scripts |
 | [traceability.md](traceability.md) | Mapping between test plans, requirements, BDD features, and scripts |
-| [scripts/](scripts/) | Runnable automation helpers for current and future extension gates |
+| [scripts/](scripts/) | Runnable automation helpers for extension gates |
 
 ## Test Taxonomy
 
@@ -35,6 +34,5 @@ bun extension/docs/tests/scripts/run-verification-gates.mjs
 bun extension/docs/tests/scripts/check-validation-contracts.mjs
 ```
 
-The scripts are intentionally source-aware. If future extension source or
-manifest files are present, they check them. If not, they verify the planning
-contracts and print planned skips.
+The scripts are package-aware. They check the extension package when present and
+fall back to explicit skips only when a checkout lacks that package.

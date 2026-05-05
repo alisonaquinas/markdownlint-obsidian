@@ -6,7 +6,7 @@ Package-scaffold ticket folder for [Phase E1](../phase-e1-package-scaffold.md).
 
 | Ticket | Title | Status |
 | :--- | :--- | :--- |
-| `FEAT-002` | Buildable VS Code extension package scaffold | `draft` |
+| `FEAT-002` | Buildable VS Code extension package scaffold | `in-review` |
 
 ## Backlog
 

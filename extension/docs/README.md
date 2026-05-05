@@ -1,7 +1,7 @@
 # VS Code Extension Documentation
 
-Planning and reference wiki for the future `markdownlint-obsidian` VS Code
-extension.
+Planning, implementation, and release reference wiki for the
+`markdownlint-obsidian` VS Code extension.
 
 This tree is intentionally separate from root `docs/`. Root docs describe the
 core linter, CLI, GitHub Action, rules, and project architecture. Extension docs
@@ -22,19 +22,20 @@ language modes, packaging, tests, and release behavior.
 | [research/](research/index.md) | Supporting research for extension decisions |
 | [adr/](adr/index.md) | Extension-specific Architecture Decision Records |
 
-## Initial Scope
+## Implemented Scope
 
-The extension should provide VS Code feedback for the existing
+The extension provides VS Code feedback for the existing
 `markdownlint-obsidian` library without duplicating lint rules in editor code.
-The extension should bundle that library as its lint engine dependency. Users
-should not need to install the CLI globally or in their workspace for editor
-diagnostics, fixes, previews, or workspace commands. The extension should also
-depend on the Flavor Grenade LSP extension for OFMarkdown language detection,
-then lint documents that Flavor Grenade has promoted to the `ofmarkdown`
+The extension bundles that library as its lint engine dependency. Users do not
+need to install the CLI globally or in their workspace for editor diagnostics,
+fixes, previews, or workspace commands. The extension depends on the Flavor
+Grenade LSP extension for OFMarkdown language detection, then lints documents
+that Flavor Grenade has promoted to the `ofmarkdown`
 language id.
 
-The desired direction is a `markdownlint-cli2`-style editing experience using a
-technology stack and document-selection model closer to `flavor-grenade-lsp`:
+The implemented editor experience follows the `markdownlint-cli2` style while
+using a technology stack and document-selection model closer to
+`flavor-grenade-lsp`:
 
 - TypeScript VS Code extension client.
 - Clear boundary between editor UI and lint engine behavior.
@@ -47,11 +48,11 @@ technology stack and document-selection model closer to `flavor-grenade-lsp`:
 - Explicit workspace trust and virtual workspace posture.
 - Packaging and test workflows that can run in CI.
 
-## Runtime Direction
+## Runtime Shape
 
 Flavor Grenade owns OFMarkdown language-mode detection. The extension runtime
-should call the bundled `markdownlint-obsidian` library through public APIs.
-The current planning bias is:
+calls the bundled `markdownlint-obsidian` library through public APIs. The
+current runtime shape is:
 
 - keep the first implementation in-process;
 - preserve core ownership of lint behavior through a thin library adapter;

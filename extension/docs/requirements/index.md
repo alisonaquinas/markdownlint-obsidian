@@ -1,6 +1,6 @@
 # Extension Requirements
 
-Requirements for the planned VS Code extension.
+Requirements for the VS Code extension.
 
 ## Requirement Areas
 

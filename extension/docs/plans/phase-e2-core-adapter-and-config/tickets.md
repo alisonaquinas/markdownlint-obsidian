@@ -2,7 +2,7 @@
 
 ## FEAT-003: Typed Core Adapter And Configuration Boundary
 
-Status: `draft`
+Status: `in-review`
 
 Goal: let the extension decide eligibility, resolve settings, and call the
 bundled library through public APIs without publishing diagnostics yet.
@@ -13,11 +13,11 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-006` | task | Implement bundled library adapter | `open` |
-| `TASK-007` | task | Implement settings and config resolution | `open` |
-| `TASK-008` | task | Implement Flavor Grenade dependency state | `open` |
-| `TASK-009` | task | Implement document eligibility service | `open` |
-| `SPIKE-001` | spike | Confirm public library API shape for live text lint | `open` |
+| `TASK-006` | task | Implement bundled library adapter | `in-review` |
+| `TASK-007` | task | Implement settings and config resolution | `in-review` |
+| `TASK-008` | task | Implement Flavor Grenade dependency state | `in-review` |
+| `TASK-009` | task | Implement document eligibility service | `in-review` |
+| `SPIKE-001` | spike | Confirm public library API shape for live text lint | `in-review` |
 
 Acceptance criteria:
 

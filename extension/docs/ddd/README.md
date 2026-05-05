@@ -1,6 +1,6 @@
 # Extension DDD
 
-Domain model notes for the planned `markdownlint-obsidian` VS Code extension.
+Domain model notes for the `markdownlint-obsidian` VS Code extension.
 
 The extension domain is not a separate business domain from the core linter.
 It is an editor-integration domain around existing `markdownlint-obsidian`

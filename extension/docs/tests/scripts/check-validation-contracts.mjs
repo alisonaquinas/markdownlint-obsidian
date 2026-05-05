@@ -57,7 +57,7 @@ if (existsSync(extensionPackagePath)) {
     failures.push("extension/package.json is missing onLanguage:ofmarkdown");
   }
 } else {
-  console.log("planned skip: extension/package.json does not exist yet.");
+  console.log("skip: extension/package.json is absent in this checkout.");
 }
 
 if (failures.length > 0) {

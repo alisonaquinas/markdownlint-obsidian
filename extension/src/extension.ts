@@ -49,6 +49,14 @@ class ExtensionRuntime {
     this.context.subscriptions.push(
       vscode.window.onDidChangeVisibleTextEditors(() => void this.lintVisible()),
     );
+    this.context.subscriptions.push(
+      vscode.workspace.onDidChangeConfiguration((event) => {
+        if (event.affectsConfiguration(CONFIG_SECTION)) void this.lintVisible();
+      }),
+    );
+    this.context.subscriptions.push(
+      vscode.workspace.onDidChangeWorkspaceFolders(() => void this.lintVisible()),
+    );
     this.registerCommands();
     this.registerCodeActions();
     void this.lintVisible();

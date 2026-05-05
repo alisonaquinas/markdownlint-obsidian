@@ -6,8 +6,8 @@ These requirements adapt the
 [vscode-markdownlint user research](../../../../docs/research/vscode-markdownlint/requirments/user/index.md)
 to `markdownlint-obsidian` capabilities.
 
-They describe user-visible needs for the planned VS Code extension. They are a
-baseline for later functional requirements, architecture decisions, and tests.
+They describe user-visible needs for the VS Code extension. They are a baseline
+for functional requirements, architecture decisions, and tests.
 
 ## Inventory
 
@@ -22,11 +22,11 @@ baseline for later functional requirements, architecture decisions, and tests.
 
 - The upstream `vscode-markdownlint` extension embeds `markdownlint-cli2`
   behavior. This extension must expose `markdownlint-obsidian` behavior instead.
-- Flavor Grenade LSP is the planned owner of OFMarkdown document classification.
-  This extension uses `ofmarkdown` as the live-lint eligibility signal.
+- Flavor Grenade LSP owns OFMarkdown document classification. This extension
+  uses `ofmarkdown` as the live-lint eligibility signal.
 - Requirements mention current core and CLI capabilities only when those
   capabilities exist today.
 - Extension-specific affordances, such as pause/resume linting and config
-  schema contributions, are proposed requirements for the extension baseline.
+  schema contributions, are part of the extension baseline.
 - Formatting is intentionally narrower than upstream markdownlint. The current
   core fix model supports safe line edits, not whole-document formatting.

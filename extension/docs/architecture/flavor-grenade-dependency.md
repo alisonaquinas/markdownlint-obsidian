@@ -2,11 +2,11 @@
 
 ## Decision Premise
 
-The VS Code extension should treat `flavor-grenade-lsp` as an installed
-extension dependency and rely on the `ofmarkdown` language mode it contributes.
+The VS Code extension treats `flavor-grenade-lsp` as an installed extension
+dependency and relies on the `ofmarkdown` language mode it contributes.
 
-The planned manifest should declare the dependency with VS Code's
-`extensionDependencies` field:
+The manifest declares the dependency with VS Code's `extensionDependencies`
+field:
 
 ```json
 {
@@ -32,13 +32,12 @@ diagnostics, and fixes.
 
 ## Activation Model
 
-Primary activation should be `onLanguage:ofmarkdown`.
+Primary activation is `onLanguage:ofmarkdown`.
 
 The extension may also activate on a command or workspace event for setup,
-configuration, and troubleshooting. It should not lint every `markdown`
-document by default. Plain Markdown stays out of scope unless the user runs an
-explicit workspace command or a later requirement adds opt-in generic Markdown
-linting.
+configuration, and troubleshooting. It does not lint every `markdown` document
+by default. Plain Markdown stays out of scope unless the user runs an explicit
+workspace command or a later requirement adds opt-in generic Markdown linting.
 
 ## Document Eligibility
 
@@ -56,10 +55,10 @@ lets `markdownlint-obsidian` stay focused on lint semantics.
 
 If the dependency is disabled, missing, or not installed:
 
-- live linting should not silently fall back to all Markdown files;
-- commands should report that `flavor-grenade-lsp` is required for automatic
+- live linting does not silently fall back to all Markdown files;
+- commands report that `flavor-grenade-lsp` is required for automatic
   OFMarkdown document selection;
-- documentation should explain that users can install the dependency or use CLI
+- documentation explains that users can install the dependency or use CLI
   linting outside VS Code.
 
 ## Non-Goals

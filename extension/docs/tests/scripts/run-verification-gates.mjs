@@ -38,7 +38,7 @@ if (existsSync(extensionPackagePath)) {
   }
 } else {
   console.log("\n== extension package gates ==");
-  console.log("planned skip: extension/package.json does not exist yet.");
+  console.log("skip: extension/package.json is absent in this checkout.");
 }
 
 if (failures.length > 0) {

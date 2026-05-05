@@ -2,7 +2,7 @@
 
 ## FEAT-004: Live Diagnostics For Eligible OFMarkdown Documents
 
-Status: `draft`
+Status: `in-review`
 
 Goal: publish current VS Code diagnostics for visible eligible documents using
 latest text, effective config, and bundled library results.
@@ -13,11 +13,11 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-010` | task | Register document event listeners | `open` |
-| `TASK-011` | task | Implement lint scheduler and cancellation | `open` |
-| `TASK-012` | task | Map lint errors to VS Code diagnostics | `open` |
-| `TASK-013` | task | Add extension-host diagnostics smoke tests | `open` |
-| `CHORE-003` | chore | Sweep diagnostics output and stale-result docs | `open` |
+| `TASK-010` | task | Register document event listeners | `in-review` |
+| `TASK-011` | task | Implement lint scheduler and cancellation | `in-review` |
+| `TASK-012` | task | Map lint errors to VS Code diagnostics | `in-review` |
+| `TASK-013` | task | Add extension-host diagnostics smoke tests | `in-review` |
+| `CHORE-003` | chore | Sweep diagnostics output and stale-result docs | `in-review` |
 
 Acceptance criteria:
 

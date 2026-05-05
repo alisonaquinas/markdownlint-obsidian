@@ -28,13 +28,13 @@ Flavor Grenade extension.
 
 ## Settings
 
-| Setting | Default | Purpose |
-| :--- | :--- | :--- |
-| `markdownlintObsidian.enabled` | `true` | enables live diagnostics |
-| `markdownlintObsidian.runMode` | `onType` | chooses `onType` or `onSave` linting |
-| `markdownlintObsidian.debounceMs` | `250` | debounce for on-type linting |
-| `markdownlintObsidian.configPath` | `null` | optional config file or directory |
-| `markdownlintObsidian.workspaceGlobs` | `["**/*.md"]` | workspace lint globs |
+| Setting                               | Default       | Purpose                              |
+| :------------------------------------ | :------------ | :----------------------------------- |
+| `markdownlintObsidian.enabled`        | `true`        | enables live diagnostics             |
+| `markdownlintObsidian.runMode`        | `onType`      | chooses `onType` or `onSave` linting |
+| `markdownlintObsidian.debounceMs`     | `250`         | debounce for on-type linting         |
+| `markdownlintObsidian.configPath`     | `null`        | optional config file or directory    |
+| `markdownlintObsidian.workspaceGlobs` | `["**/*.md"]` | workspace lint globs                 |
 
 ## Trust And Workspace Support
 

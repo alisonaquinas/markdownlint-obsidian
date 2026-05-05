@@ -2,7 +2,7 @@
 
 This procedure adapts Flavor Grenade's phase execution model for the
 `markdownlint-obsidian` VS Code extension. It applies only to work under
-`extension/docs/plans` and the future extension package.
+`extension/docs/plans` and the extension package.
 
 ## Rule 1: Execute Phases Sequentially
 

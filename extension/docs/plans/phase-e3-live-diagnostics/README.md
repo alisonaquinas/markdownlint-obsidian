@@ -6,7 +6,7 @@ Live-diagnostics ticket folder for [Phase E3](../phase-e3-live-diagnostics.md).
 
 | Ticket | Title | Status |
 | :--- | :--- | :--- |
-| `FEAT-004` | Live diagnostics for eligible OFMarkdown documents | `draft` |
+| `FEAT-004` | Live diagnostics for eligible OFMarkdown documents | `in-review` |
 
 ## Backlog
 

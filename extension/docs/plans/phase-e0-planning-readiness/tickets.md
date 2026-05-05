@@ -2,7 +2,7 @@
 
 ## FEAT-001: Planning Baseline Ready For Extension Implementation
 
-Status: `draft`
+Status: `in-review`
 
 Goal: finish the documentation baseline that lets E1 start without guessing
 package location, runtime dependency policy, or test gates.
@@ -13,22 +13,22 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-001` | task | Finalize extension runtime ADRs | `open` |
-| `TASK-002` | task | Confirm requirements to BDD traceability | `open` |
-| `CHORE-001` | chore | Run extension docs planning gate | `open` |
+| `TASK-001` | task | Finalize extension runtime ADRs | `in-review` |
+| `TASK-002` | task | Confirm requirements to BDD traceability | `in-review` |
+| `CHORE-001` | chore | Run extension docs planning gate | `in-review` |
 
 Acceptance criteria:
 
-- [ ] unresolved runtime decisions are recorded as ADRs or explicit E1 tasks.
-- [ ] requirements, BDD, DDD, architecture, and tests remain linked.
-- [ ] `bun run test:dogfood:extension-docs` passes.
+- [x] unresolved runtime decisions are recorded as ADRs or explicit E1 tasks.
+- [x] requirements, BDD, DDD, architecture, and tests remain linked.
+- [x] `bun run test:dogfood:extension-docs` passes.
 
 ## TASK-001: Finalize Extension Runtime ADRs
 
 Scope: decide whether E1 needs ADRs for package location, build tool, and
 library adapter boundary.
 
-Planned files:
+Reviewed files:
 
 - `extension/docs/adr/`
 - `extension/docs/plans/phase-e1-package-scaffold.md`
@@ -42,7 +42,7 @@ Scope: review extension user, functional, technical, BDD, and test docs for
 missing implementation-entry links.
 
 Done when every E1-facing requirement has either a BDD scenario, test-plan row,
-or explicit planned gap.
+or explicit implementation gap.
 
 ## CHORE-001: Run Extension Docs Planning Gate
 

@@ -1,15 +1,15 @@
 # Test Automation
 
-Automation lives beside the test plans so it can be reviewed before extension
-source exists.
+Automation lives beside the test plans so implementation gates and validation
+contracts stay reviewable with the extension source.
 
 ## Scripts
 
 | Script | Purpose | Safe Today |
 | :--- | :--- | :--- |
 | [scripts/check-test-docs.mjs](scripts/check-test-docs.mjs) | verifies the test-plan docs and script catalog are present | yes |
-| [scripts/run-verification-gates.mjs](scripts/run-verification-gates.mjs) | runs extension docs lint, root dogfood docs lint, and future extension package gates | yes |
-| [scripts/check-validation-contracts.mjs](scripts/check-validation-contracts.mjs) | checks BDD feature readiness, traceability, dependency docs, and future manifest contracts | yes |
+| [scripts/run-verification-gates.mjs](scripts/run-verification-gates.mjs) | runs extension docs lint, root dogfood docs lint, and extension package gates | yes |
+| [scripts/check-validation-contracts.mjs](scripts/check-validation-contracts.mjs) | checks BDD feature readiness, traceability, dependency docs, and manifest contracts | yes |
 
 ## Local Command Set
 
@@ -53,7 +53,7 @@ runner uses `@vscode/test-electron`.
 ## Script Behavior
 
 - Scripts exit non-zero for missing required planning files.
-- Scripts print planned skips for future extension source checks.
+- Scripts print explicit skips only when a checkout lacks the extension package.
 - Scripts avoid network access.
 - Scripts run from the repository root.
 - Scripts must not write files or modify package metadata.

@@ -12,7 +12,7 @@ local execution evidence gathered before PR review.
 | E2 | in review | bundled library adapter uses public in-memory editor API; no CLI dependency |
 | E3 | in review | OFMarkdown eligibility and diagnostic projection have unit coverage |
 | E4 | in review | fix edit translation, fix-all command, preview command, and rule help are implemented |
-| E5 | in review | workspace lint, open config, session disable, and trust-gated custom rules are implemented |
+| E5 | in review | workspace lint, open config, session disable, config refresh hooks, and trust-gated custom rules are implemented |
 | E6 | in review | CI package check and `ext-v*` release workflow are authored |
 | E7 | in review | Marketplace README, changelog, license, privacy posture, and package validation are authored |
 

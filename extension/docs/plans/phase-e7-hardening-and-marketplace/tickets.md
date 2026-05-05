@@ -2,7 +2,7 @@
 
 ## FEAT-008: Marketplace Readiness And Release Decision
 
-Status: `draft`
+Status: `in-review`
 
 Goal: prepare release metadata, validation evidence, privacy posture, and final
 go or no-go checklist for Marketplace publication.
@@ -13,12 +13,12 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-027` | task | Add Marketplace README and assets | `open` |
-| `TASK-028` | task | Document Flavor Grenade dependency support | `open` |
-| `TASK-029` | task | Complete manual validation matrix | `open` |
-| `TASK-030` | task | Finalize release checklist | `open` |
-| `SPIKE-002` | spike | Decide telemetry and privacy posture | `open` |
-| `CHORE-006` | chore | Verify licenses, notices, and bundled assets | `open` |
+| `TASK-027` | task | Add Marketplace README and assets | `in-review` |
+| `TASK-028` | task | Document Flavor Grenade dependency support | `in-review` |
+| `TASK-029` | task | Complete manual validation matrix | `in-review` |
+| `TASK-030` | task | Finalize release checklist | `in-review` |
+| `SPIKE-002` | spike | Decide telemetry and privacy posture | `in-review` |
+| `CHORE-006` | chore | Verify licenses, notices, and bundled assets | `in-review` |
 
 Acceptance criteria:
 

@@ -7,7 +7,7 @@ Workspace-command ticket folder for
 
 | Ticket | Title | Status |
 | :--- | :--- | :--- |
-| `FEAT-006` | Workspace commands, config watchers, and trust policy | `draft` |
+| `FEAT-006` | Workspace commands, config watchers, and trust policy | `in-review` |
 
 ## Backlog
 

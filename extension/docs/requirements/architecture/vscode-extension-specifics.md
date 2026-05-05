@@ -1,6 +1,6 @@
 # VS Code Extension Technical Requirements
 
-Architecture requirements adapted to the planned VS Code extension package.
+Architecture requirements adapted to the VS Code extension package.
 
 ## ExtensionArchitecture.PackageBoundary
 
@@ -39,7 +39,7 @@ Tag: ExtensionArchitecture.ManifestSpecifics
 Gist: Express extension architecture through VS Code manifest fields.
 Ambition: VS Code can install, activate, configure, and constrain the extension according to the documented design.
 Scale: Percentage of required manifest fields present with expected values for extension dependency, activation, commands, configuration, capabilities, extension kind, and build entry point.
-Meter: Manifest inspection test against extension `package.json` once created.
+Meter: Manifest inspection test against extension `package.json`.
 Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLanguage:ofmarkdown` activation, points `main` at a missing build artifact, or leaves trust/virtual workspace posture undeclared.
 Goal: 100% of required manifest fields match documented extension architecture.
 Stakeholders: VS Code users, extension maintainers.

@@ -7,7 +7,7 @@ Hardening-and-marketplace ticket folder for
 
 | Ticket | Title | Status |
 | :--- | :--- | :--- |
-| `FEAT-008` | Marketplace readiness and release decision | `draft` |
+| `FEAT-008` | Marketplace readiness and release decision | `in-review` |
 
 ## Backlog
 

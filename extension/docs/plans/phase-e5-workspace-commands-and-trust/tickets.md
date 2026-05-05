@@ -2,7 +2,7 @@
 
 ## FEAT-006: Workspace Commands, Config Watchers, And Trust Policy
 
-Status: `draft`
+Status: `in-review`
 
 Goal: provide command palette workflows and explicit trust behavior for
 workspace linting, config opening, temporary disable, and unsupported modes.
@@ -13,11 +13,11 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-018` | task | Implement workspace lint command | `open` |
-| `TASK-019` | task | Implement open config command | `open` |
-| `TASK-020` | task | Implement temporary disable state | `open` |
-| `TASK-021` | task | Implement config watchers and refresh | `open` |
-| `TASK-022` | task | Enforce trust and unsupported mode policy | `open` |
+| `TASK-018` | task | Implement workspace lint command | `in-review` |
+| `TASK-019` | task | Implement open config command | `in-review` |
+| `TASK-020` | task | Implement temporary disable state | `in-review` |
+| `TASK-021` | task | Implement config watchers and refresh | `in-review` |
+| `TASK-022` | task | Enforce trust and unsupported mode policy | `in-review` |
 
 Acceptance criteria:
 

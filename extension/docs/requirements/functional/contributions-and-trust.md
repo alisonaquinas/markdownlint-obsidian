@@ -6,10 +6,10 @@
 Tag: MarkdownlintObsidian.ManifestContributions
 Gist: Contribute extension dependency, activation, commands, configuration, and UI entries to VS Code.
 Ambition: VS Code exposes markdownlint-obsidian behavior through native contribution points.
-Scale: Percentage of planned manifest contribution points present with expected ids, titles, defaults, scopes, activation events, dependency ids, and paths.
+Scale: Percentage of documented manifest contribution points present with expected ids, titles, defaults, scopes, activation events, dependency ids, and paths.
 Meter: Manifest inspection test against extension `package.json` for `extensionDependencies`, `activationEvents`, commands, command-palette menus, configuration properties, JSON/YAML validation, problem matchers if used, and extension kind/capabilities.
-Fail: Any planned contribution is missing, renamed without migration, scoped incorrectly, has wrong defaults, or points to missing files.
-Goal: 100% manifest contribution match for planned contribution inventory.
+Fail: Any documented contribution is missing, renamed without migration, scoped incorrectly, has wrong defaults, or points to missing files.
+Goal: 100% manifest contribution match for documented contribution inventory.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
 Source: [extension README](../../README.md); [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md).

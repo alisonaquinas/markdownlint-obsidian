@@ -2,7 +2,7 @@
 
 ## FEAT-007: Verified VSIX Packaging And CI Release Path
 
-Status: `draft`
+Status: `in-review`
 
 Goal: make extension checks, packaging, smoke install, checksum generation, and
 Flavor Grenade-style release workflow run in CI.
@@ -13,11 +13,11 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-023` | task | Add extension jobs to CI | `open` |
-| `TASK-024` | task | Add VSIX package inspection | `open` |
-| `TASK-025` | task | Add extension-host smoke install | `open` |
-| `TASK-026` | task | Add ext-v release workflow | `open` |
-| `CHORE-005` | chore | Update automation and pre-commit docs | `open` |
+| `TASK-023` | task | Add extension jobs to CI | `in-review` |
+| `TASK-024` | task | Add VSIX package inspection | `in-review` |
+| `TASK-025` | task | Add extension-host smoke install | `in-review` |
+| `TASK-026` | task | Add ext-v release workflow | `in-review` |
+| `CHORE-005` | chore | Update automation and pre-commit docs | `in-review` |
 
 Acceptance criteria:
 

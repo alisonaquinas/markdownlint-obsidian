@@ -60,8 +60,11 @@ E0 planning
 
 ## Current Status
 
-E0 is mostly complete. The next implementation phase is E1: package scaffold
-and toolchain.
+E0 through E7 have local implementation evidence on
+`feature/extension-project-management`. The local gates build, typecheck, lint,
+test, package, run the extension-host smoke test, and lint both documentation
+trees. Remote CI and Marketplace publication remain the authoritative release
+checks.
 
 ## See Also
 

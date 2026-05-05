@@ -2,7 +2,7 @@
 
 ## FEAT-002: Buildable VS Code Extension Package Scaffold
 
-Status: `draft`
+Status: `in-review`
 
 Goal: create a no-op extension package that builds, typechecks, lints, tests,
 packages, and declares the right runtime dependencies.
@@ -13,10 +13,10 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-003` | task | Create extension manifest and package scripts | `open` |
-| `TASK-004` | task | Add strict TypeScript and test scaffold | `open` |
-| `TASK-005` | task | Add extension build and VSIX package check | `open` |
-| `CHORE-002` | chore | Wire root scripts and docs automation | `open` |
+| `TASK-003` | task | Create extension manifest and package scripts | `in-review` |
+| `TASK-004` | task | Add strict TypeScript and test scaffold | `in-review` |
+| `TASK-005` | task | Add extension build and VSIX package check | `in-review` |
+| `CHORE-002` | chore | Wire root scripts and docs automation | `in-review` |
 
 Acceptance criteria:
 

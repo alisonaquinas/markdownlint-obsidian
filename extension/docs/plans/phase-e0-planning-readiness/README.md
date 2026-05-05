@@ -6,7 +6,7 @@ Planning-readiness ticket folder for [Phase E0](../phase-e0-planning-readiness.m
 
 | Ticket | Title | Status |
 | :--- | :--- | :--- |
-| `FEAT-001` | Planning baseline ready for extension implementation | `draft` |
+| `FEAT-001` | Planning baseline ready for extension implementation | `in-review` |
 
 ## Backlog
 

@@ -5,7 +5,7 @@ repository: strictly typed, linted, formatted, packaged, and documented.
 
 ## Required Gates
 
-| Gate | Current Command | Future Extension Command | Requirement Trace |
+| Gate | Root Command | Extension Command | Requirement Trace |
 | :--- | :--- | :--- | :--- |
 | Typecheck | `bun run typecheck` | `bun --cwd extension run typecheck` | `MarkdownlintObsidianTechnical.TypecheckGate` |
 | Lint and format | `bun run lint` | `bun --cwd extension run lint` | `MarkdownlintObsidianTechnical.LintGate` |
@@ -13,11 +13,11 @@ repository: strictly typed, linted, formatted, packaged, and documented.
 | BDD smoke | `bun run test:bdd` | extension-host scenarios or tagged BDD smoke | `MarkdownlintObsidianTechnical.TestGate` |
 | Extension docs lint | `bun run test:dogfood:extension-docs` | same | `MarkdownlintObsidianTechnical.DocsGate` |
 | Build | `bun run build` | `bun --cwd extension run build` | `MarkdownlintObsidianTechnical.ReleaseGate` |
-| Package inspection | planned | `bun --cwd extension run package:check` | `MarkdownlintObsidianTechnical.ReleaseGate` |
+| Package inspection | `bun extension/docs/tests/scripts/run-verification-gates.mjs` | `bun --cwd extension run package:check` | `MarkdownlintObsidianTechnical.ReleaseGate` |
 
 ## Manifest Verification
 
-Once `extension/package.json` exists, automated checks must inspect:
+Automated checks inspect:
 
 - `extensionDependencies` includes `alisonaquinas.flavor-grenade-lsp`;
 - activation includes OFMarkdown behavior, such as `onLanguage:ofmarkdown`;
@@ -55,5 +55,4 @@ Release package checks must prove:
 bun extension/docs/tests/scripts/run-verification-gates.mjs
 ```
 
-The script runs current docs and repository checks now. When extension package
-scripts are added, it discovers and runs them.
+The script runs docs, repository, and extension package checks in this checkout.

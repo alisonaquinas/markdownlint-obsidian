@@ -1,11 +1,10 @@
 # Extension BDD
 
-Behavior-domain specifications for the planned `markdownlint-obsidian` VS Code
+Behavior-domain specifications for the `markdownlint-obsidian` VS Code
 extension.
 
-These scenarios describe user-observable behavior before implementation. They
-are intended to be reviewed by product, QA, and engineering, then automated at
-the thinnest useful level: manifest inspection, extension-host integration, or
+These scenarios describe user-observable behavior and are automated at the
+thinnest useful level: manifest inspection, extension-host integration, or
 core-adapter component tests.
 
 ## Scope

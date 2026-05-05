@@ -36,7 +36,7 @@ just technical gates.
 ## Manual Validation Checkpoints
 
 Manual checks are allowed only where human inspection catches issues automation
-cannot yet judge:
+does not judge:
 
 - Problems panel text is understandable.
 - Command Palette titles read naturally.
@@ -53,5 +53,5 @@ fixture, and result.
 bun extension/docs/tests/scripts/check-validation-contracts.mjs
 ```
 
-The script validates BDD feature readiness and extension-contract documents
-today. It will inspect `extension/package.json` once the package exists.
+The script validates BDD feature readiness, extension-contract documents, and
+`extension/package.json`.

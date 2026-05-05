@@ -17,6 +17,7 @@ Long-form reference and design documentation for `markdownlint-obsidian`.
 | [superpowers/](superpowers/) | Design specs and implementation plans for agent workflows |
 | [assets/](assets/) | Brand assets — logo variants, icon files |
 | [roadmap.md](roadmap.md) | High-level phased delivery roadmap |
+| [../extension/docs/](../extension/docs/README.md) | VS Code extension architecture, requirements, tests, and plans |
 
 ## Guides
 

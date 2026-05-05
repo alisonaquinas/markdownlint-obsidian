@@ -2,7 +2,7 @@
 
 ## FEAT-005: Quick Fixes, Fix-All, Preview, And Rule Help
 
-Status: `draft`
+Status: `in-review`
 
 Goal: expose core-provided fixes and rule docs through VS Code code actions
 without becoming a general Markdown formatter.
@@ -13,11 +13,11 @@ Child tickets:
 
 | Ticket | Type | Title | Status |
 | :--- | :--- | :--- | :--- |
-| `TASK-014` | task | Implement diagnostic code action provider | `open` |
-| `TASK-015` | task | Translate core fixes to workspace edits | `open` |
-| `TASK-016` | task | Implement fix-all and no-write preview | `open` |
-| `TASK-017` | task | Map rule help links | `open` |
-| `CHORE-004` | chore | Verify formatting boundary | `open` |
+| `TASK-014` | task | Implement diagnostic code action provider | `in-review` |
+| `TASK-015` | task | Translate core fixes to workspace edits | `in-review` |
+| `TASK-016` | task | Implement fix-all and no-write preview | `in-review` |
+| `TASK-017` | task | Map rule help links | `in-review` |
+| `CHORE-004` | chore | Verify formatting boundary | `in-review` |
 
 Acceptance criteria:
 
