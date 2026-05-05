@@ -1,3 +1,10 @@
+/**
+ * Unit coverage for configuration normalization.
+ *
+ * Invalid VS Code settings should collapse to conservative runtime defaults so
+ * extension activation remains predictable.
+ */
+
 import { describe, expect, it } from "bun:test";
 import { readExtensionSettings } from "../../src/config/settings.js";
 

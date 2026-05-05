@@ -1,3 +1,10 @@
+/**
+ * Unit coverage for converting core fix payloads into editor text edits.
+ *
+ * The test protects the one-based to zero-based coordinate conversion used by
+ * quick fixes and fix-all actions.
+ */
+
 import { describe, expect, it } from "bun:test";
 import { fixToTextEdit } from "../../src/fixes/fixEdits.js";
 

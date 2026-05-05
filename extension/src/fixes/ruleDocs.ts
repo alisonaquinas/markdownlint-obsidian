@@ -1,3 +1,13 @@
+/**
+ * Maps lint rule codes to the repository's published rule documentation.
+ *
+ * Built-in OFM and standard Markdown rules get stable documentation URLs.
+ * Unknown custom rule codes intentionally return `null` so the extension does
+ * not imply that local custom rules have first-party docs.
+ *
+ * @module fixes/ruleDocs
+ */
+
 const REPO_DOCS_URL = "https://github.com/alisonaquinas/markdownlint-obsidian/blob/main/docs/rules";
 
 const OFM_FAMILIES: ReadonlyArray<{

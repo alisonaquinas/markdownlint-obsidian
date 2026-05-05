@@ -1,3 +1,10 @@
+/**
+ * Unit coverage for live-lint document eligibility.
+ *
+ * These tests pin the Flavor Grenade dependency and `ofmarkdown` language-id
+ * boundary so generic Markdown documents are not linted live by accident.
+ */
+
 import { describe, expect, it } from "bun:test";
 import { decideEligibility } from "../../src/diagnostics/eligibility.js";
 import type {

@@ -1,7 +1,15 @@
+/**
+ * Verify release-critical VS Code extension package invariants.
+ *
+ * This script is intentionally small and offline so CI, pre-release checks, and
+ * local verification all enforce the same manifest and build-output contract.
+ */
+
 import { readFile, stat } from "node:fs/promises";
 
 const manifest = JSON.parse(await readFile("package.json", "utf8"));
 
+/** Record a package-check failure without throwing away later findings. */
 function fail(message) {
   process.stderr.write(`${message}\n`);
   process.exitCode = 1;

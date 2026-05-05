@@ -1,5 +1,17 @@
+/**
+ * Converts raw VS Code configuration values into the extension's strict runtime
+ * settings shape.
+ *
+ * The reader interface keeps this module testable without importing VS Code and
+ * gives invalid user settings conservative defaults instead of throwing during
+ * editor activation.
+ *
+ * @module config/settings
+ */
+
 import type { ExtensionSettings, RunMode } from "../shared/types.js";
 
+/** Minimal subset of VS Code's configuration reader used by this adapter. */
 export interface ConfigurationReader {
   get<T>(key: string, defaultValue: T): T;
 }

@@ -1,3 +1,10 @@
+/**
+ * Unit coverage for translating core lint errors into editor diagnostic data.
+ *
+ * The key risk is coordinate drift: core reports one-based positions while VS
+ * Code diagnostics use zero-based ranges.
+ */
+
 import { describe, expect, it } from "bun:test";
 import { lintErrorToDiagnosticData } from "../../src/diagnostics/diagnosticData.js";
 

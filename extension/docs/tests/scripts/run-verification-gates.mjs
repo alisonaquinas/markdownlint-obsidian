@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+/**
+ * Run the extension documentation and package verification gates from the repo
+ * root.
+ *
+ * The script discovers extension package scripts when `extension/package.json`
+ * is present, which keeps older planning checkouts readable while enforcing the
+ * full gate set on implementation branches.
+ */
+
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cwd, exit } from "node:process";
@@ -7,6 +16,7 @@ import { spawnSync } from "node:child_process";
 const root = cwd();
 const failures = [];
 
+/** Run one verification command and record its failure without stopping later gates. */
 const run = (label, command, args, options = {}) => {
   console.log(`\n== ${label} ==`);
   const result = spawnSync(command, args, {

@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Check that extension test-plan documentation and automation links stay wired.
+ *
+ * This script is intentionally offline and read-only so it can run in local
+ * hooks before the heavier extension package checks.
+ */
+
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cwd, exit } from "node:process";
@@ -33,6 +40,7 @@ for (const relativePath of requiredFiles) {
   }
 }
 
+/** Read a repository-relative file as UTF-8 text. */
 const read = (relativePath) => readFileSync(join(root, relativePath), "utf8");
 
 if (failures.length === 0) {

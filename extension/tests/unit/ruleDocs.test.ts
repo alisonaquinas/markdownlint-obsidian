@@ -1,3 +1,10 @@
+/**
+ * Unit coverage for rule-code documentation links.
+ *
+ * Built-in markdownlint-obsidian rules should point at first-party docs, while
+ * unknown custom codes should not pretend to have bundled documentation.
+ */
+
 import { describe, expect, it } from "bun:test";
 import { ruleDocumentationUrl } from "../../src/fixes/ruleDocs.js";
 

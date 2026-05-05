@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Validate extension behavior contracts that are represented in docs, BDD
+ * features, and the VS Code manifest.
+ *
+ * This is a fast consistency check, not a substitute for extension-host tests.
+ */
+
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cwd, exit } from "node:process";
@@ -6,6 +13,7 @@ import { cwd, exit } from "node:process";
 const root = cwd();
 const failures = [];
 
+/** Read a repository-relative file as UTF-8 text. */
 const read = (relativePath) => readFileSync(join(root, relativePath), "utf8");
 
 const bddFeatureDir = join(root, "extension/docs/bdd/features");

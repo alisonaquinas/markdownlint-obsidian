@@ -1,3 +1,11 @@
+/**
+ * Integration smoke coverage for package manifest contracts.
+ *
+ * These assertions keep the VS Code contribution metadata aligned with the
+ * extension architecture: Flavor Grenade supplies OFMarkdown classification and
+ * the bundled library supplies lint behavior.
+ */
+
 import { describe, expect, it } from "bun:test";
 import manifest from "../../package.json" with { type: "json" };
 

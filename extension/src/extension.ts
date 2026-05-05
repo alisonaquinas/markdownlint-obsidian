@@ -1,3 +1,14 @@
+/**
+ * VS Code activation entry point for the markdownlint Obsidian extension.
+ *
+ * The runtime wires VS Code events, diagnostics, commands, and code actions to
+ * the bundled `markdownlint-obsidian` library. Flavor Grenade remains the owner
+ * of OFMarkdown language detection; this extension only live-lints documents
+ * that VS Code reports as `ofmarkdown`.
+ *
+ * @module extension
+ */
+
 import * as vscode from "vscode";
 import type { Fix, LintError, LintResult } from "markdownlint-obsidian/api";
 import { readExtensionSettings } from "./config/settings.js";
@@ -17,11 +28,13 @@ import type {
 
 const engine = new CoreLibraryAdapter();
 
+/** Last lint result retained for code actions on a document version. */
 interface StoredResult {
   readonly documentVersion: number;
   readonly result: LintResult;
 }
 
+/** Owns VS Code subscriptions and translates editor events into lint actions. */
 class ExtensionRuntime {
   private readonly output = vscode.window.createOutputChannel("markdownlint Obsidian");
   private readonly diagnostics =
@@ -32,6 +45,7 @@ class ExtensionRuntime {
 
   constructor(private readonly context: vscode.ExtensionContext) {}
 
+  /** Register extension event listeners, commands, diagnostics, and code actions. */
   activate(): void {
     this.context.subscriptions.push(this.output, this.diagnostics);
     this.context.subscriptions.push(
@@ -148,6 +162,7 @@ class ExtensionRuntime {
         configPath: this.settings(document.uri).configPath,
         allowCustomRules: vscode.workspace.isTrusted,
       });
+      // Discard stale async results so older lint work cannot overwrite newer diagnostics.
       if (document.version !== version) return;
       this.results.set(document.uri.toString(), { documentVersion: version, result });
       this.diagnostics.set(
@@ -181,6 +196,7 @@ class ExtensionRuntime {
       const uri = vscode.Uri.joinPath(folder.uri, name);
       if (await this.exists(uri)) return void (await vscode.window.showTextDocument(uri));
     }
+    // Open an untitled starter instead of writing config files without consent.
     const doc = await vscode.workspace.openTextDocument({
       language: "jsonc",
       content: '{\n  "rules": {}\n}\n',
@@ -238,6 +254,7 @@ class ExtensionRuntime {
   ): vscode.CodeAction[] {
     const stored = this.results.get(document.uri.toString());
     if (stored === undefined) return [];
+    // Reuse the latest stored result so quick fixes match the diagnostics shown to the user.
     const actions = diagnostics.flatMap((diag) =>
       this.quickFixes(document, diag, stored.result.errors),
     );
@@ -394,8 +411,10 @@ class ExtensionRuntime {
 
 type FixableError = LintError & { readonly fix: Fix };
 
+/** VS Code calls this when activation events or commands load the extension. */
 export function activate(context: vscode.ExtensionContext): void {
   new ExtensionRuntime(context).activate();
 }
 
+/** No shutdown work is required because VS Code disposes registered subscriptions. */
 export function deactivate(): void {}

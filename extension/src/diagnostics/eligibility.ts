@@ -1,3 +1,13 @@
+/**
+ * Applies the extension's document eligibility policy before live linting.
+ *
+ * The decision deliberately treats Flavor Grenade as the source of truth for
+ * OFMarkdown classification and rejects generic Markdown, untitled documents,
+ * and unsupported URI schemes before any core lint work starts.
+ *
+ * @module diagnostics/eligibility
+ */
+
 import type {
   DependencyState,
   DocumentSnapshot,
@@ -6,6 +16,15 @@ import type {
   SessionState,
 } from "../shared/types.js";
 
+/**
+ * Decide whether a document should receive live markdownlint-obsidian feedback.
+ *
+ * @param document - Editor-neutral snapshot of the candidate document.
+ * @param settings - Normalized extension settings for the document.
+ * @param session - Session-only live diagnostics state.
+ * @param dependency - Observed Flavor Grenade dependency state.
+ * @returns Eligibility result plus the first rejection reason, when ineligible.
+ */
 export function decideEligibility(
   document: DocumentSnapshot,
   settings: ExtensionSettings,
