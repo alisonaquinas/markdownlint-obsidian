@@ -68,6 +68,11 @@ try {
   fail("dist/extension.cjs is missing; run bun run build first");
 }
 
+const bundle = await readFile("dist/extension.cjs", "utf8").catch(() => "");
+if (bundle.includes('require("./impl/')) {
+  fail("dist/extension.cjs must not contain unresolved jsonc-parser UMD requires");
+}
+
 try {
   await stat("schemas/obsidian-linter.schema.json");
 } catch {

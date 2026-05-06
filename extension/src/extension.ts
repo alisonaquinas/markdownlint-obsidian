@@ -14,7 +14,10 @@ import type { Fix, LintError, LintResult } from "markdownlint-obsidian/api";
 import { readExtensionSettings } from "./config/settings.js";
 import { CoreLibraryAdapter } from "./core/coreLibraryAdapter.js";
 import { detectFlavorGrenade } from "./dependencies/flavorGrenade.js";
-import { lintErrorToDiagnosticData } from "./diagnostics/diagnosticData.js";
+import {
+  lintErrorToDiagnosticData,
+  matchesDiagnosticIdentity,
+} from "./diagnostics/diagnosticData.js";
 import { decideEligibility } from "./diagnostics/eligibility.js";
 import { fixToTextEdit } from "./fixes/fixEdits.js";
 import { ruleDocumentationUrl } from "./fixes/ruleDocs.js";
@@ -171,6 +174,7 @@ class ExtensionRuntime {
       );
     } catch (error) {
       this.output.appendLine(this.errorMessage(error));
+      if (document.version === version) this.clear(document.uri);
     }
   }
 
@@ -215,13 +219,17 @@ class ExtensionRuntime {
   }
 
   private async fixAll(): Promise<void> {
-    const doc = vscode.window.activeTextEditor?.document;
-    if (doc === undefined) return;
+    const editor = vscode.window.activeTextEditor;
+    if (editor === undefined) return;
+    const doc = editor.document;
     if (!this.canWriteFixes()) return;
+    const version = doc.version;
     const fixed = await this.fixedText(doc);
-    if (fixed === null || fixed === doc.getText()) return;
-    const full = new vscode.Range(doc.positionAt(0), doc.positionAt(doc.getText().length));
-    await vscode.window.activeTextEditor?.edit((builder) => builder.replace(full, fixed));
+    if (doc.version !== version || editor.document !== doc) return;
+    const text = doc.getText();
+    if (fixed === null || fixed === text) return;
+    const full = new vscode.Range(doc.positionAt(0), doc.positionAt(text.length));
+    await editor.edit((builder) => builder.replace(full, fixed));
   }
 
   private async previewFixes(): Promise<void> {
@@ -255,6 +263,7 @@ class ExtensionRuntime {
   ): vscode.CodeAction[] {
     const stored = this.results.get(document.uri.toString());
     if (stored === undefined) return [];
+    if (stored.documentVersion !== document.version) return [];
     // Reuse the latest stored result so quick fixes match the diagnostics shown to the user.
     const actions = diagnostics.flatMap((diag) =>
       this.quickFixes(document, diag, stored.result.errors),
@@ -271,8 +280,13 @@ class ExtensionRuntime {
     const code = String(
       typeof diagnostic.code === "object" ? diagnostic.code.value : diagnostic.code,
     );
-    const error = errors.find(
-      (entry) => entry.ruleCode === code && entry.message === diagnostic.message,
+    const error = errors.find((entry) =>
+      matchesDiagnosticIdentity(entry, {
+        code,
+        message: diagnostic.message,
+        line: diagnostic.range.start.line,
+        character: diagnostic.range.start.character,
+      }),
     );
     const actions: vscode.CodeAction[] = [];
     if (error?.fix !== undefined && vscode.workspace.isTrusted)

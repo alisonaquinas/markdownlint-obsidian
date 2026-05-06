@@ -15,6 +15,7 @@ await build({
   platform: "node",
   target: "node20",
   format: "cjs",
+  mainFields: ["module", "main"],
   outfile: "dist/extension.cjs",
   external: ["vscode"],
   sourcemap: true,
