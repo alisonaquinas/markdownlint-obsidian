@@ -6,13 +6,13 @@
 Tag: MarkdownlintObsidian.ExtensionDependency
 Gist: Depend on Flavor Grenade for OFMarkdown document classification.
 Ambition: Live linting runs only for documents Flavor Grenade has identified as Obsidian Flavored Markdown.
-Scale: Percentage of extension manifests and activation paths that declare or verify `alisonaquinas.flavor-grenade-lsp` before enabling automatic live linting.
-Meter: Manifest inspection for `extensionDependencies`, plus VS Code integration tests with Flavor Grenade installed, disabled, and missing.
-Fail: Live linting silently falls back to all `markdown` documents, or missing dependency behavior is not visible to users.
+Scale: Percentage of extension manifests and activation paths that declare or verify `alisonaquinas.flavor-grenade-lsp` before enabling automatic live linting, using Flavor Grenade `v0.3.0`/extension `0.1.4` as the compatibility baseline.
+Meter: Manifest inspection for `extensionDependencies`, plus VS Code integration tests with Flavor Grenade installed, disabled, missing, blocked by Restricted Mode, and blocked by a virtual workspace.
+Fail: Live linting silently falls back to all `markdown` documents, ignores a Flavor Grenade disabled-state guardrail, or missing dependency behavior is not visible to users.
 Goal: 100% of automatic live-lint paths require installed Flavor Grenade dependency or report a clear missing-dependency state.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md).
+Source: [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md); [Flavor Grenade v0.3.0 release](https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0).
 ```
 
 User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-feedback.md)
@@ -23,8 +23,8 @@ User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-f
 Tag: MarkdownlintObsidian.Activation
 Gist: Activate live linting for OFMarkdown documents.
 Ambition: Lint diagnostics become available automatically when a vault note enters OFMarkdown mode.
-Scale: Percentage of VS Code sessions where the extension activates after opening or switching to an `ofmarkdown` document.
-Meter: VS Code extension-host smoke test that opens a Flavor Grenade-recognized vault note, observes `ofmarkdown` language id, and verifies diagnostics, commands, and output channel registration.
+Scale: Percentage of VS Code sessions where the extension activates after opening, switching to, or being promoted into an `ofmarkdown` document.
+Meter: VS Code extension-host smoke test that opens a Flavor Grenade-recognized vault note, observes the `markdown` to `ofmarkdown` language-change path when applicable, and verifies diagnostics, commands, and output channel registration.
 Fail: Any manifest-supported `ofmarkdown` activation scenario does not activate the extension.
 Goal: 100% of manifest-supported `ofmarkdown` activation scenarios activate the extension.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
@@ -40,9 +40,9 @@ User trace: [UserMarkdownlintObsidian.AutomaticActivation](../user/editing-feedb
 Tag: MarkdownlintObsidian.DocumentEligibility
 Gist: Live-lint only eligible OFMarkdown documents.
 Ambition: The extension avoids noisy generic Markdown linting while supporting vault documents selected by Flavor Grenade.
-Scale: Percentage of live-lint requests whose eligibility decision matches this predicate: language id is `ofmarkdown`, URI scheme is supported by the execution strategy, linting is enabled, and required configuration can be resolved or reported.
-Meter: Unit or integration test with `ofmarkdown`, `markdown`, non-Markdown, untitled, file, remote-like, virtual-like, trusted, and untrusted document contexts.
-Fail: Any generic `markdown` document receives automatic live diagnostics by default, any eligible `ofmarkdown` document is skipped, or any unsupported document is linted without a clear policy.
+Scale: Percentage of live-lint requests whose eligibility decision matches this predicate: language id is `ofmarkdown`, URI scheme is supported by the execution strategy, Flavor Grenade is available for automatic classification, linting is enabled, and required configuration can be resolved or reported.
+Meter: Unit or integration test with `ofmarkdown`, `markdown`, markdown-to-ofmarkdown promotion, ofmarkdown-to-markdown demotion, non-Markdown, untitled, file, remote-like, virtual-like, trusted, and untrusted document contexts.
+Fail: Any generic `markdown` document receives automatic live diagnostics by default, any eligible `ofmarkdown` document is skipped, any demoted document keeps stale diagnostics, or any unsupported document is linted without a clear policy.
 Goal: 100% predicate match for covered document categories.
 Stakeholders: Obsidian vault authors, generic Markdown authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
@@ -58,7 +58,7 @@ Tag: MarkdownlintObsidian.LintTrigger
 Gist: Run linting on configured OFMarkdown editor lifecycle events.
 Ambition: Diagnostics stay current while respecting user-selected run mode and temporary-disable state.
 Scale: Percentage of in-scope editor events that request, suppress, clear, or refresh diagnostics according to extension state.
-Meter: VS Code integration test covering document open, language-mode change to `ofmarkdown`, text change with run mode `onType`, save with run mode `onSave`, close, visible editor change, configuration change, workspace trust change, and temporary-disable state.
+Meter: VS Code integration test covering document open, language-mode change to `ofmarkdown`, language-mode demotion back to `markdown`, text change with run mode `onType`, save with run mode `onSave`, close, visible editor change, configuration change, workspace trust change, Flavor Grenade disabled state, and temporary-disable state.
 Fail: Any in-scope lifecycle event leaves stale diagnostics, runs linting while disabled, ignores run mode, or lints an ineligible document.
 Goal: 100% of in-scope lifecycle events match configured behavior.
 Stakeholders: Markdown authors, VS Code users.

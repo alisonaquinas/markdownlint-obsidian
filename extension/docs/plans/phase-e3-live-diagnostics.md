@@ -15,6 +15,7 @@ results.
 - run mode: on type and on save.
 - stale-result suppression.
 - document close, language change, and config refresh handling.
+- Flavor Grenade promotion and demotion handling.
 
 ## Behavior Slice
 
@@ -32,6 +33,8 @@ publishes diagnostics that match the latest document version.
 - [ ] Convert core `LintError` values to VS Code diagnostics with correct
   range, severity, source, code, message, and documentation metadata.
 - [ ] Clear diagnostics for closed, ineligible, disabled, or stale documents.
+- [ ] Clear diagnostics when Flavor Grenade demotes an `ofmarkdown` document
+  back to generic `markdown`.
 - [ ] Add output messages for lint, config, vault, and dependency failures.
 - [ ] Add extension-host tests for activation and diagnostic publication.
 - [ ] Add component tests for stale-result suppression and mapper behavior.
@@ -42,11 +45,14 @@ publishes diagnostics that match the latest document version.
 | :--- | :--- |
 | OFMarkdown activation | opening `ofmarkdown` document activates extension feedback |
 | generic Markdown skipped | `markdown` document receives no automatic diagnostics |
+| Flavor Grenade promotion | `markdown` document promoted to `ofmarkdown` becomes eligible |
+| Flavor Grenade demotion | `ofmarkdown` document demoted to `markdown` clears diagnostics |
 | on-type run mode | edit requests a lint and replaces diagnostics |
 | on-save run mode | unsaved edit waits, save requests lint |
 | stale result | older result cannot overwrite newer diagnostics |
 | close or disable | diagnostic collection clears affected document |
 | error path | output contains affected document and message |
+| dependency blocked | Restricted Mode or virtual-workspace dependency state disables automatic linting visibly |
 
 ## Verification
 
@@ -75,6 +81,7 @@ bun run test:dogfood
 | File-based library API cannot lint unsaved text accurately | add or request a public in-memory lint API before broadening live diagnostics |
 | Large documents make on-type linting noisy | debounce and cancellation policy; add performance notes before tuning |
 | Vault-aware rules need workspace indexes | start with existing core behavior and document any limitations in output |
+| Flavor Grenade starts later than this extension | listen for language changes and dependency state instead of assuming startup order |
 
 ## Exit Criteria
 

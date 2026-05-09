@@ -22,6 +22,7 @@ Child tickets:
 Acceptance criteria:
 
 - [ ] only eligible `ofmarkdown` documents receive live diagnostics.
+- [ ] Flavor Grenade promotion requests diagnostics and demotion clears them.
 - [ ] stale results cannot overwrite newer diagnostics.
 - [ ] closed, disabled, or ineligible documents clear diagnostics.
 - [ ] no diagnostics path requires the CLI.
@@ -29,7 +30,7 @@ Acceptance criteria:
 ## TASK-010: Register Document Event Listeners
 
 Scope: listen for open, change, save, close, visible editor change, language id
-change, and config refresh events.
+change, Flavor Grenade promotion or demotion, and config refresh events.
 
 Done when listener registration and disposal are covered by unit or component
 tests.
@@ -54,7 +55,8 @@ Done when mapper tests cover OFM, system, and standard Markdown rule examples.
 Scope: open an OFMarkdown fixture and verify activation plus diagnostic
 publication in an Extension Development Host.
 
-Done when generic Markdown is skipped and OFMarkdown diagnostics appear.
+Done when generic Markdown is skipped, OFMarkdown diagnostics appear, and
+demotion back to generic Markdown clears diagnostics.
 
 ## CHORE-003: Sweep Diagnostics Output And Stale-Result Docs
 

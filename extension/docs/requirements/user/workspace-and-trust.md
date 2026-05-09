@@ -38,14 +38,15 @@ Source trace:
 Tag: UserMarkdownlintObsidian.UnsupportedWorkspaceModes
 Need: As a remote or browser-based VS Code user, I need the extension to state what is supported, so I understand why vault-aware linting may be unavailable.
 Capability basis: markdownlint-obsidian currently uses Node filesystem adapters for config, discovery, vault detection, and file existence checks; live linting also depends on Flavor Grenade assigning `ofmarkdown`.
-Acceptance cue: The extension declares and documents its trusted, remote, virtual workspace, and Flavor Grenade dependency behavior before enabling file-system-dependent features.
+Acceptance cue: The extension declares and documents its trusted, remote, virtual workspace, and Flavor Grenade dependency behavior before enabling file-system-dependent features. When Flavor Grenade refuses startup in Restricted Mode or virtual workspaces, automatic live linting reports that classification is unavailable instead of falling back to generic Markdown linting.
 ```
 
 Source trace:
 [engine lint API](../../../../packages/core/src/engine/index.ts),
 [Node vault detector](../../../../packages/core/src/infrastructure/vault/NodeFsVaultDetector.ts),
 [Node fs checker](../../../../packages/core/src/infrastructure/fs/NodeFsExistenceChecker.ts),
-[Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md)
+[Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md),
+[Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md)
 
 ```text
 Tag: UserMarkdownlintObsidian.ActionableErrors

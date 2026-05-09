@@ -40,7 +40,7 @@ Gist: Express extension architecture through VS Code manifest fields.
 Ambition: VS Code can install, activate, configure, and constrain the extension according to the documented design.
 Scale: Percentage of required manifest fields present with expected values for extension dependency, activation, commands, configuration, capabilities, extension kind, and build entry point.
 Meter: Manifest inspection test against extension `package.json`.
-Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLanguage:ofmarkdown` activation, points `main` at a missing build artifact, or leaves trust/virtual workspace posture undeclared.
+Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLanguage:ofmarkdown` activation, claims generic `markdown` for automatic live linting, points `main` at a missing build artifact, or leaves trust/virtual workspace posture undeclared.
 Goal: 100% of required manifest fields match documented extension architecture.
 Stakeholders: VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
@@ -68,9 +68,9 @@ Source: [functional manifest requirements](../functional/contributions-and-trust
 Tag: ExtensionArchitecture.DependencyRuntime
 Gist: Treat Flavor Grenade as document-classification dependency, not lint engine dependency.
 Ambition: Missing or disabled Flavor Grenade affects automatic document selection, not core lint rule availability.
-Scale: Percentage of runtime paths that handle Flavor Grenade installed, disabled, missing, and active states according to the dependency contract.
-Meter: VS Code integration tests covering installation states, `ofmarkdown` document activation, generic `markdown` documents, explicit workspace lint command, and output messaging.
-Fail: Missing Flavor Grenade crashes the extension, live-lints all Markdown silently, or prevents explicit core lint commands that do not require `ofmarkdown`.
+Scale: Percentage of runtime paths that handle Flavor Grenade installed, disabled, missing, active, Restricted Mode blocked, and virtual-workspace blocked states according to the dependency contract.
+Meter: VS Code integration tests covering installation states, `markdown` to `ofmarkdown` promotion, `ofmarkdown` to `markdown` demotion, generic `markdown` documents, explicit workspace lint command, and output messaging.
+Fail: Missing or blocked Flavor Grenade crashes the extension, live-lints all Markdown silently, keeps diagnostics after demotion, or prevents explicit core lint commands that do not require `ofmarkdown`.
 Goal: 100% of covered dependency states follow documented runtime behavior.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.

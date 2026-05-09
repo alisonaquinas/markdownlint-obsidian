@@ -21,10 +21,13 @@ Automated checks inspect:
 
 - `extensionDependencies` includes `alisonaquinas.flavor-grenade-lsp`;
 - activation includes OFMarkdown behavior, such as `onLanguage:ofmarkdown`;
+- activation does not claim generic `markdown` as an automatic live-lint trigger;
 - contributed commands match functional requirements;
 - configuration properties preserve documented defaults and scopes;
 - schema contributions cover supported JSON and JSONC linter config filenames;
 - extension capabilities declare workspace trust and virtual workspace posture;
+- dependency tests cover Flavor Grenade missing, disabled, Restricted Mode
+  blocked, virtual-workspace blocked, promotion, and demotion states;
 - package entry points point to generated build output.
 
 ## TypeScript Verification

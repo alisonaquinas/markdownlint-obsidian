@@ -4,18 +4,22 @@
 Tag: UserMarkdownlintObsidian.FlavorGrenadeDependency
 Need: As an Obsidian vault author, I need the lint extension to use Flavor Grenade's OFMarkdown language mode, so only documents recognized as Obsidian-flavored vault notes receive automatic OFM lint feedback.
 Capability basis: Flavor Grenade contributes and assigns the `ofmarkdown` language id; VS Code supports extension dependencies by full `publisher.name` identifier.
-Acceptance cue: The extension declares `alisonaquinas.flavor-grenade-lsp` as an extension dependency and treats `languageId === "ofmarkdown"` as the primary live-lint eligibility signal.
+Acceptance cue: The extension declares `alisonaquinas.flavor-grenade-lsp` as an extension dependency, targets the `v0.3.0`/extension `0.1.4` contribution surface, and treats `languageId === "ofmarkdown"` as the primary live-lint eligibility signal.
 ```
 
 Source trace:
 [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md),
-[Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md)
+[Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md),
+[Flavor Grenade v0.3.0 release](https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0)
 
 ```text
 Tag: UserMarkdownlintObsidian.AutomaticActivation
 Need: As a Markdown author, I need Obsidian-aware linting to become available automatically when a document enters OFMarkdown mode, so I do not have to run the CLI while writing vault notes.
 Capability basis: VS Code can activate on contributed language ids; Flavor Grenade promotes qualifying documents to `ofmarkdown`; markdownlint-obsidian exposes core lint APIs.
 Acceptance cue: Opening a document that Flavor Grenade marks as `ofmarkdown` activates extension commands and diagnostics without a manual startup step.
+The extension also handles the language-change path where Flavor Grenade first
+opens a file as `markdown`, starts after its own vault-marker gate, and then
+promotes the document to `ofmarkdown`.
 ```
 
 Source trace:
@@ -27,7 +31,7 @@ Source trace:
 Tag: UserMarkdownlintObsidian.OFMRelevantDocuments
 Need: As a Markdown author, I need live linting to target Flavor Grenade-recognized OFMarkdown documents, so generic Markdown documents are not noisy.
 Capability basis: Flavor Grenade owns vault membership detection and `ofmarkdown` promotion; markdownlint-obsidian parses OFM syntax inside Markdown files.
-Acceptance cue: `ofmarkdown` documents are eligible for live linting; generic `markdown` documents are not linted live unless a separate explicit command or future opt-in setting covers them.
+Acceptance cue: `ofmarkdown` documents are eligible for live linting; generic `markdown` documents are not linted live unless a separate explicit command or future opt-in setting covers them, even though Flavor Grenade may listen to `markdown` documents for promotion.
 ```
 
 Source trace:

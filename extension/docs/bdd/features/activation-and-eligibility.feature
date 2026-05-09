@@ -36,9 +36,23 @@ Feature: Activation and document eligibility
     Then the document becomes eligible for live linting
     And the extension requests lint feedback for the current document version
 
+  @MarkdownlintObsidian.DocumentEligibility @UserMarkdownlintObsidian.OFMRelevantDocuments
+  Scenario: OFMarkdown demotion clears live diagnostics
+    Given a visible document has markdownlint-obsidian diagnostics
+    When Flavor Grenade changes the document language back to generic Markdown
+    Then the document is no longer eligible for live linting
+    And markdownlint-obsidian diagnostics are cleared for it
+
   @MarkdownlintObsidian.DocumentEligibility @UserMarkdownlintObsidian.UnsupportedWorkspaceModes
   Scenario: Unsupported document storage is rejected with a visible reason
     Given an OFMarkdown document uses an unsupported storage scheme
     When the extension evaluates document eligibility
     Then the document is not linted automatically
     And the output channel explains which workspace mode is unsupported
+
+  @MarkdownlintObsidian.ExtensionDependency @UserMarkdownlintObsidian.UnsupportedWorkspaceModes
+  Scenario: Flavor Grenade disabled state blocks automatic classification
+    Given Flavor Grenade reports that its server is disabled for the workspace
+    When a generic Markdown document is opened
+    Then automatic live linting does not start for the document
+    And the output channel reports the Flavor Grenade disabled reason
