@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "extension: build",
+      "type": "shell",
+      "command": "bun run build",
+      "options": {
+        "cwd": "${workspaceFolder}/extension"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: prepare F5 dependency profile",
+      "type": "process",
+      "command": "node",
+      "args": ["scripts/prepare-f5-profile.mjs", "${execPath}"],
+      "options": {
+        "cwd": "${workspaceFolder}/extension"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: prepare F5 extension host",
+      "dependsOrder": "sequence",
+      "dependsOn": ["extension: build", "extension: prepare F5 dependency profile"],
+      "problemMatcher": []
+    },
+    {
+      "label": "extension: open F5 workspace",
+      "type": "process",
+      "command": "node",
+      "args": ["scripts/open-f5-profile.mjs", "${execPath}"],
+      "options": {
+        "cwd": "${workspaceFolder}/extension"
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": ["extension: prepare F5 extension host"],
+      "problemMatcher": []
+    }
+  ]
+}

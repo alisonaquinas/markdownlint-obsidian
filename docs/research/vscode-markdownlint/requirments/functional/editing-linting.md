@@ -1,11 +1,19 @@
 ---
-title: vscode-markdownlint Functional Requirements - Editing And Linting
+title: "vscode-markdownlint Functional Requirements - Editing And Linting"
+aliases:
+  - "vscode-markdownlint Functional Requirements - Editing And Linting"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/functional
-  - planguage
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/functional"
+  - "planguage"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/package.json
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/extension.mjs

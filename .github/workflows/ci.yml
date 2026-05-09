@@ -45,6 +45,15 @@ jobs:
       - name: Build (all packages)
         run: bun run --filter '*' build
 
+      - name: Extension host smoke test
+        run: xvfb-run -a bun run --cwd extension test:extension-host
+
+      - name: Verify extension package metadata
+        run: bun run --cwd extension package:check
+
+      - name: Package extension VSIX
+        run: bun run --cwd extension package
+
       - name: Verify package tarball contents
         run: bun run test:packaging
 

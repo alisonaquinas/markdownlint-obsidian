@@ -19,6 +19,10 @@
     "./engine": {
       "types": "./dist/src/engine/index.d.ts",
       "default": "./dist/src/engine/index.js"
+    },
+    "./editor": {
+      "types": "./dist/src/public/editor.d.ts",
+      "default": "./dist/src/public/editor.js"
     }
   },
   "files": [

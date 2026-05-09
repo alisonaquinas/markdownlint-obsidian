@@ -1,3 +1,19 @@
+---
+title: "Architecture Structure Requirements"
+aliases:
+  - "Architecture Structure Requirements"
+  - "Requirements / Architecture / Structure"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/architecture"
+  - "requirements"
+type: "architecture-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/architecture/index]]"
+---
+
 # Architecture Structure Requirements
 
 ## ExtensionArchitecture.Coherence
@@ -57,5 +73,5 @@ Fail: Live linting reimplements Flavor Grenade vault detection, lints all Markdo
 Goal: 100% of live-lint eligibility follows the documented dependency boundary.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-dependency.md).
+Source: [[architecture/flavor-grenade-dependency]].
 ```

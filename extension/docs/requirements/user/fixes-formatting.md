@@ -1,3 +1,19 @@
+---
+title: "Fixes And Formatting"
+aliases:
+  - "Fixes And Formatting"
+  - "Requirements / User / Fixes Formatting"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/user"
+  - "requirements"
+type: "user-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/user/index]]"
+---
+
 # Fixes And Formatting
 
 ```text

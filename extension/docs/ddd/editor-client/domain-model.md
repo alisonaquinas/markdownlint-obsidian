@@ -1,3 +1,19 @@
+---
+title: "Editor Client Domain Model"
+aliases:
+  - "Editor Client Domain Model"
+  - "DDD / Editor Client / Domain Model"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/editor-client"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Editor Client Domain Model
 
 ## Purpose

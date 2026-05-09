@@ -1,5 +1,15 @@
 ---
-title: High Coherence
+title: "High Coherence"
+aliases:
+  - "High Coherence"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # High Coherence

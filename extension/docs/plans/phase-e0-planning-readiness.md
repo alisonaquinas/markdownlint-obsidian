@@ -1,3 +1,20 @@
+---
+title: "Phase E0: Planning Readiness"
+aliases:
+  - "Phase E0: Planning Readiness"
+  - "Plans / Phase E0 Planning Readiness"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e0-planning-readiness"
+  - "plans"
+  - "phase/e0"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E0: Planning Readiness
 
 ## Goal
@@ -7,8 +24,8 @@ extension implementation can proceed without guessing the domain boundary.
 
 ## Status
 
-Mostly complete. This phase remains open only for ADR cleanup and final
-implementation-entry review.
+In review. The planning baseline is complete for the current implementation
+branch, with release acceptance deferred to PR and CI review.
 
 ## Scope
 
@@ -22,15 +39,15 @@ implementation-entry review.
 
 | Deliverable | Path | Status |
 | :--- | :--- | :--- |
-| Extension docs index | [../README.md](../README.md) | complete |
-| Architecture overview | [../architecture/overview.md](../architecture/overview.md) | complete |
-| Flavor Grenade contract | [../architecture/flavor-grenade-dependency.md](../architecture/flavor-grenade-dependency.md) | complete |
-| User requirements | [../requirements/user/index.md](../requirements/user/index.md) | complete |
-| Functional requirements | [../requirements/functional/index.md](../requirements/functional/index.md) | complete |
-| Technical requirements | [../requirements/technical/index.md](../requirements/technical/index.md) | complete |
-| DDD model | [../ddd/README.md](../ddd/README.md) | complete |
-| BDD model | [../bdd/README.md](../bdd/README.md) | complete |
-| Test plans | [../tests/README.md](../tests/README.md) | complete |
+| Extension docs index | [[README]] | complete |
+| Architecture overview | [[architecture/overview]] | complete |
+| Flavor Grenade contract | [[architecture/flavor-grenade-dependency]] | complete |
+| User requirements | [[requirements/user/index]] | complete |
+| Functional requirements | [[requirements/functional/index]] | complete |
+| Technical requirements | [[requirements/technical/index]] | complete |
+| DDD model | [[ddd/README]] | complete |
+| BDD model | [[bdd/README]] | complete |
+| Test plans | [[tests/README]] | complete |
 | Extension docs dogfood config | [../.obsidian-linter.jsonc](../.obsidian-linter.jsonc) | complete |
 
 ## Implementation Tasks
@@ -48,8 +65,8 @@ implementation-entry review.
 - [x] Add test plans and runnable planning checks.
 - [x] Configure `extension/docs/` dogfood linting in local scripts, CI, and
   pre-commit.
-- [ ] Decide whether E1 needs an ADR for package location and extension build
-  tool before source is created.
+- [x] Record the package location, build tool, dependency boundary, trust
+  posture, and packaging decisions.
 
 ## Acceptance Criteria
 
@@ -69,5 +86,5 @@ bun extension/docs/tests/scripts/check-validation-contracts.mjs
 
 ## Exit Decision
 
-Proceed to E1 when maintainers accept the in-process extension package as the
-first implementation target, or when an ADR records a different runtime shape.
+E1 proceeded with an in-process extension package, bundled library runtime, and
+Flavor Grenade as the OFMarkdown document-classification dependency.

@@ -1,3 +1,16 @@
+---
+title: "markdownlint-obsidian — Design Spec"
+aliases:
+  - "markdownlint-obsidian — Design Spec"
+tags:
+  - "docs"
+  - "docs/superpowers"
+type: "spec"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # markdownlint-obsidian — Design Spec
 
 **Date:** 2026-04-11

@@ -1,3 +1,18 @@
+---
+title: "VS Code Extension Architecture Overview"
+aliases:
+  - "VS Code Extension Architecture Overview"
+  - "Architecture / Overview"
+tags:
+  - "extension-docs"
+  - "extension-docs/architecture"
+  - "extension-docs/architecture/overview"
+type: "architecture-overview"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # VS Code Extension Architecture Overview
 
 ## Purpose
@@ -11,6 +26,9 @@ The extension assumes `flavor-grenade-lsp` is installed as a VS Code extension
 dependency. Flavor Grenade owns OFMarkdown language-mode detection and promotes
 eligible vault documents to the `ofmarkdown` language id. This extension uses
 that language id as the live-lint trigger.
+
+> [!IMPORTANT] Runtime boundary
+> Flavor Grenade classifies documents, core owns lint behavior, and this extension owns VS Code feedback.
 
 ## Boundary
 
@@ -113,4 +131,6 @@ VS Code code action request
 
 ## See Also
 
-- [Flavor Grenade Dependency Contract](flavor-grenade-dependency.md)
+- [[architecture/flavor-grenade-dependency]]
+- [[requirements/architecture/index]]
+- [[ddd/bounded-contexts]]

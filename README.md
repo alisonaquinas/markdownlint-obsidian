@@ -1,18 +1,19 @@
 # markdownlint-obsidian
 
-Obsidian Flavored Markdown linter for CI pipelines. Catches broken
+Obsidian Flavored Markdown linter for CI pipelines and VS Code. Catches broken
 wikilinks, unresolved embeds, malformed callouts, block-reference typos,
 and every standard `markdownlint` rule — with OFM-aware rule conflicts
 pre-wired.
 
 ## Packages
 
-This monorepo publishes two npm packages:
+This monorepo publishes two npm packages and contains a VS Code extension:
 
 | Package | Description |
 | --- | --- |
 | [`markdownlint-obsidian`](packages/core) | Programmatic linting API — no CLI dependencies |
 | [`markdownlint-obsidian-cli`](packages/cli) | Command-line interface wrapping the library |
+| [`markdownlint-obsidian-vscode`](extension) | VS Code extension package using the bundled library |
 
 The repo also ships a JavaScript GitHub Action in [`action/`](action/README.md).
 

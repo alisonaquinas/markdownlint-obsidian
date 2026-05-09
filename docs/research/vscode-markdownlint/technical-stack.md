@@ -1,10 +1,18 @@
 ---
-title: vscode-markdownlint Technical Stack Research
+title: "vscode-markdownlint Technical Stack Research"
+aliases:
+  - "vscode-markdownlint Technical Stack Research"
 tags:
-  - research/vscode
-  - research/extension
-  - research/markdownlint
+  - "research/vscode"
+  - "research/extension"
+  - "research/markdownlint"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[README]]"
 sources:
   - https://github.com/DavidAnson/vscode-markdownlint
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/package.json

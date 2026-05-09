@@ -1,3 +1,19 @@
+---
+title: "Test-Derived Requirements"
+aliases:
+  - "Test-Derived Requirements"
+  - "Requirements / Functional / Test Derived"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Test-Derived Requirements
 
 ## MarkdownlintObsidian.ErrorReporting
@@ -12,24 +28,24 @@ Fail: A covered failure is swallowed, shown only in developer console, lacks act
 Goal: 100% of covered failure shapes produce deterministic user-visible output.
 Stakeholders: Markdown authors, repository maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [system rule catalog](../../../../docs/rules/index.md#system-ofm900ofm999); [ActionableErrors user requirement](../user/workspace-and-trust.md).
+Source: [system rule catalog](../../../../docs/rules/index.md#system-ofm900ofm999); [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.ActionableErrors](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.MetadataConsistency
 
 ```text
 Tag: MarkdownlintObsidian.MetadataConsistency
 Gist: Keep extension metadata consistent with the bundled or declared markdownlint-obsidian engine.
-Ambition: Published extension UI, docs, changelog, schemas, and rule links describe the rule behavior actually running.
-Scale: Percentage of checked metadata references that match the extension package version, bundled or declared `markdownlint-obsidian` version, schema version, rule docs, and changelog entry.
+Ambition: Published extension UI, docs, changelog, schema path, and rule links describe the rule behavior actually running.
+Scale: Percentage of checked metadata references that match the extension package version, bundled or declared `markdownlint-obsidian` version, schema path, rule docs, and changelog entry.
 Meter: Node unit test reading extension `package.json`, extension README, extension changelog if present, generated schemas, root rule docs, and installed package metadata.
-Fail: Any checked version, schema, rule-doc, or changelog reference differs from the package actually bundled or declared by the extension.
+Fail: Any checked version, schema path, rule-doc, or changelog reference differs from the package actually bundled or declared by the extension.
 Goal: 100% of checked metadata references match expected package and docs versions.
 Stakeholders: Extension users, maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [MetadataConfidence user requirement](../user/workspace-and-trust.md); [public API guide](../../../../docs/guides/public-api.md).
+Source: [[requirements/user/workspace-and-trust]]; [public API guide](../../../../docs/guides/public-api.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.MetadataConfidence](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]

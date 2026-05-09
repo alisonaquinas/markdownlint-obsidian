@@ -1,3 +1,16 @@
+---
+title: "ADR006 — Split into library + CLI packages (monorepo)"
+aliases:
+  - "ADR006 — Split into library + CLI packages (monorepo)"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # ADR006 — Split into library + CLI packages (monorepo)
 
 **Status:** Accepted

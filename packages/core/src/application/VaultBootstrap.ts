@@ -10,6 +10,7 @@
  *
  * @module application/VaultBootstrap
  */
+import * as path from "node:path";
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { VaultDetector } from "../domain/vault/VaultDetector.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";
@@ -70,7 +71,7 @@ export async function bootstrapVault(
   if (!config.resolve) return null;
   const root =
     config.vaultRoot !== null && config.vaultRoot !== undefined
-      ? config.vaultRoot
+      ? path.resolve(startDir, config.vaultRoot)
       : await deps.detector.detect(startDir);
   const vault = await deps.buildIndex(root, {
     caseSensitive: config.wikilinks.caseSensitive,

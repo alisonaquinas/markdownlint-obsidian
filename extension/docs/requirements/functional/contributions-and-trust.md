@@ -1,3 +1,19 @@
+---
+title: "Contributions And Trust"
+aliases:
+  - "Contributions And Trust"
+  - "Requirements / Functional / Contributions And Trust"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Contributions And Trust
 
 ## MarkdownlintObsidian.ManifestContributions
@@ -6,33 +22,50 @@
 Tag: MarkdownlintObsidian.ManifestContributions
 Gist: Contribute extension dependency, activation, commands, configuration, and UI entries to VS Code.
 Ambition: VS Code exposes markdownlint-obsidian behavior through native contribution points.
-Scale: Percentage of planned manifest contribution points present with expected ids, titles, defaults, scopes, activation events, dependency ids, and paths.
-Meter: Manifest inspection test against extension `package.json` for `extensionDependencies`, `activationEvents`, commands, command-palette menus, configuration properties, JSON/YAML validation, problem matchers if used, and extension kind/capabilities.
-Fail: Any planned contribution is missing, renamed without migration, scoped incorrectly, has wrong defaults, or points to missing files.
-Goal: 100% manifest contribution match for planned contribution inventory.
+Scale: Percentage of documented manifest contribution points present with expected ids, titles, defaults, scopes, activation events, dependency ids, and paths.
+Meter: Manifest inspection test against extension `package.json` for `extensionDependencies`, `activationEvents`, commands, command-palette menus, configuration properties, JSON validation, problem matchers if used, and extension kind/capabilities.
+Fail: Any documented contribution is missing, renamed without migration, scoped incorrectly, has wrong defaults, or points to missing files.
+Goal: 100% manifest contribution match for documented contribution inventory.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension README](../../README.md); [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md).
+Source: [[README]]; [[architecture/flavor-grenade-dependency]].
 ```
 
-User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-feedback.md), [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md)
+User trace: [[requirements/user/editing-feedback]], [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.SchemaValidation
 
 ```text
 Tag: MarkdownlintObsidian.SchemaValidation
-Gist: Attach markdownlint-obsidian schemas to supported JSONC and YAML config files.
+Gist: Attach markdownlint-obsidian schemas to supported JSON and JSONC config files.
 Ambition: Users receive editor validation while authoring linter configuration.
-Scale: Percentage of supported config filenames that receive the correct schema for the current extension version.
-Meter: Manifest inspection and VS Code smoke test for `.obsidian-linter.jsonc`, `.obsidian-linter.yaml`, `.markdownlint-cli2.jsonc`, `.markdownlint-cli2.yaml`, `.markdownlint.jsonc`, and `.markdownlint.yaml`.
-Fail: Any supported config file lacks schema validation, points to the wrong schema, or validates against stale config fields.
-Goal: 100% of supported JSONC and YAML config filenames receive the expected schema.
+Scale: Percentage of supported JSON and JSONC config filenames that receive the correct schema for the current extension version.
+Meter: Manifest inspection and VS Code smoke test for `.obsidian-linter.jsonc`, `.obsidian-linter.json`, `.markdownlint-cli2.jsonc`, `.markdownlint.jsonc`, `obsidian-linter.config.jsonc`, and `obsidian-linter.config.json`.
+Fail: Any supported JSON or JSONC config file lacks schema validation, points to the wrong schema, or validates against stale config fields.
+Goal: 100% of supported JSON and JSONC config filenames receive the expected schema.
 Stakeholders: Repository maintainers, Markdown authors.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [SchemaAssistance user requirement](../user/configuration.md); [LinterConfig](../../../../packages/core/src/domain/config/LinterConfig.ts).
+Source: [[requirements/user/configuration]]; [LinterConfig](../../../../packages/core/src/domain/config/LinterConfig.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.SchemaAssistance](../user/configuration.md)
+User trace: [[requirements/user/configuration]]
+
+## MarkdownlintObsidian.ConfigParityDelegation
+
+```text
+Tag: MarkdownlintObsidian.ConfigParityDelegation
+Gist: Delegate markdownlint-cli2-compatible config discovery, parsing, pointer handling, and effective-config grouping to the bundled core library.
+Ambition: Editor diagnostics match CLI and CI diagnostics for projects that use markdownlint-cli2-style configuration.
+Scale: Percentage of core-supported config behaviors observable from the extension without extension-specific reimplementation.
+Meter: Extension integration tests that exercise core config parity fixtures through the public engine API, including explicit config, nested config, `.markdownlint.*` override of embedded CLI2 `config`, and schema-backed JSON/JSONC editing where applicable.
+Fail: The extension resolves a different effective config from the CLI for the same workspace, ignores a core-supported config source without a documented limitation, or duplicates core config logic in VS Code code.
+Goal: 100% parity with core-supported config behavior for local trusted file workspaces.
+Stakeholders: Repository maintainers, Markdown authors, extension maintainers.
+Owner: markdownlint-obsidian VS Code extension.
+Source: [config parity plan](../../../../docs/plans/phase-15-cli2-config-parity.md); [markdownlint-cli2 config research](../../../../docs/research/markdownlint-cli2-config-loading-analysis.md).
+```
+
+User trace: [[requirements/user/configuration]], [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.WorkspaceTrust
 
@@ -46,10 +79,10 @@ Fail: Custom code is loaded in untrusted contexts, file writes occur when trust 
 Goal: 100% of covered trust contexts match documented policy.
 Stakeholders: Security-conscious users, repository maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [workspace user requirements](../user/workspace-and-trust.md); [custom rules guide](../../../../docs/guides/custom-rules.md).
+Source: [[requirements/user/workspace-and-trust]]; [custom rules guide](../../../../docs/guides/custom-rules.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.TrustedCustomRules](../user/workspace-and-trust.md), [UserMarkdownlintObsidian.UnsupportedWorkspaceModes](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]], [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.CustomRuleTrust
 
@@ -63,10 +96,10 @@ Fail: A custom rule module loads in a blocked context, a permitted custom rule i
 Goal: 100% of covered custom-rule contexts match documented policy and produce actionable output.
 Stakeholders: Repository maintainers, security reviewers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [CustomRuleLoader](../../../../packages/core/src/infrastructure/config/CustomRuleLoader.ts); [custom rule user requirement](../user/configuration.md).
+Source: [CustomRuleLoader](../../../../packages/core/src/infrastructure/config/CustomRuleLoader.ts); [[requirements/user/configuration]].
 ```
 
-User trace: [UserMarkdownlintObsidian.CustomRules](../user/configuration.md), [UserMarkdownlintObsidian.TrustedCustomRules](../user/workspace-and-trust.md)
+User trace: [[requirements/user/configuration]], [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.FileSystemStrategy
 
@@ -80,7 +113,7 @@ Fail: A required file-system operation fails silently, probes unsupported storag
 Goal: 100% of required file-system operations are implemented or intentionally rejected with actionable output.
 Stakeholders: Remote workspace users, Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [engine lint API](../../../../packages/core/src/engine/index.ts); [unsupported workspace user requirement](../user/workspace-and-trust.md).
+Source: [engine lint API](../../../../packages/core/src/engine/index.ts); [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.UnsupportedWorkspaceModes](../user/workspace-and-trust.md), [UserMarkdownlintObsidian.ActionableErrors](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]], [[requirements/user/workspace-and-trust]]

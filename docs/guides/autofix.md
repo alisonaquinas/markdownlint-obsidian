@@ -1,5 +1,14 @@
 ---
-title: Autofix guide
+title: "Autofix guide"
+aliases:
+  - "Autofix guide"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # Autofix

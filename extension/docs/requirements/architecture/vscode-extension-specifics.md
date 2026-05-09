@@ -1,6 +1,22 @@
+---
+title: "VS Code Extension Technical Requirements"
+aliases:
+  - "VS Code Extension Technical Requirements"
+  - "Requirements / Architecture / VS Code Extension Specifics"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/architecture"
+  - "requirements"
+type: "architecture-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/architecture/index]]"
+---
+
 # VS Code Extension Technical Requirements
 
-Architecture requirements adapted to the planned VS Code extension package.
+Architecture requirements adapted to the VS Code extension package.
 
 ## ExtensionArchitecture.PackageBoundary
 
@@ -14,7 +30,7 @@ Fail: Extension source duplicates core lint behavior, imports core internals ins
 Goal: 100% of extension lint behavior is delegated to bundled `markdownlint-obsidian` public APIs.
 Stakeholders: Extension users, core maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [root architecture policy](../../../../docs/architecture/README.md); [extension architecture overview](../../architecture/overview.md).
+Source: [root architecture policy](../../../../docs/architecture/README.md); [[architecture/overview]].
 ```
 
 ## ExtensionArchitecture.LibraryRuntime
@@ -29,7 +45,7 @@ Fail: Any extension runtime path requires a globally installed CLI, a workspace-
 Goal: 100% of normal extension lint/fix behavior uses the bundled `markdownlint-obsidian` library.
 Stakeholders: Extension users, extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension architecture overview](../../architecture/overview.md); [technical package contract](../technical/package-build-contract.md).
+Source: [[architecture/overview]]; [[requirements/technical/package-build-contract]].
 ```
 
 ## ExtensionArchitecture.ManifestSpecifics
@@ -39,12 +55,12 @@ Tag: ExtensionArchitecture.ManifestSpecifics
 Gist: Express extension architecture through VS Code manifest fields.
 Ambition: VS Code can install, activate, configure, and constrain the extension according to the documented design.
 Scale: Percentage of required manifest fields present with expected values for extension dependency, activation, commands, configuration, capabilities, extension kind, and build entry point.
-Meter: Manifest inspection test against extension `package.json` once created.
-Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLanguage:ofmarkdown` activation, points `main` at a missing build artifact, or leaves trust/virtual workspace posture undeclared.
+Meter: Manifest inspection test against extension `package.json`.
+Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLanguage:ofmarkdown` activation, claims generic `markdown` for automatic live linting, points `main` at a missing build artifact, or leaves trust/virtual workspace posture undeclared.
 Goal: 100% of required manifest fields match documented extension architecture.
 Stakeholders: VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-dependency.md); [functional contributions](../functional/contributions-and-trust.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[requirements/functional/contributions-and-trust]].
 ```
 
 ## ExtensionArchitecture.BuildAndBundle
@@ -59,7 +75,7 @@ Fail: Build output is missing, VSIX omits the required `markdownlint-obsidian` l
 Goal: 100% of release builds produce a loadable VSIX with expected contents.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [functional manifest requirements](../functional/contributions-and-trust.md); [extension plans](../../plans/index.md).
+Source: [[requirements/functional/contributions-and-trust]]; [[plans/index]].
 ```
 
 ## ExtensionArchitecture.DependencyRuntime
@@ -68,13 +84,13 @@ Source: [functional manifest requirements](../functional/contributions-and-trust
 Tag: ExtensionArchitecture.DependencyRuntime
 Gist: Treat Flavor Grenade as document-classification dependency, not lint engine dependency.
 Ambition: Missing or disabled Flavor Grenade affects automatic document selection, not core lint rule availability.
-Scale: Percentage of runtime paths that handle Flavor Grenade installed, disabled, missing, and active states according to the dependency contract.
-Meter: VS Code integration tests covering installation states, `ofmarkdown` document activation, generic `markdown` documents, explicit workspace lint command, and output messaging.
-Fail: Missing Flavor Grenade crashes the extension, live-lints all Markdown silently, or prevents explicit core lint commands that do not require `ofmarkdown`.
+Scale: Percentage of runtime paths that handle Flavor Grenade installed, disabled, missing, active, Restricted Mode blocked, and virtual-workspace blocked states according to the dependency contract.
+Meter: VS Code integration tests covering installation states, `markdown` to `ofmarkdown` promotion, `ofmarkdown` to `markdown` demotion, generic `markdown` documents, explicit workspace lint command, and output messaging.
+Fail: Missing or blocked Flavor Grenade crashes the extension, live-lints all Markdown silently, keeps diagnostics after demotion, or prevents explicit core lint commands that do not require `ofmarkdown`.
 Goal: 100% of covered dependency states follow documented runtime behavior.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-dependency.md); [functional editing requirements](../functional/editing-linting.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[requirements/functional/editing-linting]].
 ```
 
 ## ExtensionArchitecture.TestHarness
@@ -89,5 +105,5 @@ Fail: VS Code-only behavior is tested only with plain Node unit tests, or pure m
 Goal: 100% of extension behavior has a matching test layer or documented exception.
 Stakeholders: Extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Test-Driven Development](../../../../docs/architecture/test-driven-development.md); [functional requirements](../functional/index.md).
+Source: [Test-Driven Development](../../../../docs/architecture/test-driven-development.md); [[requirements/functional/index]].
 ```

@@ -1,11 +1,19 @@
 ---
-title: vscode-markdownlint Functional Requirements - Test-Derived
+title: "vscode-markdownlint Functional Requirements - Test-Derived"
+aliases:
+  - "vscode-markdownlint Functional Requirements - Test-Derived"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/functional
-  - planguage
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/functional"
+  - "planguage"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/test/metadata-test.mjs
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/test/stringify-error-test.mjs

@@ -1,3 +1,16 @@
+---
+title: "AGENTS.md — Guide for AI Agents Working in docs/"
+aliases:
+  - "AGENTS.md — Guide for AI Agents Working in docs/"
+tags:
+  - "docs"
+  - "docs/agents"
+type: "agent-guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # AGENTS.md — Guide for AI Agents Working in `docs/`
 
 Reference and design documentation tree. This directory is not source code —

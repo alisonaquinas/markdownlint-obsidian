@@ -1,3 +1,19 @@
+---
+title: "Lint And Format Contract"
+aliases:
+  - "Lint And Format Contract"
+  - "Requirements / Technical / Lint Format Contract"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/technical/index]]"
+---
+
 # Lint And Format Contract
 
 ## MarkdownlintObsidianTechnical.EslintFlatConfig
@@ -15,7 +31,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root ESLint config](../../../../eslint.config.js); [linting and tooling architecture](../../../../docs/architecture/linting-and-tooling.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.Tooling](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.NoAnyExplicitReturns
 
@@ -32,7 +48,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root ESLint config](../../../../eslint.config.js); [type safety architecture](../../../../docs/architecture/type-safety.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.TypeSafety](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.ComplexityAndSize
 
@@ -49,7 +65,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root ESLint config](../../../../eslint.config.js); [namespace and module structure](../../../../docs/architecture/namespace-and-module-structure.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.Coherence](../architecture/structure.md)
+Architecture trace: [[requirements/architecture/structure]]
 
 ## MarkdownlintObsidianTechnical.Formatting
 
@@ -66,7 +82,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root package scripts](../../../../package.json); [linting and tooling architecture](../../../../docs/architecture/linting-and-tooling.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.Tooling](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.Suppressions
 
@@ -83,4 +99,4 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [linting and tooling architecture](../../../../docs/architecture/linting-and-tooling.md); [type safety architecture](../../../../docs/architecture/type-safety.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.Tooling](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]

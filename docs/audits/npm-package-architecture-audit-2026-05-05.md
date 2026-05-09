@@ -1,8 +1,24 @@
 ---
-title: npm Package Architecture Audit - 2026-05-05
+title: "npm Package Architecture Audit - 2026-05-05"
+aliases:
+  - "npm Package Architecture Audit - 2026-05-05"
+tags:
+  - "docs"
+  - "docs/audits"
+type: "audit"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # npm Package Architecture Audit - 2026-05-05
+
+> [!NOTE]
+> Superseded action-bundle details: this audit captured the pre-remediation
+> state where the action used `action/dist/main.js`. Current `develop` uses
+> `action/dist/main.mjs`, `runs.using: node24`, and CI smoke-tests the rebuilt
+> bundle with `node dist/main.mjs`. The findings remain useful historical
+> evidence for why the action boundary was changed.
 
 ## Scope
 
@@ -80,7 +96,7 @@ Recommended fix:
 
 - Make the action invoke or bundle a shape that is valid under `runs.using:
   node20`.
-- Add a CI smoke test that executes `node action/dist/main.js` or a minimal
+- Add a CI smoke test that executes the action bundle or a minimal
   action harness after building.
 - Treat esbuild warnings as failures for `action/`.
 

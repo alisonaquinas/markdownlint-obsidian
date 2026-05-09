@@ -1,3 +1,19 @@
+---
+title: "Unit And Component Test Plan"
+aliases:
+  - "Unit And Component Test Plan"
+  - "Tests / Unit Tests"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/unit-tests"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Unit And Component Test Plan
 
 Unit and component tests cover extension-owned decisions without needing a full
@@ -14,7 +30,7 @@ VS Code Extension Development Host.
 - rule-help and metadata mapping.
 - output-channel error formatting.
 
-## Planned Test Layout
+## Current Test Layout
 
 ```text
 extension/
@@ -68,17 +84,15 @@ extension/
 - Keep VS Code SDK objects behind test builders so pure tests remain fast.
 - Add extension-host tests only when the observable behavior requires VS Code.
 
-## Future Commands
+## Current Commands
 
 ```bash
 bun --cwd extension test
-bun --cwd extension test:unit
-bun --cwd extension test:component
+bun --cwd extension test:integration
+bun --cwd extension test:extension-host
 ```
 
 ## Current Automation
-
-Until extension source exists, use the current planning check:
 
 ```bash
 bun extension/docs/tests/scripts/check-test-docs.mjs

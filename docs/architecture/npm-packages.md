@@ -1,5 +1,15 @@
 ---
-title: npm Package Architecture Requirements
+title: "npm Package Architecture Requirements"
+aliases:
+  - "npm Package Architecture Requirements"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # npm Package Architecture Requirements
@@ -17,9 +27,9 @@ of the package workspace.
 ```text
 Tag: PackageArchitecture.CoreOwnsLinting
 Gist: Keep all linting behavior in the core package.
-Ambition: The CLI, GitHub Action, and future VS Code extension reuse one rule engine instead of duplicating behavior.
+Ambition: The CLI, GitHub Action, and VS Code extension reuse one rule engine instead of duplicating behavior.
 Scale: Percentage of linting, parsing, rule, fix, config, vault, and formatter behavior implemented in `packages/core` or exposed through its public engine/API.
-Meter: Import-boundary review and tests for changes touching `packages/cli`, `action`, or future `extension` code, verifying they call core APIs rather than reimplementing lint behavior.
+Meter: Import-boundary review and tests for changes touching `packages/cli`, `action`, or `extension` code, verifying they call core APIs rather than reimplementing lint behavior.
 Fail: Any adapter package implements OFM parsing, rule logic, config merging, vault resolution, or fix application outside core.
 Goal: 100% of lint behavior lives in `packages/core` or is delegated to `packages/core`.
 Stakeholders: Package consumers, CLI users, extension maintainers.
@@ -40,6 +50,21 @@ Goal: 100% of CLI production code stays within adapter responsibilities.
 Stakeholders: CLI users, package maintainers.
 Owner: markdownlint-obsidian CLI maintainers.
 Source: [CLI AGENTS](../../packages/cli/AGENTS.md); [CLI args](../../packages/cli/src/args.ts).
+```
+
+## PackageArchitecture.ConfigParity
+
+```text
+Tag: PackageArchitecture.ConfigParity
+Gist: Target markdownlint-cli2 feature parity for configuration loading.
+Ambition: Existing markdownlint-cli2 workspaces can move to markdownlint-obsidian without surprising config discovery, parser, pointer, inheritance, or grouping changes.
+Scale: Percentage of markdownlint-cli2 configuration-loading behaviors implemented or explicitly documented as intentional divergences.
+Meter: Config parity fixtures and integration tests covering discovered `.markdownlint-cli2.*`, discovered `.markdownlint.*`, explicit `--config`, `--configPointer`, JSONC/YAML/TOML/CJS/MJS parsing, nested directory overrides, `extends`, and effective-config grouping.
+Fail: The CLI or core silently diverges from markdownlint-cli2 for a covered config behavior, or an intentional OFM difference lacks user-facing documentation.
+Goal: 100% parity for supported markdownlint-cli2 configuration workflows, with named OFM-specific divergences.
+Stakeholders: CLI users, CI maintainers, VS Code extension maintainers.
+Owner: markdownlint-obsidian maintainers.
+Source: [Phase 15 config parity plan](../plans/phase-15-cli2-config-parity.md); [markdownlint-cli2 configuration loading analysis](../research/markdownlint-cli2-config-loading-analysis.md).
 ```
 
 ## PackageArchitecture.PublicAPISemver

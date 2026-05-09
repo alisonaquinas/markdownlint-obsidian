@@ -1,5 +1,14 @@
 ---
-title: Rule catalog
+title: "Rule catalog"
+aliases:
+  - "Rule catalog"
+tags:
+  - "docs"
+  - "docs/rules"
+type: "rule-catalog"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # markdownlint-obsidian rule catalog
@@ -7,6 +16,9 @@ title: Rule catalog
 Every rule is one file under `src/infrastructure/rules/ofm/<area>/`. Codes are
 namespaced by area: `OFM00x` for wikilinks, `OFM06x` for tags, `OFM08x` for
 frontmatter, and `OFM9xx` for parser/system errors.
+
+> [!NOTE] Related docs
+> See [[guides/custom-rules]] for user-defined rules, [[guides/wikilink-resolution]] for vault link resolution, and [[rules/standard-md/index]] for upstream markdownlint compatibility.
 
 ## Wikilinks (OFM001-OFM019)
 

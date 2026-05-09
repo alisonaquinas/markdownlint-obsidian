@@ -1,6 +1,23 @@
+---
+title: "Bounded Contexts"
+aliases:
+  - "Bounded Contexts"
+tags:
+  - "docs"
+  - "docs/ddd"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Bounded Contexts
 
 Three bounded contexts. Dependencies are acyclic and explicit.
+
+> [!INFO] Domain map
+> Read this with [[ddd/ubiquitous-language]], [[ddd/config/domain-model]], [[ddd/linting/domain-model]], and [[ddd/vault/domain-model]].
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐

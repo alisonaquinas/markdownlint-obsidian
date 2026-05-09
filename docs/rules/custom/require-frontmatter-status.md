@@ -1,4 +1,15 @@
 ---
+title: "CUSTOM001 - require-frontmatter-status"
+aliases:
+  - "CUSTOM001 - require-frontmatter-status"
+tags:
+  - "docs"
+  - "docs/rules"
+  - "docs/rules/custom"
+type: "rule-reference"
+status: "current"
+updated: 2026-05-09
+up: "[[rules/index]]"
 rule-code: CUSTOM001
 rule-name: require-frontmatter-status
 severity: error

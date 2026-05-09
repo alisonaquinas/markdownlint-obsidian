@@ -1,17 +1,34 @@
+---
+title: "Extension BDD"
+aliases:
+  - "Extension BDD"
+  - "BDD / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/bdd"
+  - "bdd"
+type: "behavior-model-index"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension BDD
 
-Behavior-domain specifications for the planned `markdownlint-obsidian` VS Code
+Behavior-domain specifications for the `markdownlint-obsidian` VS Code
 extension.
 
-These scenarios describe user-observable behavior before implementation. They
-are intended to be reviewed by product, QA, and engineering, then automated at
-the thinnest useful level: manifest inspection, extension-host integration, or
+These scenarios describe user-observable behavior and are automated at the
+thinnest useful level: manifest inspection, extension-host integration, or
 core-adapter component tests.
+
+> [!TIP] Behavior trace
+> Use [[bdd/traceability]] to walk from scenarios to [[requirements/functional/index]] and [[ddd/README]].
 
 ## Scope
 
 - Capture acceptance behavior for the VS Code extension.
-- Use the extension ubiquitous language from [DDD](../ddd/README.md).
+- Use the extension ubiquitous language from [[ddd/README]].
 - Trace scenarios back to user and functional requirements.
 - Avoid restating core lint-rule behavior already covered by root
   [BDD features](../../../docs/bdd/features).
@@ -26,7 +43,7 @@ core-adapter component tests.
 | [features/configuration-and-trust.feature](features/configuration-and-trust.feature) | config resolution, schema assistance, custom rules, trust, and file-system policy |
 | [features/workspace-commands.feature](features/workspace-commands.feature) | workspace lint, open config, toggle linting, output, and configuration watchers |
 | [features/packaging-and-metadata.feature](features/packaging-and-metadata.feature) | manifest contributions, dependency metadata, and release consistency |
-| [traceability.md](traceability.md) | mapping from scenarios to requirements and DDD contexts |
+| [[bdd/traceability]] | mapping from scenarios to requirements and DDD contexts |
 
 ## Automation Levels
 

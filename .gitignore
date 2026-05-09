@@ -41,6 +41,9 @@ test-results/
 
 # Cucumber reports referenced by Phase 1 cucumber.json
 reports/cucumber.json
+extension/.vscode-test/
+extension/*.vsix
+extension/F5_DEBUG_SESSION.md
 
 # ── Tooling caches ────────────────────────────────────────────────
 .eslintcache
@@ -113,6 +116,12 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+
+# Extension-folder F5/debug configuration is shared. Runtime profiles,
+# downloaded VS Code builds, and VSIX output stay ignored above.
+!extension/.vscode/
+!extension/.vscode/tasks.json
+!extension/.vscode/launch.json
 .history/
 
 # JetBrains

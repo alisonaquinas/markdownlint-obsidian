@@ -1,3 +1,19 @@
+---
+title: "Fix Workflow Domain Model"
+aliases:
+  - "Fix Workflow Domain Model"
+  - "DDD / Fix Workflow / Domain Model"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/fix-workflow"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Fix Workflow Domain Model
 
 ## Purpose

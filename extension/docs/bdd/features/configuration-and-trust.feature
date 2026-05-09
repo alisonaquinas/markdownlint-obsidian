@@ -12,9 +12,17 @@ Feature: Configuration and trust
     Then live diagnostics reflect the resolved configuration
     And the output does not report a configuration mismatch with the core package
 
+  @MarkdownlintObsidian.ConfigParityDelegation @UserMarkdownlintObsidian.ConfigSources
+  Scenario: markdownlint-cli2 parity comes from the core library
+    Given a workspace uses markdownlint-cli2-style config discovery
+    And the core library resolves different effective configs for nested files
+    When the extension lints those files
+    Then extension diagnostics use the core effective config for each file
+    And the extension does not reimplement the config cascade
+
   @MarkdownlintObsidian.SchemaValidation @UserMarkdownlintObsidian.SchemaAssistance
-  Scenario: Supported config files receive schema assistance
-    Given the author opens a supported JSONC or YAML linter config file
+  Scenario: Supported JSON config files receive schema assistance
+    Given the author opens a supported JSON or JSONC linter config file
     When VS Code asks for validation metadata
     Then the extension provides the markdownlint-obsidian schema for that config file
     And unsupported config filenames are not claimed by the schema contribution

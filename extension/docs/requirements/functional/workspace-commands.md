@@ -1,3 +1,19 @@
+---
+title: "Workspace Commands"
+aliases:
+  - "Workspace Commands"
+  - "Requirements / Functional / Workspace Commands"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Workspace Commands
 
 ## MarkdownlintObsidian.WorkspaceLint
@@ -12,10 +28,10 @@ Fail: A workspace folder is skipped, configured globs or ignores are ignored, va
 Goal: 100% of workspace folders follow effective config and report results or actionable errors.
 Stakeholders: Repository maintainers, Markdown authors.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [workspace user requirement](../user/workspace-and-trust.md); [engine lint API](../../../../packages/core/src/engine/index.ts).
+Source: [[requirements/user/workspace-and-trust]]; [engine lint API](../../../../packages/core/src/engine/index.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.WorkspaceLint](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.OpenConfigFile
 
@@ -29,10 +45,10 @@ Fail: Existing supported config files are ignored, search order differs from doc
 Goal: 100% of covered workspace cases follow documented open-or-create behavior.
 Stakeholders: Markdown authors, repository maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [configuration user requirements](../user/configuration.md); [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts).
+Source: [[requirements/user/configuration]]; [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.ConfigDiscovery](../user/configuration.md)
+User trace: [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.ToggleLinting
 
@@ -46,10 +62,10 @@ Fail: Toggle state persists across sessions, diagnostics remain after disabling,
 Goal: 100% of toggle invocations match documented temporary behavior.
 Stakeholders: Markdown authors.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [TemporaryDisable user requirement](../user/workspace-and-trust.md).
+Source: [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.TemporaryDisable](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.ConfigurationWatchers
 
@@ -63,7 +79,7 @@ Fail: A supported config change does not refresh visible eligible diagnostics, a
 Goal: 100% of supported watcher events match documented refresh behavior.
 Stakeholders: Markdown authors, repository maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts); [configuration user requirements](../user/configuration.md).
+Source: [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts); [[requirements/user/configuration]].
 ```
 
-User trace: [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md), [UserMarkdownlintObsidian.CurrentDiagnostics](../user/editing-feedback.md)
+User trace: [[requirements/user/configuration]], [[requirements/user/editing-feedback]]

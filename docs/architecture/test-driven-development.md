@@ -1,5 +1,15 @@
 ---
-title: Test-Driven Development
+title: "Test-Driven Development"
+aliases:
+  - "Test-Driven Development"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Test-Driven Development

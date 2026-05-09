@@ -1,5 +1,15 @@
 ---
-title: File and Complexity Policy
+title: "File and Complexity Policy"
+aliases:
+  - "File and Complexity Policy"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # File and Complexity Policy

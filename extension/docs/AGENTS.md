@@ -1,8 +1,22 @@
+---
+title: "AGENTS.md - Guide for AI Agents Working in extension/docs/"
+aliases:
+  - "AGENTS.md - Guide for AI Agents Working in extension/docs/"
+  - "AGENTS"
+tags:
+  - "extension-docs"
+  - "extension-docs/agents"
+type: "agent-guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # AGENTS.md - Guide for AI Agents Working in `extension/docs/`
 
-Documentation tree for the planned `markdownlint-obsidian` VS Code extension.
-This directory is not extension source code. It is the planning and reference
-wiki for extension behavior, architecture, requirements, release decisions, and
+Documentation tree for the `markdownlint-obsidian` VS Code extension. This
+directory is not extension source code. It is the planning and reference wiki
+for extension behavior, architecture, requirements, release decisions, and
 research. The extension docs dogfood lint run
 (`bun run test:dogfood:extension-docs`) lints this tree with
 `markdownlint-obsidian`; the aggregate `bun run test:dogfood` also runs it.
@@ -58,14 +72,20 @@ extension/docs/
 2. Keep runnable helper scripts under `extension/docs/tests/scripts/`.
 3. Scripts must run from the repository root, avoid network access, and avoid
    modifying files.
-4. Use planned skips for future extension source checks until source exists.
+4. Keep package-aware scripts deterministic and offline.
 
 ### Adding Extension Plans
 
 1. Create phase plans under `extension/docs/plans/`.
-2. Keep plans scoped to extension work.
-3. Do not retroactively rewrite shipped plans. Add execution notes instead.
-4. Update `extension/docs/roadmap.md` and `extension/docs/plans/index.md`
+2. Use `extension/docs/plans/phase-execution.md` for phase gate, ticket
+   lifecycle, and retrospective rules.
+3. Use `extension/docs/plans/templates/tickets/` for feature, task, bug, chore,
+   and spike ticket structure.
+4. Put phase-specific tickets in that phase folder under
+   `extension/docs/plans/phase-eN-*/`.
+5. Keep plans scoped to extension work.
+6. Do not retroactively rewrite shipped plans. Add execution notes instead.
+7. Update `extension/docs/roadmap.md` and `extension/docs/plans/index.md`
    when adding or changing phase boundaries.
 
 ### Adding Extension ADRs
@@ -87,7 +107,7 @@ extension/docs/
 
 ## See Also
 
-- [Extension Docs Index](README.md)
+- [[README]]
 - [Root Docs](../../docs/README.md)
 - [Root AGENTS.md](../../AGENTS.md)
-- [Extension Research](research/index.md)
+- [[research/index]]

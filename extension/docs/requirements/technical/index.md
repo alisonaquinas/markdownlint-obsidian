@@ -1,19 +1,35 @@
+---
+title: "Extension Technical Requirements"
+aliases:
+  - "Extension Technical Requirements"
+  - "Requirements / Technical / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirements-index"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/index]]"
+---
+
 # Extension Technical Requirements
 
-Technical requirements for implementing the planned VS Code extension in this
-repo's strictly linted and type-checked TypeScript style.
+Technical requirements for implementing the VS Code extension in this repo's
+strictly linted and type-checked TypeScript style.
 
-These requirements bind the future extension package to the current repository
+These requirements bind the extension package to the current repository
 toolchain unless an explicit ADR changes that baseline.
 
 ## Inventory
 
 | File | Tags |
 | :--- | :--- |
-| [typescript-contract.md](typescript-contract.md) | `MarkdownlintObsidianTechnical.TypeScriptStrictness`, `MarkdownlintObsidianTechnical.NodeNextEsm`, `MarkdownlintObsidianTechnical.TypedBoundaries`, `MarkdownlintObsidianTechnical.PublicTypes` |
-| [lint-format-contract.md](lint-format-contract.md) | `MarkdownlintObsidianTechnical.EslintFlatConfig`, `MarkdownlintObsidianTechnical.NoAnyExplicitReturns`, `MarkdownlintObsidianTechnical.ComplexityAndSize`, `MarkdownlintObsidianTechnical.Formatting`, `MarkdownlintObsidianTechnical.Suppressions` |
-| [package-build-contract.md](package-build-contract.md) | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BundledLibraryRuntime`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
-| [verification-gates.md](verification-gates.md) | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` |
+| [[requirements/technical/typescript-contract]] | `MarkdownlintObsidianTechnical.TypeScriptStrictness`, `MarkdownlintObsidianTechnical.NodeNextEsm`, `MarkdownlintObsidianTechnical.TypedBoundaries`, `MarkdownlintObsidianTechnical.PublicTypes` |
+| [[requirements/technical/lint-format-contract]] | `MarkdownlintObsidianTechnical.EslintFlatConfig`, `MarkdownlintObsidianTechnical.NoAnyExplicitReturns`, `MarkdownlintObsidianTechnical.ComplexityAndSize`, `MarkdownlintObsidianTechnical.Formatting`, `MarkdownlintObsidianTechnical.Suppressions` |
+| [[requirements/technical/package-build-contract]] | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BundledLibraryRuntime`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
+| [[requirements/technical/verification-gates]] | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` |
 
 ## Baseline Toolchain
 
@@ -25,7 +41,7 @@ toolchain unless an explicit ADR changes that baseline.
 | Type safety | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noImplicitReturns` |
 | Linting | ESLint 9 flat config plus `@typescript-eslint` recommended rules |
 | Formatting | Prettier 3, checked by root `bun run lint` |
-| Tests | Bun tests, Cucumber smoke tests, extension-host tests once extension source exists |
+| Tests | Bun tests, Cucumber smoke tests, package checks, and extension-host tests |
 | Docs lint | `markdownlint-obsidian` dogfood checks for root docs and extension docs |
 
 ## Source Baseline
@@ -39,9 +55,7 @@ toolchain unless an explicit ADR changes that baseline.
 
 ## Interpretation
 
-- These are technical requirements for extension implementation, not claims that
-  extension source already exists.
-- Existing root package, core package, CLI package, and action package settings
-  are the compatibility baseline.
+- Existing root package, core package, CLI package, action package, and
+  extension package settings are the compatibility baseline.
 - The extension may add VS Code-specific typings, extension-host tests, and
   bundling config, but must not loosen repository strictness.

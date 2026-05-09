@@ -1,3 +1,19 @@
+---
+title: "Verification Gates"
+aliases:
+  - "Verification Gates"
+  - "Requirements / Technical / Verification Gates"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/technical/index]]"
+---
+
 # Verification Gates
 
 ## MarkdownlintObsidianTechnical.TypecheckGate
@@ -12,10 +28,10 @@ Fail: Extension source merges with TypeScript errors, missing project references
 Goal: 100% of extension-changing pull requests pass typecheck.
 Stakeholders: Extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [root package scripts](../../../../package.json); [architecture tooling requirement](../architecture/quality-gates.md).
+Source: [root package scripts](../../../../package.json); [[requirements/architecture/quality-gates]].
 ```
 
-Architecture trace: [ExtensionArchitecture.TypeSafety](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.LintGate
 
@@ -32,7 +48,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root package scripts](../../../../package.json); [root ESLint config](../../../../eslint.config.js).
 ```
 
-Architecture trace: [ExtensionArchitecture.Tooling](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.TestGate
 
@@ -46,10 +62,10 @@ Fail: Behavior changes merge without a test that would fail before the productio
 Goal: 100% of non-trivial behavior changes include matching automated tests or a documented exception.
 Stakeholders: Extension users, maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension test harness requirement](../architecture/vscode-extension-specifics.md); [BDD traceability](../../bdd/traceability.md).
+Source: [[requirements/architecture/vscode-extension-specifics]]; [[bdd/traceability]].
 ```
 
-Architecture trace: [ExtensionArchitecture.TestHarness](../architecture/vscode-extension-specifics.md)
+Architecture trace: [[requirements/architecture/vscode-extension-specifics]]
 
 ## MarkdownlintObsidianTechnical.DocsGate
 
@@ -63,10 +79,10 @@ Fail: Extension Markdown docs introduce lint violations, broken local references
 Goal: 100% of extension docs changes pass the docs gate.
 Stakeholders: Extension maintainers, docs readers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension docs contributing notes](../../README.md); [documentation policy](../../../../docs/architecture/documentation-policy.md).
+Source: [[README]]; [documentation policy](../../../../docs/architecture/documentation-policy.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.Documentation](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.ReleaseGate
 
@@ -80,7 +96,7 @@ Fail: Any release-candidate gate fails, is skipped without documented approval, 
 Goal: 100% of release candidates pass every required technical gate.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [root package scripts](../../../../package.json); [extension metadata requirement](../functional/test-derived.md); [extension package requirement](../architecture/vscode-extension-specifics.md).
+Source: [root package scripts](../../../../package.json); [[requirements/functional/test-derived]]; [[requirements/architecture/vscode-extension-specifics]].
 ```
 
 Functional trace: `MarkdownlintObsidian.MetadataConsistency`

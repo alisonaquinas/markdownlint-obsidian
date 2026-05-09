@@ -1,6 +1,24 @@
+---
+title: "Extension Requirements"
+aliases:
+  - "Extension Requirements"
+  - "Requirements / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "requirements"
+type: "requirements-index"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension Requirements
 
-Requirements for the planned VS Code extension.
+Requirements for the VS Code extension.
+
+> [!INFO] Requirements map
+> Start with [[requirements/user/index]], then [[requirements/functional/index]], then [[requirements/technical/index]] and [[requirements/architecture/index]].
 
 ## Requirement Areas
 
@@ -18,38 +36,38 @@ Requirements for the planned VS Code extension.
 
 ## User Requirements
 
-User requirements live under [user/](user/index.md).
+User requirements live under [[requirements/user/index]].
 
 | File | Focus |
 | :--- | :--- |
-| [user/editing-feedback.md](user/editing-feedback.md) | Flavor Grenade dependency, activation, document eligibility, current diagnostics, run modes, vault-aware feedback |
-| [user/fixes-formatting.md](user/fixes-formatting.md) | Quick fixes, fix-all, fix-check preview, rule docs, formatting limits |
-| [user/configuration.md](user/configuration.md) | Config discovery, schema help, custom rules, rule family visibility |
-| [user/workspace-and-trust.md](user/workspace-and-trust.md) | Workspace lint, temporary disable, trust, unsupported modes, actionable errors |
+| [[requirements/user/editing-feedback]] | Flavor Grenade dependency, activation, document eligibility, current diagnostics, run modes, vault-aware feedback |
+| [[requirements/user/fixes-formatting]] | Quick fixes, fix-all, fix-check preview, rule docs, formatting limits |
+| [[requirements/user/configuration]] | Config discovery, schema help, custom rules, rule family visibility |
+| [[requirements/user/workspace-and-trust]] | Workspace lint, temporary disable, trust, unsupported modes, actionable errors |
 
 ## Functional Requirements
 
-Functional requirements live under [functional/](functional/index.md).
+Functional requirements live under [[requirements/functional/index]].
 
 | File | Focus |
 | :--- | :--- |
-| [functional/editing-linting.md](functional/editing-linting.md) | Flavor Grenade dependency, activation, eligibility, triggers, config, diagnostics |
-| [functional/fixes-formatting.md](functional/fixes-formatting.md) | Code actions, quick fixes, fix-all, fix-check preview, formatting boundary, rule help |
-| [functional/workspace-commands.md](functional/workspace-commands.md) | Workspace lint, config opening, temporary disable, config watchers |
-| [functional/contributions-and-trust.md](functional/contributions-and-trust.md) | Manifest contributions, schemas, workspace trust, custom rule trust, file-system strategy |
-| [functional/test-derived.md](functional/test-derived.md) | Error reporting and metadata consistency |
+| [[requirements/functional/editing-linting]] | Flavor Grenade dependency, activation, eligibility, triggers, config, diagnostics |
+| [[requirements/functional/fixes-formatting]] | Code actions, quick fixes, fix-all, fix-check preview, formatting boundary, rule help |
+| [[requirements/functional/workspace-commands]] | Workspace lint, config opening, temporary disable, config watchers |
+| [[requirements/functional/contributions-and-trust]] | Manifest contributions, schemas, workspace trust, custom rule trust, file-system strategy |
+| [[requirements/functional/test-derived]] | Error reporting and metadata consistency |
 
 ## Technical Requirements
 
-Technical requirements live under [technical/](technical/index.md).
+Technical requirements live under [[requirements/technical/index]].
 
 | File | Focus |
 | :--- | :--- |
-| [technical/typescript-contract.md](technical/typescript-contract.md) | Strict TypeScript, NodeNext ESM, typed boundaries, public types |
-| [technical/lint-format-contract.md](technical/lint-format-contract.md) | ESLint flat config, no-any and return rules, complexity, formatting, suppressions |
-| [technical/package-build-contract.md](technical/package-build-contract.md) | Bun workspace fit, extension package boundary, build outputs, dependency boundary |
-| [technical/verification-gates.md](technical/verification-gates.md) | Typecheck, lint, tests, docs, and release gates |
+| [[requirements/technical/typescript-contract]] | Strict TypeScript, NodeNext ESM, typed boundaries, public types |
+| [[requirements/technical/lint-format-contract]] | ESLint flat config, no-any and return rules, complexity, formatting, suppressions |
+| [[requirements/technical/package-build-contract]] | Bun workspace fit, extension package boundary, build outputs, dependency boundary |
+| [[requirements/technical/verification-gates]] | Typecheck, lint, tests, docs, and release gates |
 
 ## Architecture Requirements
 
-Architecture requirements live under [architecture/](architecture/index.md).
+Architecture requirements live under [[requirements/architecture/index]].

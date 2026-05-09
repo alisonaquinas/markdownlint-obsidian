@@ -1,3 +1,16 @@
+---
+title: "Installation"
+aliases:
+  - "Installation"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Installation
 
 Packages are published only to npmjs.org using trusted publishing

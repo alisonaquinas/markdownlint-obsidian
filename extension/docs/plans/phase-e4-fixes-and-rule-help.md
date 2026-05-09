@@ -1,3 +1,20 @@
+---
+title: "Phase E4: Fixes And Rule Help"
+aliases:
+  - "Phase E4: Fixes And Rule Help"
+  - "Plans / Phase E4 Fixes And Rule Help"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e4-fixes-and-rule-help"
+  - "plans"
+  - "phase/e4"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E4: Fixes And Rule Help
 
 ## Goal

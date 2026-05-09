@@ -1,7 +1,15 @@
 ---
+title: "Standalone CLI over plugin or layered distribution"
+aliases:
+  - "Standalone CLI over plugin or layered distribution"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "accepted"
+updated: 2026-05-09
+up: "[[README]]"
 adr: 001
-title: Standalone CLI over plugin or layered distribution
-status: accepted
 date: 2026-04-11
 ---
 

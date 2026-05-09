@@ -1,5 +1,14 @@
 ---
-title: Custom rules authoring guide
+title: "Custom rules authoring guide"
+aliases:
+  - "Custom rules authoring guide"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # Custom Rules

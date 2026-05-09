@@ -1,5 +1,15 @@
 ---
-title: Linting and Tooling
+title: "Linting and Tooling"
+aliases:
+  - "Linting and Tooling"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Linting and Tooling

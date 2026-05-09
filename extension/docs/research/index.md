@@ -1,3 +1,17 @@
+---
+title: "Extension Research"
+aliases:
+  - "Extension Research"
+  - "Research / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/research"
+type: "research-index"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension Research
 
 Research notes that inform the VS Code extension design.

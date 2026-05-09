@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * Validate extension behavior contracts that are represented in docs, BDD
+ * features, and the VS Code manifest.
+ *
+ * This is a fast consistency check, not a substitute for extension-host tests.
+ */
+
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cwd, exit } from "node:process";
@@ -6,6 +13,7 @@ import { cwd, exit } from "node:process";
 const root = cwd();
 const failures = [];
 
+/** Read a repository-relative file as UTF-8 text. */
 const read = (relativePath) => readFileSync(join(root, relativePath), "utf8");
 
 const bddFeatureDir = join(root, "extension/docs/bdd/features");
@@ -56,8 +64,17 @@ if (existsSync(extensionPackagePath)) {
   if (!activationEvents.includes("onLanguage:ofmarkdown")) {
     failures.push("extension/package.json is missing onLanguage:ofmarkdown");
   }
+
+  if (!Array.isArray(packageJson.contributes?.jsonValidation)) {
+    failures.push("extension/package.json is missing JSON validation contributions");
+  }
+
+  const paletteCommands = packageJson.contributes?.menus?.commandPalette ?? [];
+  if (paletteCommands.length === 0) {
+    failures.push("extension/package.json is missing commandPalette menu contributions");
+  }
 } else {
-  console.log("planned skip: extension/package.json does not exist yet.");
+  console.log("skip: extension/package.json is absent in this checkout.");
 }
 
 if (failures.length > 0) {

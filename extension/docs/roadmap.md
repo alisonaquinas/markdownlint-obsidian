@@ -1,3 +1,17 @@
+---
+title: "Extension Implementation Roadmap"
+aliases:
+  - "Extension Implementation Roadmap"
+  - "Roadmap"
+tags:
+  - "extension-docs"
+  - "extension-docs/roadmap"
+type: "roadmap"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension Implementation Roadmap
 
 Roadmap for building the `markdownlint-obsidian` VS Code extension.
@@ -6,18 +20,21 @@ The roadmap assumes the extension remains an editor adapter around
 the bundled `markdownlint-obsidian` library, and that Flavor Grenade owns
 OFMarkdown document classification through the `ofmarkdown` language id.
 
+> [!TIP] Delivery map
+> Phase work is tracked in [[plans/index]] and execution evidence is captured in [[plans/execution-ledger]].
+
 ## Phase Summary
 
 | Phase | Plan | Outcome |
 | :--- | :--- | :--- |
-| E0 | [Planning readiness](plans/phase-e0-planning-readiness.md) | docs, ADRs, requirements, and test contracts are ready to drive implementation |
-| E1 | [Package scaffold and toolchain](plans/phase-e1-package-scaffold.md) | VS Code extension package builds, typechecks, lints, tests, and packages locally |
-| E2 | [Core adapter and configuration](plans/phase-e2-core-adapter-and-config.md) | extension can call bundled library APIs with typed settings and config resolution |
-| E3 | [Live diagnostics](plans/phase-e3-live-diagnostics.md) | eligible `ofmarkdown` documents receive current diagnostics |
-| E4 | [Fixes and rule help](plans/phase-e4-fixes-and-rule-help.md) | quick fixes, fix-all, fix preview, and rule documentation links work |
-| E5 | [Workspace commands and trust](plans/phase-e5-workspace-commands-and-trust.md) | command palette workflows, output channel, trust policy, and unsupported mode handling work |
-| E6 | [Packaging and CI](plans/phase-e6-packaging-and-ci.md) | CI runs extension gates and produces a locally smoke-tested VSIX |
-| E7 | [Hardening and marketplace readiness](plans/phase-e7-hardening-and-marketplace.md) | release metadata, docs, telemetry posture, Flavor Grenade-aligned publishing, and manual validation are ready for Marketplace publication |
+| E0 | [[plans/phase-e0-planning-readiness]] | docs, ADRs, requirements, and test contracts are ready to drive implementation |
+| E1 | [[plans/phase-e1-package-scaffold]] | VS Code extension package builds, typechecks, lints, tests, and packages locally |
+| E2 | [[plans/phase-e2-core-adapter-and-config]] | extension can call bundled library APIs with typed settings and config resolution |
+| E3 | [[plans/phase-e3-live-diagnostics]] | eligible `ofmarkdown` documents receive current diagnostics |
+| E4 | [[plans/phase-e4-fixes-and-rule-help]] | quick fixes, fix-all, fix preview, and rule documentation links work |
+| E5 | [[plans/phase-e5-workspace-commands-and-trust]] | command palette workflows, output channel, trust policy, and unsupported mode handling work |
+| E6 | [[plans/phase-e6-packaging-and-ci]] | CI runs extension gates and produces a locally smoke-tested VSIX |
+| E7 | [[plans/phase-e7-hardening-and-marketplace]] | release metadata, docs, telemetry posture, Flavor Grenade-aligned publishing, and manual validation are ready for Marketplace publication |
 
 ## Delivery Principles
 
@@ -60,14 +77,17 @@ E0 planning
 
 ## Current Status
 
-E0 is mostly complete. The next implementation phase is E1: package scaffold
-and toolchain.
+E0 through E7 have local implementation evidence on
+`feature/extension-project-management`. The local gates build, typecheck, lint,
+test, package, run the extension-host smoke test, and lint both documentation
+trees. Remote CI and Marketplace publication remain the authoritative release
+checks.
 
 ## See Also
 
-- [Architecture overview](architecture/overview.md)
-- [Flavor Grenade dependency contract](architecture/flavor-grenade-dependency.md)
-- [Functional requirements](requirements/functional/index.md)
-- [Technical requirements](requirements/technical/index.md)
-- [BDD behavior model](bdd/README.md)
-- [Test plans](tests/README.md)
+- [[architecture/overview]]
+- [[architecture/flavor-grenade-dependency]]
+- [[requirements/functional/index]]
+- [[requirements/technical/index]]
+- [[bdd/README]]
+- [[tests/README]]

@@ -1,10 +1,18 @@
 ---
-title: flavor-grenade-lsp Technical Stack And Architecture
+title: "flavor-grenade-lsp Technical Stack And Architecture"
+aliases:
+  - "flavor-grenade-lsp Technical Stack And Architecture"
 tags:
-  - research/vscode
-  - research/lsp
-  - research/flavor-grenade
-updated: 2026-05-05
+  - "research/vscode"
+  - "research/lsp"
+  - "research/flavor-grenade"
+  - "docs"
+  - "docs/research"
+  - "docs/research/flavor-grenade-lsp"
+type: "research"
+status: "current"
+updated: 2026-05-09
+up: "[[research/flavor-grenade-lsp/index]]"
 sources:
   - https://github.com/alisonaquinas/flavor-grenade-lsp
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/package.json
@@ -19,14 +27,19 @@ sources:
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/server-path.ts
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/server-command.ts
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/commands.ts
+  - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/activation-gate.ts
+  - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/workspace-environment.ts
+  - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/command-bridges.ts
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/status-bar.ts
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/extension/src/language-mode.ts
+  - https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/docs/adr/ADR015-platform-specific-vsix.md
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/docs/adr/ADR016-ofmarkdown-language-mode.md
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/.github/workflows/extension-release.yml
   - https://code.visualstudio.com/api/language-extensions/language-server-extension-guide
   - https://code.visualstudio.com/api/extension-guides/workspace-trust
 ---
+
 # flavor-grenade-lsp Technical Stack And Architecture
 
 ## Scope
@@ -37,7 +50,10 @@ goal is to identify patterns worth reusing for a future `markdownlint-obsidian`
 extension while keeping this repository's linter domain separate.
 
 Source snapshot: upstream `main` at
-`dc66d9bcc5102800e75ac78921aa2e3a4ce3441b`, checked on 2026-05-05.
+`8f669413a95b2952db34642fa4386e0cc86733e6`, checked on 2026-05-09.
+
+Release snapshot: `v0.3.0`, published 2026-05-09. The VS Code extension
+manifest on `main` reports version `0.1.4`.
 
 ## Stack Summary
 
@@ -57,7 +73,8 @@ Source snapshot: upstream `main` at
 | Extension build | esbuild bundle to `extension/dist/extension.js` |
 | Extension package manager | npm inside `extension/` |
 | Extension packaging | `@vscode/vsce`, platform-specific VSIXs |
-| Extension activation | `onLanguage:markdown`, `onLanguage:ofmarkdown` |
+| Extension activation | `workspaceContains:.obsidian`, `workspaceContains:.flavor-grenade.toml`, Flavor Grenade commands, `onLanguage:markdown`, `onLanguage:ofmarkdown` |
+| Extension startup gate | Starts the LSP client only for commands, vault markers, file ancestors with markers, or existing `ofmarkdown` documents |
 | Extension trust posture | Untrusted workspaces unsupported |
 | Extension virtual workspace posture | Virtual workspaces unsupported |
 
@@ -112,6 +129,8 @@ The VS Code extension is a thin LSP client.
 `extension/src/extension.ts` does the main work:
 
 - resolves the server command;
+- checks the workspace environment before server startup;
+- applies a startup gate before creating the language client;
 - creates `ServerOptions` for run and debug;
 - creates `LanguageClientOptions` with a file-only selector for `markdown` and
   `ofmarkdown`;
@@ -120,6 +139,18 @@ The VS Code extension is a thin LSP client.
 - starts `LanguageClient`;
 - registers a status bar, commands, and dynamic language-mode controller;
 - restarts the client when `flavorGrenade.server.path` changes.
+
+Startup is deliberately precise. `activation-gate.ts` starts the client only
+when a Flavor Grenade command is invoked, a workspace folder contains
+`.obsidian` or `.flavor-grenade.toml`, an open file has one of those marker
+ancestors, or an open document already has language id `ofmarkdown`. The
+extension can activate on generic `markdown` so it can promote eligible files,
+but the server is not started for arbitrary Markdown-only workspaces.
+
+`workspace-environment.ts` blocks server startup in Restricted Mode and virtual
+workspaces. The status bar remains available and reports the disabled reason,
+for example "Workspace is not trusted (Restricted Mode)" or "Virtual workspace
+requires file-system vault access".
 
 This matches VS Code's documented language-server extension shape: create
 server options, define client options with document selectors and file events,
@@ -131,10 +162,22 @@ then start a `LanguageClient`.
 
 - language id `ofmarkdown`;
 - TextMate grammar for `ofmarkdown`;
+- snippets for `ofmarkdown`;
 - commands:
   - `flavorGrenade.restartServer`;
   - `flavorGrenade.rebuildIndex`;
   - `flavorGrenade.showOutput`;
+  - `flavorGrenade.showStatusActions`;
+  - `flavorGrenade.openTroubleshooting`;
+  - `flavorGrenade.showReferences`;
+  - `flavorGrenade.followLink`;
+  - `flavorGrenade.openEmbedTarget`;
+  - `flavorGrenade.showBacklinks`;
+  - `flavorGrenade.showOutlinks`;
+  - `flavorGrenade.revealVaultRoot`;
+  - `flavorGrenade.copyDiagnosticInfo`;
+- keybindings for rebuild-index, status actions, and output when the editor
+  language is `ofmarkdown`;
 - settings:
   - `flavorGrenade.server.path`;
   - `flavorGrenade.linkStyle`;
@@ -168,10 +211,15 @@ The command module is intentionally small:
 - restart calls `client.restart()`;
 - rebuild index sends custom request `flavorGrenade/rebuildIndex`;
 - show output reveals the language client's output channel.
+- status actions open a Quick Pick backed by the current status object;
+- troubleshooting opens the published troubleshooting URL;
+- reference, link-following, embed, backlink, outlink, vault-root, and
+  diagnostic-info commands bridge server payloads to native VS Code commands.
 
 The status bar listens for custom `flavorGrenade/status` notifications with
-states `initializing`, `indexing`, `ready`, and `error`. It is an editor-only
-presentation layer over server lifecycle events.
+states including `disabled`, `initializing`, `indexing`, `ready`, and `error`.
+It is an editor-only presentation layer over server lifecycle events and
+workspace environment decisions.
 
 ## Dynamic OFMarkdown Mode
 
@@ -181,30 +229,24 @@ to `ofmarkdown`.
 
 Promotion has two checks:
 
-- fast client-side ancestor scan for `.obsidian/`;
+- fast client-side ancestor scan for `.obsidian/` or `.flavor-grenade.toml`;
 - server-authoritative `flavorGrenade/documentMembership` request.
 
 The extension uses a loop guard because `setTextDocumentLanguage` causes VS Code
 to reopen the document. It also registers the language client for both
 `markdown` and `ofmarkdown`, so LSP features continue during and after
-promotion.
+promotion. If the server reports that an `ofmarkdown` file is no longer a
+member, the controller can demote it back to `markdown`.
 
-This is directly relevant to `markdownlint-obsidian`: a future extension should
+This is directly relevant to `markdownlint-obsidian`: the extension should
 avoid hijacking generic Markdown files unless the repo explicitly decides that
 all Markdown should receive Obsidian-aware linting.
 
 ## Packaging And CI
 
 ADR 015 chooses platform-specific VSIXs. The release workflow builds seven
-targets:
-
-- `linux-x64`;
-- `linux-arm64`;
-- `alpine-x64`;
-- `darwin-x64`;
-- `darwin-arm64`;
-- `win32-x64`;
-- `win32-arm64`.
+targets: `linux-x64`, `linux-arm64`, `alpine-x64`, `darwin-x64`,
+`darwin-arm64`, `win32-x64`, and `win32-arm64`.
 
 Each build cross-compiles the Bun server binary, installs extension
 dependencies, bundles the extension client with esbuild, packages a targeted
@@ -226,6 +268,8 @@ Good patterns to copy:
 - `server.path` escape hatch for development and local testing.
 - Custom requests for extension-specific lifecycle commands.
 - Status bar backed by server notifications.
+- Startup gates that avoid unnecessary server work in generic Markdown
+  workspaces.
 - Explicit trust and virtual workspace declarations.
 - esbuild bundling with `vscode` external.
 - `.vscodeignore` discipline.
@@ -254,10 +298,10 @@ start with this shape:
 | Extension bundle | esbuild to `extension/dist/extension.js` |
 | VS Code API | direct use of `vscode` plus `vscode-languageclient` only if an LSP server is introduced |
 | Server or engine | Prefer existing core package first; introduce an LSP boundary when live diagnostics need shared document state |
-| Activation | `onLanguage:markdown`; optional future `onLanguage:ofmarkdown` |
-| Workspace trust | Start unsupported or limited until file-system behavior is explicitly designed |
-| Virtual workspaces | Start unsupported unless all file I/O uses `vscode.workspace.fs` or a serverless mode |
-| Commands | restart or reload engine, lint workspace, show output, open config |
+| Activation | Declare `extensionDependencies`, activate on `onLanguage:ofmarkdown`, and add command/workspace activation only for setup, troubleshooting, or workspace lint flows |
+| Workspace trust | Automatic live linting depends on Flavor Grenade, which blocks Restricted Mode; explicit built-in-rule commands may support limited untrusted behavior only if documented |
+| Virtual workspaces | Automatic live linting depends on Flavor Grenade file-system access; reject or explicitly document virtual-workspace command limitations |
+| Commands | lint workspace, show output, show status or troubleshooting, open config, temporarily toggle diagnostics |
 | Configuration | mirror CLI/core options, plus extension-only output and server path settings |
 | Tests | unit tests for command/path logic, VS Code integration smoke tests for activation and diagnostics |
 | Packaging | `@vscode/vsce`; strict `.vscodeignore`; build artifact checked by CI |

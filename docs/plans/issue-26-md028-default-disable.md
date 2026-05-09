@@ -1,3 +1,17 @@
+---
+title: "Issue 26: MD028 default-disable plan"
+aliases:
+  - "Issue 26: MD028 default-disable plan"
+tags:
+  - "docs"
+  - "docs/plans"
+  - "docs/plans/phase-work"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[roadmap]]"
+---
+
 # Issue 26: MD028 default-disable plan
 
 ## Problem

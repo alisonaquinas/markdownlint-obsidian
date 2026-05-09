@@ -1,5 +1,15 @@
 ---
-title: Namespace and Module Structure
+title: "Namespace and Module Structure"
+aliases:
+  - "Namespace and Module Structure"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Namespace and Module Structure
@@ -20,7 +30,7 @@ map to one domain or adapter concept.
 | `packages/core/src/public/` | Stable public API exports |
 | `packages/cli/` | Commander CLI adapter |
 | `action/` | GitHub Action adapter and bundled artifact |
-| `extension/` | Future VS Code extension and extension docs |
+| `extension/` | VS Code extension package and extension docs |
 
 ## Design Rules
 

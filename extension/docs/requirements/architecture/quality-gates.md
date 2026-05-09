@@ -1,3 +1,19 @@
+---
+title: "Architecture Quality Gates"
+aliases:
+  - "Architecture Quality Gates"
+  - "Requirements / Architecture / Quality Gates"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/architecture"
+  - "requirements"
+type: "architecture-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/architecture/index]]"
+---
+
 # Architecture Quality Gates
 
 ## ExtensionArchitecture.TDD

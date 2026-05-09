@@ -1,6 +1,24 @@
+---
+title: "Roadmap"
+aliases:
+  - "Roadmap"
+tags:
+  - "docs"
+  - "docs/roadmap"
+type: "roadmap"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Roadmap
 
-Central phase plan index for `markdownlint-obsidian`. Each phase produces working, testable software on its own. Implementation plans live in `[[docs/plans/]]`.
+Central phase plan index for `markdownlint-obsidian`. Each phase produces
+working, testable software on its own. Implementation plans live under
+[[plans/execution-ledger|plans]].
+
+> [!TIP] Delivery map
+> Use [[plans/execution-ledger]] for actual phase history, [[rules/index]] for shipped rule behavior, and [[architecture/README]] for binding design policy.
 
 ## Phases
 
@@ -20,6 +38,7 @@ Central phase plan index for `markdownlint-obsidian`. Each phase produces workin
 | 12    | [[plans/phase-12-cd-automation]]         | Full CD via release-please; npm publish, action-tag, docker-publish fan-out                                                                   | Complete |
 | 13    | [[plans/phase-13-package-split]]         | Split into `markdownlint-obsidian` (library) + `markdownlint-obsidian-cli` (CLI) as Bun workspace monorepo                                    | Complete |
 | 14    | [[plans/phase-14-multi-registry-cd]]     | Multi-registry publishing (npmjs.org, GitHub Packages, ghcr.io) + supply-chain hardening (provenance, cosign, SBOM)                           | Planned  |
+| 15    | [[plans/phase-15-cli2-config-parity]]    | Bring configuration loading, parsing, pointer, inheritance, and grouping behavior to markdownlint-cli2 parity                                  | Planned  |
 
 ## Architecture Decision Records
 

@@ -1,3 +1,17 @@
+---
+title: "Vault Domain Model"
+aliases:
+  - "Vault Domain Model"
+tags:
+  - "docs"
+  - "docs/ddd"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Vault Domain Model
 
 ## Value Objects

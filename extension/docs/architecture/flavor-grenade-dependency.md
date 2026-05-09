@@ -1,12 +1,27 @@
+---
+title: "Flavor Grenade Dependency Contract"
+aliases:
+  - "Flavor Grenade Dependency Contract"
+  - "Architecture / Flavor Grenade Dependency"
+tags:
+  - "extension-docs"
+  - "extension-docs/architecture"
+  - "extension-docs/architecture/flavor-grenade-dependency"
+type: "architecture"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/overview]]"
+---
+
 # Flavor Grenade Dependency Contract
 
 ## Decision Premise
 
-The VS Code extension should treat `flavor-grenade-lsp` as an installed
-extension dependency and rely on the `ofmarkdown` language mode it contributes.
+The VS Code extension treats `flavor-grenade-lsp` as an installed extension
+dependency and relies on the `ofmarkdown` language mode it contributes.
 
-The planned manifest should declare the dependency with VS Code's
-`extensionDependencies` field:
+The manifest declares the dependency with VS Code's `extensionDependencies`
+field:
 
 ```json
 {
@@ -19,6 +34,23 @@ continues to own OFMarkdown language detection and language-mode promotion.
 `markdownlint-obsidian` continues to own lint rules, configuration,
 diagnostics, and fixes.
 
+## Current Upstream Baseline
+
+Reviewed baseline: Flavor Grenade `v0.3.0`, published 2026-05-09; VS Code
+extension manifest version `0.1.4` on upstream `main`.
+
+The dependency now contributes:
+
+- language id `ofmarkdown`;
+- OFMarkdown grammar and snippets;
+- activation for `.obsidian`, `.flavor-grenade.toml`, Flavor Grenade commands,
+  `markdown`, and `ofmarkdown`;
+- startup gating so the LSP server starts only for commands, vault markers,
+  open files beneath markers, or existing `ofmarkdown` documents;
+- disabled-state handling for Restricted Mode and virtual workspaces;
+- status, troubleshooting, and command bridges for navigation and diagnostic
+  information.
+
 ## Responsibility Split
 
 | Concern | Owner |
@@ -26,19 +58,23 @@ diagnostics, and fixes.
 | Detect Obsidian vault membership | Flavor Grenade LSP extension |
 | Promote qualifying Markdown files to `ofmarkdown` | Flavor Grenade LSP extension |
 | Provide OFMarkdown grammar and language configuration | Flavor Grenade LSP extension |
+| Report Flavor Grenade server readiness, disabled state, and troubleshooting | Flavor Grenade LSP extension |
 | Decide whether a document should receive OFM lint diagnostics | `markdownlint-obsidian` extension, using `languageId === "ofmarkdown"` |
 | Run OFM and standard markdownlint rules | `markdownlint-obsidian` core |
 | Publish lint diagnostics and code actions | `markdownlint-obsidian` extension |
 
 ## Activation Model
 
-Primary activation should be `onLanguage:ofmarkdown`.
+Primary activation is `onLanguage:ofmarkdown`.
 
 The extension may also activate on a command or workspace event for setup,
-configuration, and troubleshooting. It should not lint every `markdown`
-document by default. Plain Markdown stays out of scope unless the user runs an
-explicit workspace command or a later requirement adds opt-in generic Markdown
-linting.
+configuration, and troubleshooting. It does not lint every `markdown` document
+by default. Plain Markdown stays out of scope unless the user runs an explicit
+workspace command or a later requirement adds opt-in generic Markdown linting.
+
+Flavor Grenade itself may activate on `markdown` to decide whether a file should
+be promoted. `markdownlint-obsidian` must not copy that broader activation into
+automatic linting behavior.
 
 ## Document Eligibility
 
@@ -56,10 +92,12 @@ lets `markdownlint-obsidian` stay focused on lint semantics.
 
 If the dependency is disabled, missing, or not installed:
 
-- live linting should not silently fall back to all Markdown files;
-- commands should report that `flavor-grenade-lsp` is required for automatic
+- live linting does not silently fall back to all Markdown files;
+- commands report that `flavor-grenade-lsp` is required for automatic
   OFMarkdown document selection;
-- documentation should explain that users can install the dependency or use CLI
+- Restricted Mode or virtual-workspace blocks in Flavor Grenade are reported as
+  dependency availability limits for automatic live linting;
+- documentation explains that users can install the dependency or use CLI
   linting outside VS Code.
 
 ## Non-Goals

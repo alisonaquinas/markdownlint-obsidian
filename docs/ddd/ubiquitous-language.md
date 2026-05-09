@@ -1,3 +1,17 @@
+---
+title: "Ubiquitous Language"
+aliases:
+  - "Ubiquitous Language"
+tags:
+  - "docs"
+  - "docs/ddd"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Ubiquitous Language
 
 Canonical terms for the `markdownlint-obsidian` domain. All code, docs, and BDD scenarios use these exact names.

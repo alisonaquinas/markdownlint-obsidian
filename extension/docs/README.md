@@ -1,40 +1,56 @@
+---
+title: "VS Code Extension Documentation"
+aliases:
+  - "VS Code Extension Documentation"
+  - "Index"
+tags:
+  - "extension-docs"
+type: "moc"
+status: "current"
+updated: 2026-05-09
+---
+
 # VS Code Extension Documentation
 
-Planning and reference wiki for the future `markdownlint-obsidian` VS Code
-extension.
+Planning, implementation, and release reference wiki for the
+`markdownlint-obsidian` VS Code extension.
 
 This tree is intentionally separate from root `docs/`. Root docs describe the
 core linter, CLI, GitHub Action, rules, and project architecture. Extension docs
 describe editor integration: activation, diagnostics, settings, commands,
 language modes, packaging, tests, and release behavior.
 
+> [!INFO] Extension vault map
+> Start with [[roadmap]], [[architecture/overview]], [[requirements/index]], [[ddd/README]], [[bdd/README]], and [[tests/README]].
+
 ## Index
 
 | Directory / File | Contents |
 | :--- | :--- |
-| [architecture/](architecture/overview.md) | Extension architecture, boundaries, and data flow |
-| [bdd/](bdd/README.md) | Behavior-domain scenarios and traceability |
-| [ddd/](ddd/README.md) | Extension bounded contexts and ubiquitous language |
-| [requirements/](requirements/index.md) | User and functional requirements for the extension |
-| [tests/](tests/README.md) | Unit, verification, validation, and automation test plans |
-| [roadmap.md](roadmap.md) | Extension implementation roadmap and phase gates |
-| [plans/](plans/index.md) | Extension delivery plans and execution notes |
-| [research/](research/index.md) | Supporting research for extension decisions |
-| [adr/](adr/index.md) | Extension-specific Architecture Decision Records |
+| [[architecture/overview]] | Extension architecture, boundaries, and data flow |
+| [[bdd/README]] | Behavior-domain scenarios and traceability |
+| [[ddd/README]] | Extension bounded contexts and ubiquitous language |
+| [[requirements/index]] | User and functional requirements for the extension |
+| [[tests/README]] | Unit, verification, validation, and automation test plans |
+| [[roadmap]] | Extension implementation roadmap and phase gates |
+| [[plans/index]] | Extension delivery plans and execution notes |
+| [[research/index]] | Supporting research for extension decisions |
+| [[adr/index]] | Extension-specific Architecture Decision Records |
 
-## Initial Scope
+## Implemented Scope
 
-The extension should provide VS Code feedback for the existing
+The extension provides VS Code feedback for the existing
 `markdownlint-obsidian` library without duplicating lint rules in editor code.
-The extension should bundle that library as its lint engine dependency. Users
-should not need to install the CLI globally or in their workspace for editor
-diagnostics, fixes, previews, or workspace commands. The extension should also
-depend on the Flavor Grenade LSP extension for OFMarkdown language detection,
-then lint documents that Flavor Grenade has promoted to the `ofmarkdown`
+The extension bundles that library as its lint engine dependency. Users do not
+need to install the CLI globally or in their workspace for editor diagnostics,
+fixes, previews, or workspace commands. The extension depends on the Flavor
+Grenade LSP extension for OFMarkdown language detection, then lints documents
+that Flavor Grenade has promoted to the `ofmarkdown`
 language id.
 
-The desired direction is a `markdownlint-cli2`-style editing experience using a
-technology stack and document-selection model closer to `flavor-grenade-lsp`:
+The implemented editor experience follows the `markdownlint-cli2` style while
+using a technology stack and document-selection model closer to
+`flavor-grenade-lsp`:
 
 - TypeScript VS Code extension client.
 - Clear boundary between editor UI and lint engine behavior.
@@ -47,11 +63,11 @@ technology stack and document-selection model closer to `flavor-grenade-lsp`:
 - Explicit workspace trust and virtual workspace posture.
 - Packaging and test workflows that can run in CI.
 
-## Runtime Direction
+## Runtime Shape
 
 Flavor Grenade owns OFMarkdown language-mode detection. The extension runtime
-should call the bundled `markdownlint-obsidian` library through public APIs.
-The current planning bias is:
+calls the bundled `markdownlint-obsidian` library through public APIs. The
+current runtime shape is:
 
 - keep the first implementation in-process;
 - preserve core ownership of lint behavior through a thin library adapter;
@@ -59,7 +75,7 @@ The current planning bias is:
 - choose an LSP boundary if live diagnostics, workspace indexing, or future
   cross-document editor features need persistent server state.
 
-See [Flavor Grenade Dependency Contract](architecture/flavor-grenade-dependency.md).
+See [[architecture/flavor-grenade-dependency]].
 
 ## Contributing
 
