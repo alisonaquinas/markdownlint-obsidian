@@ -1,3 +1,20 @@
+---
+title: "Phase E3 Tickets"
+aliases:
+  - "Phase E3 Tickets"
+  - "Plans / Phase E3 Live Diagnostics / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e3-live-diagnostics"
+  - "plans"
+  - "phase/e3"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e3-live-diagnostics]]"
+---
+
 # Phase E3 Tickets
 
 ## FEAT-004: Live Diagnostics For Eligible OFMarkdown Documents
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: publish current VS Code diagnostics for visible eligible documents using
 latest text, effective config, and bundled library results.
 
-Linked plan: [Phase E3](../phase-e3-live-diagnostics.md)
+Linked plan: [[plans/phase-e3-live-diagnostics]]
 
 Child tickets:
 

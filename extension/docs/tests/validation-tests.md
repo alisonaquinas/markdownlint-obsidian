@@ -1,3 +1,19 @@
+---
+title: "Validation Test Plan"
+aliases:
+  - "Validation Test Plan"
+  - "Tests / Validation Tests"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/validation-tests"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Validation Test Plan
 
 Validation tests prove that the extension satisfies user-visible behavior, not
@@ -7,10 +23,10 @@ just technical gates.
 
 | Source | Purpose |
 | :--- | :--- |
-| [BDD features](../bdd/README.md) | shared behavior examples for activation, diagnostics, fixes, config, commands, and metadata |
-| [User requirements](../requirements/user/index.md) | user-visible needs and acceptance cues |
-| [Functional requirements](../requirements/functional/index.md) | measurable editor behavior |
-| [DDD language](../ddd/ubiquitous-language.md) | stable terms used in scenarios and output |
+| [[bdd/README]] | shared behavior examples for activation, diagnostics, fixes, config, commands, and metadata |
+| [[requirements/user/index]] | user-visible needs and acceptance cues |
+| [[requirements/functional/index]] | measurable editor behavior |
+| [[ddd/ubiquitous-language]] | stable terms used in scenarios and output |
 
 ## Automated Validation Layers
 

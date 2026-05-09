@@ -1,3 +1,19 @@
+---
+title: "Configuration And Trust Domain Model"
+aliases:
+  - "Configuration And Trust Domain Model"
+  - "DDD / Configuration / Domain Model"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/configuration"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Configuration And Trust Domain Model
 
 ## Purpose

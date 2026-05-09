@@ -1,3 +1,19 @@
+---
+title: "Fixes And Formatting"
+aliases:
+  - "Fixes And Formatting"
+  - "Requirements / Functional / Fixes Formatting"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Fixes And Formatting
 
 ## MarkdownlintObsidian.CodeActions
@@ -12,10 +28,10 @@ Fail: Any eligible diagnostic lacks its expected action, or any unrelated diagno
 Goal: 100% of eligible diagnostics receive expected actions and 0% of ineligible diagnostics receive them.
 Stakeholders: Markdown authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [fixes user requirements](../user/fixes-formatting.md); [Fix](../../../../packages/core/src/domain/linting/Fix.ts).
+Source: [[requirements/user/fixes-formatting]]; [Fix](../../../../packages/core/src/domain/linting/Fix.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.QuickFix](../user/fixes-formatting.md), [UserMarkdownlintObsidian.RuleHelp](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]], [[requirements/user/fixes-formatting]]
 
 ## MarkdownlintObsidian.QuickFix
 
@@ -32,7 +48,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [autofix guide](../../../../docs/guides/autofix.md); [Fix](../../../../packages/core/src/domain/linting/Fix.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.QuickFix](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]]
 
 ## MarkdownlintObsidian.FixAll
 
@@ -49,7 +65,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [FixUseCase](../../../../packages/core/src/application/FixUseCase.ts); [autofix guide](../../../../docs/guides/autofix.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.FixAllDocument](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]]
 
 ## MarkdownlintObsidian.FixCheckPreview
 
@@ -66,7 +82,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [engine fix API](../../../../packages/core/src/engine/index.ts); [autofix guide](../../../../docs/guides/autofix.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.FixCheckPreview](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]]
 
 ## MarkdownlintObsidian.FormattingBoundary
 
@@ -80,10 +96,10 @@ Fail: The extension registers a formatter that performs undocumented whole-docum
 Goal: 100% of formatting-related contributions either map to documented core fixes or are absent.
 Stakeholders: Markdown authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [NoUnsafeFormatting user requirement](../user/fixes-formatting.md); [Fix](../../../../packages/core/src/domain/linting/Fix.ts).
+Source: [[requirements/user/fixes-formatting]]; [Fix](../../../../packages/core/src/domain/linting/Fix.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.NoUnsafeFormatting](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]]
 
 ## MarkdownlintObsidian.RuleHelp
 
@@ -97,7 +113,7 @@ Fail: A built-in rule diagnostic lacks an expected documentation target, opens t
 Goal: 100% of built-in documented rule codes map to correct docs and 100% of unknown custom codes degrade gracefully.
 Stakeholders: Markdown authors, repository maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [rule catalog](../../../../docs/rules/index.md); [RuleHelp user requirement](../user/fixes-formatting.md).
+Source: [rule catalog](../../../../docs/rules/index.md); [[requirements/user/fixes-formatting]].
 ```
 
-User trace: [UserMarkdownlintObsidian.RuleHelp](../user/fixes-formatting.md)
+User trace: [[requirements/user/fixes-formatting]]

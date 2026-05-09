@@ -1,3 +1,19 @@
+---
+title: "TypeScript Contract"
+aliases:
+  - "TypeScript Contract"
+  - "Requirements / Technical / Typescript Contract"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/technical/index]]"
+---
+
 # TypeScript Contract
 
 ## MarkdownlintObsidianTechnical.TypeScriptStrictness
@@ -15,7 +31,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root tsconfig](../../../../tsconfig.json); [type safety architecture](../../../../docs/architecture/type-safety.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.TypeSafety](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.NodeNextEsm
 
@@ -32,7 +48,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [root tsconfig](../../../../tsconfig.json); [root package metadata](../../../../package.json).
 ```
 
-Architecture trace: [ExtensionArchitecture.BuildAndBundle](../architecture/vscode-extension-specifics.md)
+Architecture trace: [[requirements/architecture/vscode-extension-specifics]]
 
 ## MarkdownlintObsidianTechnical.TypedBoundaries
 
@@ -46,7 +62,7 @@ Fail: Extension code casts unvalidated JSON, VS Code command arguments, workspac
 Goal: 100% of external-boundary paths validate or narrow input before use.
 Stakeholders: Extension users, security-conscious users, maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [type safety architecture](../../../../docs/architecture/type-safety.md); [configuration and trust requirements](../functional/contributions-and-trust.md).
+Source: [type safety architecture](../../../../docs/architecture/type-safety.md); [[requirements/functional/contributions-and-trust]].
 ```
 
 Functional trace: `MarkdownlintObsidian.SchemaValidation`,
@@ -67,4 +83,4 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [documentation policy](../../../../docs/architecture/documentation-policy.md); [root ESLint config](../../../../eslint.config.js).
 ```
 
-Architecture trace: [ExtensionArchitecture.Documentation](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]

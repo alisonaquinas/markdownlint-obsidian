@@ -1,3 +1,19 @@
+---
+title: "Workspace And Trust"
+aliases:
+  - "Workspace And Trust"
+  - "Requirements / User / Workspace And Trust"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/user"
+  - "requirements"
+type: "user-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/user/index]]"
+---
+
 # Workspace And Trust
 
 ```text
@@ -20,7 +36,7 @@ Acceptance cue: A temporary toggle clears current extension diagnostics when dis
 ```
 
 Source trace:
-[extension architecture](../../architecture/overview.md)
+[[architecture/overview]]
 
 ```text
 Tag: UserMarkdownlintObsidian.TrustedCustomRules
@@ -32,7 +48,7 @@ Acceptance cue: Custom rule loading is disabled in untrusted workspaces; users r
 Source trace:
 [custom rules guide](../../../../docs/guides/custom-rules.md),
 [CustomRuleLoader](../../../../packages/core/src/infrastructure/config/CustomRuleLoader.ts),
-[extension architecture](../../architecture/overview.md)
+[[architecture/overview]]
 
 ```text
 Tag: UserMarkdownlintObsidian.UnsupportedWorkspaceModes
@@ -45,7 +61,7 @@ Source trace:
 [engine lint API](../../../../packages/core/src/engine/index.ts),
 [Node vault detector](../../../../packages/core/src/infrastructure/vault/NodeFsVaultDetector.ts),
 [Node fs checker](../../../../packages/core/src/infrastructure/fs/NodeFsExistenceChecker.ts),
-[Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md),
+[[architecture/flavor-grenade-dependency]],
 [Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md)
 
 ```text

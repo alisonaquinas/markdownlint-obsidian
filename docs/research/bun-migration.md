@@ -1,3 +1,17 @@
+---
+title: "Research: Migrating markdownlint-obsidian from Node.js to Bun"
+aliases:
+  - "Research: Migrating markdownlint-obsidian from Node.js to Bun"
+tags:
+  - "docs"
+  - "docs/research"
+  - "docs/research/bun-migration"
+type: "research"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Research: Migrating markdownlint-obsidian from Node.js to Bun
 
 > Scope: evaluate what it would take to move the entire toolchain (dev, test, build, publish, CI, Docker, GitHub Action) from Node 20 + npm + tsx + vitest + cucumber to Bun. Produced as pre-work for the Phase 11 implementation plan.

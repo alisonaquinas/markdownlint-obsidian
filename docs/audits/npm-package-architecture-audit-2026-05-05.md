@@ -1,5 +1,14 @@
 ---
-title: npm Package Architecture Audit - 2026-05-05
+title: "npm Package Architecture Audit - 2026-05-05"
+aliases:
+  - "npm Package Architecture Audit - 2026-05-05"
+tags:
+  - "docs"
+  - "docs/audits"
+type: "audit"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # npm Package Architecture Audit - 2026-05-05

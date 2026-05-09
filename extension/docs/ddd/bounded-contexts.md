@@ -1,3 +1,19 @@
+---
+title: "Extension Bounded Contexts"
+aliases:
+  - "Extension Bounded Contexts"
+  - "DDD / Bounded Contexts"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/bounded-contexts"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/README]]"
+---
+
 # Extension Bounded Contexts
 
 The VS Code extension has five bounded contexts. They are semantic boundaries

@@ -1,3 +1,19 @@
+---
+title: "Feature Ticket Template"
+aliases:
+  - "Feature Ticket Template"
+  - "Plans / Templates / Tickets / Feature"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Feature Ticket Template
 
 ```yaml

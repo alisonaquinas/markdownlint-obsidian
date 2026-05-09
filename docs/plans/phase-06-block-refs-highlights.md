@@ -1,3 +1,17 @@
+---
+title: "Phase 6: Block References + Highlights + Comments — Implementation Plan"
+aliases:
+  - "Phase 6: Block References + Highlights + Comments — Implementation Plan"
+tags:
+  - "docs"
+  - "docs/plans"
+  - "docs/plans/phase-work"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[roadmap]]"
+---
+
 # Phase 6: Block References + Highlights + Comments — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.

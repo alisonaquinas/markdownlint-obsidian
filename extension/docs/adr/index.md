@@ -1,3 +1,17 @@
+---
+title: "Extension ADRs"
+aliases:
+  - "Extension ADRs"
+  - "ADR / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/adr"
+type: "adr-index"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension ADRs
 
 Extension-specific Architecture Decision Records.

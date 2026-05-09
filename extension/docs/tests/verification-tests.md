@@ -1,3 +1,19 @@
+---
+title: "Verification Test Plan"
+aliases:
+  - "Verification Test Plan"
+  - "Tests / Verification Tests"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/verification-tests"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Verification Test Plan
 
 Verification tests prove that extension code is technically acceptable for this

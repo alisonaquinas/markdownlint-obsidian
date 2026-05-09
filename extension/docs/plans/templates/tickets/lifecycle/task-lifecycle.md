@@ -1,3 +1,19 @@
+---
+title: "Task Ticket Lifecycle"
+aliases:
+  - "Task Ticket Lifecycle"
+  - "Plans / Templates / Tickets / Lifecycle / Task Lifecycle"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Task Ticket Lifecycle
 
 Task tickets use a strict test-first lifecycle for behavior changes.

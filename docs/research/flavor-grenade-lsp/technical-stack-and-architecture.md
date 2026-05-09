@@ -1,10 +1,18 @@
 ---
-title: flavor-grenade-lsp Technical Stack And Architecture
+title: "flavor-grenade-lsp Technical Stack And Architecture"
+aliases:
+  - "flavor-grenade-lsp Technical Stack And Architecture"
 tags:
-  - research/vscode
-  - research/lsp
-  - research/flavor-grenade
+  - "research/vscode"
+  - "research/lsp"
+  - "research/flavor-grenade"
+  - "docs"
+  - "docs/research"
+  - "docs/research/flavor-grenade-lsp"
+type: "research"
+status: "current"
 updated: 2026-05-09
+up: "[[research/flavor-grenade-lsp/index]]"
 sources:
   - https://github.com/alisonaquinas/flavor-grenade-lsp
   - https://github.com/alisonaquinas/flavor-grenade-lsp/blob/main/package.json
@@ -31,6 +39,7 @@ sources:
   - https://code.visualstudio.com/api/language-extensions/language-server-extension-guide
   - https://code.visualstudio.com/api/extension-guides/workspace-trust
 ---
+
 # flavor-grenade-lsp Technical Stack And Architecture
 
 ## Scope

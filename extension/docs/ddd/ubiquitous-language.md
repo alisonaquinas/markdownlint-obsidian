@@ -1,3 +1,19 @@
+---
+title: "Extension Ubiquitous Language"
+aliases:
+  - "Extension Ubiquitous Language"
+  - "DDD / Ubiquitous Language"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/ubiquitous-language"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/README]]"
+---
+
 # Extension Ubiquitous Language
 
 Canonical terms for the VS Code extension domain. Use these names in extension

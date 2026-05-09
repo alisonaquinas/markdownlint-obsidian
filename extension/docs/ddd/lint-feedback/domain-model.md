@@ -1,3 +1,19 @@
+---
+title: "Lint Feedback Domain Model"
+aliases:
+  - "Lint Feedback Domain Model"
+  - "DDD / Lint Feedback / Domain Model"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/lint-feedback"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Lint Feedback Domain Model
 
 ## Purpose

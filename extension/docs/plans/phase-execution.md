@@ -1,3 +1,19 @@
+---
+title: "Extension Phase Execution Procedure"
+aliases:
+  - "Extension Phase Execution Procedure"
+  - "Plans / Phase Execution"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-execution"
+  - "plans"
+type: "procedure"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Extension Phase Execution Procedure
 
 This procedure adapts Flavor Grenade's phase execution model for the
@@ -24,7 +40,7 @@ phase, create or update a ticket before fixing it.
 
 ## Rule 3: Use The Ticket Lifecycle
 
-Ticket states are defined in [templates/tickets](templates/tickets/index.md).
+Ticket states are defined in [[plans/templates/tickets/index]].
 Runtime behavior tasks use `open -> red -> green -> refactor -> in-review ->
 done`. Documentation and process work may use chore lifecycle states.
 

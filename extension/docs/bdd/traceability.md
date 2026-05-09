@@ -1,3 +1,19 @@
+---
+title: "BDD Traceability"
+aliases:
+  - "BDD Traceability"
+  - "BDD / Traceability"
+tags:
+  - "extension-docs"
+  - "extension-docs/bdd"
+  - "extension-docs/bdd/traceability"
+  - "bdd"
+type: "behavior-traceability"
+status: "current"
+updated: 2026-05-09
+up: "[[bdd/README]]"
+---
+
 # BDD Traceability
 
 This map keeps extension behavior scenarios connected to requirements and DDD

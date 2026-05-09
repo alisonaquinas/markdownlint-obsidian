@@ -1,3 +1,18 @@
+---
+title: "Extension Test Plans"
+aliases:
+  - "Extension Test Plans"
+  - "Tests / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "tests"
+type: "test-index"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Extension Test Plans
 
 Test planning and automation entry points for the `markdownlint-obsidian`
@@ -6,15 +21,18 @@ VS Code extension.
 This tree describes how extension work is tested and includes scripts that run
 against the current documentation, package, and repository contracts.
 
+> [!INFO] Evidence map
+> Test evidence links back to [[requirements/index]], [[bdd/README]], and [[plans/execution-ledger]].
+
 ## Inventory
 
 | File | Purpose |
 | :--- | :--- |
-| [unit-tests.md](unit-tests.md) | Unit and component test plan for extension domain adapters |
-| [verification-tests.md](verification-tests.md) | Technical verification plan for typecheck, lint, build, package, and docs gates |
-| [validation-tests.md](validation-tests.md) | User-facing validation plan for BDD, extension-host, and manual smoke coverage |
-| [automation.md](automation.md) | Script catalog, local commands, CI placement, and package scripts |
-| [traceability.md](traceability.md) | Mapping between test plans, requirements, BDD features, and scripts |
+| [[tests/unit-tests]] | Unit and component test plan for extension domain adapters |
+| [[tests/verification-tests]] | Technical verification plan for typecheck, lint, build, package, and docs gates |
+| [[tests/validation-tests]] | User-facing validation plan for BDD, extension-host, and manual smoke coverage |
+| [[tests/automation]] | Script catalog, local commands, CI placement, and package scripts |
+| [[tests/traceability]] | Mapping between test plans, requirements, BDD features, and scripts |
 | [scripts/](scripts/) | Runnable automation helpers for extension gates |
 
 ## Test Taxonomy

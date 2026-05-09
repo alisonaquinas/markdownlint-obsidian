@@ -1,3 +1,17 @@
+---
+title: "Phase 11: Bun Migration — Implementation Plan"
+aliases:
+  - "Phase 11: Bun Migration — Implementation Plan"
+tags:
+  - "docs"
+  - "docs/plans"
+  - "docs/plans/phase-work"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[roadmap]]"
+---
+
 # Phase 11: Bun Migration — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.

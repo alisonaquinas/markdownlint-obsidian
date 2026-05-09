@@ -1,3 +1,20 @@
+---
+title: "Phase E4 Tickets"
+aliases:
+  - "Phase E4 Tickets"
+  - "Plans / Phase E4 Fixes And Rule Help / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e4-fixes-and-rule-help"
+  - "plans"
+  - "phase/e4"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e4-fixes-and-rule-help]]"
+---
+
 # Phase E4 Tickets
 
 ## FEAT-005: Quick Fixes, Fix-All, Preview, And Rule Help
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: expose core-provided fixes and rule docs through VS Code code actions
 without becoming a general Markdown formatter.
 
-Linked plan: [Phase E4](../phase-e4-fixes-and-rule-help.md)
+Linked plan: [[plans/phase-e4-fixes-and-rule-help]]
 
 Child tickets:
 

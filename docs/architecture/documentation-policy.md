@@ -1,5 +1,15 @@
 ---
-title: Documentation Policy
+title: "Documentation Policy"
+aliases:
+  - "Documentation Policy"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Documentation Policy

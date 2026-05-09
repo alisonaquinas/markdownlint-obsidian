@@ -1,3 +1,19 @@
+---
+title: "Feature Ticket Lifecycle"
+aliases:
+  - "Feature Ticket Lifecycle"
+  - "Plans / Templates / Tickets / Lifecycle / Feature Lifecycle"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Feature Ticket Lifecycle
 
 Feature tickets represent phase-level capability delivery.

@@ -1,5 +1,15 @@
 ---
-title: npm Package Architecture Requirements
+title: "npm Package Architecture Requirements"
+aliases:
+  - "npm Package Architecture Requirements"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # npm Package Architecture Requirements

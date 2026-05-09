@@ -1,3 +1,16 @@
+---
+title: "CI integration guide"
+aliases:
+  - "CI integration guide"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # CI integration guide
 
 This guide covers the supported ways to run `markdownlint-obsidian`

@@ -1,3 +1,17 @@
+---
+title: "Config Domain Model"
+aliases:
+  - "Config Domain Model"
+tags:
+  - "docs"
+  - "docs/ddd"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Config Domain Model
 
 ## Value Objects

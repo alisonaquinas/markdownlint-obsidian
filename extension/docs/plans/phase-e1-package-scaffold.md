@@ -1,3 +1,20 @@
+---
+title: "Phase E1: Package Scaffold And Toolchain"
+aliases:
+  - "Phase E1: Package Scaffold And Toolchain"
+  - "Plans / Phase E1 Package Scaffold"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e1-package-scaffold"
+  - "plans"
+  - "phase/e1"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E1: Package Scaffold And Toolchain
 
 ## Goal
@@ -103,7 +120,7 @@ Flavor Grenade remains an installed extension dependency and
 - [ ] Add `.vscodeignore` or equivalent package exclusion policy.
 - [ ] Update root `package.json` scripts so extension typecheck, lint, test,
   and build are reachable from CI.
-- [ ] Update [../tests/automation.md](../tests/automation.md) with concrete
+- [ ] Update [[tests/automation]] with concrete
   extension commands.
 
 ## Test Plan

@@ -1,3 +1,19 @@
+---
+title: "Extension Execution Ledger"
+aliases:
+  - "Extension Execution Ledger"
+  - "Plans / Execution Ledger"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/execution-ledger"
+  - "plans"
+type: "execution-ledger"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Extension Execution Ledger
 
 Roadmap execution evidence for the VS Code extension implementation branch.

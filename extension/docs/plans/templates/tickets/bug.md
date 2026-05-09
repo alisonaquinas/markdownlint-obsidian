@@ -1,3 +1,19 @@
+---
+title: "Bug Ticket Template"
+aliases:
+  - "Bug Ticket Template"
+  - "Plans / Templates / Tickets / Bug"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Bug Ticket Template
 
 ```yaml

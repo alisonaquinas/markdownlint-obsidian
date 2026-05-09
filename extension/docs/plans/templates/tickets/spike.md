@@ -1,3 +1,19 @@
+---
+title: "Spike Ticket Template"
+aliases:
+  - "Spike Ticket Template"
+  - "Plans / Templates / Tickets / Spike"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Spike Ticket Template
 
 ```yaml

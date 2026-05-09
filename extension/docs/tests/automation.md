@@ -1,3 +1,19 @@
+---
+title: "Test Automation"
+aliases:
+  - "Test Automation"
+  - "Tests / Automation"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/automation"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Test Automation
 
 Automation lives beside the test plans so implementation gates and validation

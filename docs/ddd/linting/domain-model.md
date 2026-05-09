@@ -1,3 +1,17 @@
+---
+title: "Linting Domain Model"
+aliases:
+  - "Linting Domain Model"
+tags:
+  - "docs"
+  - "docs/ddd"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Linting Domain Model
 
 ## Value Objects

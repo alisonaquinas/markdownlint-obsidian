@@ -1,3 +1,19 @@
+---
+title: "Extension Ticket Templates"
+aliases:
+  - "Extension Ticket Templates"
+  - "Plans / Templates / Tickets / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-execution]]"
+---
+
 # Extension Ticket Templates
 
 Reusable ticket shapes for executing the extension roadmap. These templates
@@ -8,11 +24,11 @@ extension planning separate from the core package roadmap.
 
 | Template | Type | Use |
 | :--- | :--- | :--- |
-| [feature](feature.md) | `FEAT` | phase-sized capability with child tickets |
-| [task](task.md) | `TASK` | test-first implementation work |
-| [bug](bug.md) | `BUG` | confirmed defect or regression |
-| [chore](chore.md) | `CHORE` | process, docs, CI, or maintenance work |
-| [spike](spike.md) | `SPIKE` | time-boxed decision or research work |
+| [[plans/templates/tickets/feature]] | `FEAT` | phase-sized capability with child tickets |
+| [[plans/templates/tickets/task]] | `TASK` | test-first implementation work |
+| [[plans/templates/tickets/bug]] | `BUG` | confirmed defect or regression |
+| [[plans/templates/tickets/chore]] | `CHORE` | process, docs, CI, or maintenance work |
+| [[plans/templates/tickets/spike]] | `SPIKE` | time-boxed decision or research work |
 
 ## ID Convention
 
@@ -24,11 +40,11 @@ backlog while the phase is still being planned.
 
 | Type | Lifecycle |
 | :--- | :--- |
-| `FEAT` | [feature lifecycle](lifecycle/feature-lifecycle.md) |
-| `TASK` | [task lifecycle](lifecycle/task-lifecycle.md) |
-| `BUG` | [bug lifecycle](lifecycle/bug-lifecycle.md) |
-| `CHORE` | [chore lifecycle](lifecycle/chore-lifecycle.md) |
-| `SPIKE` | [spike lifecycle](lifecycle/spike-lifecycle.md) |
+| `FEAT` | [[plans/templates/tickets/lifecycle/feature-lifecycle]] |
+| `TASK` | [[plans/templates/tickets/lifecycle/task-lifecycle]] |
+| `BUG` | [[plans/templates/tickets/lifecycle/bug-lifecycle]] |
+| `CHORE` | [[plans/templates/tickets/lifecycle/chore-lifecycle]] |
+| `SPIKE` | [[plans/templates/tickets/lifecycle/spike-lifecycle]] |
 
 ## Ticket Rules
 

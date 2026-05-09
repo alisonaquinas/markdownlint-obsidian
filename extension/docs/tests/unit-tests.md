@@ -1,3 +1,19 @@
+---
+title: "Unit And Component Test Plan"
+aliases:
+  - "Unit And Component Test Plan"
+  - "Tests / Unit Tests"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/unit-tests"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Unit And Component Test Plan
 
 Unit and component tests cover extension-owned decisions without needing a full

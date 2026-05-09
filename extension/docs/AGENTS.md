@@ -1,3 +1,17 @@
+---
+title: "AGENTS.md - Guide for AI Agents Working in extension/docs/"
+aliases:
+  - "AGENTS.md - Guide for AI Agents Working in extension/docs/"
+  - "AGENTS"
+tags:
+  - "extension-docs"
+  - "extension-docs/agents"
+type: "agent-guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # AGENTS.md - Guide for AI Agents Working in `extension/docs/`
 
 Documentation tree for the `markdownlint-obsidian` VS Code extension. This
@@ -93,7 +107,7 @@ extension/docs/
 
 ## See Also
 
-- [Extension Docs Index](README.md)
+- [[README]]
 - [Root Docs](../../docs/README.md)
 - [Root AGENTS.md](../../AGENTS.md)
-- [Extension Research](research/index.md)
+- [[research/index]]

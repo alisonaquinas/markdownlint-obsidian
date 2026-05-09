@@ -1,3 +1,19 @@
+---
+title: "Package And Build Contract"
+aliases:
+  - "Package And Build Contract"
+  - "Requirements / Technical / Package Build Contract"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/technical/index]]"
+---
+
 # Package And Build Contract
 
 ## MarkdownlintObsidianTechnical.BunWorkspace
@@ -12,10 +28,10 @@ Fail: Extension package is invisible to root verification, requires untracked in
 Goal: 100% of routine extension checks are reachable from root or documented extension release commands.
 Stakeholders: Extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [root package scripts](../../../../package.json); [architecture tooling requirement](../architecture/quality-gates.md).
+Source: [root package scripts](../../../../package.json); [[requirements/architecture/quality-gates]].
 ```
 
-Architecture trace: [ExtensionArchitecture.Tooling](../architecture/quality-gates.md)
+Architecture trace: [[requirements/architecture/quality-gates]]
 
 ## MarkdownlintObsidianTechnical.ExtensionPackage
 
@@ -29,10 +45,10 @@ Fail: Extension source imports core internals, duplicates rule algorithms, impor
 Goal: 100% of extension-code imports follow documented boundaries.
 Stakeholders: Extension maintainers, core maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [namespace and module structure](../../../../docs/architecture/namespace-and-module-structure.md); [extension package boundary](../architecture/vscode-extension-specifics.md).
+Source: [namespace and module structure](../../../../docs/architecture/namespace-and-module-structure.md); [[requirements/architecture/vscode-extension-specifics]].
 ```
 
-Architecture trace: [ExtensionArchitecture.PackageBoundary](../architecture/vscode-extension-specifics.md)
+Architecture trace: [[requirements/architecture/vscode-extension-specifics]]
 
 ## MarkdownlintObsidianTechnical.BundledLibraryRuntime
 
@@ -46,10 +62,10 @@ Fail: Any normal extension feature requires `markdownlint-obsidian-cli` to be gl
 Goal: 100% of runtime lint/fix behavior uses the bundled library and 0 normal paths require CLI installation.
 Stakeholders: Extension users, extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension architecture overview](../../architecture/overview.md); [public API guide](../../../../docs/guides/public-api.md).
+Source: [[architecture/overview]]; [public API guide](../../../../docs/guides/public-api.md).
 ```
 
-Architecture trace: [ExtensionArchitecture.LibraryRuntime](../architecture/vscode-extension-specifics.md)
+Architecture trace: [[requirements/architecture/vscode-extension-specifics]]
 
 ## MarkdownlintObsidianTechnical.BuildOutputs
 
@@ -63,10 +79,10 @@ Fail: Extension package points to a missing entry point, omits the bundled `mark
 Goal: 100% of release builds produce a loadable VSIX with expected contents.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension build requirement](../architecture/vscode-extension-specifics.md); [root package scripts](../../../../package.json).
+Source: [[requirements/architecture/vscode-extension-specifics]]; [root package scripts](../../../../package.json).
 ```
 
-Architecture trace: [ExtensionArchitecture.BuildAndBundle](../architecture/vscode-extension-specifics.md)
+Architecture trace: [[requirements/architecture/vscode-extension-specifics]]
 
 ## MarkdownlintObsidianTechnical.DependencyBoundary
 
@@ -80,7 +96,7 @@ Fail: Extension reimplements Flavor Grenade classification, depends on Flavor Gr
 Goal: 100% of dependency relationships preserve documented ownership.
 Stakeholders: Obsidian vault authors, extension maintainers, core maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md); [extension architecture overview](../../architecture/overview.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[architecture/overview]].
 ```
 
 Functional trace: `MarkdownlintObsidian.ExtensionDependency`,

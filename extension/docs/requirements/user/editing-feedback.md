@@ -1,3 +1,19 @@
+---
+title: "Editing Feedback"
+aliases:
+  - "Editing Feedback"
+  - "Requirements / User / Editing Feedback"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/user"
+  - "requirements"
+type: "user-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/user/index]]"
+---
+
 # Editing Feedback
 
 ```text
@@ -8,7 +24,7 @@ Acceptance cue: The extension declares `alisonaquinas.flavor-grenade-lsp` as an 
 ```
 
 Source trace:
-[Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md),
+[[architecture/flavor-grenade-dependency]],
 [Flavor Grenade research](../../../../docs/research/flavor-grenade-lsp/technical-stack-and-architecture.md),
 [Flavor Grenade v0.3.0 release](https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0)
 
@@ -23,7 +39,7 @@ promotes the document to `ofmarkdown`.
 ```
 
 Source trace:
-[extension architecture](../../architecture/overview.md),
+[[architecture/overview]],
 [core public API](../../../../docs/guides/public-api.md),
 [CLI args](../../../../packages/cli/src/args.ts)
 
@@ -58,7 +74,7 @@ Acceptance cue: An extension setting supports at least `onType` and `onSave` mod
 ```
 
 Source trace:
-[extension architecture](../../architecture/overview.md)
+[[architecture/overview]]
 
 ```text
 Tag: UserMarkdownlintObsidian.VaultAwareFeedback

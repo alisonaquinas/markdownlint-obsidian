@@ -1,3 +1,20 @@
+---
+title: "Phase E1 Tickets"
+aliases:
+  - "Phase E1 Tickets"
+  - "Plans / Phase E1 Package Scaffold / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e1-package-scaffold"
+  - "plans"
+  - "phase/e1"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e1-package-scaffold]]"
+---
+
 # Phase E1 Tickets
 
 ## FEAT-002: Buildable VS Code Extension Package Scaffold
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: create a no-op extension package that builds, typechecks, lints, tests,
 packages, and declares the right runtime dependencies.
 
-Linked plan: [Phase E1](../phase-e1-package-scaffold.md)
+Linked plan: [[plans/phase-e1-package-scaffold]]
 
 Child tickets:
 

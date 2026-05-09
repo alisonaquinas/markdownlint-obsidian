@@ -1,10 +1,18 @@
 ---
-title: vscode-markdownlint User Requirements - Fixes And Formatting
+title: "vscode-markdownlint User Requirements - Fixes And Formatting"
+aliases:
+  - "vscode-markdownlint User Requirements - Fixes And Formatting"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/user
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/user"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - ../functional/fixes-formatting.md
   - ../../tests/index.md

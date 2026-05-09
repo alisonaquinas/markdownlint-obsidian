@@ -1,3 +1,20 @@
+---
+title: "Phase E7 Tickets"
+aliases:
+  - "Phase E7 Tickets"
+  - "Plans / Phase E7 Hardening And Marketplace / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e7-hardening-and-marketplace"
+  - "plans"
+  - "phase/e7"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e7-hardening-and-marketplace]]"
+---
+
 # Phase E7 Tickets
 
 ## FEAT-008: Marketplace Readiness And Release Decision
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: prepare release metadata, validation evidence, privacy posture, and final
 go or no-go checklist for Marketplace publication.
 
-Linked plan: [Phase E7](../phase-e7-hardening-and-marketplace.md)
+Linked plan: [[plans/phase-e7-hardening-and-marketplace]]
 
 Child tickets:
 

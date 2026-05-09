@@ -1,7 +1,24 @@
+---
+title: "Phase E7 Ticket Folder"
+aliases:
+  - "Phase E7 Ticket Folder"
+  - "Plans / Phase E7 Hardening And Marketplace / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e7-hardening-and-marketplace"
+  - "plans"
+  - "phase/e7"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e7-hardening-and-marketplace]]"
+---
+
 # Phase E7 Ticket Folder
 
 Hardening-and-marketplace ticket folder for
-[Phase E7](../phase-e7-hardening-and-marketplace.md).
+[[plans/phase-e7-hardening-and-marketplace]].
 
 ## Phase Feature
 
@@ -11,4 +28,4 @@ Hardening-and-marketplace ticket folder for
 
 ## Backlog
 
-See [tickets](tickets.md).
+See [[plans/phase-e7-hardening-and-marketplace/tickets]].

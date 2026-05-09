@@ -1,5 +1,15 @@
 ---
-title: Low Coupling
+title: "Low Coupling"
+aliases:
+  - "Low Coupling"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Low Coupling

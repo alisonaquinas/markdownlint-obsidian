@@ -1,5 +1,15 @@
 ---
-title: Architecture Policy
+title: "Architecture Policy"
+aliases:
+  - "Architecture Policy"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # Architecture Policy
@@ -13,18 +23,21 @@ take in `packages/core`, `packages/cli`, `action`, and extension work.
 When a policy conflicts with practical reality, update the policy instead of
 silently bypassing it.
 
+> [!IMPORTANT] Enforcement path
+> These notes connect to [[roadmap]], [[plans/execution-ledger]], and [[rules/index]] so implementation, delivery, and lint behavior stay aligned.
+
 ## Reading Order
 
-1. [Test-Driven Development](test-driven-development.md)
-2. [SOLID Principles](solid-principles.md)
-3. [File and Complexity Policy](file-and-complexity-policy.md)
-4. [High Coherence](high-coherence.md)
-5. [Low Coupling](low-coupling.md)
-6. [Linting and Tooling](linting-and-tooling.md)
-7. [Documentation Policy](documentation-policy.md)
-8. [Type Safety](type-safety.md)
-9. [Namespace and Module Structure](namespace-and-module-structure.md)
-10. [npm Package Architecture Requirements](npm-packages.md)
+1. [[architecture/test-driven-development|Test-Driven Development]]
+2. [[architecture/solid-principles|SOLID Principles]]
+3. [[architecture/file-and-complexity-policy|File and Complexity Policy]]
+4. [[architecture/high-coherence|High Coherence]]
+5. [[architecture/low-coupling|Low Coupling]]
+6. [[architecture/linting-and-tooling|Linting and Tooling]]
+7. [[architecture/documentation-policy|Documentation Policy]]
+8. [[architecture/type-safety|Type Safety]]
+9. [[architecture/namespace-and-module-structure|Namespace and Module Structure]]
+10. [[architecture/npm-packages|npm Package Architecture Requirements]]
 
 ## Relationship
 

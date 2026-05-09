@@ -1,5 +1,15 @@
 ---
-title: Type Safety
+title: "Type Safety"
+aliases:
+  - "Type Safety"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Type Safety

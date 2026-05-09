@@ -4,6 +4,7 @@
  * @module tests/unit/application/VaultBootstrap.test
  */
 import { describe, it, expect, vi } from "bun:test";
+import * as path from "node:path";
 import { bootstrapVault } from "../../../src/application/VaultBootstrap.js";
 import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import type { VaultIndex } from "../../../src/domain/vault/VaultIndex.js";
@@ -41,9 +42,10 @@ describe("bootstrapVault", () => {
   });
 
   it("config.vaultRoot override bypasses detector", async () => {
-    const cfg: LinterConfig = { ...DEFAULT_CONFIG, vaultRoot: "/override" };
+    const override = path.resolve("/override");
+    const cfg: LinterConfig = { ...DEFAULT_CONFIG, vaultRoot: override };
     const detector = { detect: vi.fn() };
-    const idx = stubIndex("/override");
+    const idx = stubIndex(override);
     const refs = stubBlockRefs();
     const buildIndex = vi.fn().mockResolvedValue(idx);
     const buildBlockRefIndex = vi.fn().mockResolvedValue(refs);
@@ -54,11 +56,29 @@ describe("bootstrapVault", () => {
     });
     expect(result).toEqual({ vault: idx, blockRefs: refs });
     expect(detector.detect).not.toHaveBeenCalled();
-    expect(buildIndex).toHaveBeenCalledWith("/override", {
+    expect(buildIndex).toHaveBeenCalledWith(override, {
       caseSensitive: false,
       resolveMode: "path-relative",
     });
     expect(buildBlockRefIndex).toHaveBeenCalledTimes(1);
+  });
+
+  it("resolves relative config.vaultRoot from the run start directory", async () => {
+    const start = path.resolve("/repo");
+    const cfg: LinterConfig = { ...DEFAULT_CONFIG, vaultRoot: "docs" };
+    const detector = { detect: vi.fn() };
+    const idx = stubIndex(path.resolve(start, "docs"));
+    const refs = stubBlockRefs();
+    const buildIndex = vi.fn().mockResolvedValue(idx);
+    const buildBlockRefIndex = vi.fn().mockResolvedValue(refs);
+
+    await bootstrapVault(start, cfg, { detector, buildIndex, buildBlockRefIndex });
+
+    expect(detector.detect).not.toHaveBeenCalled();
+    expect(buildIndex).toHaveBeenCalledWith(path.resolve(start, "docs"), {
+      caseSensitive: false,
+      resolveMode: "path-relative",
+    });
   });
 
   it("runs the detector when no override", async () => {

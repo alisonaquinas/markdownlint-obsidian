@@ -1,14 +1,23 @@
 ---
-title: flavor-grenade-lsp Research
+title: "flavor-grenade-lsp Research"
+aliases:
+  - "flavor-grenade-lsp Research"
 tags:
-  - research/vscode
-  - research/lsp
-  - research/flavor-grenade
+  - "research/vscode"
+  - "research/lsp"
+  - "research/flavor-grenade"
+  - "docs"
+  - "docs/research"
+  - "docs/research/flavor-grenade-lsp"
+type: "research"
+status: "current"
 updated: 2026-05-09
+up: "[[README]]"
 sources:
   - https://github.com/alisonaquinas/flavor-grenade-lsp
   - https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0
 ---
+
 # flavor-grenade-lsp Research
 
 This folder captures verified notes on `alisonaquinas/flavor-grenade-lsp` as a

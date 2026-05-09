@@ -1,7 +1,15 @@
 ---
+title: "Import markdownlint as a library for MD001-MD049"
+aliases:
+  - "Import markdownlint as a library for MD001-MD049"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "accepted"
+updated: 2026-05-09
+up: "[[README]]"
 adr: 003
-title: Import markdownlint as a library for MD001-MD049
-status: accepted
 date: 2026-04-11
 ---
 

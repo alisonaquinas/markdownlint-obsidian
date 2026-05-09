@@ -1,3 +1,19 @@
+---
+title: "Bug Ticket Lifecycle"
+aliases:
+  - "Bug Ticket Lifecycle"
+  - "Plans / Templates / Tickets / Lifecycle / Bug Lifecycle"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Bug Ticket Lifecycle
 
 Bug tickets track confirmed defects.

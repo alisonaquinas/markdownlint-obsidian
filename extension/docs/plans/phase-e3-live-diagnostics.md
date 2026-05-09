@@ -1,3 +1,20 @@
+---
+title: "Phase E3: Live Diagnostics"
+aliases:
+  - "Phase E3: Live Diagnostics"
+  - "Plans / Phase E3 Live Diagnostics"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e3-live-diagnostics"
+  - "plans"
+  - "phase/e3"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E3: Live Diagnostics
 
 ## Goal

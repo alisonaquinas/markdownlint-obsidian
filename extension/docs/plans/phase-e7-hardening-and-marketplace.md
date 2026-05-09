@@ -1,3 +1,20 @@
+---
+title: "Phase E7: Hardening And Marketplace Readiness"
+aliases:
+  - "Phase E7: Hardening And Marketplace Readiness"
+  - "Plans / Phase E7 Hardening And Marketplace"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e7-hardening-and-marketplace"
+  - "plans"
+  - "phase/e7"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E7: Hardening And Marketplace Readiness
 
 ## Goal

@@ -1,3 +1,19 @@
+---
+title: "Chore Ticket Lifecycle"
+aliases:
+  - "Chore Ticket Lifecycle"
+  - "Plans / Templates / Tickets / Lifecycle / Chore Lifecycle"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/templates"
+  - "plans"
+type: "template"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/templates/tickets/index]]"
+---
+
 # Chore Ticket Lifecycle
 
 Chore tickets cover maintenance, docs, process, CI, and metadata work.

@@ -1,3 +1,20 @@
+---
+title: "Phase E5 Tickets"
+aliases:
+  - "Phase E5 Tickets"
+  - "Plans / Phase E5 Workspace Commands And Trust / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e5-workspace-commands-and-trust"
+  - "plans"
+  - "phase/e5"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e5-workspace-commands-and-trust]]"
+---
+
 # Phase E5 Tickets
 
 ## FEAT-006: Workspace Commands, Config Watchers, And Trust Policy
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: provide command palette workflows and explicit trust behavior for
 workspace linting, config opening, temporary disable, and unsupported modes.
 
-Linked plan: [Phase E5](../phase-e5-workspace-commands-and-trust.md)
+Linked plan: [[plans/phase-e5-workspace-commands-and-trust]]
 
 Child tickets:
 

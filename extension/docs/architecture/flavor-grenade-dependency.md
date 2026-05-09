@@ -1,3 +1,18 @@
+---
+title: "Flavor Grenade Dependency Contract"
+aliases:
+  - "Flavor Grenade Dependency Contract"
+  - "Architecture / Flavor Grenade Dependency"
+tags:
+  - "extension-docs"
+  - "extension-docs/architecture"
+  - "extension-docs/architecture/flavor-grenade-dependency"
+type: "architecture"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/overview]]"
+---
+
 # Flavor Grenade Dependency Contract
 
 ## Decision Premise

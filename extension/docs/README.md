@@ -1,3 +1,15 @@
+---
+title: "VS Code Extension Documentation"
+aliases:
+  - "VS Code Extension Documentation"
+  - "Index"
+tags:
+  - "extension-docs"
+type: "moc"
+status: "current"
+updated: 2026-05-09
+---
+
 # VS Code Extension Documentation
 
 Planning, implementation, and release reference wiki for the
@@ -8,19 +20,22 @@ core linter, CLI, GitHub Action, rules, and project architecture. Extension docs
 describe editor integration: activation, diagnostics, settings, commands,
 language modes, packaging, tests, and release behavior.
 
+> [!INFO] Extension vault map
+> Start with [[roadmap]], [[architecture/overview]], [[requirements/index]], [[ddd/README]], [[bdd/README]], and [[tests/README]].
+
 ## Index
 
 | Directory / File | Contents |
 | :--- | :--- |
-| [architecture/](architecture/overview.md) | Extension architecture, boundaries, and data flow |
-| [bdd/](bdd/README.md) | Behavior-domain scenarios and traceability |
-| [ddd/](ddd/README.md) | Extension bounded contexts and ubiquitous language |
-| [requirements/](requirements/index.md) | User and functional requirements for the extension |
-| [tests/](tests/README.md) | Unit, verification, validation, and automation test plans |
-| [roadmap.md](roadmap.md) | Extension implementation roadmap and phase gates |
-| [plans/](plans/index.md) | Extension delivery plans and execution notes |
-| [research/](research/index.md) | Supporting research for extension decisions |
-| [adr/](adr/index.md) | Extension-specific Architecture Decision Records |
+| [[architecture/overview]] | Extension architecture, boundaries, and data flow |
+| [[bdd/README]] | Behavior-domain scenarios and traceability |
+| [[ddd/README]] | Extension bounded contexts and ubiquitous language |
+| [[requirements/index]] | User and functional requirements for the extension |
+| [[tests/README]] | Unit, verification, validation, and automation test plans |
+| [[roadmap]] | Extension implementation roadmap and phase gates |
+| [[plans/index]] | Extension delivery plans and execution notes |
+| [[research/index]] | Supporting research for extension decisions |
+| [[adr/index]] | Extension-specific Architecture Decision Records |
 
 ## Implemented Scope
 
@@ -60,7 +75,7 @@ current runtime shape is:
 - choose an LSP boundary if live diagnostics, workspace indexing, or future
   cross-document editor features need persistent server state.
 
-See [Flavor Grenade Dependency Contract](architecture/flavor-grenade-dependency.md).
+See [[architecture/flavor-grenade-dependency]].
 
 ## Contributing
 

@@ -1,12 +1,28 @@
+---
+title: "Test Plan Traceability"
+aliases:
+  - "Test Plan Traceability"
+  - "Tests / Traceability"
+tags:
+  - "extension-docs"
+  - "extension-docs/tests"
+  - "extension-docs/tests/traceability"
+  - "tests"
+type: "test-plan"
+status: "current"
+updated: 2026-05-09
+up: "[[tests/README]]"
+---
+
 # Test Plan Traceability
 
 ## Plan To Requirement Map
 
 | Test Plan | Requirements | BDD Features |
 | :--- | :--- | :--- |
-| [unit-tests.md](unit-tests.md) | `MarkdownlintObsidian.DocumentEligibility`, `MarkdownlintObsidian.LintTrigger`, `MarkdownlintObsidian.Diagnostics`, `MarkdownlintObsidian.QuickFix`, `MarkdownlintObsidian.CustomRuleTrust` | activation and eligibility, live diagnostics, fixes and formatting, configuration and trust |
-| [verification-tests.md](verification-tests.md) | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` | packaging and metadata |
-| [validation-tests.md](validation-tests.md) | all user requirements, all functional requirements, selected technical release gates | all extension BDD features |
+| [[tests/unit-tests]] | `MarkdownlintObsidian.DocumentEligibility`, `MarkdownlintObsidian.LintTrigger`, `MarkdownlintObsidian.Diagnostics`, `MarkdownlintObsidian.QuickFix`, `MarkdownlintObsidian.CustomRuleTrust` | activation and eligibility, live diagnostics, fixes and formatting, configuration and trust |
+| [[tests/verification-tests]] | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` | packaging and metadata |
+| [[tests/validation-tests]] | all user requirements, all functional requirements, selected technical release gates | all extension BDD features |
 
 ## Script To Evidence Map
 

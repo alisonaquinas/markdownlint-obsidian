@@ -1,3 +1,19 @@
+---
+title: "Configuration"
+aliases:
+  - "Configuration"
+  - "Requirements / User / Configuration"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/user"
+  - "requirements"
+type: "user-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/user/index]]"
+---
+
 # Configuration
 
 ```text
@@ -23,7 +39,7 @@ Acceptance cue: A command opens the nearest supported config file or creates an 
 
 Source trace:
 [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts),
-[extension requirements](../index.md),
+[[requirements/index]],
 [config parity plan](../../../../docs/plans/phase-15-cli2-config-parity.md)
 
 ```text

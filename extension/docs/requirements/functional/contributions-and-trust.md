@@ -1,3 +1,19 @@
+---
+title: "Contributions And Trust"
+aliases:
+  - "Contributions And Trust"
+  - "Requirements / Functional / Contributions And Trust"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Contributions And Trust
 
 ## MarkdownlintObsidian.ManifestContributions
@@ -12,10 +28,10 @@ Fail: Any documented contribution is missing, renamed without migration, scoped 
 Goal: 100% manifest contribution match for documented contribution inventory.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension README](../../README.md); [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md).
+Source: [[README]]; [[architecture/flavor-grenade-dependency]].
 ```
 
-User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-feedback.md), [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md)
+User trace: [[requirements/user/editing-feedback]], [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.SchemaValidation
 
@@ -29,10 +45,10 @@ Fail: Any supported JSON or JSONC config file lacks schema validation, points to
 Goal: 100% of supported JSON and JSONC config filenames receive the expected schema.
 Stakeholders: Repository maintainers, Markdown authors.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [SchemaAssistance user requirement](../user/configuration.md); [LinterConfig](../../../../packages/core/src/domain/config/LinterConfig.ts).
+Source: [[requirements/user/configuration]]; [LinterConfig](../../../../packages/core/src/domain/config/LinterConfig.ts).
 ```
 
-User trace: [UserMarkdownlintObsidian.SchemaAssistance](../user/configuration.md)
+User trace: [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.ConfigParityDelegation
 
@@ -49,7 +65,7 @@ Owner: markdownlint-obsidian VS Code extension.
 Source: [config parity plan](../../../../docs/plans/phase-15-cli2-config-parity.md); [markdownlint-cli2 config research](../../../../docs/research/markdownlint-cli2-config-loading-analysis.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md), [UserMarkdownlintObsidian.ConfigDiscovery](../user/configuration.md)
+User trace: [[requirements/user/configuration]], [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.WorkspaceTrust
 
@@ -63,10 +79,10 @@ Fail: Custom code is loaded in untrusted contexts, file writes occur when trust 
 Goal: 100% of covered trust contexts match documented policy.
 Stakeholders: Security-conscious users, repository maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [workspace user requirements](../user/workspace-and-trust.md); [custom rules guide](../../../../docs/guides/custom-rules.md).
+Source: [[requirements/user/workspace-and-trust]]; [custom rules guide](../../../../docs/guides/custom-rules.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.TrustedCustomRules](../user/workspace-and-trust.md), [UserMarkdownlintObsidian.UnsupportedWorkspaceModes](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]], [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.CustomRuleTrust
 
@@ -80,10 +96,10 @@ Fail: A custom rule module loads in a blocked context, a permitted custom rule i
 Goal: 100% of covered custom-rule contexts match documented policy and produce actionable output.
 Stakeholders: Repository maintainers, security reviewers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [CustomRuleLoader](../../../../packages/core/src/infrastructure/config/CustomRuleLoader.ts); [custom rule user requirement](../user/configuration.md).
+Source: [CustomRuleLoader](../../../../packages/core/src/infrastructure/config/CustomRuleLoader.ts); [[requirements/user/configuration]].
 ```
 
-User trace: [UserMarkdownlintObsidian.CustomRules](../user/configuration.md), [UserMarkdownlintObsidian.TrustedCustomRules](../user/workspace-and-trust.md)
+User trace: [[requirements/user/configuration]], [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.FileSystemStrategy
 
@@ -97,7 +113,7 @@ Fail: A required file-system operation fails silently, probes unsupported storag
 Goal: 100% of required file-system operations are implemented or intentionally rejected with actionable output.
 Stakeholders: Remote workspace users, Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [engine lint API](../../../../packages/core/src/engine/index.ts); [unsupported workspace user requirement](../user/workspace-and-trust.md).
+Source: [engine lint API](../../../../packages/core/src/engine/index.ts); [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.UnsupportedWorkspaceModes](../user/workspace-and-trust.md), [UserMarkdownlintObsidian.ActionableErrors](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]], [[requirements/user/workspace-and-trust]]

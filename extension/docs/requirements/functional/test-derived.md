@@ -1,3 +1,19 @@
+---
+title: "Test-Derived Requirements"
+aliases:
+  - "Test-Derived Requirements"
+  - "Requirements / Functional / Test Derived"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Test-Derived Requirements
 
 ## MarkdownlintObsidian.ErrorReporting
@@ -12,10 +28,10 @@ Fail: A covered failure is swallowed, shown only in developer console, lacks act
 Goal: 100% of covered failure shapes produce deterministic user-visible output.
 Stakeholders: Markdown authors, repository maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [system rule catalog](../../../../docs/rules/index.md#system-ofm900ofm999); [ActionableErrors user requirement](../user/workspace-and-trust.md).
+Source: [system rule catalog](../../../../docs/rules/index.md#system-ofm900ofm999); [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.ActionableErrors](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.MetadataConsistency
 
@@ -29,7 +45,7 @@ Fail: Any checked version, schema path, rule-doc, or changelog reference differs
 Goal: 100% of checked metadata references match expected package and docs versions.
 Stakeholders: Extension users, maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [MetadataConfidence user requirement](../user/workspace-and-trust.md); [public API guide](../../../../docs/guides/public-api.md).
+Source: [[requirements/user/workspace-and-trust]]; [public API guide](../../../../docs/guides/public-api.md).
 ```
 
-User trace: [UserMarkdownlintObsidian.MetadataConfidence](../user/workspace-and-trust.md)
+User trace: [[requirements/user/workspace-and-trust]]

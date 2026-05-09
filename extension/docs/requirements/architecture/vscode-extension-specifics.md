@@ -1,3 +1,19 @@
+---
+title: "VS Code Extension Technical Requirements"
+aliases:
+  - "VS Code Extension Technical Requirements"
+  - "Requirements / Architecture / VS Code Extension Specifics"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/architecture"
+  - "requirements"
+type: "architecture-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/architecture/index]]"
+---
+
 # VS Code Extension Technical Requirements
 
 Architecture requirements adapted to the VS Code extension package.
@@ -14,7 +30,7 @@ Fail: Extension source duplicates core lint behavior, imports core internals ins
 Goal: 100% of extension lint behavior is delegated to bundled `markdownlint-obsidian` public APIs.
 Stakeholders: Extension users, core maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [root architecture policy](../../../../docs/architecture/README.md); [extension architecture overview](../../architecture/overview.md).
+Source: [root architecture policy](../../../../docs/architecture/README.md); [[architecture/overview]].
 ```
 
 ## ExtensionArchitecture.LibraryRuntime
@@ -29,7 +45,7 @@ Fail: Any extension runtime path requires a globally installed CLI, a workspace-
 Goal: 100% of normal extension lint/fix behavior uses the bundled `markdownlint-obsidian` library.
 Stakeholders: Extension users, extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [extension architecture overview](../../architecture/overview.md); [technical package contract](../technical/package-build-contract.md).
+Source: [[architecture/overview]]; [[requirements/technical/package-build-contract]].
 ```
 
 ## ExtensionArchitecture.ManifestSpecifics
@@ -44,7 +60,7 @@ Fail: Manifest lacks `extensionDependencies` for Flavor Grenade, omits `onLangua
 Goal: 100% of required manifest fields match documented extension architecture.
 Stakeholders: VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-dependency.md); [functional contributions](../functional/contributions-and-trust.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[requirements/functional/contributions-and-trust]].
 ```
 
 ## ExtensionArchitecture.BuildAndBundle
@@ -59,7 +75,7 @@ Fail: Build output is missing, VSIX omits the required `markdownlint-obsidian` l
 Goal: 100% of release builds produce a loadable VSIX with expected contents.
 Stakeholders: Extension users, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [functional manifest requirements](../functional/contributions-and-trust.md); [extension plans](../../plans/index.md).
+Source: [[requirements/functional/contributions-and-trust]]; [[plans/index]].
 ```
 
 ## ExtensionArchitecture.DependencyRuntime
@@ -74,7 +90,7 @@ Fail: Missing or blocked Flavor Grenade crashes the extension, live-lints all Ma
 Goal: 100% of covered dependency states follow documented runtime behavior.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade Dependency Contract](../../architecture/flavor-grenade-dependency.md); [functional editing requirements](../functional/editing-linting.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[requirements/functional/editing-linting]].
 ```
 
 ## ExtensionArchitecture.TestHarness
@@ -89,5 +105,5 @@ Fail: VS Code-only behavior is tested only with plain Node unit tests, or pure m
 Goal: 100% of extension behavior has a matching test layer or documented exception.
 Stakeholders: Extension maintainers, release maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Test-Driven Development](../../../../docs/architecture/test-driven-development.md); [functional requirements](../functional/index.md).
+Source: [Test-Driven Development](../../../../docs/architecture/test-driven-development.md); [[requirements/functional/index]].
 ```

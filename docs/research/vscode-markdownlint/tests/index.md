@@ -1,10 +1,18 @@
 ---
-title: vscode-markdownlint Unit Test Catalog
+title: "vscode-markdownlint Unit Test Catalog"
+aliases:
+  - "vscode-markdownlint Unit Test Catalog"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - research/tests
+  - "research/vscode"
+  - "research/markdownlint"
+  - "research/tests"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - https://github.com/DavidAnson/vscode-markdownlint/tree/main/test
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/test/metadata-test.mjs

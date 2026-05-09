@@ -1,3 +1,20 @@
+---
+title: "Phase E2: Core Adapter And Configuration"
+aliases:
+  - "Phase E2: Core Adapter And Configuration"
+  - "Plans / Phase E2 Core Adapter And Config"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e2-core-adapter-and-config"
+  - "plans"
+  - "phase/e2"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E2: Core Adapter And Configuration
 
 ## Goal

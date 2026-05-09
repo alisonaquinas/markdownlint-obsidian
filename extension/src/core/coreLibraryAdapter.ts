@@ -19,7 +19,6 @@ export class CoreLibraryAdapter implements LintEngine {
   async lintDocument(request: LintDocumentRequest): Promise<LintResult> {
     return lintText({
       cwd: request.workspaceRoot,
-      vaultRoot: request.workspaceRoot,
       config: request.configPath ?? request.workspaceRoot,
       allowCustomRules: request.allowCustomRules,
       filePath: request.filePath,
@@ -33,7 +32,6 @@ export class CoreLibraryAdapter implements LintEngine {
   ): Promise<{ readonly text: string; readonly result: LintResult }> {
     const outcome = await fixText({
       cwd: request.workspaceRoot,
-      vaultRoot: request.workspaceRoot,
       config: request.configPath ?? request.workspaceRoot,
       allowCustomRules: request.allowCustomRules,
       filePath: request.filePath,
@@ -48,7 +46,6 @@ export class CoreLibraryAdapter implements LintEngine {
   async lintWorkspace(request: WorkspaceLintRequest): Promise<readonly LintResult[]> {
     return lintWorkspace({
       cwd: request.workspaceRoot,
-      vaultRoot: request.workspaceRoot,
       config: request.configPath ?? request.workspaceRoot,
       allowCustomRules: request.allowCustomRules,
       globs: request.globs,

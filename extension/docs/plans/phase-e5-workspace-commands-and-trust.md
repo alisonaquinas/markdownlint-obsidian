@@ -1,3 +1,20 @@
+---
+title: "Phase E5: Workspace Commands And Trust"
+aliases:
+  - "Phase E5: Workspace Commands And Trust"
+  - "Plans / Phase E5 Workspace Commands And Trust"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e5-workspace-commands-and-trust"
+  - "plans"
+  - "phase/e5"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E5: Workspace Commands And Trust
 
 ## Goal

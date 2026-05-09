@@ -1,3 +1,19 @@
+---
+title: "Editing And Linting"
+aliases:
+  - "Editing And Linting"
+  - "Requirements / Functional / Editing Linting"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/functional"
+  - "requirements"
+type: "functional-requirement"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/functional/index]]"
+---
+
 # Editing And Linting
 
 ## MarkdownlintObsidian.ExtensionDependency
@@ -12,10 +28,10 @@ Fail: Live linting silently falls back to all `markdown` documents, ignores a Fl
 Goal: 100% of automatic live-lint paths require installed Flavor Grenade dependency or report a clear missing-dependency state.
 Stakeholders: Obsidian vault authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md); [Flavor Grenade v0.3.0 release](https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0).
+Source: [[architecture/flavor-grenade-dependency]]; [Flavor Grenade v0.3.0 release](https://github.com/alisonaquinas/flavor-grenade-lsp/releases/tag/v0.3.0).
 ```
 
-User trace: [UserMarkdownlintObsidian.FlavorGrenadeDependency](../user/editing-feedback.md)
+User trace: [[requirements/user/editing-feedback]]
 
 ## MarkdownlintObsidian.Activation
 
@@ -29,10 +45,10 @@ Fail: Any manifest-supported `ofmarkdown` activation scenario does not activate 
 Goal: 100% of manifest-supported `ofmarkdown` activation scenarios activate the extension.
 Stakeholders: Markdown authors, VS Code users, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [architecture overview](../../architecture/overview.md); [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md).
+Source: [[architecture/overview]]; [[architecture/flavor-grenade-dependency]].
 ```
 
-User trace: [UserMarkdownlintObsidian.AutomaticActivation](../user/editing-feedback.md)
+User trace: [[requirements/user/editing-feedback]]
 
 ## MarkdownlintObsidian.DocumentEligibility
 
@@ -46,10 +62,10 @@ Fail: Any generic `markdown` document receives automatic live diagnostics by def
 Goal: 100% predicate match for covered document categories.
 Stakeholders: Obsidian vault authors, generic Markdown authors, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [Flavor Grenade dependency contract](../../architecture/flavor-grenade-dependency.md); [user editing requirements](../user/editing-feedback.md).
+Source: [[architecture/flavor-grenade-dependency]]; [[requirements/user/editing-feedback]].
 ```
 
-User trace: [UserMarkdownlintObsidian.OFMRelevantDocuments](../user/editing-feedback.md)
+User trace: [[requirements/user/editing-feedback]]
 
 ## MarkdownlintObsidian.LintTrigger
 
@@ -63,10 +79,10 @@ Fail: Any in-scope lifecycle event leaves stale diagnostics, runs linting while 
 Goal: 100% of in-scope lifecycle events match configured behavior.
 Stakeholders: Markdown authors, VS Code users.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [user editing requirements](../user/editing-feedback.md); [workspace and trust requirements](../user/workspace-and-trust.md).
+Source: [[requirements/user/editing-feedback]]; [[requirements/user/workspace-and-trust]].
 ```
 
-User trace: [UserMarkdownlintObsidian.CurrentDiagnostics](../user/editing-feedback.md), [UserMarkdownlintObsidian.RunModeControl](../user/editing-feedback.md), [UserMarkdownlintObsidian.TemporaryDisable](../user/workspace-and-trust.md)
+User trace: [[requirements/user/editing-feedback]], [[requirements/user/editing-feedback]], [[requirements/user/workspace-and-trust]]
 
 ## MarkdownlintObsidian.ConfigurationResolution
 
@@ -80,10 +96,10 @@ Fail: A supported config source is ignored, merged in the wrong precedence order
 Goal: 100% of covered configuration combinations match core behavior or documented extension override behavior.
 Stakeholders: Repository maintainers, Markdown authors, CI maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts); [configuration user requirements](../user/configuration.md).
+Source: [ConfigLoader](../../../../packages/core/src/infrastructure/config/ConfigLoader.ts); [[requirements/user/configuration]].
 ```
 
-User trace: [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md)
+User trace: [[requirements/user/configuration]]
 
 ## MarkdownlintObsidian.Diagnostics
 
@@ -97,7 +113,7 @@ Fail: Any reportable result lacks a diagnostic, has wrong range, severity, sourc
 Goal: 100% of reportable results are converted correctly and 100% of suppressed, stale, or ineligible results are omitted.
 Stakeholders: Markdown authors, repository maintainers, extension maintainers.
 Owner: markdownlint-obsidian VS Code extension.
-Source: [LintError](../../../../packages/core/src/domain/linting/LintError.ts); [rule catalog](../../../../docs/rules/index.md); [editing user requirements](../user/editing-feedback.md).
+Source: [LintError](../../../../packages/core/src/domain/linting/LintError.ts); [rule catalog](../../../../docs/rules/index.md); [[requirements/user/editing-feedback]].
 ```
 
-User trace: [UserMarkdownlintObsidian.CurrentDiagnostics](../user/editing-feedback.md), [UserMarkdownlintObsidian.RuleFamilyVisibility](../user/configuration.md)
+User trace: [[requirements/user/editing-feedback]], [[requirements/user/configuration]]

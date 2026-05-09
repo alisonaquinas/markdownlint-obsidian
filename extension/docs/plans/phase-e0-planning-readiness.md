@@ -1,3 +1,20 @@
+---
+title: "Phase E0: Planning Readiness"
+aliases:
+  - "Phase E0: Planning Readiness"
+  - "Plans / Phase E0 Planning Readiness"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e0-planning-readiness"
+  - "plans"
+  - "phase/e0"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E0: Planning Readiness
 
 ## Goal
@@ -22,15 +39,15 @@ branch, with release acceptance deferred to PR and CI review.
 
 | Deliverable | Path | Status |
 | :--- | :--- | :--- |
-| Extension docs index | [../README.md](../README.md) | complete |
-| Architecture overview | [../architecture/overview.md](../architecture/overview.md) | complete |
-| Flavor Grenade contract | [../architecture/flavor-grenade-dependency.md](../architecture/flavor-grenade-dependency.md) | complete |
-| User requirements | [../requirements/user/index.md](../requirements/user/index.md) | complete |
-| Functional requirements | [../requirements/functional/index.md](../requirements/functional/index.md) | complete |
-| Technical requirements | [../requirements/technical/index.md](../requirements/technical/index.md) | complete |
-| DDD model | [../ddd/README.md](../ddd/README.md) | complete |
-| BDD model | [../bdd/README.md](../bdd/README.md) | complete |
-| Test plans | [../tests/README.md](../tests/README.md) | complete |
+| Extension docs index | [[README]] | complete |
+| Architecture overview | [[architecture/overview]] | complete |
+| Flavor Grenade contract | [[architecture/flavor-grenade-dependency]] | complete |
+| User requirements | [[requirements/user/index]] | complete |
+| Functional requirements | [[requirements/functional/index]] | complete |
+| Technical requirements | [[requirements/technical/index]] | complete |
+| DDD model | [[ddd/README]] | complete |
+| BDD model | [[bdd/README]] | complete |
+| Test plans | [[tests/README]] | complete |
 | Extension docs dogfood config | [../.obsidian-linter.jsonc](../.obsidian-linter.jsonc) | complete |
 
 ## Implementation Tasks

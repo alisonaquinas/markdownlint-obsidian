@@ -1,3 +1,19 @@
+---
+title: "Extension User Requirements"
+aliases:
+  - "Extension User Requirements"
+  - "Requirements / User / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/user"
+  - "requirements"
+type: "user-requirements-index"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/index]]"
+---
+
 # Extension User Requirements
 
 ## Scope
@@ -13,10 +29,10 @@ for functional requirements, architecture decisions, and tests.
 
 | File | Requirements |
 | :--- | :--- |
-| [editing-feedback.md](editing-feedback.md) | `UserMarkdownlintObsidian.FlavorGrenadeDependency`, `UserMarkdownlintObsidian.AutomaticActivation`, `UserMarkdownlintObsidian.OFMRelevantDocuments`, `UserMarkdownlintObsidian.CurrentDiagnostics`, `UserMarkdownlintObsidian.RunModeControl`, `UserMarkdownlintObsidian.VaultAwareFeedback` |
-| [fixes-formatting.md](fixes-formatting.md) | `UserMarkdownlintObsidian.QuickFix`, `UserMarkdownlintObsidian.FixAllDocument`, `UserMarkdownlintObsidian.FixCheckPreview`, `UserMarkdownlintObsidian.RuleHelp`, `UserMarkdownlintObsidian.NoUnsafeFormatting` |
-| [configuration.md](configuration.md) | `UserMarkdownlintObsidian.ConfigSources`, `UserMarkdownlintObsidian.ConfigDiscovery`, `UserMarkdownlintObsidian.SchemaAssistance`, `UserMarkdownlintObsidian.CustomRules`, `UserMarkdownlintObsidian.RuleFamilyVisibility` |
-| [workspace-and-trust.md](workspace-and-trust.md) | `UserMarkdownlintObsidian.WorkspaceLint`, `UserMarkdownlintObsidian.TemporaryDisable`, `UserMarkdownlintObsidian.TrustedCustomRules`, `UserMarkdownlintObsidian.UnsupportedWorkspaceModes`, `UserMarkdownlintObsidian.ActionableErrors`, `UserMarkdownlintObsidian.MetadataConfidence` |
+| [[requirements/user/editing-feedback]] | `UserMarkdownlintObsidian.FlavorGrenadeDependency`, `UserMarkdownlintObsidian.AutomaticActivation`, `UserMarkdownlintObsidian.OFMRelevantDocuments`, `UserMarkdownlintObsidian.CurrentDiagnostics`, `UserMarkdownlintObsidian.RunModeControl`, `UserMarkdownlintObsidian.VaultAwareFeedback` |
+| [[requirements/user/fixes-formatting]] | `UserMarkdownlintObsidian.QuickFix`, `UserMarkdownlintObsidian.FixAllDocument`, `UserMarkdownlintObsidian.FixCheckPreview`, `UserMarkdownlintObsidian.RuleHelp`, `UserMarkdownlintObsidian.NoUnsafeFormatting` |
+| [[requirements/user/configuration]] | `UserMarkdownlintObsidian.ConfigSources`, `UserMarkdownlintObsidian.ConfigDiscovery`, `UserMarkdownlintObsidian.SchemaAssistance`, `UserMarkdownlintObsidian.CustomRules`, `UserMarkdownlintObsidian.RuleFamilyVisibility` |
+| [[requirements/user/workspace-and-trust]] | `UserMarkdownlintObsidian.WorkspaceLint`, `UserMarkdownlintObsidian.TemporaryDisable`, `UserMarkdownlintObsidian.TrustedCustomRules`, `UserMarkdownlintObsidian.UnsupportedWorkspaceModes`, `UserMarkdownlintObsidian.ActionableErrors`, `UserMarkdownlintObsidian.MetadataConfidence` |
 
 ## Adaptation Notes
 

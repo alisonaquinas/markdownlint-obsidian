@@ -1,5 +1,15 @@
 ---
-title: Namespace and Module Structure
+title: "Namespace and Module Structure"
+aliases:
+  - "Namespace and Module Structure"
+tags:
+  - "docs"
+  - "docs/architecture"
+  - "architecture"
+type: "architecture-policy"
+status: "current"
+updated: 2026-05-09
+up: "[[architecture/README]]"
 ---
 
 # Namespace and Module Structure

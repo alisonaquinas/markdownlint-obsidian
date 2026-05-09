@@ -1,3 +1,20 @@
+---
+title: "Phase E6 Tickets"
+aliases:
+  - "Phase E6 Tickets"
+  - "Plans / Phase E6 Packaging And CI / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e6-packaging-and-ci"
+  - "plans"
+  - "phase/e6"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e6-packaging-and-ci]]"
+---
+
 # Phase E6 Tickets
 
 ## FEAT-007: Verified VSIX Packaging And CI Release Path
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: make extension checks, packaging, smoke install, checksum generation, and
 Flavor Grenade-style release workflow run in CI.
 
-Linked plan: [Phase E6](../phase-e6-packaging-and-ci.md)
+Linked plan: [[plans/phase-e6-packaging-and-ci]]
 
 Child tickets:
 

@@ -1,3 +1,19 @@
+---
+title: "Extension Technical Requirements"
+aliases:
+  - "Extension Technical Requirements"
+  - "Requirements / Technical / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/requirements"
+  - "extension-docs/requirements/technical"
+  - "requirements"
+type: "technical-requirements-index"
+status: "current"
+updated: 2026-05-09
+up: "[[requirements/index]]"
+---
+
 # Extension Technical Requirements
 
 Technical requirements for implementing the VS Code extension in this repo's
@@ -10,10 +26,10 @@ toolchain unless an explicit ADR changes that baseline.
 
 | File | Tags |
 | :--- | :--- |
-| [typescript-contract.md](typescript-contract.md) | `MarkdownlintObsidianTechnical.TypeScriptStrictness`, `MarkdownlintObsidianTechnical.NodeNextEsm`, `MarkdownlintObsidianTechnical.TypedBoundaries`, `MarkdownlintObsidianTechnical.PublicTypes` |
-| [lint-format-contract.md](lint-format-contract.md) | `MarkdownlintObsidianTechnical.EslintFlatConfig`, `MarkdownlintObsidianTechnical.NoAnyExplicitReturns`, `MarkdownlintObsidianTechnical.ComplexityAndSize`, `MarkdownlintObsidianTechnical.Formatting`, `MarkdownlintObsidianTechnical.Suppressions` |
-| [package-build-contract.md](package-build-contract.md) | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BundledLibraryRuntime`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
-| [verification-gates.md](verification-gates.md) | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` |
+| [[requirements/technical/typescript-contract]] | `MarkdownlintObsidianTechnical.TypeScriptStrictness`, `MarkdownlintObsidianTechnical.NodeNextEsm`, `MarkdownlintObsidianTechnical.TypedBoundaries`, `MarkdownlintObsidianTechnical.PublicTypes` |
+| [[requirements/technical/lint-format-contract]] | `MarkdownlintObsidianTechnical.EslintFlatConfig`, `MarkdownlintObsidianTechnical.NoAnyExplicitReturns`, `MarkdownlintObsidianTechnical.ComplexityAndSize`, `MarkdownlintObsidianTechnical.Formatting`, `MarkdownlintObsidianTechnical.Suppressions` |
+| [[requirements/technical/package-build-contract]] | `MarkdownlintObsidianTechnical.BunWorkspace`, `MarkdownlintObsidianTechnical.ExtensionPackage`, `MarkdownlintObsidianTechnical.BundledLibraryRuntime`, `MarkdownlintObsidianTechnical.BuildOutputs`, `MarkdownlintObsidianTechnical.DependencyBoundary` |
+| [[requirements/technical/verification-gates]] | `MarkdownlintObsidianTechnical.TypecheckGate`, `MarkdownlintObsidianTechnical.LintGate`, `MarkdownlintObsidianTechnical.TestGate`, `MarkdownlintObsidianTechnical.DocsGate`, `MarkdownlintObsidianTechnical.ReleaseGate` |
 
 ## Baseline Toolchain
 

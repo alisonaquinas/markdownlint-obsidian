@@ -1,3 +1,19 @@
+---
+title: "Workspace Commands Domain Model"
+aliases:
+  - "Workspace Commands Domain Model"
+  - "DDD / Workspace Commands / Domain Model"
+tags:
+  - "extension-docs"
+  - "extension-docs/ddd"
+  - "extension-docs/ddd/workspace-commands"
+  - "ddd"
+type: "domain-model"
+status: "current"
+updated: 2026-05-09
+up: "[[ddd/bounded-contexts]]"
+---
+
 # Workspace Commands Domain Model
 
 ## Purpose

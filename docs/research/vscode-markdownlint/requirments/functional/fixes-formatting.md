@@ -1,11 +1,19 @@
 ---
-title: vscode-markdownlint Functional Requirements - Fixes And Formatting
+title: "vscode-markdownlint Functional Requirements - Fixes And Formatting"
+aliases:
+  - "vscode-markdownlint Functional Requirements - Fixes And Formatting"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/functional
-  - planguage
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/functional"
+  - "planguage"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/extension.mjs
   - https://github.com/DavidAnson/vscode-markdownlint/blob/main/README.md

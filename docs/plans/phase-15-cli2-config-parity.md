@@ -1,3 +1,17 @@
+---
+title: "Phase 15: markdownlint-cli2 Configuration Parity"
+aliases:
+  - "Phase 15: markdownlint-cli2 Configuration Parity"
+tags:
+  - "docs"
+  - "docs/plans"
+  - "docs/plans/phase-work"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[roadmap]]"
+---
+
 # Phase 15: markdownlint-cli2 Configuration Parity
 
 Required pre-reading:

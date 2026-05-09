@@ -1,7 +1,24 @@
+---
+title: "Phase E5 Ticket Folder"
+aliases:
+  - "Phase E5 Ticket Folder"
+  - "Plans / Phase E5 Workspace Commands And Trust / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e5-workspace-commands-and-trust"
+  - "plans"
+  - "phase/e5"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e5-workspace-commands-and-trust]]"
+---
+
 # Phase E5 Ticket Folder
 
 Workspace-command ticket folder for
-[Phase E5](../phase-e5-workspace-commands-and-trust.md).
+[[plans/phase-e5-workspace-commands-and-trust]].
 
 ## Phase Feature
 
@@ -11,4 +28,4 @@ Workspace-command ticket folder for
 
 ## Backlog
 
-See [tickets](tickets.md).
+See [[plans/phase-e5-workspace-commands-and-trust/tickets]].

@@ -1,3 +1,17 @@
+---
+title: "markdownlint-cli2 Configuration Loading & Parsing Analysis"
+aliases:
+  - "markdownlint-cli2 Configuration Loading & Parsing Analysis"
+tags:
+  - "docs"
+  - "docs/research"
+  - "docs/research/markdownlint-cli2-config-loading-analysis"
+type: "research"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # markdownlint-cli2 Configuration Loading & Parsing Analysis
 
 Source under review: <https://github.com/DavidAnson/markdownlint-cli2>

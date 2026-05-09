@@ -1,6 +1,24 @@
+---
+title: "Roadmap"
+aliases:
+  - "Roadmap"
+tags:
+  - "docs"
+  - "docs/roadmap"
+type: "roadmap"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # Roadmap
 
-Central phase plan index for `markdownlint-obsidian`. Each phase produces working, testable software on its own. Implementation plans live in `[[docs/plans/]]`.
+Central phase plan index for `markdownlint-obsidian`. Each phase produces
+working, testable software on its own. Implementation plans live under
+[[plans/execution-ledger|plans]].
+
+> [!TIP] Delivery map
+> Use [[plans/execution-ledger]] for actual phase history, [[rules/index]] for shipped rule behavior, and [[architecture/README]] for binding design policy.
 
 ## Phases
 

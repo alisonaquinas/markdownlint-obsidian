@@ -1,3 +1,20 @@
+---
+title: "Phase E2 Tickets"
+aliases:
+  - "Phase E2 Tickets"
+  - "Plans / Phase E2 Core Adapter And Config / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e2-core-adapter-and-config"
+  - "plans"
+  - "phase/e2"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e2-core-adapter-and-config]]"
+---
+
 # Phase E2 Tickets
 
 ## FEAT-003: Typed Core Adapter And Configuration Boundary
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: let the extension decide eligibility, resolve settings, and call the
 bundled library through public APIs without publishing diagnostics yet.
 
-Linked plan: [Phase E2](../phase-e2-core-adapter-and-config.md)
+Linked plan: [[plans/phase-e2-core-adapter-and-config]]
 
 Child tickets:
 

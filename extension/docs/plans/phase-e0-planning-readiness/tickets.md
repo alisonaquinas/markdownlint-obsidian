@@ -1,3 +1,20 @@
+---
+title: "Phase E0 Tickets"
+aliases:
+  - "Phase E0 Tickets"
+  - "Plans / Phase E0 Planning Readiness / Tickets"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e0-planning-readiness"
+  - "plans"
+  - "phase/e0"
+type: "ticket-list"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e0-planning-readiness]]"
+---
+
 # Phase E0 Tickets
 
 ## FEAT-001: Planning Baseline Ready For Extension Implementation
@@ -7,7 +24,7 @@ Status: `in-review`
 Goal: finish the documentation baseline that lets E1 start without guessing
 package location, runtime dependency policy, or test gates.
 
-Linked plan: [Phase E0](../phase-e0-planning-readiness.md)
+Linked plan: [[plans/phase-e0-planning-readiness]]
 
 Child tickets:
 

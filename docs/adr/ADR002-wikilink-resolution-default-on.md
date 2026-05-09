@@ -1,7 +1,15 @@
 ---
+title: "Wikilink resolution enabled by default"
+aliases:
+  - "Wikilink resolution enabled by default"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "accepted"
+updated: 2026-05-09
+up: "[[README]]"
 adr: 002
-title: Wikilink resolution enabled by default
-status: accepted
 date: 2026-04-11
 ---
 

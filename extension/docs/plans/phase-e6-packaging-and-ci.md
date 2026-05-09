@@ -1,3 +1,20 @@
+---
+title: "Phase E6: Packaging And CI"
+aliases:
+  - "Phase E6: Packaging And CI"
+  - "Plans / Phase E6 Packaging And CI"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e6-packaging-and-ci"
+  - "plans"
+  - "phase/e6"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/index]]"
+---
+
 # Phase E6: Packaging And CI
 
 ## Goal
@@ -77,7 +94,7 @@ adapter to a packaged binary or server runtime.
   checksum, and attestation steps complete.
 - [ ] Add metadata consistency checks for package version, engine version,
   schema path, README links, changelog links, and rule docs.
-- [ ] Update [../tests/automation.md](../tests/automation.md) with final
+- [ ] Update [[tests/automation]] with final
   commands.
 - [ ] Update pre-commit documentation if extension source adds new fast hooks.
 - [ ] Decide whether packaged VSIX artifacts should be uploaded from CI.

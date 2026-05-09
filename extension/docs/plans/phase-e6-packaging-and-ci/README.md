@@ -1,6 +1,23 @@
+---
+title: "Phase E6 Ticket Folder"
+aliases:
+  - "Phase E6 Ticket Folder"
+  - "Plans / Phase E6 Packaging And CI / Index"
+tags:
+  - "extension-docs"
+  - "extension-docs/plans"
+  - "extension-docs/plans/phase-e6-packaging-and-ci"
+  - "plans"
+  - "phase/e6"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[plans/phase-e6-packaging-and-ci]]"
+---
+
 # Phase E6 Ticket Folder
 
-Packaging-and-CI ticket folder for [Phase E6](../phase-e6-packaging-and-ci.md).
+Packaging-and-CI ticket folder for [[plans/phase-e6-packaging-and-ci]].
 
 ## Phase Feature
 
@@ -10,4 +27,4 @@ Packaging-and-CI ticket folder for [Phase E6](../phase-e6-packaging-and-ci.md).
 
 ## Backlog
 
-See [tickets](tickets.md).
+See [[plans/phase-e6-packaging-and-ci/tickets]].
