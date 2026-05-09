@@ -22,13 +22,19 @@ export interface ExtensionSettings {
   readonly workspaceGlobs: readonly string[];
 }
 
-/** Observed installation and activation state for the Flavor Grenade extension. */
-export type DependencyStatus = "installed-active" | "installed-inactive" | "missing";
+/** Observed availability state for the Flavor Grenade extension. */
+export type DependencyStatus =
+  | "installed-active"
+  | "installed-inactive"
+  | "missing"
+  | "blocked-restricted"
+  | "blocked-virtual";
 
 /** Dependency state surfaced to eligibility and command reporting. */
 export interface DependencyState {
   readonly id: string;
   readonly status: DependencyStatus;
+  readonly reason: string | null;
 }
 
 /** Session-only state that is intentionally not persisted into VS Code settings. */

@@ -25,6 +25,7 @@ const session: SessionState = { liveDiagnosticsEnabled: true };
 const dependency: DependencyState = {
   id: "alisonaquinas.flavor-grenade-lsp",
   status: "installed-active",
+  reason: null,
 };
 
 function document(overrides: Partial<DocumentSnapshot>): DocumentSnapshot {
@@ -61,8 +62,33 @@ describe("decideEligibility", () => {
     const decision = decideEligibility(document({}), settings, session, {
       id: dependency.id,
       status: "missing",
+      reason: "Flavor Grenade extension is missing",
     });
 
     expect(decision.eligible).toBe(false);
+    expect(decision.reason).toBe("Flavor Grenade extension is missing");
+  });
+
+  it("reports restricted-mode Flavor Grenade blocks before language mismatch", () => {
+    const decision = decideEligibility(document({ languageId: "markdown" }), settings, session, {
+      id: dependency.id,
+      status: "blocked-restricted",
+      reason: "Flavor Grenade is disabled in Restricted Mode",
+    });
+
+    expect(decision.eligible).toBe(false);
+    expect(decision.reason).toBe("Flavor Grenade is disabled in Restricted Mode");
+  });
+
+  it("rejects demoted Markdown documents so stale diagnostics can be cleared", () => {
+    const decision = decideEligibility(
+      document({ languageId: "markdown" }),
+      settings,
+      session,
+      dependency,
+    );
+
+    expect(decision.eligible).toBe(false);
+    expect(decision.reason).toBe("not an OFMarkdown document");
   });
 });

@@ -13,6 +13,7 @@ describe("extension manifest", () => {
   it("declares Flavor Grenade and OFMarkdown activation", () => {
     expect(manifest.extensionDependencies).toContain("alisonaquinas.flavor-grenade-lsp");
     expect(manifest.activationEvents).toContain("onLanguage:ofmarkdown");
+    expect(manifest.activationEvents).not.toContain("onLanguage:markdown");
   });
 
   it("depends on the library and not the CLI", () => {

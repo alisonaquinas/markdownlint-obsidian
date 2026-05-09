@@ -62,13 +62,21 @@ function rejectionChecks(
   return [
     (): string | null => when(!settings.enabled, "disabled by settings"),
     (): string | null => when(!session.liveDiagnosticsEnabled, "disabled for this session"),
+    (): string | null =>
+      when(
+        dependency.status === "blocked-restricted" || dependency.status === "blocked-virtual",
+        dependency.reason ?? "Flavor Grenade is unavailable",
+      ),
     (): string | null => when(document.languageId !== "ofmarkdown", "not an OFMarkdown document"),
     (): string | null => when(document.isUntitled, "untitled documents are unsupported"),
     (): string | null =>
       when(document.scheme !== "file", `unsupported URI scheme: ${document.scheme}`),
     (): string | null => when(document.fsPath === null, "document has no filesystem path"),
     (): string | null =>
-      when(dependency.status === "missing", "Flavor Grenade extension is missing"),
+      when(
+        dependency.status === "missing" || dependency.status === "installed-inactive",
+        dependency.reason ?? "Flavor Grenade extension is unavailable",
+      ),
   ];
 }
 

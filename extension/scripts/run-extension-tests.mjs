@@ -14,7 +14,7 @@ import {
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { resolve } from "node:path";
 
 const flavorGrenadeExtensionId = "flavor-grenade-lsp";
@@ -112,8 +112,13 @@ function runCodeCli(cliPath, args) {
   if (process.platform !== "win32") {
     return spawnSync(cliPath, args, { encoding: "utf-8", stdio: "inherit" });
   }
-  return spawnSync(process.env.ComSpec ?? "cmd.exe", ["/d", "/s", "/c", cliPath, ...args], {
-    encoding: "utf-8",
-    stdio: "inherit",
-  });
+  return spawnSync(
+    process.env.ComSpec ?? "cmd.exe",
+    ["/d", "/s", "/c", basename(cliPath), ...args],
+    {
+      cwd: dirname(cliPath),
+      encoding: "utf-8",
+      stdio: "inherit",
+    },
+  );
 }

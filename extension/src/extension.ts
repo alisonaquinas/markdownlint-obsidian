@@ -151,6 +151,10 @@ class ExtensionRuntime {
     );
     if (!decision.eligible) {
       this.clear(document.uri);
+      if (this.shouldReportIneligibleReason(decision.reason)) {
+        this.output.appendLine(`${document.uri.toString()}: ${decision.reason}`);
+        this.output.show(true);
+      }
       return;
     }
     const root = this.workspaceRoot(document.uri);
@@ -401,7 +405,11 @@ class ExtensionRuntime {
   }
 
   private dependency(): DependencyState {
-    return detectFlavorGrenade(vscode.extensions);
+    return detectFlavorGrenade(vscode.extensions, {
+      isTrusted: vscode.workspace.isTrusted,
+      workspaceFolderSchemes:
+        vscode.workspace.workspaceFolders?.map((folder) => folder.uri.scheme) ?? [],
+    });
   }
 
   private workspaceRoot(uri: vscode.Uri): string | null {
@@ -424,6 +432,10 @@ class ExtensionRuntime {
   private clear(uri: vscode.Uri): void {
     this.diagnostics.delete(uri);
     this.results.delete(uri.toString());
+  }
+
+  private shouldReportIneligibleReason(reason: string | null): boolean {
+    return reason !== null && reason.startsWith("Flavor Grenade");
   }
 
   private errorMessage(error: unknown): string {
