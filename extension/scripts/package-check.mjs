@@ -31,6 +31,10 @@ if (!manifest.activationEvents?.includes("onLanguage:ofmarkdown")) {
   fail("extension must activate on the ofmarkdown language");
 }
 
+if (manifest.icon !== "images/icon.png") {
+  fail("extension manifest must use images/icon.png as the Marketplace icon");
+}
+
 const contributedCommandIds = new Set(
   (manifest.contributes?.commands ?? []).map((command) => command.command),
 );
@@ -77,4 +81,24 @@ try {
   await stat("schemas/obsidian-linter.schema.json");
 } catch {
   fail("schemas/obsidian-linter.schema.json is missing");
+}
+
+try {
+  const icon = await readFile("images/icon.png");
+  const pngSignature = "89504e470d0a1a0a";
+  const actualSignature = icon.subarray(0, 8).toString("hex");
+  if (actualSignature !== pngSignature) {
+    fail("images/icon.png must be a PNG file");
+  }
+  const width = icon.readUInt32BE(16);
+  const height = icon.readUInt32BE(20);
+  const colorType = icon.readUInt8(25);
+  if (width < 128 || height < 128) {
+    fail("images/icon.png must be at least 128x128 pixels");
+  }
+  if (colorType !== 6) {
+    fail("images/icon.png must use RGBA color so transparent edges are preserved");
+  }
+} catch {
+  fail("images/icon.png is missing");
 }

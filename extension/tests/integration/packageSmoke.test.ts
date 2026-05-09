@@ -14,6 +14,7 @@ describe("extension manifest", () => {
     expect(manifest.extensionDependencies).toContain("alisonaquinas.flavor-grenade-lsp");
     expect(manifest.activationEvents).toContain("onLanguage:ofmarkdown");
     expect(manifest.activationEvents).not.toContain("onLanguage:markdown");
+    expect(manifest.icon).toBe("images/icon.png");
   });
 
   it("depends on the library and not the CLI", () => {
