@@ -76,6 +76,7 @@ bun --cwd extension run test:integration -- --grep trust
 | :--- | :--- |
 | Workspace lint duplicates live diagnostic state | keep command output separate unless a Problems integration is explicitly designed |
 | Multi-root behavior creates ambiguous config ownership | resolve config per workspace folder and document output scope |
+| Core config parity expands supported filenames | derive watcher and open-config coverage from core-supported discovery names |
 | Remote or virtual workspaces need VS Code file APIs | start with explicit rejection policy and add support only with tests |
 
 ## Exit Criteria

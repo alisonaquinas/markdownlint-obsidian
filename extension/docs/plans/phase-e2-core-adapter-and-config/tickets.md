@@ -23,6 +23,8 @@ Acceptance criteria:
 
 - [ ] extension imports only public package exports.
 - [ ] adapter tests prove no CLI runtime path is used.
+- [ ] adapter tests prove markdownlint-cli2 parity fixtures flow through core
+      config resolution.
 - [ ] eligibility decisions are deterministic and covered.
 - [ ] missing Flavor Grenade state is visible but non-crashing.
 
@@ -37,10 +39,12 @@ CLI.
 ## TASK-007: Implement Settings And Config Resolution
 
 Scope: read VS Code settings, validate runtime values, find supported config
-files, and model effective configuration.
+files, and model effective configuration without duplicating core
+markdownlint-cli2 config parity logic.
 
 Done when defaults, invalid values, explicit config paths, and missing config
-cases are covered.
+cases are covered, including one core parity fixture for nested effective
+configuration.
 
 ## TASK-008: Implement Flavor Grenade Dependency State
 

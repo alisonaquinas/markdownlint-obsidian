@@ -12,6 +12,14 @@ Feature: Configuration and trust
     Then live diagnostics reflect the resolved configuration
     And the output does not report a configuration mismatch with the core package
 
+  @MarkdownlintObsidian.ConfigParityDelegation @UserMarkdownlintObsidian.ConfigSources
+  Scenario: markdownlint-cli2 parity comes from the core library
+    Given a workspace uses markdownlint-cli2-style config discovery
+    And the core library resolves different effective configs for nested files
+    When the extension lints those files
+    Then extension diagnostics use the core effective config for each file
+    And the extension does not reimplement the config cascade
+
   @MarkdownlintObsidian.SchemaValidation @UserMarkdownlintObsidian.SchemaAssistance
   Scenario: Supported JSON config files receive schema assistance
     Given the author opens a supported JSON or JSONC linter config file

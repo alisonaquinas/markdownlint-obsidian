@@ -25,6 +25,10 @@ without publishing diagnostics yet.
 - VS Code inputs are narrowed before use.
 - config behavior matches core defaults unless extension-only settings are
   documented.
+- markdownlint-cli2-compatible config behavior is delegated to the bundled core
+  library as it implements
+  [Phase 15 config parity](../../../../docs/plans/phase-15-cli2-config-parity.md);
+  the extension must not maintain an independent config cascade.
 - document eligibility uses `languageId === "ofmarkdown"` for automatic live
   linting.
 
@@ -42,6 +46,8 @@ without publishing diagnostics yet.
 - [ ] Implement document eligibility for `ofmarkdown`, unsupported URI schemes,
   temporary disable state, and missing dependency state.
 - [ ] Add schema contribution for supported linter config filenames.
+- [ ] Add an adapter test proving extension diagnostics use the same effective
+  config as the core for at least one markdownlint-cli2 parity fixture.
 - [ ] Add output-channel formatting for config, dependency, and adapter errors.
 - [ ] Add unit tests for every adapter and decision object.
 - [ ] Add component tests using fake VS Code and fake core adapters.
@@ -54,6 +60,7 @@ without publishing diagnostics yet.
 | dependency state | installed, missing, disabled, inactive |
 | eligibility | `ofmarkdown`, generic `markdown`, untitled, virtual, remote-like, disabled |
 | config adapter | supported config file names, explicit config, missing config, schema path |
+| config parity delegation | nested config, explicit base config, `.markdownlint.*` override of embedded CLI2 config |
 | output formatting | Error, non-Error thrown value, OFM system code, dependency message |
 | import boundary | no extension imports from `packages/core/src/` |
 | no CLI dependency | no runtime path spawns or resolves `markdownlint-obsidian-cli` |
@@ -82,6 +89,7 @@ bun run typecheck
 | :--- | :--- |
 | Public library APIs lack an editor-friendly entry point | add public API improvements in a separate core-focused change |
 | Config loading needs document text rather than file paths for live lint | isolate the adapter so a later in-memory lint API can replace file-based calls |
+| Core parity expands config sources faster than extension schema coverage | delegate runtime behavior to core and document schema-only limitations for non-JSON config |
 | Workspace trust policy blocks too much behavior | test trusted, untrusted, and no-workspace contexts independently |
 
 ## Exit Criteria

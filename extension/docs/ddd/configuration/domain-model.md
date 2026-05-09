@@ -41,6 +41,15 @@ Invariants:
 Determines when to call core config loading and how to combine the result with
 extension-only settings.
 
+The policy treats markdownlint-cli2-compatible configuration discovery,
+parsing, `--configPointer`, inheritance, and effective-config grouping as core
+library responsibilities. The extension consumes the core result and may add
+editor-only settings, but it must not maintain a parallel config cascade.
+
+Source:
+[Phase 15 config parity plan](../../../../docs/plans/phase-15-cli2-config-parity.md);
+[markdownlint-cli2 configuration loading analysis](../../../../docs/research/markdownlint-cli2-config-loading-analysis.md).
+
 ### TrustPolicy
 
 Answers behavior-specific questions:
@@ -54,6 +63,11 @@ Answers behavior-specific questions:
 
 Identifies supported config filenames and decides which visible diagnostics
 must refresh after a config file changes.
+
+Watcher coverage follows the core-supported discovered config families. If the
+core adds parity support for additional `.markdownlint-cli2.*` or
+`.markdownlint.*` filenames, watcher tests must either include those names or
+document why an editor-only limitation remains.
 
 ## Domain Events
 

@@ -24,6 +24,8 @@ Acceptance criteria:
 - [ ] every command reports a result or actionable error.
 - [ ] temporary disable is session-only.
 - [ ] config changes refresh visible eligible diagnostics.
+- [ ] open-config and watcher coverage tracks core-supported discovered config
+      filenames.
 - [ ] untrusted custom code and unsupported workspaces fail visibly.
 
 ## TASK-018: Implement Workspace Lint Command
@@ -37,7 +39,8 @@ Done when configured globs and per-folder failures are visible.
 ## TASK-019: Implement Open Config Command
 
 Scope: open the nearest supported config file or an untitled starter document
-without writing automatically.
+without writing automatically. Supported names follow the core config
+discovery families, including markdownlint-cli2 parity names as they land.
 
 Done when existing and missing config cases are covered.
 
@@ -51,7 +54,8 @@ Done when no workspace files are modified by disable or re-enable.
 ## TASK-021: Implement Config Watchers And Refresh
 
 Scope: watch supported config filenames, handle create, change, and delete,
-and refresh visible eligible diagnostics.
+and refresh visible eligible diagnostics. Watcher names must stay aligned with
+core discovery or document any editor-only gap.
 
 Done when watcher events update effective config deterministically.
 

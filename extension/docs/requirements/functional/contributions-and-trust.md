@@ -34,6 +34,23 @@ Source: [SchemaAssistance user requirement](../user/configuration.md); [LinterCo
 
 User trace: [UserMarkdownlintObsidian.SchemaAssistance](../user/configuration.md)
 
+## MarkdownlintObsidian.ConfigParityDelegation
+
+```text
+Tag: MarkdownlintObsidian.ConfigParityDelegation
+Gist: Delegate markdownlint-cli2-compatible config discovery, parsing, pointer handling, and effective-config grouping to the bundled core library.
+Ambition: Editor diagnostics match CLI and CI diagnostics for projects that use markdownlint-cli2-style configuration.
+Scale: Percentage of core-supported config behaviors observable from the extension without extension-specific reimplementation.
+Meter: Extension integration tests that exercise core config parity fixtures through the public engine API, including explicit config, nested config, `.markdownlint.*` override of embedded CLI2 `config`, and schema-backed JSON/JSONC editing where applicable.
+Fail: The extension resolves a different effective config from the CLI for the same workspace, ignores a core-supported config source without a documented limitation, or duplicates core config logic in VS Code code.
+Goal: 100% parity with core-supported config behavior for local trusted file workspaces.
+Stakeholders: Repository maintainers, Markdown authors, extension maintainers.
+Owner: markdownlint-obsidian VS Code extension.
+Source: [config parity plan](../../../../docs/plans/phase-15-cli2-config-parity.md); [markdownlint-cli2 config research](../../../../docs/research/markdownlint-cli2-config-loading-analysis.md).
+```
+
+User trace: [UserMarkdownlintObsidian.ConfigSources](../user/configuration.md), [UserMarkdownlintObsidian.ConfigDiscovery](../user/configuration.md)
+
 ## MarkdownlintObsidian.WorkspaceTrust
 
 ```text
