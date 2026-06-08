@@ -23,6 +23,12 @@ describe("OFM041 malformed-callout", () => {
     expect(errors).toEqual([]);
   });
 
+  it("ignores blockquoted wikilinks", async () => {
+    const src = "> [[domain/page#heading|Alias]], which is a normal quote\n";
+    const errors = await runRuleOnSource(OFM041Rule, src);
+    expect(errors).toEqual([]);
+  });
+
   it("reports missing space after type marker", async () => {
     const errors = await runRuleOnSource(OFM041Rule, "> [!NOTE]Title\n");
     expect(errors).toHaveLength(1);
@@ -34,9 +40,9 @@ describe("OFM041 malformed-callout", () => {
     expect(errors).toHaveLength(1);
   });
 
-  it("reports a stray-space variant", async () => {
+  it("ignores bracketed blockquotes without the callout sigil", async () => {
     const errors = await runRuleOnSource(OFM041Rule, "> [ NOTE ] Title\n");
-    expect(errors).toHaveLength(1);
+    expect(errors).toEqual([]);
   });
 
   it("skips malformed patterns inside a fenced code block", async () => {

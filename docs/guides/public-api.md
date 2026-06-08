@@ -132,6 +132,10 @@ const fix = makeFix({ lineNumber: 3, editColumn: 5, deleteCount: 2, insertText: 
 | `CommentNode` | type | A `%%comment%%` node |
 | `SourcePosition` | type | `{ line, column }` (1-based) |
 
+`ParseResult.raw` and `ParseResult.lines` are LF-normalized Markdown body
+content. They do not include frontmatter fences, and they are not the original
+working-tree bytes.
+
 ### Config Types
 
 | Export | Kind | Description |
