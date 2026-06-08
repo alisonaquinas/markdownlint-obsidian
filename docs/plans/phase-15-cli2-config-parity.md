@@ -17,6 +17,9 @@ up: "[[roadmap]]"
 Required pre-reading:
 [markdownlint-cli2 configuration loading analysis](../research/markdownlint-cli2-config-loading-analysis.md).
 
+Requirements baseline:
+[[requirements/config-format-parity]].
+
 ## Goal
 
 Bring `markdownlint-obsidian` configuration loading close enough to
@@ -243,6 +246,8 @@ bun run --cwd extension package:check
 
 - Existing `markdownlint-cli2` configuration workflows have a documented
   compatibility path.
+- All parser and discovery behavior named in [[requirements/config-format-parity]]
+  has automated test coverage before implementation lands.
 - Explicit config behaves as a base, not as an exclusive override.
 - JSON Pointer, CJS/MJS, TOML explicit config, JSONC parsing, and `extends`
   behavior are covered by tests.

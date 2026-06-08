@@ -23,7 +23,9 @@ Long-form reference and design documentation for `markdownlint-obsidian`.
 | [[adr/ADR001-option-b-standalone]] | Architecture Decision Records |
 | [[architecture/README]] | Binding architecture policies for source, docs, tests, and tooling |
 | [[ddd/bounded-contexts]] | Domain model, bounded contexts, ubiquitous language |
+| [[requirements/index]] | Stable product and compatibility requirements |
 | [[plans/execution-ledger]] | Phase execution plans and the delivery ledger |
+| [[audits/config-format-parity-audit-2026-05-09]] | Latest configuration format parity audit |
 | [bdd/](bdd/) | Acceptance features and step definitions used by the smoke suite |
 | [[research/markdownlint-cli2-config-loading-analysis]] | Working research notes that informed implementation changes |
 | [[superpowers/specs/2026-04-11-markdownlint-obsidian-design]] | Design specs and implementation plans for agent workflows |
