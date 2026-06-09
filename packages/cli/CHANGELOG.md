@@ -7,6 +7,15 @@
   }
 } -->
 
+## [1.1.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.1.0...markdownlint-obsidian-cliv1.1.1) (2026-06-09)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * markdownlint-obsidian bumped to 1.2.0
+
 ## [1.1.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.0.8...markdownlint-obsidian-cliv1.1.0) (2026-05-04)
 
 ### Features
