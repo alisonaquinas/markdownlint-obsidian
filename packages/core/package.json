@@ -19,11 +19,14 @@
     "./engine": {
       "types": "./dist/src/engine/index.d.ts",
       "default": "./dist/src/engine/index.js"
+    },
+    "./editor": {
+      "types": "./dist/src/public/editor.d.ts",
+      "default": "./dist/src/public/editor.js"
     }
   },
   "files": [
     "dist/",
-    "src/",
     "examples/",
     "README.md",
     "CHANGELOG.md",
@@ -46,7 +49,8 @@
     "jsonc-parser": "^3.2.0",
     "markdown-it": "^14.1.1",
     "markdownlint": "^0.40.0",
-    "minimatch": "^10.2.5"
+    "minimatch": "^10.2.5",
+    "smol-toml": "^1.6.1"
   },
   "engines": {
     "node": ">=20.0.0",

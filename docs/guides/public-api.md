@@ -1,5 +1,14 @@
 ---
-title: Public API reference
+title: "Public API reference"
+aliases:
+  - "Public API reference"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # Public API
@@ -122,6 +131,10 @@ const fix = makeFix({ lineNumber: 3, editColumn: 5, deleteCount: 2, insertText: 
 | `HighlightNode` | type | A `==highlight==` node |
 | `CommentNode` | type | A `%%comment%%` node |
 | `SourcePosition` | type | `{ line, column }` (1-based) |
+
+`ParseResult.raw` and `ParseResult.lines` are LF-normalized Markdown body
+content. They do not include frontmatter fences, and they are not the original
+working-tree bytes.
 
 ### Config Types
 

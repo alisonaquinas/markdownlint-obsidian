@@ -65,12 +65,25 @@ export interface LintOptions {
 }
 
 /**
+ * Options for linting one in-memory Markdown document.
+ */
+export interface LintTextOptions extends Omit<LintOptions, "globs"> {
+  /** Absolute or workspace-relative path used for config, vault, and diagnostic metadata. */
+  readonly filePath: string;
+  /** Current Markdown text to lint. */
+  readonly text: string;
+}
+
+/**
  * Options for a fix run.
  */
 export interface FixOptions extends LintOptions {
   /** If true, report what would be fixed without writing files. */
   readonly check?: boolean;
 }
+
+/** Options for fixing one in-memory Markdown document. */
+export type FixTextOptions = LintTextOptions;
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -130,6 +143,23 @@ async function tryBootstrapVault(
   }
 }
 
+async function prepareRunContext(options: Omit<LintOptions, "globs">): Promise<{
+  readonly cwd: string;
+  readonly config: LinterConfig;
+  readonly parser: Parser;
+  readonly registry: RuleRegistry;
+  readonly vault: VaultIndex | null;
+  readonly blockRefIndex: BlockRefIndex | null;
+}> {
+  const cwd = options.cwd ?? process.cwd();
+  const config = await loadConfig(options.config ?? cwd);
+  const effectiveConfig = applyOverrides(config, { ...options, globs: [] });
+  const parser = makeMarkdownItParser();
+  const registry = await buildRegistry(effectiveConfig, cwd, options.onCustomRuleError);
+  const { vault, blockRefIndex } = await tryBootstrapVault(cwd, effectiveConfig, parser);
+  return { cwd, config: effectiveConfig, parser, registry, vault, blockRefIndex };
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -163,6 +193,30 @@ export async function lint(options: LintOptions): Promise<LintResult[]> {
     blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker(),
   });
+}
+
+/**
+ * Lint one in-memory Markdown document and return a single result.
+ *
+ * This API is intended for editor integrations that need to lint the current
+ * buffer before it is saved. It uses the same config, registry, parser, vault,
+ * and rule pipeline as {@link lint}, but injects the supplied text through the
+ * application-layer file reader boundary.
+ *
+ * @param options - Lint text options.
+ * @returns A lint result for `options.filePath`.
+ */
+export async function lintText(options: LintTextOptions): Promise<LintResult> {
+  const context = await prepareRunContext(options);
+  const [result] = await runLint([options.filePath], context.config, context.registry, {
+    parser: context.parser,
+    readFile: async () => options.text,
+    vault: context.vault,
+    blockRefIndex: context.blockRefIndex,
+    fsCheck: makeNodeFsExistenceChecker(),
+  });
+  if (result === undefined) throw new Error("lintText did not produce a result");
+  return result;
 }
 
 /**
@@ -201,6 +255,32 @@ export async function fix(options: FixOptions): Promise<FixOutcome> {
   };
 
   return runFixUseCase(filePaths, effectiveConfig, registry, deps);
+}
+
+/**
+ * Run the fix pipeline against one in-memory Markdown document.
+ *
+ * The returned `text` contains the patched document. No filesystem write occurs.
+ *
+ * @param options - Fix text options.
+ * @returns Fix outcome plus the patched in-memory text.
+ */
+export async function fixText(
+  options: FixTextOptions,
+): Promise<FixOutcome & { readonly text: string }> {
+  const context = await prepareRunContext(options);
+  let text = options.text;
+  const outcome = await runFixUseCase([options.filePath], context.config, context.registry, {
+    parser: context.parser,
+    readFile: async () => text,
+    writeFile: async (_path, content) => {
+      text = content;
+    },
+    vault: context.vault,
+    blockRefIndex: context.blockRefIndex,
+    fsCheck: makeNodeFsExistenceChecker(),
+  });
+  return { ...outcome, text };
 }
 
 // Ensure node:fs/promises is available in this module's environment

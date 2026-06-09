@@ -1,0 +1,85 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "35 16 * * 6"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  alert-gate:
+    name: Gate CodeQL alerts
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+      security-events: read
+    steps:
+      - name: Fail on open high-severity CodeQL alerts for this PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          gh api --paginate \
+            "/repos/${REPOSITORY}/code-scanning/alerts?state=open&tool_name=CodeQL&pr=${PR_NUMBER}&per_page=100" \
+            > codeql-alerts.json
+
+          jq --arg head_sha "$PR_HEAD_SHA" '[.[] | select(
+            (.most_recent_instance.commit_sha // "") == $head_sha and (
+              (.rule.severity // "") == "error" or
+              (.rule.security_severity_level // "") == "critical" or
+              (.rule.security_severity_level // "") == "high"
+            )
+          )]' codeql-alerts.json > blocking-codeql-alerts.json
+
+          count=$(jq 'length' blocking-codeql-alerts.json)
+          if [[ "$count" != "0" ]]; then
+            jq -r '.[] | "- \(.rule.id): \(.rule.description) — \(.html_url)"' \
+              blocking-codeql-alerts.json
+            exit 1
+          fi

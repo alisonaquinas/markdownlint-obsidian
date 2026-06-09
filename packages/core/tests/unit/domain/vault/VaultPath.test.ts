@@ -4,34 +4,27 @@
  * @module tests/unit/domain/vault/VaultPath.test
  */
 import { describe, it, expect } from "bun:test";
-import * as path from "node:path";
 import { makeVaultPath } from "../../../../src/domain/vault/VaultPath.js";
 
 describe("VaultPath", () => {
   it("computes relative, absolute, and stem", () => {
-    const root = path.resolve("/vault");
-    const abs = path.resolve("/vault/notes/index.md");
-    const p = makeVaultPath(root, abs);
+    const abs = "/vault/notes/index.md";
+    const p = makeVaultPath("notes/index.md", abs);
     expect(p.relative).toBe("notes/index.md");
     expect(p.absolute).toBe(abs);
     expect(p.stem).toBe("index");
   });
 
-  it("throws if file is outside vault", () => {
-    expect(() => makeVaultPath(path.resolve("/vault"), path.resolve("/other/x.md"))).toThrow(
-      /outside/,
-    );
+  it("throws if relative path escapes vault", () => {
+    expect(() => makeVaultPath("../other/x.md", "/other/x.md")).toThrow(/invalid/);
   });
 
   it("normalizes path separators to forward slashes in relative form", () => {
-    const root = path.resolve("/vault");
-    const abs = path.resolve("/vault/notes/sub/index.md");
-    const p = makeVaultPath(root, abs);
+    const p = makeVaultPath("notes\\sub\\index.md", "/vault/notes/sub/index.md");
     expect(p.relative).toBe("notes/sub/index.md");
   });
 
-  it("rejects when abs equals vault root", () => {
-    const root = path.resolve("/vault");
-    expect(() => makeVaultPath(root, root)).toThrow(/outside/);
+  it("rejects empty relative path", () => {
+    expect(() => makeVaultPath("", "/vault")).toThrow(/invalid/);
   });
 });

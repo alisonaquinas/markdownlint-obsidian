@@ -1,0 +1,19 @@
+{
+  // Dogfood: lint extension/docs/ with markdownlint-obsidian.
+  //
+  // This mirrors docs/.obsidian-linter.jsonc so the extension planning wiki is
+  // linted as its own documentation vault. vaultRoot points at extension/docs/
+  // itself because links in this tree are written relative to this directory.
+  //
+  // Keep the same documentation-writing exceptions as root docs/: dense plans
+  // and specs intentionally use tight fences, tight lists, and unlabelled
+  // pseudo-grammar or tree snippets.
+  "vaultRoot": "./",
+  "resolve": true,
+  "globs": ["**/*.md"],
+  "rules": {
+    "MD031": { "enabled": false },
+    "MD032": { "enabled": false },
+    "MD040": { "enabled": false }
+  }
+}

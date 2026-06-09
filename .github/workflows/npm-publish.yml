@@ -12,7 +12,7 @@ jobs:
     uses: ./.github/workflows/_publish-packages.yml
     permissions:
       id-token: write # propagated to the reusable workflow's publish job for --provenance
-      contents: read
+      contents: write
     with:
       dry_run: false
       tag_name: ${{ github.event.release.tag_name }}

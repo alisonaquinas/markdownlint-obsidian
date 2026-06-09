@@ -61,6 +61,12 @@ property from `.obsidian-linter.jsonc`.
 | `1` | One or more lint errors found |
 | `2` | Tool or configuration failure |
 
+## Programmatic API
+
+The package export keeps the binary entrypoint available as `main(argv)` and
+also exposes `runCli(argv, { cwd })` for adapters that need structured counts
+and captured output without scraping process streams.
+
 ## Developing in this monorepo
 
 ```bash

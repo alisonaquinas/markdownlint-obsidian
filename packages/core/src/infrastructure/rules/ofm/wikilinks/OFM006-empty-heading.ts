@@ -23,8 +23,6 @@ import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
  *
  * @see docs/rules/wikilinks/OFM006.md
  */
-const EMPTY_HEADING_RE = /\[\[[^\]]*?#\s*(?:\||\]\])/;
-
 export const OFM006Rule: OFMRule = {
   names: ["OFM006", "empty-wikilink-heading"],
   description: "Wikilink declares `#` with no heading text",
@@ -35,7 +33,7 @@ export const OFM006Rule: OFMRule = {
     for (const link of parsed.wikilinks) {
       if (link.heading !== null) continue; // heading text already present
       if (link.blockRef !== null) continue; // `#^blockref` is not an empty heading
-      if (!EMPTY_HEADING_RE.test(link.raw)) continue;
+      if (!hasEmptyHeading(link.raw)) continue;
       onError({
         line: link.position.line,
         column: link.position.column,
@@ -44,3 +42,12 @@ export const OFM006Rule: OFMRule = {
     }
   },
 };
+
+function hasEmptyHeading(raw: string): boolean {
+  const inner = raw.startsWith("[[") && raw.endsWith("]]") ? raw.slice(2, -2) : raw;
+  const pipeIndex = inner.indexOf("|");
+  const target = pipeIndex === -1 ? inner : inner.slice(0, pipeIndex);
+  const headingIndex = target.indexOf("#");
+  if (headingIndex === -1) return false;
+  return target.slice(headingIndex + 1).trim().length === 0;
+}

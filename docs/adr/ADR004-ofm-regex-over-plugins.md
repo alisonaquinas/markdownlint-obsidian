@@ -1,3 +1,16 @@
+---
+title: "ADR004 — Use regex extractors for OFM syntax instead of markdown-it plugins"
+aliases:
+  - "ADR004 — Use regex extractors for OFM syntax instead of markdown-it plugins"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # ADR004 — Use regex extractors for OFM syntax instead of markdown-it plugins
 
 **Status:** Accepted

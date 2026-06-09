@@ -10,7 +10,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -35,45 +39,62 @@ jobs:
       - name: BDD acceptance tests
         run: bun run test:bdd
 
-      - name: Dogfood docs/
+      - name: Dogfood docs/ and extension/docs/
         run: bun run test:dogfood
 
       - name: Build (all packages)
         run: bun run --filter '*' build
 
-      - name: Verify action bundle builds without errors
-        # esbuild module-ordering is platform-specific (Linux vs macOS/Windows),
-        # so a bit-for-bit git diff would always fail on cross-platform teams.
-        # We verify the bundle compiles cleanly; source correctness is covered
-        # by the typecheck step above.
+      - name: Extension host smoke test
+        run: xvfb-run -a bun run --cwd extension test:extension-host
+
+      - name: Verify extension package metadata
+        run: bun run --cwd extension package:check
+
+      - name: Package extension VSIX
+        run: bun run --cwd extension package
+
+      - name: Verify package tarball contents
+        run: bun run test:packaging
+
+      - name: Build and test GitHub Action
         run: |
           cd action
-          bun install
-          bun run build
+          npm install --workspaces=false
+          npm run build
+          bun test --timeout 30000
+          mkdir -p ../tmp-action-bin
+          printf '#!/usr/bin/env sh\necho "[]"\n' > ../tmp-action-bin/npx
+          chmod +x ../tmp-action-bin/npx
+          PATH="$(pwd)/../tmp-action-bin:$PATH" node dist/main.mjs
+        env:
+          INPUT_GLOBS: "**/*.md"
+          INPUT_FORMAT: json
+          GITHUB_WORKSPACE: ${{ github.workspace }}
 
   dogfood-published:
-    # Lint docs/ using the published markdownlint-obsidian-cli package on
-    # npmjs.org (not the local source). This catches release regressions that
-    # only manifest in the packaged artifact (missing files, broken bin entry,
-    # bad workspace dep resolution, etc.) and also verifies that consumers can
-    # install and run the CLI from a clean environment.
+    # Lint docs/ and extension/docs/ using the published
+    # markdownlint-obsidian-cli package on npmjs.org (not the local source).
+    # This catches release regressions that only manifest in the packaged
+    # artifact (missing files, broken bin entry, bad workspace dep resolution,
+    # etc.) and also verifies that consumers can install and run the CLI from a
+    # clean environment.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
-      - name: Lint docs/ with published markdownlint-obsidian-cli
-        working-directory: docs
-        run: npx -y markdownlint-obsidian-cli@latest "**/*.md"
+      - name: Lint docs/ and extension/docs/ with published CLI
+        run: npm run test:dogfood:published
 
   publish-dry-run:
-    # Dry-run the full publish pipeline (build → prepare-publish.mjs → npm
-    # publish --dry-run) for both packages on every PR and push.  Exercises
-    # the same code path as a real release without touching any registry, so
-    # packaging failures surface before merge rather than at release time.
+    # Dry-run the release archive path (build → prepare-publish.mjs → npm pack
+    # --dry-run) for both packages on every PR and push.  Exercises the same
+    # dependency rewrite and tarball metadata path as a real release without
+    # touching any registry.
     needs: build-and-test
     uses: ./.github/workflows/_publish-packages.yml
     permissions:

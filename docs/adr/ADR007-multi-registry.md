@@ -1,3 +1,16 @@
+---
+title: "ADR007 — Multi-registry publishing and supply-chain hardening"
+aliases:
+  - "ADR007 — Multi-registry publishing and supply-chain hardening"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # ADR007 — Multi-registry publishing and supply-chain hardening
 
 **Status:** Accepted

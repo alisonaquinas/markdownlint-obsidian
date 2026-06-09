@@ -31,7 +31,7 @@ export function makeMarkdownItParser(): Parser {
   const md = new MarkdownIt({ html: true, linkify: false });
   return {
     parse(filePath: string, content: string): ParseResult {
-      return parseOne(md, filePath, content);
+      return parseOne(md, filePath, normalizeLineEndings(content));
     },
   };
 }
@@ -65,4 +65,8 @@ function parseOne(md: MarkdownIt, filePath: string, content: string): ParseResul
 function stripFrontmatter(content: string): string {
   const match = content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
   return match === null ? content : content.slice(match[0].length);
+}
+
+function normalizeLineEndings(content: string): string {
+  return content.replace(/\r\n?/g, "\n");
 }

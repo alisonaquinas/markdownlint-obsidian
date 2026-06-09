@@ -47,6 +47,24 @@ describe("engine.fix()", () => {
     }
   });
 
+  it("preserves CRLF line endings when fixing file-backed Markdown", async () => {
+    const tmpDir = await makeTmpVault();
+    try {
+      const content = "# Hello\r\n\r\nBody #tag/\r\n";
+      const filePath = path.join(tmpDir, "file.md");
+      await fs.writeFile(filePath, content);
+
+      const outcome = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const afterContent = await fs.readFile(filePath, "utf8");
+
+      expect(outcome.filesFixed).toHaveLength(1);
+      expect(path.basename(outcome.filesFixed[0] ?? "")).toBe("file.md");
+      expect(afterContent).toBe("# Hello\r\n\r\nBody #tag\r\n");
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
   it("returns an empty firstPass when no files match", async () => {
     const tmpDir = await makeTmpVault();
     try {

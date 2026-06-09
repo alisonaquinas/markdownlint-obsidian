@@ -1,5 +1,14 @@
 ---
-title: Wikilink resolution modes
+title: "Wikilink resolution modes"
+aliases:
+  - "Wikilink resolution modes"
+tags:
+  - "docs"
+  - "docs/guides"
+type: "guide"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
 ---
 
 # Wikilink resolution modes

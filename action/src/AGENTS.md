@@ -17,7 +17,7 @@ src/
 1. Update [`../action.yml`](../action.yml).
 2. Read the input in `main.ts` with `@actions/core`.
 3. Pass the value through to the CLI invocation.
-4. Rebuild `../dist/main.js` and update [`../README.md`](../README.md).
+4. Rebuild `../dist/main.mjs` and update [`../README.md`](../README.md).
 
 ### Adding or changing an output
 
@@ -28,7 +28,7 @@ src/
 ## Invariants — Do Not Violate
 
 - Keep linting logic out of this layer. It delegates to the CLI package.
-- Never hand-edit `../dist/main.js`; rebuild it from `main.ts`.
+- Never hand-edit `../dist/main.mjs`; rebuild it from `main.ts`.
 - Keep the manifest path accurate in docs: the live action metadata is
   `action/action.yml`, not a root-level `action.yml`.
 

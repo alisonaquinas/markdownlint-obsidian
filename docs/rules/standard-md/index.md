@@ -1,5 +1,15 @@
 ---
-title: Standard markdownlint rules
+title: "Standard markdownlint rules"
+aliases:
+  - "Standard markdownlint rules"
+tags:
+  - "docs"
+  - "docs/rules"
+  - "docs/rules/standard-md"
+type: "rule-reference"
+status: "current"
+updated: 2026-05-09
+up: "[[rules/index]]"
 area: standard-md
 ---
 

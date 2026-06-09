@@ -1,10 +1,18 @@
 ---
-title: vscode-markdownlint User Requirements - Configuration
+title: "vscode-markdownlint User Requirements - Configuration"
+aliases:
+  - "vscode-markdownlint User Requirements - Configuration"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/user
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/user"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - ../functional/editing-linting.md
   - ../functional/workspace-commands.md

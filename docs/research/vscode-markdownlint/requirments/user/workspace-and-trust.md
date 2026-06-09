@@ -1,10 +1,18 @@
 ---
-title: vscode-markdownlint User Requirements - Workspace And Trust
+title: "vscode-markdownlint User Requirements - Workspace And Trust"
+aliases:
+  - "vscode-markdownlint User Requirements - Workspace And Trust"
 tags:
-  - research/vscode
-  - research/markdownlint
-  - requirements/user
+  - "research/vscode"
+  - "research/markdownlint"
+  - "requirements/user"
+  - "docs"
+  - "docs/research"
+  - "docs/research/vscode-markdownlint"
+type: "research"
+status: "current"
 updated: 2026-05-04
+up: "[[research/vscode-markdownlint/technical-stack]]"
 sources:
   - ../functional/workspace-commands.md
   - ../functional/contributions-and-trust.md

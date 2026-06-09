@@ -1,3 +1,17 @@
+---
+title: "Execution Ledger"
+aliases:
+  - "Execution Ledger"
+tags:
+  - "docs"
+  - "docs/plans"
+  - "docs/plans/phase-work"
+type: "plan"
+status: "current"
+updated: 2026-05-09
+up: "[[roadmap]]"
+---
+
 # Execution Ledger
 
 Running log of the subagent-driven roadmap execution. One row per phase attempt, plus decision notes.

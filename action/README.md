@@ -2,6 +2,8 @@
 
 A JavaScript GitHub Action that lints Obsidian Flavored Markdown with
 [`markdownlint-obsidian`](https://github.com/alisonaquinas/markdownlint-obsidian).
+The action invokes the npm-distributed `markdownlint-obsidian-cli` through
+`npx`, so npm remains the primary CLI distribution path.
 
 ## Usage
 
@@ -45,15 +47,15 @@ A JavaScript GitHub Action that lints Obsidian Flavored Markdown with
 
 ## Building
 
-This action ships a pre-built bundle at `dist/main.js`. To rebuild:
+This action ships a pre-built bundle at `dist/main.mjs`. To rebuild:
 
 ```bash
 cd action
-npm install
+npm install --workspaces=false
 npm run build
 ```
 
-CI enforces that `action/dist` is up to date via `git diff --exit-code`.
+CI rebuilds the bundle and runs an action smoke test.
 
 The live action metadata is stored in [`action.yml`](action.yml), so consumer
 workflows must reference the subdirectory action path shown above.

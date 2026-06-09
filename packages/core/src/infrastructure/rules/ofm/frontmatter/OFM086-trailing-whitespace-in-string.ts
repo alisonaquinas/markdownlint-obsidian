@@ -1,20 +1,8 @@
-/**
- * Purpose: Lint rule that warns when any frontmatter string value ends with trailing whitespace.
- *
- * Provides: {@link OFM086Rule}
- *
- * Role in system: Recursively walks all string values in the parsed frontmatter object,
- * computes accurate line numbers from `frontmatterRaw`, and emits fixable warnings for
- * simple top-level scalar values while flagging nested values without a fix due to
- * line-number ambiguity.
- *
- * @module infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string
- */
+/** @module infrastructure/rules/ofm/frontmatter/OFM086-trailing-whitespace-in-string */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import type { Fix } from "../../../../domain/linting/Fix.js";
 import { makeFix } from "../../../../domain/linting/Fix.js";
 
-const TRAILING_WS = /[ \t]+$/;
 const KEY_LINE = /^([A-Za-z0-9_-]+)\s*:/;
 
 /**
@@ -121,7 +109,7 @@ function checkString(
   frontmatterRaw: string | null,
   emit: Emit,
 ): void {
-  if (!TRAILING_WS.test(value)) return;
+  if (!value.endsWith(" ") && !value.endsWith("\t")) return;
   const where = path.length === 0 ? "(root)" : path.join(".");
   const topKey = path[0];
   const line = (topKey !== undefined && keyLineMap.get(topKey)) || 1;
@@ -136,14 +124,6 @@ function checkString(
   });
 }
 
-/**
- * Find the 1-based column where trailing whitespace starts on the given
- * (1-based, absolute file) line within frontmatterRaw.
- *
- * Strategy: locate the raw YAML line, find the trimmed value string within
- * it, then return the column immediately after. Falls back to column 1 when
- * the line or value cannot be located.
- */
 function findTrailingWhitespaceColumn(
   absoluteLine: number,
   trimmedValue: string,
@@ -154,10 +134,6 @@ function findTrailingWhitespaceColumn(
   return locateTrailingWhitespaceColumn(rawLine, trimmedValue);
 }
 
-/**
- * Return the raw YAML line (0-based within frontmatterRaw) that corresponds
- * to `absoluteLine` (1-based in the file, where line 1 is the `---` opener).
- */
 function rawFrontmatterLine(
   absoluteLine: number,
   frontmatterRaw: string | null,
@@ -168,14 +144,9 @@ function rawFrontmatterLine(
   return rawLines[absoluteLine - 2];
 }
 
-/**
- * Given a raw YAML line and the trimmed value, return the 1-based column
- * where the trailing whitespace begins (i.e. the character after the trimmed value).
- */
 function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): number {
   if (trimmedValue.length === 0) {
-    const wsMatch = rawLine.match(/[ \t]+(?=["']?\s*$)/);
-    return wsMatch !== null && wsMatch.index !== undefined ? wsMatch.index + 1 : 1;
+    return findWhitespaceOnlyValueColumn(rawLine);
   }
   // Search only in the value portion (after the colon) to avoid false matches
   // when the key name is a substring of the value (e.g., `Note: "Note  "`).
@@ -183,6 +154,32 @@ function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): 
   const searchFrom = colonIdx === -1 ? 0 : colonIdx + 1;
   const idx = rawLine.indexOf(trimmedValue, searchFrom);
   return idx === -1 ? 1 : idx + trimmedValue.length + 1;
+}
+
+function findWhitespaceOnlyValueColumn(rawLine: string): number {
+  const endIndex = findWhitespaceOnlyValueScanEnd(rawLine);
+  const start = findHorizontalWhitespaceRunStart(rawLine, endIndex);
+  return start === endIndex ? 1 : start + 2;
+}
+
+function findWhitespaceOnlyValueScanEnd(rawLine: string): number {
+  let end = rawLine.length - 1;
+  while (end >= 0 && isHorizontalWhitespace(rawLine.charCodeAt(end))) end--;
+  return isYamlQuote(rawLine[end]) ? end - 1 : rawLine.length - 1;
+}
+
+function findHorizontalWhitespaceRunStart(rawLine: string, endIndex: number): number {
+  let start = endIndex;
+  while (start >= 0 && isHorizontalWhitespace(rawLine.charCodeAt(start))) start--;
+  return start;
+}
+
+function isHorizontalWhitespace(char: number): boolean {
+  return char === 0x20 || char === 0x09;
+}
+
+function isYamlQuote(char: string | undefined): boolean {
+  return char === '"' || char === "'";
 }
 
 function walkObject(

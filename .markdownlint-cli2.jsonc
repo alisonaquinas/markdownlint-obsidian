@@ -1,5 +1,6 @@
 {
-  // Lint vanilla markdown files (not docs/ — those use markdownlint-obsidian).
+  // Lint vanilla markdown files (not docs/ or extension/docs/ — those use
+  // their own markdownlint-obsidian dogfood configs).
   //
   // vaultRoot is set to docs/ so that when markdownlint-obsidian's dogfood
   // run (`test:dogfood`, which hits `docs/**/*.md`) loads this config, its
@@ -8,7 +9,7 @@
   // without teaching the config loader to walk downward.
   "vaultRoot": "./docs",
   "resolve": true,
-  "globs": ["**/*.md", "!.github/**", "!docs/**", "!node_modules/**"],
+  "globs": ["**/*.md", "!.github/**", "!docs/**", "!extension/docs/**", "!node_modules/**"],
   "config": {
     "default": true,
     "MD013": false,

@@ -1,3 +1,16 @@
+---
+title: "ADR005 — Allow node:path in domain value objects"
+aliases:
+  - "ADR005 — Allow node:path in domain value objects"
+tags:
+  - "docs"
+  - "docs/adr"
+type: "adr"
+status: "current"
+updated: 2026-05-09
+up: "[[README]]"
+---
+
 # ADR005 — Allow `node:path` in domain value objects
 
 **Status:** Accepted
