@@ -2,7 +2,7 @@
   "name": "markdownlint-obsidian-vscode",
   "displayName": "markdownlint Obsidian",
   "description": "VS Code extension for linting Obsidian Flavored Markdown with markdownlint-obsidian.",
-  "version": "0.0.0",
+  "version": "0.8.0",
   "publisher": "alisonaquinas",
   "license": "MIT",
   "type": "module",
