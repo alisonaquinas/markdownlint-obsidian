@@ -7,6 +7,13 @@
   }
 } -->
 
+## [1.2.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.2.0...markdownlint-obsidianv1.2.1) (2026-06-09)
+
+### Dependencies
+
+* bump js-yaml from 4.1.1 to 4.2.0
+* bump markdown-it from 14.1.1 to 14.2.0
+
 ## [1.2.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.1.0...markdownlint-obsidianv1.2.0) (2026-06-09)
 
 

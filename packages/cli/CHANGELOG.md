@@ -7,6 +7,15 @@
   }
 } -->
 
+## [1.1.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.1.1...markdownlint-obsidian-cliv1.1.2) (2026-06-09)
+
+### Dependencies
+
+* bump commander from 12.1.0 to 15.0.0
+* The following workspace dependencies were updated
+  * dependencies
+    * markdownlint-obsidian bumped to 1.2.1
+
 ## [1.1.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.1.0...markdownlint-obsidian-cliv1.1.1) (2026-06-09)
 
 

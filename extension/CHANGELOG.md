@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.8.1 - 2026-06-09
+
+### Changed
+
+- Refresh extension development dependencies, including TypeScript, Node types,
+  esbuild, and `@vscode/vsce`.
+
+### Fixed
+
+- Extension-host smoke tests now package the Flavor Grenade test stub through
+  the extension-local `@vscode/vsce` entry point instead of a workspace `.bin`
+  shim.
+
 ## 0.8.0 - 2026-06-09
 
 ### Added
