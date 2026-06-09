@@ -21,7 +21,7 @@
     "prepublishOnly": "echo 'Publish from packages/core or packages/cli, not the root' && exit 1"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^10.0.0",
+    "@cucumber/cucumber": "^13.0.0",
     "@types/bun": "^1.3.12",
     "@types/js-yaml": "^4.0.0",
     "@types/markdown-it": "^14.1.2",
