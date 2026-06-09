@@ -17,7 +17,7 @@ jobs:
       core_tag_name: ${{ steps.release.outputs['packages/core--tag_name'] }}
       cli_tag_name: ${{ steps.release.outputs['packages/cli--tag_name'] }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         id: release
         with:
           config-file: .github/release-please-config.json
