@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.0` instead of
+  floating on `latest`, so release validation exercises the known released CLI
+  and its bundled `markdownlint-obsidian` dependency deterministically.
+
 ## [1.1.0] - 2026-05-04
 
 ### Added

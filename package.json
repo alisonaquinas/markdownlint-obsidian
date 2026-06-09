@@ -15,7 +15,7 @@
     "test:dogfood": "bun run test:dogfood:docs && bun run test:dogfood:extension-docs",
     "test:dogfood:docs": "cd docs && bun ../packages/cli/bin/markdownlint-obsidian.js \"**/*.md\"",
     "test:dogfood:extension-docs": "cd extension/docs && bun ../../packages/cli/bin/markdownlint-obsidian.js \"**/*.md\"",
-    "test:dogfood:published": "cd docs && npx -y markdownlint-obsidian-cli@latest \"**/*.md\" && cd ../extension/docs && npx -y markdownlint-obsidian-cli@latest \"**/*.md\"",
+    "test:dogfood:published": "cd docs && npx -y markdownlint-obsidian-cli@1.1.0 \"**/*.md\" && cd ../extension/docs && npx -y markdownlint-obsidian-cli@1.1.0 \"**/*.md\"",
     "test:packaging": "node scripts/verify-package-contents.mjs",
     "test:all": "bun run typecheck && bun run lint && bun run test && bun run test:bdd && bun run test:packaging",
     "prepublishOnly": "echo 'Publish from packages/core or packages/cli, not the root' && exit 1"
