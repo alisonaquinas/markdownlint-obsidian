@@ -53,8 +53,8 @@ The `parsed` object passed to `run` is a `ParseResult` with the following fields
 | `highlights`       | `readonly HighlightNode[]`  | All `==highlight==` nodes found in the file        |
 | `comments`         | `readonly CommentNode[]`    | All `%%comment%%` nodes found in the file          |
 | `callouts`         | `readonly CalloutNode[]`    | All `> [!type]` callout nodes found in the file    |
-| `lines`            | `readonly string[]`         | All lines of the file (1-indexed via `lines[line - 1]`) |
-| `raw`              | `string`                    | Full raw file content                              |
+| `lines`            | `readonly string[]`         | LF-normalized body lines (1-indexed via `lines[line - 1]`) |
+| `raw`              | `string`                    | LF-normalized Markdown body after frontmatter      |
 
 Example — iterate over wikilinks:
 

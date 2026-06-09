@@ -24,9 +24,9 @@ describe("FileReader", () => {
     expect(await readMarkdownFile(file)).toBe("# Hi");
   });
 
-  it("normalizes CRLF to LF", async () => {
+  it("preserves CRLF line endings", async () => {
     const file = path.join(tmpDir, "a.md");
     await fs.writeFile(file, "a\r\nb\r\n");
-    expect(await readMarkdownFile(file)).toBe("a\nb\n");
+    expect(await readMarkdownFile(file)).toBe("a\r\nb\r\n");
   });
 });

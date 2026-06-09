@@ -97,4 +97,56 @@ describe("CLI", () => {
       await fs.rm(tmp, { recursive: true, force: true });
     }
   });
+
+  it("runCli handles CRLF Markdown without OFM041 false positives", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    const content = [
+      "# Notice",
+      "",
+      "> [[domain/ubiquitous-language#notification-group|Notification Group]], which is an email",
+      "",
+      "Paragraph before list",
+      "- one",
+      "- two",
+      "",
+    ].join("\r\n");
+    await fs.writeFile(path.join(tmp, "note.md"), content);
+    try {
+      const result = await runCli(["node", "markdownlint-obsidian", "**/*.md", "--no-resolve"], {
+        cwd: tmp,
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("MD032");
+      expect(result.stdout).not.toContain("OFM041");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
+
+  it("spawned CLI handles CRLF Markdown without OFM041 false positives", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    const content = [
+      "# Notice",
+      "",
+      "> [[domain/ubiquitous-language#notification-group|Notification Group]], which is an email",
+      "",
+      "Paragraph before list",
+      "- one",
+      "- two",
+      "",
+    ].join("\r\n");
+    await fs.writeFile(path.join(tmp, "note.md"), content);
+    try {
+      const result = await spawnCli(["**/*.md", "--no-resolve"], tmp);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("MD032");
+      expect(result.stdout).not.toContain("OFM041");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
 });

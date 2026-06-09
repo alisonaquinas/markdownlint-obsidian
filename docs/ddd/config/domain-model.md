@@ -95,24 +95,34 @@ separators are required by OFM rendering.
 
 ## Current Cascade Logic
 
-Config files are discovered by walking from each file's directory up to vault root.
-Closer files take precedence. Precedence order (high → low):
+Config files are discovered by walking from the requested directory up to the
+filesystem root, then applying layers from ancestor to descendant. Closer files
+take precedence. If `loadConfig` receives a file path, that file is loaded as an
+explicit base layer and normal discovery starts from its parent directory.
 
-1. CLI `--config` flag
-2. `.markdownlint-cli2.jsonc/yaml/cjs/mjs`
-3. `.obsidian-linter.jsonc/yaml`
-4. `.markdownlint.jsonc/yaml`
-5. `package.json#/markdownlint`
-6. Built-in defaults
+Within each discovered directory, the loader reads the first existing file in
+each family and applies families in this order:
+
+1. `.markdownlint-cli2.jsonc/yaml/cjs/mjs`
+2. `.obsidian-linter.jsonc/yaml`
+3. `.markdownlint.jsonc/json/yaml/yml/cjs/mjs`
 
 The `rules` branch is deep-merged across the cascade. A user override for one
 rule replaces that rule's config without discarding sibling defaults, including
 the standard MD conflict defaults.
 
+`.markdownlint.*` files are normalized into `LinterConfig.rules`; they do not
+carry OFM-specific settings. Embedded `config` objects inside
+`.markdownlint-cli2.*` and explicit generic config files are also normalized
+into `rules`.
+
 ## markdownlint-cli2 Parity Target
 
 Research:
 [markdownlint-cli2 configuration loading analysis](../../research/markdownlint-cli2-config-loading-analysis.md)
+
+Requirements:
+[[requirements/config-format-parity]]
 
 The current cascade is intentionally simpler than `markdownlint-cli2`. Feature
 parity work must close these gaps deliberately rather than by incidental

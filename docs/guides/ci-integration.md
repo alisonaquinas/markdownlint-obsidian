@@ -98,6 +98,36 @@ Bun respects. `bunx markdownlint-obsidian-cli` works identically to
 Consumer pipelines that use Node are **not affected** — the existing
 `npx markdownlint-obsidian-cli` invocation continues to work as before.
 
+## Line Endings
+
+`markdownlint-obsidian` normalizes Markdown input before linting so equivalent
+LF and CRLF files produce the same diagnostics. Still configure Git explicitly
+so editors, diffs, CI checkouts, and other Markdown tools agree on the file
+bytes in the working tree.
+
+For Markdown-heavy repositories, add this to `.gitattributes`:
+
+```gitattributes
+*.md text eol=lf
+```
+
+Then normalize existing Markdown files once:
+
+```bash
+git add --renormalize '*.md'
+git commit -m "Normalize Markdown line endings"
+```
+
+Use `.editorconfig` as the editor-side companion:
+
+```editorconfig
+[*.md]
+end_of_line = lf
+```
+
+`.gitattributes` controls Git index and checkout normalization. `.editorconfig`
+helps editors write the expected line endings before Git sees the file.
+
 ## Output formatters
 
 Every formatter is available both from the CLI (`--output-formatter`)

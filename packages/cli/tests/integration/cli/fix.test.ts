@@ -30,6 +30,18 @@ describe("--fix and --fix-check round-trip", () => {
     expect(content).toBe("# Test\n\n#project\n");
   });
 
+  it("--fix preserves CRLF line endings", async () => {
+    const filePath = path.join(tmp, "test.md");
+    await fs.writeFile(filePath, "# Test\r\n\r\n#project/\r\n");
+
+    const result = await spawnCli(["--fix", "**/*.md"], tmp);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toContain("Fixed 1 file(s)");
+    const content = await fs.readFile(filePath, "utf8");
+    expect(content).toBe("# Test\r\n\r\n#project\r\n");
+  });
+
   it("--fix-check reports what would be fixed without touching disk, exits 1", async () => {
     const filePath = path.join(tmp, "test.md");
     const original = "# Test\n\n#project/\n";

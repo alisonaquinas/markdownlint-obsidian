@@ -10,10 +10,10 @@
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
 import { updateFence } from "../shared/fenceStateMachine.js";
 
-// A line that looks like it is trying to be a callout header: starts with
-// `>` followed by any whitespace and then `[`. This is a loose sniff so
-// we only descend to the strict check when there is a plausible candidate.
-const LOOKS_LIKE_HEADER = /^>\s*\[/;
+// A line that looks like it is trying to be an Obsidian callout header: starts
+// with `>` followed by `[!`. Normal blockquotes can begin with links such as
+// `> [[page|Alias]]`; those are prose, not malformed callouts.
+const LOOKS_LIKE_HEADER = /^>\s*\[!/;
 
 // The same grammar the CalloutExtractor uses. A line that matches this is
 // a well-formed callout header (possibly with a fold marker and title).
@@ -24,8 +24,8 @@ const STRICT_HEADER = /^>\s*\[!([A-Za-z][A-Za-z0-9-]*)\][+-]?(\s.*)?$/;
  *
  * Catches lines that look like they are trying to open a callout but do
  * not conform to the grammar used by Obsidian (and by our extractor).
- * Examples include `> [!NOTE]Title` (missing space after `]`),
- * `> [!] Title` (missing type), and `> [ NOTE ] Title` (stray spaces).
+ * Examples include `> [!NOTE]Title` (missing space after `]`) and
+ * `> [!] Title` (missing type).
  * Well-formed callouts are silently skipped; lines that don't look like
  * headers at all (regular quote blocks) are also skipped. Fenced code
  * blocks are tracked and skipped so example markdown inside

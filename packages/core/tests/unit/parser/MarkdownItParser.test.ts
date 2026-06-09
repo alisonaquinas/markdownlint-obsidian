@@ -50,4 +50,14 @@ describe("MarkdownItParser", () => {
   it("propagates OFM902 on broken frontmatter", () => {
     expect(() => parser.parse("x.md", "---\n : :\n---\nbody")).toThrowError(/OFM902/);
   });
+
+  it("normalizes CRLF content at the parser boundary", () => {
+    const src = "---\r\ntags: [a]\r\n---\r\n# Hi\r\n[[page]]\r\n";
+    const r = parser.parse("notes/index.md", src);
+
+    expect(r.raw).toBe("# Hi\n[[page]]\n");
+    expect(r.lines).toEqual(["# Hi", "[[page]]", ""]);
+    expect(r.frontmatterRaw).toBe("tags: [a]");
+    expect(r.wikilinks[0]?.target).toBe("page");
+  });
 });
