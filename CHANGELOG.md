@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-06-09
+
 ### Changed
 
 - Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.1` instead of
@@ -21,6 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Published dogfood test setup now invokes `npm` directly for its isolated
   package install, avoiding Bun's `npm_execpath` shim when run through
   `bun run` on Windows.
+- Reconciled open dependency updates for GitHub Actions, the core parser stack,
+  the CLI command parser, and the VS Code extension packaging toolchain.
+
+### Fixed
+
+- Extension-host smoke tests now invoke the extension-local `@vscode/vsce`
+  package entry point directly, avoiding stale workspace `.bin` shims after
+  dependency updates.
 
 ## [1.1.0] - 2026-05-04
 
