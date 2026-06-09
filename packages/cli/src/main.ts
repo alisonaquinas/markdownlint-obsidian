@@ -11,15 +11,39 @@
  */
 import type { Command } from "commander";
 import { buildProgram } from "./args.js";
-import {
-  lint,
-  fix,
-  getFormatter,
-  loadConfig,
-  type Formatter,
-  type LintResult,
-  type FixOutcome,
+import type {
+  Formatter,
+  LintResult,
+  FixOutcome,
+  lint as lintType,
+  fix as fixType,
+  getFormatter as getFormatterType,
+  loadConfig as loadConfigType,
 } from "markdownlint-obsidian/engine";
+
+interface EngineModule {
+  readonly lint: typeof lintType;
+  readonly fix: typeof fixType;
+  readonly getFormatter: typeof getFormatterType;
+  readonly loadConfig: typeof loadConfigType;
+}
+
+const { lint, fix, getFormatter, loadConfig } = await loadEngine();
+
+async function loadEngine(): Promise<EngineModule> {
+  if (shouldLoadSourceEngine()) {
+    const sourceEngine = new URL("../../core/src/engine/index.ts", import.meta.url).href;
+    return (await import(sourceEngine)) as EngineModule;
+  }
+  return import("markdownlint-obsidian/engine") as Promise<EngineModule>;
+}
+
+function shouldLoadSourceEngine(): boolean {
+  return (
+    process.env["MARKDOWNLINT_OBSIDIAN_SOURCE_ENGINE"] === "1" ||
+    new URL(import.meta.url).pathname.endsWith("/packages/cli/src/main.ts")
+  );
+}
 
 interface ParsedOptions {
   readonly fix: boolean;
