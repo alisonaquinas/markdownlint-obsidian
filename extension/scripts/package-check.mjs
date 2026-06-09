@@ -5,7 +5,7 @@
  * local verification all enforce the same manifest and build-output contract.
  */
 
-import { readFile, stat } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 
 const manifest = JSON.parse(await readFile("package.json", "utf8"));
 
@@ -66,20 +66,16 @@ if (!Array.isArray(manifest.contributes?.jsonValidation)) {
   fail("extension manifest must contribute JSON validation for supported config files");
 }
 
-try {
-  await stat("dist/extension.cjs");
-} catch {
-  fail("dist/extension.cjs is missing; run bun run build first");
-}
-
 const bundle = await readFile("dist/extension.cjs", "utf8").catch(() => "");
+if (bundle === "") {
+  fail("dist/extension.cjs is missing or empty; run bun run build first");
+}
 if (bundle.includes('require("./impl/')) {
   fail("dist/extension.cjs must not contain unresolved jsonc-parser UMD requires");
 }
 
-try {
-  await stat("schemas/obsidian-linter.schema.json");
-} catch {
+const schema = await readFile("schemas/obsidian-linter.schema.json", "utf8").catch(() => "");
+if (schema === "") {
   fail("schemas/obsidian-linter.schema.json is missing");
 }
 

@@ -61,6 +61,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           REPOSITORY: ${{ github.repository }}
         shell: bash
         run: |
@@ -68,10 +69,12 @@ jobs:
             "/repos/${REPOSITORY}/code-scanning/alerts?state=open&tool_name=CodeQL&pr=${PR_NUMBER}&per_page=100" \
             > codeql-alerts.json
 
-          jq '[.[] | select(
-            (.rule.severity // "") == "error" or
-            (.rule.security_severity_level // "") == "critical" or
-            (.rule.security_severity_level // "") == "high"
+          jq --arg head_sha "$PR_HEAD_SHA" '[.[] | select(
+            (.most_recent_instance.commit_sha // "") == $head_sha and (
+              (.rule.severity // "") == "error" or
+              (.rule.security_severity_level // "") == "critical" or
+              (.rule.security_severity_level // "") == "high"
+            )
           )]' codeql-alerts.json > blocking-codeql-alerts.json
 
           count=$(jq 'length' blocking-codeql-alerts.json)

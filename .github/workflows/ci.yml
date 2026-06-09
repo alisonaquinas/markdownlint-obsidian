@@ -74,7 +74,7 @@ jobs:
 
   dogfood-published:
     # Lint docs/ and extension/docs/ using the published
-    # markdownlint-obsidian-cli package on npmjs.org (not the local source).
+    # pinned markdownlint-obsidian-cli package on npmjs.org (not the local source).
     # This catches release regressions that only manifest in the packaged
     # artifact (missing files, broken bin entry, bad workspace dep resolution,
     # etc.) and also verifies that consumers can install and run the CLI from a

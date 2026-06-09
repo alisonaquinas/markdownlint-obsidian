@@ -8,7 +8,7 @@
 
 import { resolveCliArgsFromVSCodeExecutablePath } from "@vscode/test-electron";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -114,33 +114,21 @@ function packageCurrentExtension(parentDir) {
 }
 
 /** Run VS Code's CLI, accounting for the Windows `.cmd` wrapper. */
-function runCodeCli(cliPath, args) {
+function runCodeCli(cliPath, args, options = {}) {
+  const stdio = options.stdio ?? "inherit";
   if (process.platform !== "win32") {
-    return spawnSync(cliPath, args, { encoding: "utf-8", stdio: "inherit" });
+    return spawnSync(cliPath, args, { encoding: "utf-8", stdio });
   }
-  return spawnSync(
-    process.env.ComSpec ?? "cmd.exe",
-    ["/d", "/s", "/c", basename(cliPath), ...args],
-    {
-      cwd: dirname(cliPath),
-      encoding: "utf-8",
-      stdio: "inherit",
-    },
-  );
+  const command = resolveWindowsCodeCommand(cliPath);
+  return spawnSync(command.executablePath, [command.cliScriptPath, ...args], {
+    encoding: "utf-8",
+    env: { ...process.env, ELECTRON_RUN_AS_NODE: "1", VSCODE_DEV: "" },
+    stdio,
+  });
 }
 
 function listInstalledExtensions(cliPath, args) {
-  const result =
-    process.platform === "win32"
-      ? spawnSync(
-          process.env.ComSpec ?? "cmd.exe",
-          ["/d", "/s", "/c", basename(cliPath), ...args, "--list-extensions"],
-          {
-            cwd: dirname(cliPath),
-            encoding: "utf-8",
-          },
-        )
-      : spawnSync(cliPath, [...args, "--list-extensions"], { encoding: "utf-8" });
+  const result = runCodeCli(cliPath, [...args, "--list-extensions"], { stdio: "pipe" });
   if (result.status !== 0) {
     throw new Error("Failed to list active VS Code profile extensions");
   }
@@ -148,4 +136,33 @@ function listInstalledExtensions(cliPath, args) {
     .split(/\r?\n/u)
     .map((line) => line.trim())
     .filter(Boolean);
+}
+
+function resolveWindowsCodeCommand(cliPath) {
+  const executableName = windowsCodeExecutableName(cliPath);
+  const codeRoot = resolve(dirname(cliPath), "..");
+  return {
+    executablePath: resolve(codeRoot, executableName),
+    cliScriptPath: findVSCodeCliScript(codeRoot),
+  };
+}
+
+function windowsCodeExecutableName(cliPath) {
+  switch (basename(cliPath).toLowerCase()) {
+    case "code.cmd":
+      return "Code.exe";
+    case "code-insiders.cmd":
+      return "Code - Insiders.exe";
+    default:
+      throw new Error(`Unsupported VS Code CLI wrapper: ${basename(cliPath)}`);
+  }
+}
+
+function findVSCodeCliScript(codeRoot) {
+  for (const entry of readdirSync(codeRoot, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const cliScriptPath = join(codeRoot, entry.name, "resources", "app", "out", "cli.js");
+    if (existsSync(cliScriptPath)) return cliScriptPath;
+  }
+  throw new Error(`Unable to locate VS Code cli.js under ${codeRoot}`);
 }
