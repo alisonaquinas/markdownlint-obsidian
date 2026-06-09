@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "markdownlint-obsidian": "workspace:*",
-    "commander": "^12.0.0"
+    "commander": "^15.0.0"
   },
   "engines": {
     "node": ">=20.0.0",
