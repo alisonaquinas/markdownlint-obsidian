@@ -15,11 +15,12 @@ scripts/
 
 ### Publishing a package
 
-1. Let the release or dry-run workflow run
+1. Cut the package tag that matches the package version.
+2. Let the release or dry-run workflow run
    `node scripts/prepare-publish.mjs <pkg-dir>`.
-2. Confirm the package-local `package.json` now contains concrete dependency
+3. Confirm the package-local `package.json` now contains concrete dependency
    ranges instead of `workspace:*`.
-3. Keep the publish step in GitHub Actions so npm trusted publishing can use
+4. Keep the publish step in GitHub Actions so npm trusted publishing can use
    OIDC with `npm publish --provenance`.
 
 Do not add registry tokens, `NODE_AUTH_TOKEN`, GitHub Packages npm publishing,
