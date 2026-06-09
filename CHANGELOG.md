@@ -15,9 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.0` instead of
+- Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.1` instead of
   floating on `latest`, so release validation exercises the known released CLI
   and its bundled `markdownlint-obsidian` dependency deterministically.
+- Published dogfood test setup now invokes `npm` directly for its isolated
+  package install, avoiding Bun's `npm_execpath` shim when run through
+  `bun run` on Windows.
 
 ## [1.1.0] - 2026-05-04
 
