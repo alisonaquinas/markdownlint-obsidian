@@ -57,7 +57,7 @@ jobs:
         run: sha256sum -c checksums-${{ github.ref_name }}.sha256
 
       - name: Attest VSIX provenance
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: "*.vsix"
 
