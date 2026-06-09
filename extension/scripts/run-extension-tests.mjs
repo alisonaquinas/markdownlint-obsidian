@@ -91,18 +91,17 @@ function createFlavorGrenadeStubVsix(parentDir) {
   writeFileSync(join(extensionDir, "README.md"), "# Flavor Grenade LSP test stub\n");
   writeFileSync(join(extensionDir, "LICENSE"), "MIT\n");
 
-  const vsce = resolve(
-    "..",
-    "node_modules",
-    ".bin",
-    process.platform === "win32" ? "vsce.exe" : "vsce",
-  );
+  const vsce = resolve("node_modules", "@vscode", "vsce", "vsce");
   const vsixPath = join(parentDir, "flavor-grenade-stub.vsix");
-  const packaged = spawnSync(vsce, ["package", "--no-dependencies", "--out", vsixPath], {
-    cwd: extensionDir,
-    encoding: "utf-8",
-    stdio: "inherit",
-  });
+  const packaged = spawnSync(
+    process.execPath,
+    [vsce, "package", "--no-dependencies", "--out", vsixPath],
+    {
+      cwd: extensionDir,
+      encoding: "utf-8",
+      stdio: "inherit",
+    },
+  );
   if (packaged.status !== 0) throw new Error("Failed to package Flavor Grenade test stub");
   return vsixPath;
 }
