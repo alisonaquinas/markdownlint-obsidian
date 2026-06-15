@@ -26,7 +26,9 @@ packages/
 
 Do not publish packages manually. Release publishing is handled by the
 repository workflow in `.github/workflows/npm-publish.yml`, which calls the
-reusable `_publish-packages.yml` workflow.
+reusable `_publish-packages.yml` workflow. Package deployment is tag-driven:
+push `markdownlint-obsidianvX.Y.Z` for the core package or
+`markdownlint-obsidian-clivX.Y.Z` for the CLI package.
 
 The release workflow must use npm trusted publishing only: GitHub Actions OIDC
 plus `npm publish --provenance`. Do not add registry tokens, `NODE_AUTH_TOKEN`,

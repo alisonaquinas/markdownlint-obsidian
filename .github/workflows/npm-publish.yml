@@ -1,18 +1,20 @@
 name: Publish to npm
 
-# Thin caller — all publish logic lives in _publish-packages.yml so the same
-# pipeline can be dry-run in CI (ci.yml) and executed here on real releases.
+# Thin caller. Package deployment is tag-driven: pushing a package tag publishes
+# the matching npm package through the reusable workflow.
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "markdownlint-obsidianv*"
+      - "markdownlint-obsidian-cliv*"
 
 jobs:
   publish:
     uses: ./.github/workflows/_publish-packages.yml
     permissions:
-      id-token: write # propagated to the reusable workflow's publish job for --provenance
+      id-token: write # propagated to the reusable workflow for --provenance
       contents: write
     with:
       dry_run: false
-      tag_name: ${{ github.event.release.tag_name }}
+      tag_name: ${{ github.ref_name }}

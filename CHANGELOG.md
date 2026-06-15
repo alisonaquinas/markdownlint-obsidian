@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Package publishing is now driven by explicit package tags
+  (`markdownlint-obsidianvX.Y.Z` and `markdownlint-obsidian-clivX.Y.Z`)
+  instead of Release Please-generated release PRs.
 - Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.1` instead of
   floating on `latest`, so release validation exercises the known released CLI
   and its bundled `markdownlint-obsidian` dependency deterministically.

@@ -4,7 +4,7 @@ tags:
   - "docs"
 type: "moc"
 status: "current"
-updated: 2026-05-09
+updated: 2026-06-09
 ---
 
 # Documentation
@@ -57,6 +57,7 @@ decision made, and consequences.
 | [[adr/ADR005-node-path-in-domain]] | Node path in the domain |
 | [[adr/ADR006-package-split]] | Core / CLI package split |
 | [[adr/ADR007-multi-registry]] | Multi-registry CD |
+| [[adr/ADR008-tag-driven-package-releases]] | Tag-driven package releases |
 
 ## Contributing to docs
 

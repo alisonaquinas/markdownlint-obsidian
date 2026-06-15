@@ -117,7 +117,10 @@ tests it with `node dist/main.mjs`.
 
 Do not publish packages manually. Release publishing runs from
 `.github/workflows/npm-publish.yml`, which calls the reusable
-`_publish-packages.yml` workflow.
+`_publish-packages.yml` workflow. Publishing is tag-driven:
+
+- `markdownlint-obsidianvX.Y.Z` publishes `packages/core`;
+- `markdownlint-obsidian-clivX.Y.Z` publishes `packages/cli`.
 
 Publishing must use npm trusted publishing only: GitHub Actions OIDC plus
 `npm publish --provenance`. Do not add registry tokens, `NODE_AUTH_TOKEN`,
@@ -147,7 +150,7 @@ checks.
 - Publishing must remain tokenless: OIDC trusted publishing only, never
   registry auth tokens.
 - CHANGELOG entries must follow Keep a Changelog 1.1.0 format.
-  Add `[Unreleased]` entries; release automation promotes them.
+  Add `[Unreleased]` entries before cutting a release tag.
 
 ## See Also
 
