@@ -7,6 +7,27 @@
   }
 } -->
 
+## [1.2.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.2.0...markdownlint-obsidianv1.2.1) (2026-06-09)
+
+### Dependencies
+
+* bump js-yaml from 4.1.1 to 4.2.0
+* bump markdown-it from 14.1.1 to 14.2.0
+
+## [1.2.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.1.0...markdownlint-obsidianv1.2.0) (2026-06-09)
+
+
+### Features
+
+* **extension:** implement vscode roadmap ([f670016](https://github.com/alisonaquinas/markdownlint-obsidian/commit/f670016681a0513d931d7184e0e0af7282908164))
+* support config format parity ([8fcc364](https://github.com/alisonaquinas/markdownlint-obsidian/commit/8fcc3643cad2db0f71cd6df33abfa5e75a3771e6))
+
+
+### Bug Fixes
+
+* make markdown linting line-ending stable ([7bd5cbc](https://github.com/alisonaquinas/markdownlint-obsidian/commit/7bd5cbc61103770623e48e6122c36df3dd520333))
+* resolve high severity codeql alerts ([000a54b](https://github.com/alisonaquinas/markdownlint-obsidian/commit/000a54bdd613e49b81fe8a98d79612e5323ef8a8))
+
 ## [1.1.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.0.2...markdownlint-obsidianv1.1.0) (2026-05-04)
 
 ### Features
