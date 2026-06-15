@@ -3,8 +3,10 @@
  *
  * @module public/editor
  */
+import * as path from "node:path";
 import { loadConfig } from "../infrastructure/config/ConfigLoader.js";
 import { discoverFiles as discoverFilesRaw } from "../infrastructure/discovery/FileDiscovery.js";
+import { makeMarkdownFlavorGate } from "../infrastructure/flavor/MarkdownFlavorGate.js";
 import { makeMarkdownItParser } from "../infrastructure/parser/MarkdownItParser.js";
 import { readMarkdownFile } from "../infrastructure/io/FileReader.js";
 import { makeRuleRegistry } from "../domain/linting/RuleRegistry.js";
@@ -25,6 +27,7 @@ import type { RuleRegistry } from "../domain/linting/RuleRegistry.js";
 import type { Parser } from "../domain/parsing/Parser.js";
 import type { BlockRefIndex } from "../domain/vault/BlockRefIndex.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";
+import { makeLintResult } from "../domain/linting/LintResult.js";
 
 export interface LintTextOptions {
   readonly filePath: string;
@@ -49,6 +52,7 @@ interface RunContext {
   readonly registry: RuleRegistry;
   readonly vault: VaultIndex | null;
   readonly blockRefIndex: BlockRefIndex | null;
+  readonly shouldLintFile: ReturnType<typeof makeMarkdownFlavorGate>;
 }
 
 function applyOverrides(config: LinterConfig, options: LintTextOptions): LinterConfig {
@@ -90,7 +94,20 @@ async function prepareRunContext(options: LintTextOptions): Promise<RunContext> 
     options.onCustomRuleError,
   );
   const vaultContext = await tryBootstrapVault(cwd, config, parser);
-  return { config, parser, registry, ...vaultContext };
+  return {
+    config,
+    parser,
+    registry,
+    ...vaultContext,
+    shouldLintFile: makeMarkdownFlavorGate(flavorRoot(cwd, config, vaultContext.vault)),
+  };
+}
+
+function flavorRoot(cwd: string, config: LinterConfig, vault: VaultIndex | null): string {
+  if (config.vaultRoot !== null && config.vaultRoot !== undefined) {
+    return path.resolve(cwd, config.vaultRoot);
+  }
+  return vault?.root ?? cwd;
 }
 
 async function tryBootstrapVault(
@@ -122,11 +139,12 @@ export async function lintText(options: LintTextOptions): Promise<LintResult> {
   const [result] = await runLint([options.filePath], context.config, context.registry, {
     parser: context.parser,
     readFile: async () => options.text,
+    shouldLintFile: context.shouldLintFile,
     vault: context.vault,
     blockRefIndex: context.blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker(),
   });
-  if (result === undefined) throw new Error("lintText did not produce a result");
+  if (result === undefined) return makeLintResult(options.filePath, []);
   return result;
 }
 
@@ -138,6 +156,7 @@ export async function fixText(
   const outcome = await runFixUseCase([options.filePath], context.config, context.registry, {
     parser: context.parser,
     readFile: async () => text,
+    shouldLintFile: context.shouldLintFile,
     writeFile: async (_path, content) => {
       text = content;
     },
@@ -156,6 +175,7 @@ export async function lintWorkspace(options: EditorLintOptions): Promise<readonl
   return runLint(filePaths, context.config, context.registry, {
     parser: context.parser,
     readFile: readMarkdownFile,
+    shouldLintFile: context.shouldLintFile,
     vault: context.vault,
     blockRefIndex: context.blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker(),

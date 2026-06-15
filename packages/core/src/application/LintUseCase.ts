@@ -40,6 +40,7 @@ function warnIfMissingFix(rule: OFMRule, fix: unknown): void {
 export interface LintDependencies {
   readonly parser: Parser;
   readonly readFile: (absolutePath: string) => Promise<string>;
+  readonly shouldLintFile?: (absolutePath: string, raw: string) => boolean | Promise<boolean>;
   readonly vault?: VaultIndex | null;
   readonly blockRefIndex?: BlockRefIndex | null;
   readonly fsCheck: FileExistenceChecker;
@@ -66,19 +67,35 @@ export async function runLint(
   const blockRefIndex = deps.blockRefIndex ?? null;
   const fsCheck = deps.fsCheck;
   for (const filePath of filePaths) {
-    const errors: LintError[] = [];
-    try {
-      const raw = await deps.readFile(filePath);
-      const parsed = deps.parser.parse(filePath, raw);
-      for (const rule of iterateActiveRules(registry, config)) {
-        await runRule(rule, parsed, config, vault, blockRefIndex, fsCheck, errors);
-      }
-    } catch (err) {
-      errors.push(buildParserError(err));
-    }
-    results.push(makeLintResult(filePath, errors));
+    const result = await lintFile(filePath, config, registry, deps, vault, blockRefIndex, fsCheck);
+    if (result !== null) results.push(result);
   }
   return results;
+}
+
+async function lintFile(
+  filePath: string,
+  config: LinterConfig,
+  registry: RuleRegistry,
+  deps: LintDependencies,
+  vault: VaultIndex | null,
+  blockRefIndex: BlockRefIndex | null,
+  fsCheck: FileExistenceChecker,
+): Promise<LintResult | null> {
+  const errors: LintError[] = [];
+  try {
+    const raw = await deps.readFile(filePath);
+    if (deps.shouldLintFile !== undefined && !(await deps.shouldLintFile(filePath, raw))) {
+      return null;
+    }
+    const parsed = deps.parser.parse(filePath, raw);
+    for (const rule of iterateActiveRules(registry, config)) {
+      await runRule(rule, parsed, config, vault, blockRefIndex, fsCheck, errors);
+    }
+  } catch (err) {
+    errors.push(buildParserError(err));
+  }
+  return makeLintResult(filePath, errors);
 }
 
 function iterateActiveRules(registry: RuleRegistry, config: LinterConfig): readonly OFMRule[] {

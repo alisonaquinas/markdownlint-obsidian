@@ -20,7 +20,7 @@
     },
     "extension": {
       "name": "markdownlint-obsidian-vscode",
-      "version": "0.8.0",
+      "version": "0.8.1",
       "dependencies": {
         "markdownlint-obsidian": "workspace:*",
       },
@@ -30,12 +30,13 @@
         "@vscode/test-electron": "^2.5.2",
         "@vscode/vsce": "^3.9.1",
         "esbuild": "^0.28.0",
+        "markdown-flavor-detection": "^0.7.3",
         "typescript": "^6.0.3",
       },
     },
     "packages/cli": {
       "name": "markdownlint-obsidian-cli",
-      "version": "1.1.0",
+      "version": "1.1.2",
       "bin": {
         "markdownlint-obsidian": "./dist/bin.mjs",
       },
@@ -46,7 +47,7 @@
     },
     "packages/core": {
       "name": "markdownlint-obsidian",
-      "version": "1.1.0",
+      "version": "1.2.1",
       "dependencies": {
         "chalk": "^5.3.0",
         "fast-xml-parser": "^5.5.11",
@@ -54,12 +55,16 @@
         "gray-matter": "^4.0.3",
         "js-yaml": "^4.2.0",
         "jsonc-parser": "^3.2.0",
+        "markdown-flavor-detection": "^0.7.3",
         "markdown-it": "^14.2.0",
         "markdownlint": "^0.40.0",
         "minimatch": "^10.2.5",
         "smol-toml": "^1.6.1",
       },
     },
+  },
+  "patchedDependencies": {
+    "markdown-flavor-detection@0.7.3": "patches/markdown-flavor-detection@0.7.3.patch",
   },
   "packages": {
     "@azu/format-text": ["@azu/format-text@1.0.2", "", {}, "sha512-Swi4N7Edy1Eqq82GxgEECXSSLyn6GOb5htRFPzBDdUkECGXtlf12ynO5oJSpWKPwCaUssOu7NfhDcCWpIC6Ywg=="],
@@ -727,6 +732,8 @@
     "lru-cache": ["lru-cache@6.0.0", "", { "dependencies": { "yallist": "^4.0.0" } }, "sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA=="],
 
     "luxon": ["luxon@3.7.2", "", {}, "sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew=="],
+
+    "markdown-flavor-detection": ["markdown-flavor-detection@0.7.3", "", {}, "sha512-1dpB5i3nz+JjJ4An6hbI+kahYK9t0Ry1roubvvpKZWtVzSXc8dybaXAyiH9yeLCi6lHCAF1CLrqNgF8tN+uWZg=="],
 
     "markdown-it": ["markdown-it@14.2.0", "", { "dependencies": { "argparse": "^2.0.1", "entities": "^4.4.0", "linkify-it": "^5.0.1", "mdurl": "^2.0.0", "punycode.js": "^2.3.1", "uc.micro": "^2.1.0" }, "bin": { "markdown-it": "bin/markdown-it.mjs" } }, "sha512-1TGiQiJVRQ3NPmZH6sx5Cfnmg6GQm9jvC1ch4TK511NjSJvjzKLzn5pPfZRNZkRPZP0HqCioSndqH8v2nRaWVQ=="],
 
