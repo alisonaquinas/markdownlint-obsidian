@@ -1,8 +1,9 @@
 /**
  * Unit coverage for live-lint document eligibility.
  *
- * These tests pin the Flavor Grenade dependency and `ofmarkdown` language-id
- * boundary so generic Markdown documents are not linted live by accident.
+ * These tests pin the Flavor Grenade dependency and shared Markdown flavor
+ * detector boundary so generic Markdown documents are not linted live by
+ * accident.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -89,6 +90,21 @@ describe("decideEligibility", () => {
     );
 
     expect(decision.eligible).toBe(false);
-    expect(decision.reason).toBe("not an OFMarkdown document");
+    expect(decision.reason).toBe("not an OFMarkdown document (detected commonmark)");
+  });
+
+  it("uses shared flavor detection for non-Obsidian Markdown syntax", () => {
+    const decision = decideEligibility(
+      document({
+        languageId: "markdown",
+        text: "import Chart from './Chart.tsx'\n\n<Chart />\n",
+      }),
+      settings,
+      session,
+      dependency,
+    );
+
+    expect(decision.eligible).toBe(false);
+    expect(decision.reason).toBe("not an OFMarkdown document (detected mdx)");
   });
 });

@@ -187,6 +187,7 @@
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.9.1",
     "esbuild": "^0.28.0",
+    "markdown-flavor-detection": "^0.7.3",
     "typescript": "^6.0.3"
   },
   "repository": {

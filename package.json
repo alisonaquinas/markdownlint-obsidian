@@ -46,5 +46,8 @@
   "homepage": "https://github.com/alisonaquinas/markdownlint-obsidian#readme",
   "bugs": {
     "url": "https://github.com/alisonaquinas/markdownlint-obsidian/issues"
+  },
+  "patchedDependencies": {
+    "markdown-flavor-detection@0.7.3": "patches/markdown-flavor-detection@0.7.3.patch"
   }
 }
