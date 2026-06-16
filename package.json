@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
-    "fast-check": "^3.0.0",
+    "fast-check": "^4.8.0",
     "prettier": "^3.0.0",
     "typescript": "^5.4.0"
   },
