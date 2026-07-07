@@ -13,14 +13,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-07-07
+
+### Added
+
+- Adopted the shared `markdown-flavor-detection` gate across core engine and
+  editor-facing APIs, so linting honors `.mdfattributes`, `.mdfignore`, and
+  Obsidian workspace markers consistently.
+
 ### Changed
 
+- Package publishing is now driven by explicit package tags
+  (`markdownlint-obsidianvX.Y.Z` and `markdownlint-obsidian-clivX.Y.Z`)
+  instead of Release Please-generated release PRs.
 - Wikilink resolution now defaults to `obsidian-fuzzy`, matching Obsidian's
   path-suffix behavior for links such as `[[sources/foo]]`. This lets valid
   Obsidian path-style links resolve without requiring users to opt into
   `wikilinks.resolveMode = "obsidian-fuzzy"` manually.
 - Legacy strict resolution remains available by setting
   `wikilinks.resolveMode = "path-relative"`.
+- Reconciled active Dependabot updates for GitHub Actions, root development
+  tooling, the VS Code extension package, and the GitHub Action wrapper.
 
 ### Fixed
 
@@ -37,9 +50,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Package publishing is now driven by explicit package tags
-  (`markdownlint-obsidianvX.Y.Z` and `markdownlint-obsidian-clivX.Y.Z`)
-  instead of Release Please-generated release PRs.
 - Published dogfood CI now pins `markdownlint-obsidian-cli@1.1.1` instead of
   floating on `latest`, so release validation exercises the known released CLI
   and its bundled `markdownlint-obsidian` dependency deterministically.
