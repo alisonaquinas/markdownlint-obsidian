@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-07-07
+
+### Fixed
+
+- Restored CLI and file-based engine linting for explicit Markdown globs in
+  established repositories without Obsidian markers or `.mdfattributes`
+  `flavor=obsidian` assignments. The 1.3.0 flavor gate could otherwise skip
+  every matched file and report an empty result set. Explicit `.mdfignore` and
+  non-Obsidian `.mdfattributes flavor=...` exclusions remain honored.
+
 ## [1.3.0] - 2026-07-07
 
 ### Added

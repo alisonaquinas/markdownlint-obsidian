@@ -208,7 +208,9 @@ export async function lint(options: LintOptions): Promise<LintResult[]> {
   return runLint(filePaths, effectiveConfig, registry, {
     parser,
     readFile: readMarkdownFile,
-    shouldLintFile: makeMarkdownFlavorGate(flavorRoot(cwd, effectiveConfig, vault)),
+    shouldLintFile: makeMarkdownFlavorGate(flavorRoot(cwd, effectiveConfig, vault), {
+      allowUnassignedMarkdown: true,
+    }),
     vault,
     blockRefIndex,
     fsCheck: makeNodeFsExistenceChecker(),
@@ -269,7 +271,9 @@ export async function fix(options: FixOptions): Promise<FixOutcome> {
   const deps = {
     parser,
     readFile: readMarkdownFile,
-    shouldLintFile: makeMarkdownFlavorGate(flavorRoot(cwd, effectiveConfig, vault)),
+    shouldLintFile: makeMarkdownFlavorGate(flavorRoot(cwd, effectiveConfig, vault), {
+      allowUnassignedMarkdown: true,
+    }),
     writeFile: options.check ? noOpWrite : writeMarkdownFile,
     vault,
     blockRefIndex,

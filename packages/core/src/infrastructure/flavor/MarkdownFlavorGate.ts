@@ -14,6 +14,16 @@ import { NodeFlavorConfigResolver, resolveMarkdownFlavor } from "markdown-flavor
 
 export type MarkdownFlavorGate = (absolutePath: string, raw: string) => boolean;
 
+export interface MarkdownFlavorGateOptions {
+  /**
+   * Preserve CLI compatibility for repositories that have no explicit flavor
+   * assignment. Users already opted into OFM linting by passing matched files
+   * to markdownlint-obsidian, so CommonMark/GFM syntax inference should not
+   * silently erase the run.
+   */
+  readonly allowUnassignedMarkdown?: boolean;
+}
+
 /**
  * Create a per-run gate that allows linting only for files detected as
  * Obsidian-flavored Markdown.
@@ -21,7 +31,10 @@ export type MarkdownFlavorGate = (absolutePath: string, raw: string) => boolean;
  * @param root - Vault/workspace root used for `.mdfignore` and `.mdfattributes` lookup.
  * @returns Predicate consumed by the lint use case.
  */
-export function makeMarkdownFlavorGate(root: string): MarkdownFlavorGate {
+export function makeMarkdownFlavorGate(
+  root: string,
+  options: MarkdownFlavorGateOptions = {},
+): MarkdownFlavorGate {
   const resolvedRoot = path.resolve(root);
   const resolver = new NodeFlavorConfigResolver();
   const hasObsidianMarker = fs.existsSync(path.join(resolvedRoot, ".obsidian"));
@@ -40,6 +53,9 @@ export function makeMarkdownFlavorGate(root: string): MarkdownFlavorGate {
       syntaxText: raw,
     });
 
-    return resolution.kind === "active" && resolution.effective === "obsidian";
+    if (resolution.kind !== "active") return false;
+    if (resolution.effective === "obsidian") return true;
+
+    return options.allowUnassignedMarkdown === true && config.attributes.flavor === undefined;
   };
 }
