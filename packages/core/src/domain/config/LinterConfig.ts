@@ -14,10 +14,10 @@ import type { RuleConfig } from "./RuleConfig.js";
  *
  * `resolveMode` controls how unqualified wikilinks (e.g. `[[sources/foo]]`)
  * are matched against the vault index:
- *   - `"path-relative"` (default) — exact / case-insensitive / basename.
- *   - `"obsidian-fuzzy"` — adds a path-suffix step that mirrors Obsidian's
- *     own algorithm. Useful for vaults that mix vault-absolute and
- *     folder-implicit link styles. See issue #27.
+ *   - `"obsidian-fuzzy"` (default) — exact / case-insensitive / path-suffix /
+ *     basename, mirroring Obsidian's own algorithm for vaults that mix
+ *     vault-absolute and folder-implicit link styles. See issue #27.
+ *   - `"path-relative"` — legacy exact / case-insensitive / basename matching.
  */
 export interface WikilinkConfig {
   readonly caseSensitive: boolean;

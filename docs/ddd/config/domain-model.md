@@ -8,7 +8,7 @@ tags:
   - "ddd"
 type: "domain-model"
 status: "current"
-updated: 2026-05-09
+updated: 2026-07-07
 up: "[[ddd/bounded-contexts]]"
 ---
 
@@ -54,11 +54,12 @@ interface WikilinkConfig {
 }
 ```
 
-`path-relative` is the default and keeps exact path, case-insensitive path, and
-basename matching. `obsidian-fuzzy` adds a path-suffix step for path-like targets
-before basename matching, so `[[sources/foo]]` can resolve to
-`wiki/sources/foo.md` while bare links like `[[foo]]` still use basename
-resolution.
+`obsidian-fuzzy` is the default. It keeps exact path and case-insensitive path
+matching, then adds a path-suffix step for path-like targets before basename
+matching. `[[sources/foo]]` can resolve to `wiki/sources/foo.md` while bare
+links like `[[foo]]` still use basename resolution. `path-relative` remains as
+the legacy mode for exact path, case-insensitive path, and basename matching
+only.
 
 ### RuleConfig
 

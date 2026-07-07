@@ -39,4 +39,11 @@ describe("OFM001 broken-wikilink", () => {
     const errors = await runRuleOnSource(OFM001Rule, "[[index]]", {}, vault);
     expect(errors).toEqual([]);
   });
+
+  it("resolves escaped alias separators inside markdown tables", async () => {
+    const vault = stubVault(["notes/target.md"]);
+    const source = ["| N | D |", "|---|---|", "| [[notes/target\\|target.md]] | x |"].join("\n");
+    const errors = await runRuleOnSource(OFM001Rule, source, {}, vault);
+    expect(errors).toEqual([]);
+  });
 });

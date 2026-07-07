@@ -45,7 +45,7 @@ export const DEFAULT_CONFIG: LinterConfig = Object.freeze({
   wikilinks: Object.freeze({
     caseSensitive: false,
     allowAlias: true,
-    resolveMode: "path-relative",
+    resolveMode: "obsidian-fuzzy",
   }),
   callouts: Object.freeze({
     allowList: Object.freeze([
