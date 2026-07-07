@@ -82,6 +82,21 @@ describe("CLI", () => {
     }
   });
 
+  it("runCli lints explicit Markdown globs in non-vault git repos", async () => {
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
+    await fs.mkdir(path.join(tmp, ".git"), { recursive: true });
+    await fs.writeFile(path.join(tmp, "note.md"), "# Bad tag\n\n#topic/\n");
+    try {
+      const result = await runCli(["node", "markdownlint-obsidian", "**/*.md"], { cwd: tmp });
+
+      expect(result.exitCode).toBe(1);
+      expect(result.results).toHaveLength(1);
+      expect(result.stdout).toContain("OFM063");
+    } finally {
+      await fs.rm(tmp, { recursive: true, force: true });
+    }
+  });
+
   it("runCli returns structured counts without writing to process streams", async () => {
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-cli-test-"));
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
