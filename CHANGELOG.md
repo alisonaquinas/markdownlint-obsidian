@@ -16,12 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Wikilink resolution now defaults to `obsidian-fuzzy`, matching Obsidian's
-  path-suffix behavior for links such as `[[sources/foo]]`.
+  path-suffix behavior for links such as `[[sources/foo]]`. This lets valid
+  Obsidian path-style links resolve without requiring users to opt into
+  `wikilinks.resolveMode = "obsidian-fuzzy"` manually.
+- Legacy strict resolution remains available by setting
+  `wikilinks.resolveMode = "path-relative"`.
 
 ### Fixed
 
 - Escaped table alias separators like `[[notes/target\|target.md]]` no longer
   leave a trailing backslash in the parsed wikilink target.
+- Path-qualified links now have a valid remediation path for ambiguous
+  basename links, so OFM004 users can disambiguate `[[index]]` as
+  `[[some/folder/index]]` without creating an OFM001 false positive.
 
 ## [1.2.1] - 2026-06-09
 
