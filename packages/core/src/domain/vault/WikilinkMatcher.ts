@@ -1,5 +1,5 @@
 /**
- * Purpose: Implements Obsidian's wikilink resolution algorithm — exact path, case-insensitive path, then basename — as a pure function against a set of vault files.
+ * Purpose: Implements wikilink resolution — exact path, case-insensitive path, optional path suffix, then basename — as a pure function against a set of vault files.
  *
  * Provides: {@link matchWikilink}, {@link MatchResult}, {@link MatchOptions}
  *
@@ -30,13 +30,12 @@ export type MatchResult =
 /**
  * Resolution mode for wikilink targets.
  *
- * - `"path-relative"` (default) — exact, case-insensitive (when
- *   `caseSensitive` is false), then basename. Matches the behaviour shipped
- *   in 1.0.x.
  * - `"obsidian-fuzzy"` — adds a path-suffix step between case-insensitive
  *   and basename. Mirrors Obsidian's own algorithm for vaults that mix
  *   vault-absolute (`[[raw/upnote/Note]]`) and folder-implicit
  *   (`[[sources/foo]]`) wikilinks.
+ * - `"path-relative"` — exact, case-insensitive (when `caseSensitive` is
+ *   false), then basename. Matches the legacy behaviour shipped in 1.0.x.
  *
  * See https://github.com/alisonaquinas/markdownlint-obsidian/issues/27.
  */
@@ -50,7 +49,8 @@ export interface MatchOptions {
 /**
  * Match a wikilink target against a vault index.
  *
- * Resolution order mirrors Obsidian itself:
+ * Resolution order mirrors Obsidian itself when `resolveMode` is
+ * `"obsidian-fuzzy"`:
  *   1. Exact path match (minus `.md`).
  *   2. Case-insensitive path match (opt-in via `caseSensitive: false`).
  *   3. Path-suffix match — `obsidian-fuzzy` mode only — any file whose

@@ -122,7 +122,7 @@ describe("matchWikilink — obsidian-fuzzy resolveMode (issue #27)", () => {
     }
   });
 
-  it("path-relative mode (default) does not perform path-suffix matching", () => {
+  it("path-relative mode does not perform path-suffix matching", () => {
     const r = matchWikilink("sources/foo", [WIKI_SOURCES_FOO], {
       caseSensitive: false,
       // resolveMode omitted — should behave as "path-relative"

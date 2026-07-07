@@ -92,8 +92,13 @@ function splitParts(inner: string): ParsedParts {
 function splitAlias(inner: string): { head: string; alias: string | null } {
   const idx = inner.indexOf("|");
   if (idx === -1) return { head: inner, alias: null };
+  const headText = stripTableEscapeBeforeAliasDelimiter(inner.slice(0, idx));
   const aliasText = inner.slice(idx + 1);
-  return { head: inner.slice(0, idx), alias: aliasText.length > 0 ? aliasText : null };
+  return { head: headText, alias: aliasText.length > 0 ? aliasText : null };
+}
+
+function stripTableEscapeBeforeAliasDelimiter(head: string): string {
+  return head.endsWith("\\") ? head.slice(0, -1) : head;
 }
 
 function splitBlockRef(head: string): { headBeforeCaret: string; blockRef: string | null } {

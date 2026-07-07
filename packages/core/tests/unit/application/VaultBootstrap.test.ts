@@ -58,7 +58,7 @@ describe("bootstrapVault", () => {
     expect(detector.detect).not.toHaveBeenCalled();
     expect(buildIndex).toHaveBeenCalledWith(override, {
       caseSensitive: false,
-      resolveMode: "path-relative",
+      resolveMode: "obsidian-fuzzy",
     });
     expect(buildBlockRefIndex).toHaveBeenCalledTimes(1);
   });
@@ -77,7 +77,7 @@ describe("bootstrapVault", () => {
     expect(detector.detect).not.toHaveBeenCalled();
     expect(buildIndex).toHaveBeenCalledWith(path.resolve(start, "docs"), {
       caseSensitive: false,
-      resolveMode: "path-relative",
+      resolveMode: "obsidian-fuzzy",
     });
   });
 
@@ -96,7 +96,7 @@ describe("bootstrapVault", () => {
     expect(detector.detect).toHaveBeenCalledWith("/start");
     expect(buildIndex).toHaveBeenCalledWith("/detected", {
       caseSensitive: false,
-      resolveMode: "path-relative",
+      resolveMode: "obsidian-fuzzy",
     });
     expect(result?.vault).toBe(idx);
     expect(result?.blockRefs).toBe(refs);

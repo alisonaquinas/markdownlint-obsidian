@@ -30,18 +30,18 @@ Feature: Wikilink linting
     When I run markdownlint-obsidian on "notes/index.md"
     Then the exit code is 0
 
-  Scenario: Default path-relative resolution does not use path-suffix matching
+  Scenario: Explicit path-relative resolution does not use path-suffix matching
     Given a file "wiki/sources/foo.md"
     And a file "wiki/index.md" containing "[[sources/foo]]"
+    And the wikilink resolveMode is "path-relative"
     When I run markdownlint-obsidian on "wiki/index.md"
     Then the exit code is 1
     And error OFM001 is reported on line 1
 
-  Scenario: Obsidian-fuzzy resolution accepts folder-implicit path suffixes
+  Scenario: Default Obsidian-fuzzy resolution accepts folder-implicit path suffixes
     Given a file "wiki/sources/foo.md"
     And a file "raw/upnote/Some Note.md"
     And a file "wiki/index.md" containing "[[raw/upnote/Some Note]] and [[sources/foo]]"
-    And the wikilink resolveMode is "obsidian-fuzzy"
     When I run markdownlint-obsidian on "wiki/index.md"
     Then the exit code is 0
 

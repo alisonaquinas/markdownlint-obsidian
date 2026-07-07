@@ -8,7 +8,7 @@ tags:
   - "ddd"
 type: "domain-model"
 status: "current"
-updated: 2026-05-09
+updated: 2026-07-07
 up: "[[ddd/bounded-contexts]]"
 ---
 
@@ -66,18 +66,19 @@ type MatchResult =
 Built once per LintRun. Resolves wikilink targets to VaultPaths with a
 configured resolution mode.
 
-`path-relative` mode uses the behavior shipped through 1.0.x:
-
-1. Exact path match.
-2. Case-insensitive path match when `wikilinks.caseSensitive` is `false`.
-3. Basename match.
-
-`obsidian-fuzzy` mode adds a path-suffix step before basename matching:
+`obsidian-fuzzy` mode is the default and matches Obsidian-style path-suffix
+resolution:
 
 1. Exact path match.
 2. Case-insensitive path match when `wikilinks.caseSensitive` is `false`.
 3. Path-suffix match for path-like targets such as `sources/foo`.
 4. Basename match for bare targets such as `foo`.
+
+`path-relative` mode keeps the legacy behavior shipped through 1.0.x:
+
+1. Exact path match.
+2. Case-insensitive path match when `wikilinks.caseSensitive` is `false`.
+3. Basename match.
 
 The path-suffix step only applies when the target contains `/`. This keeps
 bare wikilinks on the basename strategy while still allowing folder-implicit

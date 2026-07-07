@@ -4,8 +4,9 @@
  * Verifies the new `wikilinks.resolveMode: "obsidian-fuzzy"` config option
  * end-to-end through the lint engine: a folder-implicit wikilink
  * (`[[sources/foo]]`) inside a vault that mixes vault-absolute and
- * folder-implicit link styles should resolve under fuzzy mode and break
- * (OFM001 broken-wikilink) under the default path-relative mode.
+ * folder-implicit link styles should resolve by default under fuzzy mode and
+ * break (OFM001 broken-wikilink) only when explicitly forced to legacy
+ * path-relative mode.
  *
  * Issue URL: https://github.com/alisonaquinas/markdownlint-obsidian/issues/27
  *
@@ -39,7 +40,7 @@ async function makeMixedVault(configBody: string): Promise<string> {
 }
 
 describe("regression: issue #27 — obsidian-fuzzy wikilink resolution", () => {
-  it("path-relative (default) breaks the folder-implicit link", async () => {
+  it("path-relative mode breaks the folder-implicit link", async () => {
     const cfg = JSON.stringify({
       wikilinks: { caseSensitive: false, allowAlias: true, resolveMode: "path-relative" },
     });
@@ -54,10 +55,8 @@ describe("regression: issue #27 — obsidian-fuzzy wikilink resolution", () => {
     }
   });
 
-  it("obsidian-fuzzy resolves both link styles", async () => {
-    const cfg = JSON.stringify({
-      wikilinks: { caseSensitive: false, allowAlias: true, resolveMode: "obsidian-fuzzy" },
-    });
+  it("default obsidian-fuzzy mode resolves both link styles", async () => {
+    const cfg = "{}";
     const tmpDir = await makeMixedVault(cfg);
     try {
       const results = await lint({ globs: ["wiki/**/*.md"], cwd: tmpDir });
