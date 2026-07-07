@@ -77,9 +77,23 @@ describe("engine.lint()", () => {
     }
   });
 
-  it("skips matched Markdown files when flavor detection is not Obsidian", async () => {
+  it("lints matched Markdown files in git-root repos without flavor assignment", async () => {
     const tmpDir = await makeTmpGitRoot();
     try {
+      await fs.writeFile(path.join(tmpDir, "generic.md"), "# Bad tag\n\n#topic/\n");
+      const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
+
+      expect(results).toHaveLength(1);
+      expect(results[0]?.errors.some((error) => error.ruleCode === "OFM063")).toBe(true);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("skips matched Markdown files with explicit non-Obsidian flavor assignment", async () => {
+    const tmpDir = await makeTmpGitRoot();
+    try {
+      await fs.writeFile(path.join(tmpDir, ".mdfattributes"), "*.md flavor=gfm\n");
       await fs.writeFile(path.join(tmpDir, "generic.md"), "# Bad tag\n\n#topic/\n");
       const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
 
