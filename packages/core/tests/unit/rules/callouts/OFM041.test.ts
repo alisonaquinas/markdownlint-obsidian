@@ -45,6 +45,11 @@ describe("OFM041 malformed-callout", () => {
     expect(errors).toEqual([]);
   });
 
+  it("ignores standard Markdown links inside blockquotes", async () => {
+    const errors = await runRuleOnSource(OFM041Rule, "> [link text](https://example.com)\n");
+    expect(errors).toEqual([]);
+  });
+
   it("skips malformed patterns inside a fenced code block", async () => {
     const src = "```md\n> [!NOTE]Title\n```\n";
     const errors = await runRuleOnSource(OFM041Rule, src);
