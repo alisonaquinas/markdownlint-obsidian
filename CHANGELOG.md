@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Path-qualified links now have a valid remediation path for ambiguous
   basename links, so OFM004 users can disambiguate `[[index]]` as
   `[[some/folder/index]]` without creating an OFM001 false positive.
+- OFM041 now explicitly ignores standard Markdown links inside blockquotes,
+  such as `> [link text](https://example.com)`, instead of treating them as
+  malformed callout headers.
 
 ## [1.2.1] - 2026-06-09
 
