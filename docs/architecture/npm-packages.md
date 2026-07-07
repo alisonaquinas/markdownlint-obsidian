@@ -8,7 +8,7 @@ tags:
   - "architecture"
 type: "architecture-policy"
 status: "current"
-updated: 2026-05-09
+updated: 2026-06-09
 up: "[[architecture/README]]"
 ---
 
@@ -101,15 +101,30 @@ Source: [core AGENTS](../../packages/core/AGENTS.md); [CLI AGENTS](../../package
 
 ```text
 Tag: PackageArchitecture.TrustedPublishing
-Gist: Publish npm packages through trusted publishing only.
+Gist: Publish tagged npm package releases through trusted publishing only.
 Ambition: Package releases have provenance and avoid long-lived registry tokens.
-Scale: Percentage of npm release paths that use GitHub Actions OIDC, npm provenance, and prepared semver dependencies without registry tokens.
-Meter: Workflow inspection and release dry-run verifying `.github/workflows/npm-publish.yml`, reusable publish workflow behavior, package metadata, and absence of `NODE_AUTH_TOKEN` or manual publish steps.
-Fail: Any release path uses a registry token, publishes from the workspace root, bypasses provenance, or skips dependency preparation.
+Scale: Percentage of npm release paths that start from an explicit package tag, use GitHub Actions OIDC, npm provenance, and prepared semver dependencies without registry tokens.
+Meter: Workflow inspection and release dry-run verifying `.github/workflows/npm-publish.yml`, reusable publish workflow behavior, package metadata, tag-to-version checks, and absence of `NODE_AUTH_TOKEN` or manual publish steps.
+Fail: Any release path uses a registry token, publishes from the workspace root, bypasses provenance, skips dependency preparation, or publishes from generated release PR automation instead of a package tag.
 Goal: 100% of npm publish paths use trusted publishing with provenance.
 Stakeholders: Package users, release maintainers, supply-chain reviewers.
 Owner: markdownlint-obsidian release maintainers.
-Source: [root AGENTS](../../AGENTS.md); [packages AGENTS](../../packages/AGENTS.md); [install guide](../guides/install.md).
+Source: [ADR008 tag-driven package releases](../adr/ADR008-tag-driven-package-releases.md); [root AGENTS](../../AGENTS.md); [packages AGENTS](../../packages/AGENTS.md); [install guide](../guides/install.md).
+```
+
+## PackageArchitecture.TagDrivenRelease
+
+```text
+Tag: PackageArchitecture.TagDrivenRelease
+Gist: Treat package tags as the deployment command.
+Ambition: Release intent is explicit and reviewable before deployment, without bot-authored version PRs.
+Scale: Percentage of production package publishes that are triggered by `markdownlint-obsidianvX.Y.Z` or `markdownlint-obsidian-clivX.Y.Z` tags whose versions match the package manifests at the tagged commit.
+Meter: Workflow inspection and release runs verifying tag patterns, tag-to-package routing, manifest version validation, GitHub release creation, npm publish, release asset upload, and post-release verification.
+Fail: A push to `main` opens or updates a release PR, a GitHub release event starts package publishing, or a tag version differs from the package manifest version.
+Goal: 100% of package deployments are tag-triggered and version-validated.
+Stakeholders: Release maintainers, package users, supply-chain reviewers.
+Owner: markdownlint-obsidian release maintainers.
+Source: [ADR008 tag-driven package releases](../adr/ADR008-tag-driven-package-releases.md); [npm publish workflow](../../.github/workflows/npm-publish.yml); [reusable publish workflow](../../.github/workflows/_publish-packages.yml).
 ```
 
 ## PackageArchitecture.PackageTests

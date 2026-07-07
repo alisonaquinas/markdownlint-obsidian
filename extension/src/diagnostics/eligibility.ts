@@ -15,6 +15,7 @@ import type {
   ExtensionSettings,
   SessionState,
 } from "../shared/types.js";
+import { resolveMarkdownFlavor } from "markdown-flavor-detection";
 
 /**
  * Decide whether a document should receive live markdownlint-obsidian feedback.
@@ -67,7 +68,7 @@ function rejectionChecks(
         dependency.status === "blocked-restricted" || dependency.status === "blocked-virtual",
         dependency.reason ?? "Flavor Grenade is unavailable",
       ),
-    (): string | null => when(document.languageId !== "ofmarkdown", "not an OFMarkdown document"),
+    (): string | null => flavorRejection(document),
     (): string | null => when(document.isUntitled, "untitled documents are unsupported"),
     (): string | null =>
       when(document.scheme !== "file", `unsupported URI scheme: ${document.scheme}`),
@@ -82,4 +83,27 @@ function rejectionChecks(
 
 function when(condition: boolean, message: string): string | null {
   return condition ? message : null;
+}
+
+function flavorRejection(document: DocumentSnapshot): string | null {
+  const resolution = resolveMarkdownFlavor({
+    path: document.fsPath ?? document.uri,
+    languageId: markdownFlavorLanguageId(document.languageId),
+    hasObsidianMarker: document.languageId === "ofmarkdown",
+    syntaxText: document.text,
+  });
+
+  if (resolution.kind === "inactive") {
+    return "not an OFMarkdown document";
+  }
+
+  if (resolution.effective !== "obsidian") {
+    return `not an OFMarkdown document (detected ${resolution.effective})`;
+  }
+
+  return null;
+}
+
+function markdownFlavorLanguageId(languageId: string): string {
+  return languageId === "ofmarkdown" ? "markdown" : languageId;
 }

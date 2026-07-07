@@ -29,6 +29,13 @@ describe("WikilinkExtractor", () => {
     expect(out[0]?.alias).toBe("display");
   });
 
+  it("strips markdown table escape before an alias delimiter", () => {
+    const out = extract("| [[notes/target\\|target.md]] | x |");
+    expect(out).toHaveLength(1);
+    expect(out[0]?.target).toBe("notes/target");
+    expect(out[0]?.alias).toBe("target.md");
+  });
+
   it("marks embed links", () => {
     const out = extract("![[image.png]]");
     expect(out).toHaveLength(1);

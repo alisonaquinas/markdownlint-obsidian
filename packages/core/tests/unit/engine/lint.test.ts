@@ -16,6 +16,12 @@ async function makeTmpVault(): Promise<string> {
   return dir;
 }
 
+async function makeTmpGitRoot(): Promise<string> {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-engine-git-test-"));
+  await fs.mkdir(path.join(dir, ".git"), { recursive: true });
+  return dir;
+}
+
 describe("engine.lint()", () => {
   it("returns an empty array when no files match globs", async () => {
     const tmpDir = await makeTmpVault();
@@ -66,6 +72,32 @@ describe("engine.lint()", () => {
         vaultRoot: tmpDir,
       });
       expect(Array.isArray(results)).toBe(true);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("skips matched Markdown files when flavor detection is not Obsidian", async () => {
+    const tmpDir = await makeTmpGitRoot();
+    try {
+      await fs.writeFile(path.join(tmpDir, "generic.md"), "# Bad tag\n\n#topic/\n");
+      const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
+
+      expect(results).toEqual([]);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("lints matched Markdown files when .mdfattributes selects Obsidian flavor", async () => {
+    const tmpDir = await makeTmpGitRoot();
+    try {
+      await fs.writeFile(path.join(tmpDir, ".mdfattributes"), "*.md flavor=obsidian\n");
+      await fs.writeFile(path.join(tmpDir, "note.md"), "# Bad tag\n\n#topic/\n");
+      const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
+
+      expect(results).toHaveLength(1);
+      expect(results[0]?.errors.some((error) => error.ruleCode === "OFM063")).toBe(true);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

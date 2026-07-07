@@ -8,6 +8,10 @@ import { DEFAULT_CONFIG } from "../../../src/infrastructure/config/defaults.js";
 import { OFM_MD_CONFLICTS } from "../../../src/infrastructure/rules/standard/OFM_MD_CONFLICTS.js";
 
 describe("DEFAULT_CONFIG Phase 7 additions", () => {
+  it("uses Obsidian-compatible fuzzy wikilink resolution by default", () => {
+    expect(DEFAULT_CONFIG.wikilinks.resolveMode).toBe("obsidian-fuzzy");
+  });
+
   it.each(OFM_MD_CONFLICTS.map((c) => c.code))(
     "disables %s by default (listed in OFM_MD_CONFLICTS)",
     (code) => {

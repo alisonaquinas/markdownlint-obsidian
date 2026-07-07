@@ -1,8 +1,8 @@
 name: Publish packages (reusable)
 
-# Reusable workflow — called by npm-publish.yml (real releases) and ci.yml
-# (dry-run archive validation on every PR/push).  Both paths exercise the same
-# build and prepare-publish logic; only real releases call npm publish.
+# Reusable workflow — called by npm-publish.yml (tag-driven real releases) and
+# ci.yml (dry-run archive validation on every PR/push).  Both paths exercise
+# the same build and prepare-publish logic; only real releases call npm publish.
 # Real publishing is npm trusted publishing only: OIDC + provenance, never a
 # registry auth token.
 
@@ -17,7 +17,7 @@ on:
         default: false
       tag_name:
         description: >
-          Release tag name. Determines which package to publish. Core tags use
+          Package tag name. Determines which package to publish. Core tags use
           markdownlint-obsidianv* and CLI tags use markdownlint-obsidian-cliv*.
           Ignored when dry_run is true — both packages are exercised.
         type: string
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
@@ -53,41 +53,71 @@ jobs:
       - name: Build cli
         run: bun run --filter markdownlint-obsidian-cli build
 
-      - name: Rewrite workspace:* deps to actual versions (core)
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
-        run: node scripts/prepare-publish.mjs packages/core
+      - name: Resolve package from tag
+        id: package
+        shell: bash
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          case "$TAG_NAME" in
+            markdownlint-obsidianv*)
+              PACKAGE_NAME="markdownlint-obsidian"
+              PACKAGE_DIR="packages/core"
+              VERSION="${TAG_NAME#markdownlint-obsidianv}"
+              ;;
+            markdownlint-obsidian-cliv*)
+              PACKAGE_NAME="markdownlint-obsidian-cli"
+              PACKAGE_DIR="packages/cli"
+              VERSION="${TAG_NAME#markdownlint-obsidian-cliv}"
+              ;;
+            *)
+              echo "::error::Unsupported package tag: $TAG_NAME"
+              exit 1
+              ;;
+          esac
 
-      - name: Pack core release archive
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
+          ACTUAL_VERSION=$(node -e "const fs=require('node:fs'); const pkg=JSON.parse(fs.readFileSync('${PACKAGE_DIR}/package.json','utf8')); process.stdout.write(pkg.version);")
+          if [[ "$VERSION" != "$ACTUAL_VERSION" ]]; then
+            echo "::error::Tag $TAG_NAME declares version $VERSION, but $PACKAGE_DIR/package.json is $ACTUAL_VERSION"
+            exit 1
+          fi
+
+          {
+            echo "name=$PACKAGE_NAME"
+            echo "dir=$PACKAGE_DIR"
+            echo "version=$VERSION"
+            echo "title=$PACKAGE_NAME: v$VERSION"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Rewrite workspace:* deps to actual versions
+        run: node scripts/prepare-publish.mjs "${{ steps.package.outputs.dir }}"
+
+      - name: Pack release archive
         run: npm pack
-        working-directory: packages/core
+        working-directory: ${{ steps.package.outputs.dir }}
 
-      - name: Publish core
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
+      - name: Publish package
         run: npm publish --access public --provenance
-        working-directory: packages/core
+        working-directory: ${{ steps.package.outputs.dir }}
 
-      - name: Upload core release archive
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidianv')
-        run: gh release upload "${{ inputs.tag_name }}" packages/core/*.tgz --clobber
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ inputs.tag_name }}
+          RELEASE_TITLE: ${{ steps.package.outputs.title }}
+        run: |
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release edit "$TAG_NAME" --title "$RELEASE_TITLE"
+          else
+            gh release create "$TAG_NAME" --verify-tag --title "$RELEASE_TITLE" --generate-notes --latest=false
+          fi
 
-      - name: Rewrite workspace:* deps to actual versions (cli)
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
-        run: node scripts/prepare-publish.mjs packages/cli
-
-      - name: Pack cli release archive
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
-        run: npm pack
-        working-directory: packages/cli
-
-      - name: Publish cli
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
-        run: npm publish --access public --provenance
-        working-directory: packages/cli
-
-      - name: Upload cli release archive
-        if: startsWith(inputs.tag_name, 'markdownlint-obsidian-cliv')
-        run: gh release upload "${{ inputs.tag_name }}" packages/cli/*.tgz --clobber
+      - name: Upload release archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ inputs.tag_name }}
+          PACKAGE_DIR: ${{ steps.package.outputs.dir }}
+        run: gh release upload "$TAG_NAME" "$PACKAGE_DIR"/*.tgz --clobber
 
   # ── Dry-run archive validation ──────────────────────────────────────────────
   # Runs only when dry_run is true.  No 'npm' environment, no OIDC token,
@@ -97,7 +127,7 @@ jobs:
     if: ${{ inputs.dry_run }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:

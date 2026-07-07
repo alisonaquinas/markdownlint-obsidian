@@ -7,7 +7,7 @@ tags:
   - "docs/roadmap"
 type: "roadmap"
 status: "current"
-updated: 2026-05-09
+updated: 2026-06-09
 up: "[[README]]"
 ---
 
@@ -35,7 +35,7 @@ working, testable software on its own. Implementation plans live under
 | 9     | [[plans/phase-09-autofix]]               | Auto-fix support for fixable rules (`--fix` flag fully wired)                                                                                 | Planned  |
 | 10    | [[plans/phase-10-custom-rules]]          | Custom rules API, documentation, and worked examples                                                                                          | Planned  |
 | 11    | [[plans/phase-11-bun-migration]]         | Adopt Bun as primary dev/test/CI runtime; preserve Node for published consumers                                                               | Complete |
-| 12    | [[plans/phase-12-cd-automation]]         | Full CD via release-please; npm publish, action-tag, docker-publish fan-out                                                                   | Complete |
+| 12    | [[plans/phase-12-cd-automation]]         | Full CD now driven by package tags; npm publish, action-tag, and release verification                                                         | Complete |
 | 13    | [[plans/phase-13-package-split]]         | Split into `markdownlint-obsidian` (library) + `markdownlint-obsidian-cli` (CLI) as Bun workspace monorepo                                    | Complete |
 | 14    | [[plans/phase-14-multi-registry-cd]]     | Multi-registry publishing (npmjs.org, GitHub Packages, ghcr.io) + supply-chain hardening (provenance, cosign, SBOM)                           | Planned  |
 | 15    | [[plans/phase-15-cli2-config-parity]]    | Bring configuration loading, parsing, pointer, inheritance, and grouping behavior to markdownlint-cli2 parity                                  | Planned  |
@@ -45,6 +45,7 @@ working, testable software on its own. Implementation plans live under
 - [[adr/ADR001-option-b-standalone]] — Standalone CLI (Option B) chosen over plugin or layered approach
 - [[adr/ADR002-wikilink-resolution-default-on]] — Wikilink resolution on by default, opt-out via `--no-resolve`
 - [[adr/ADR003-markdownlint-as-dependency]] — Import `markdownlint` library for MD001–MD049 rules
+- [[adr/ADR008-tag-driven-package-releases]] — Package publishing is driven by explicit package tags
 
 ## Design Layers
 
