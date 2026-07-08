@@ -105,6 +105,27 @@ describe("applyFixes", () => {
     expect(patched).not.toContain("Y"); // conflicting insertion was not applied
   });
 
+  it("composes same-anchor indentation removal with line-boundary insertion", () => {
+    const raw = "  - item";
+    const removeIndent = makeFix({
+      lineNumber: 1,
+      editColumn: 1,
+      deleteCount: 2,
+      insertText: "",
+    });
+    const addBlankBefore = makeFix({
+      lineNumber: 1,
+      editColumn: 1,
+      deleteCount: 0,
+      insertText: "\n",
+    });
+
+    const { patched, conflicts } = applyFixes(raw, [removeIndent, addBlankBefore]);
+
+    expect(conflicts).toHaveLength(0);
+    expect(patched).toBe("\n- item");
+  });
+
   it("preserves CRLF line endings when splitting and rejoining", () => {
     // split on \n, each line may contain trailing \r — they should be preserved
     const raw = "line one\r\nline two\r\nline three";

@@ -76,4 +76,63 @@ describe("engine.fix()", () => {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
   });
+
+  it("converges in one pass for indented lists attached to colon-terminated prose", async () => {
+    const tmpDir = await makeTmpVault();
+    try {
+      const filePath = path.join(tmpDir, "bug.md");
+      await fs.writeFile(filePath, bddListBlock());
+
+      const first = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const afterFirst = await fs.readFile(filePath, "utf8");
+      const second = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const afterSecond = await fs.readFile(filePath, "utf8");
+
+      expect(first.conflicts).toHaveLength(0);
+      expect(first.finalPass.flatMap((result) => result.errors)).toHaveLength(0);
+      expect(second.filesFixed).toHaveLength(0);
+      expect(second.finalPass.flatMap((result) => result.errors)).toHaveLength(0);
+      expect(afterSecond).toBe(afterFirst);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("does not diverge when multiple colon-attached list blocks are fixed together", async () => {
+    const tmpDir = await makeTmpVault();
+    try {
+      const filePath = path.join(tmpDir, "many.md");
+      await fs.writeFile(
+        filePath,
+        ["# Title", "", ...Array.from({ length: 5 }, bddListBodyBlock)].join("\n"),
+      );
+
+      const first = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const afterFirst = await fs.readFile(filePath, "utf8");
+      const second = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const afterSecond = await fs.readFile(filePath, "utf8");
+
+      expect(first.conflicts).toHaveLength(0);
+      expect(first.finalPass.flatMap((result) => result.errors)).toHaveLength(0);
+      expect(second.filesFixed).toHaveLength(0);
+      expect(second.finalPass.flatMap((result) => result.errors)).toHaveLength(0);
+      expect(afterSecond).toBe(afterFirst);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
 });
+
+function bddListBlock(): string {
+  return ["# Title", "", ...bddListBodyBlock().split("\n")].join("\n");
+}
+
+function bddListBodyBlock(): string {
+  return [
+    "**When** an `OPTIONS` preflight is sent with:",
+    "  - `Origin: https://attacker.example.com`",
+    "  - `Access-Control-Request-Method: PUT`",
+    "**Then** the response omits `Access-Control-Allow-Origin`",
+    "",
+  ].join("\n");
+}
