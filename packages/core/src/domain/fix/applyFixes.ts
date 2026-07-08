@@ -57,15 +57,18 @@ function applyLineGroup(
   conflicts: FixConflict[],
 ): void {
   // Sort descending by editColumn — end-of-line edits first keeps earlier positions valid.
-  const sorted = [...list].sort((a, b) => b.editColumn - a.editColumn);
+  // For same-column edits, apply replacements/deletions before pure insertions so a
+  // line-start blank insertion can compose with an indentation removal at that anchor.
+  const sorted = [...list].sort(compareFixApplicationOrder);
   const accepted: Fix[] = [];
 
   for (const fix of sorted) {
-    const overlapping = accepted.find((a) => rangesIntersect(a, fix));
-    if (overlapping !== undefined) {
+    const overlapping = accepted.filter((a) => rangesIntersect(a, fix));
+    if (overlapping.length > 0 && !overlapping.every((a) => canComposeSameAnchor(a, fix))) {
+      const first = overlapping[0]!;
       conflicts.push({
         filePath,
-        first: overlapping,
+        first,
         second: fix,
         reason: `Overlap on line ${lineNumber}`,
       });
@@ -83,6 +86,12 @@ function spliceLine(lines: string[], lineNumber: number, fix: Fix): void {
   lines[idx] = line.slice(0, col) + fix.insertText + line.slice(col + fix.deleteCount);
 }
 
+function compareFixApplicationOrder(a: Fix, b: Fix): number {
+  const columnOrder = b.editColumn - a.editColumn;
+  if (columnOrder !== 0) return columnOrder;
+  return Number(isPureInsertion(a)) - Number(isPureInsertion(b));
+}
+
 function rangesIntersect(a: Fix, b: Fix): boolean {
   const aEnd = a.editColumn + a.deleteCount;
   const bEnd = b.editColumn + b.deleteCount;
@@ -90,4 +99,17 @@ function rangesIntersect(a: Fix, b: Fix): boolean {
   if (a.editColumn === b.editColumn) return true;
   // Standard half-open interval overlap check.
   return a.editColumn < bEnd && b.editColumn < aEnd;
+}
+
+function canComposeSameAnchor(a: Fix, b: Fix): boolean {
+  if (a.editColumn !== b.editColumn) return false;
+  return isLineBoundaryInsertion(a) !== isLineBoundaryInsertion(b);
+}
+
+function isPureInsertion(fix: Fix): boolean {
+  return fix.deleteCount === 0 && fix.insertText.length > 0;
+}
+
+function isLineBoundaryInsertion(fix: Fix): boolean {
+  return fix.deleteCount === 0 && fix.insertText.includes("\n");
 }

@@ -73,4 +73,33 @@ describe("--fix and --fix-check round-trip", () => {
     // Both trailing slashes must have been removed by OFM063
     expect(content).not.toContain("/");
   });
+
+  it("--fix converges in one pass for colon-attached indented lists", async () => {
+    const filePath = path.join(tmp, "bdd-list.md");
+    await fs.writeFile(filePath, bddListFixture());
+
+    const first = await spawnCli(["--fix", "**/*.md"], tmp);
+    const afterFirst = await fs.readFile(filePath, "utf8");
+    const second = await spawnCli(["--fix", "**/*.md"], tmp);
+    const afterSecond = await fs.readFile(filePath, "utf8");
+
+    expect(first.exitCode).toBe(0);
+    expect(first.stderr).not.toContain("[fix-conflict]");
+    expect(first.stderr).toContain("Fixed 1 file(s)");
+    expect(second.exitCode).toBe(0);
+    expect(second.stderr).not.toContain("Fixed");
+    expect(afterSecond).toBe(afterFirst);
+  });
 });
+
+function bddListFixture(): string {
+  return [
+    "# Title",
+    "",
+    "**When** an `OPTIONS` preflight is sent with:",
+    "  - `Origin: https://attacker.example.com`",
+    "  - `Access-Control-Request-Method: PUT`",
+    "**Then** the response omits `Access-Control-Allow-Origin`",
+    "",
+  ].join("\n");
+}

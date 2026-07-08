@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-07-08
+
+### Fixed
+
+- Made blank-line autofixes converge when standard markdownlint indentation
+  and list-boundary fixes target the same line-start anchor. `--fix` now
+  handles colon-attached indented lists in one pass without emitting
+  `[fix-conflict]`, and repeated `--fix` runs remain stable.
+
 ## [1.3.1] - 2026-07-07
 
 ### Fixed
