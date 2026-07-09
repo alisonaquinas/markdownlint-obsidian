@@ -38,8 +38,8 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Upgrade npm to latest (required for tokenless provenance publishing)
-        run: npm install -g npm@latest
+      - name: Install npm with provenance support
+        run: npm install -g npm@11.6.2
 
       - uses: oven-sh/setup-bun@v2
         with:
