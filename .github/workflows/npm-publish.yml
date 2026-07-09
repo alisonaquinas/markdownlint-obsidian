@@ -13,7 +13,7 @@ jobs:
   publish:
     uses: ./.github/workflows/_publish-packages.yml
     permissions:
-      id-token: write # propagated to the reusable workflow for --provenance
+      id-token: write # OIDC token for npm trusted publishing
       contents: write
     with:
       dry_run: false

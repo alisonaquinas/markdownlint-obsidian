@@ -48,7 +48,7 @@ The publish workflow must:
 2. verify the tag version equals that package's `package.json` version;
 3. build both workspace packages;
 4. rewrite `workspace:*` dependencies to concrete semver ranges;
-5. publish with npm trusted publishing and provenance;
+5. publish with npm trusted publishing and registry-generated provenance;
 6. create or update the matching GitHub release; and
 7. upload the package tarball to that release.
 

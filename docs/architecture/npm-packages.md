@@ -103,8 +103,8 @@ Source: [core AGENTS](../../packages/core/AGENTS.md); [CLI AGENTS](../../package
 Tag: PackageArchitecture.TrustedPublishing
 Gist: Publish tagged npm package releases through trusted publishing only.
 Ambition: Package releases have provenance and avoid long-lived registry tokens.
-Scale: Percentage of npm release paths that start from an explicit package tag, use GitHub Actions OIDC, npm provenance, and prepared semver dependencies without registry tokens.
-Meter: Workflow inspection and release dry-run verifying `.github/workflows/npm-publish.yml`, reusable publish workflow behavior, package metadata, tag-to-version checks, and absence of `NODE_AUTH_TOKEN` or manual publish steps.
+Scale: Percentage of npm release paths that start from an explicit package tag, use GitHub Actions OIDC, registry-generated npm provenance, and prepared semver dependencies without registry tokens.
+Meter: Workflow inspection and release dry-run verifying `.github/workflows/npm-publish.yml`, reusable publish workflow behavior, package metadata, tag-to-version checks, tarball publish dry-runs, and absence of `NODE_AUTH_TOKEN` or manual publish steps.
 Fail: Any release path uses a registry token, publishes from the workspace root, bypasses provenance, skips dependency preparation, or publishes from generated release PR automation instead of a package tag.
 Goal: 100% of npm publish paths use trusted publishing with provenance.
 Stakeholders: Package users, release maintainers, supply-chain reviewers.

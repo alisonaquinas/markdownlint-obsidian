@@ -3,16 +3,17 @@ name: Publish packages (reusable)
 # Reusable workflow — called by npm-publish.yml (tag-driven real releases) and
 # ci.yml (dry-run archive validation on every PR/push).  Both paths exercise
 # the same build and prepare-publish logic; only real releases call npm publish.
-# Real publishing is npm trusted publishing only: OIDC + provenance, never a
-# registry auth token.
+# Real publishing is npm trusted publishing only: OIDC-backed publishing with
+# registry-generated provenance, never a registry auth token.
 
 on:
   workflow_call:
     inputs:
       dry_run:
         description: >
-          When true, runs `npm pack --dry-run --json` after dependency rewrite
-          so package archive creation is validated without touching any registry.
+          When true, packs each package and runs `npm publish --dry-run` after
+          dependency rewrite so the release publish path is validated without
+          publishing to any registry.
         type: boolean
         default: false
       tag_name:
@@ -26,7 +27,9 @@ on:
 jobs:
   # ── Real publish ────────────────────────────────────────────────────────────
   # Runs only when dry_run is false.  Uses the 'npm' environment for
-  # OIDC-based tokenless provenance publishing.
+  # OIDC-based tokenless trusted publishing. npm generates provenance
+  # automatically for public packages published from public GitHub Actions
+  # workflows, so this job intentionally does not pass --provenance.
   publish:
     if: ${{ !inputs.dry_run }}
     runs-on: ubuntu-latest
@@ -38,8 +41,11 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Install npm with provenance support
-        run: npm install -g npm@11.6.2
+      - name: Report npm publish toolchain
+        run: |
+          node --version
+          npm --version
+          npm config get registry
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -93,11 +99,16 @@ jobs:
         run: node scripts/prepare-publish.mjs "${{ steps.package.outputs.dir }}"
 
       - name: Pack release archive
-        run: npm pack
+        id: pack
+        shell: bash
+        run: |
+          TARBALL="$(npm pack --silent)"
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          echo "$TARBALL"
         working-directory: ${{ steps.package.outputs.dir }}
 
       - name: Publish package
-        run: npm publish --access public --provenance
+        run: npm publish "${{ steps.pack.outputs.tarball }}" --access public
         working-directory: ${{ steps.package.outputs.dir }}
 
       - name: Create GitHub release
@@ -120,9 +131,11 @@ jobs:
         run: gh release upload "$TAG_NAME" "$PACKAGE_DIR"/*.tgz --clobber
 
   # ── Dry-run archive validation ──────────────────────────────────────────────
-  # Runs only when dry_run is true.  No 'npm' environment, no OIDC token,
-  # no network publishing.  Both packages are always exercised so the full
-  # prepare-publish.mjs + tarball metadata path is validated on every PR.
+  # Runs only when dry_run is true. No 'npm' environment, no OIDC token,
+  # no real publishing. Both packages are always exercised so the full
+  # prepare-publish.mjs + pack + publish command path is validated on every PR.
+  # The package version is rewritten to a CI-only prerelease because
+  # `npm publish --dry-run` rejects versions that already exist on npm.
   publish-dry-run:
     if: ${{ inputs.dry_run }}
     runs-on: ubuntu-latest
@@ -132,6 +145,12 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
+
+      - name: Report npm publish toolchain
+        run: |
+          node --version
+          npm --version
+          npm config get registry
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -148,13 +167,59 @@ jobs:
       - name: Rewrite workspace:* deps to actual versions (core)
         run: node scripts/prepare-publish.mjs packages/core
 
-      - name: Pack core [dry-run]
-        run: npm pack --dry-run --json
+      - name: Assign dry-run-only version (core)
+        shell: bash
+        run: |
+          export DRY_RUN_VERSION="0.0.0-dry-run.${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}"
+          node --input-type=module <<'EOF'
+          import { readFileSync, writeFileSync } from "node:fs";
+
+          const pkgPath = "packages/core/package.json";
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+          pkg.version = process.env.DRY_RUN_VERSION;
+          writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+          console.log(`${pkg.name}@${pkg.version}`);
+          EOF
+
+      - name: Pack core release archive
+        id: pack_core
+        shell: bash
+        run: |
+          TARBALL="$(npm pack --silent)"
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          echo "$TARBALL"
+        working-directory: packages/core
+
+      - name: Publish core [dry-run]
+        run: npm publish "${{ steps.pack_core.outputs.tarball }}" --dry-run --access public --tag dry-run
         working-directory: packages/core
 
       - name: Rewrite workspace:* deps to actual versions (cli)
         run: node scripts/prepare-publish.mjs packages/cli
 
-      - name: Pack cli [dry-run]
-        run: npm pack --dry-run --json
+      - name: Assign dry-run-only version (cli)
+        shell: bash
+        run: |
+          export DRY_RUN_VERSION="0.0.0-dry-run.${GITHUB_RUN_ID}.${GITHUB_RUN_ATTEMPT}"
+          node --input-type=module <<'EOF'
+          import { readFileSync, writeFileSync } from "node:fs";
+
+          const pkgPath = "packages/cli/package.json";
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
+          pkg.version = process.env.DRY_RUN_VERSION;
+          writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+          console.log(`${pkg.name}@${pkg.version}`);
+          EOF
+
+      - name: Pack cli release archive
+        id: pack_cli
+        shell: bash
+        run: |
+          TARBALL="$(npm pack --silent)"
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          echo "$TARBALL"
+        working-directory: packages/cli
+
+      - name: Publish cli [dry-run]
+        run: npm publish "${{ steps.pack_cli.outputs.tarball }}" --dry-run --access public --tag dry-run
         working-directory: packages/cli

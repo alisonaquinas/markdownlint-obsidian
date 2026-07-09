@@ -92,9 +92,9 @@ jobs:
 
   publish-dry-run:
     # Dry-run the release archive path (build → prepare-publish.mjs → npm pack
-    # --dry-run) for both packages on every PR and push.  Exercises the same
-    # dependency rewrite and tarball metadata path as a real release without
-    # touching any registry.
+    # → npm publish --dry-run) for both packages on every PR and push. Exercises
+    # the same dependency rewrite, tarball, and publish command path as a real
+    # release without touching any registry.
     needs: build-and-test
     uses: ./.github/workflows/_publish-packages.yml
     permissions:

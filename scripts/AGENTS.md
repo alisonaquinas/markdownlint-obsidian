@@ -21,7 +21,7 @@ scripts/
 3. Confirm the package-local `package.json` now contains concrete dependency
    ranges instead of `workspace:*`.
 4. Keep the publish step in GitHub Actions so npm trusted publishing can use
-   OIDC with `npm publish --provenance`.
+   OIDC and npm can generate provenance automatically.
 
 Do not add registry tokens, `NODE_AUTH_TOKEN`, GitHub Packages npm publishing,
 GHCR package/image publishing, or manual package-root `npm publish` release

@@ -31,9 +31,9 @@ push `markdownlint-obsidianvX.Y.Z` for the core package or
 `markdownlint-obsidian-clivX.Y.Z` for the CLI package.
 
 The release workflow must use npm trusted publishing only: GitHub Actions OIDC
-plus `npm publish --provenance`. Do not add registry tokens, `NODE_AUTH_TOKEN`,
-GitHub Packages npm publishing, GHCR package/image publishing, or manual
-package-root `npm publish` release steps.
+with registry-generated provenance. Do not add registry tokens,
+`NODE_AUTH_TOKEN`, GitHub Packages npm publishing, GHCR package/image
+publishing, or manual package-root `npm publish` release steps.
 
 [`../scripts/prepare-publish.mjs`](../scripts/prepare-publish.mjs) is used by
 the release workflow and dry-run checks so `workspace:*` dependencies are

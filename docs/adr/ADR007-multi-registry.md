@@ -7,7 +7,7 @@ tags:
   - "docs/adr"
 type: "adr"
 status: "current"
-updated: 2026-05-09
+updated: 2026-07-09
 up: "[[README]]"
 ---
 
@@ -31,11 +31,14 @@ In parallel, the project ships a Docker image to `ghcr.io` for users who run the
 
 ## Decision
 
-### 1. npm provenance via `bun publish --provenance`
+### 1. npm provenance via trusted publishing
 
-Enable npm provenance on every npm publish by passing `--provenance` to `bun publish`.
+Enable npm provenance on every npm publish through npm trusted publishing.
 
-GitHub Actions provides an OIDC token to the publish job. The npm registry uses that token to generate a signed provenance statement (an in-toto attestation) that records:
+GitHub Actions provides an OIDC token to the publish job. The npm registry uses
+that token to authenticate the trusted publisher and generate provenance for
+public packages published from public GitHub Actions workflows. The signed
+provenance statement records:
 
 - the package name and version,
 - the SHA-256 digest of the published tarball,
@@ -78,17 +81,26 @@ cosign verify \
 
 The verification chain runs entirely through Sigstore's public Rekor transparency log and Fulcio CA — no project-specific key material is involved.
 
-### 4. `bun publish` over `npm publish`
+### 4. Bun for build/install, npm for trusted publishing
 
-The project investigated using `bun publish` (Bun 1.2+) for the primary npm registry publish, but discovered that `bun publish` does not yet support the `--provenance` flag (as of Bun 1.3.x). As a result, the primary npmjs.org publish step falls back to `npm publish --provenance`, while Bun remains the build and install toolchain (`bun install`, `bun run build`).
+The project investigated using `bun publish` (Bun 1.2+) for the primary npm
+registry publish, but npm trusted publishing is the supported tokenless release
+path for npmjs.org. As a result, the primary npmjs.org publish step uses
+`npm publish` from GitHub Actions with OIDC, while Bun remains the build and
+install toolchain (`bun install`, `bun run build`).
 
 Rationale for the dual approach:
 
 - **Build/install toolchain.** Phase 11 migrated the development toolchain to Bun (`bun install`, `bun test`, `bun run build`). This remains unchanged and avoids redundant Node/npm installation in CI for build tasks.
-- **Fallback for missing provenance.** Bun 1.2+ added partial npm publishing support but does not yet implement `--provenance`. This is exactly the fallback path described in the original plan: "Fall back to npm publish only if a Bun gap is discovered."
-- **Workspace awareness.** `bun publish` respects the monorepo workspace layout and resolves `workspace:*` protocol references correctly. The GitHub Packages mirror job still uses `npm publish` and also respects the workspace layout.
+- **Trusted publishing support.** npm trusted publishing removes the need for
+  registry tokens and lets the registry generate provenance automatically. The
+  workflow intentionally avoids managing a separate global npm version or
+  passing an explicit provenance flag.
+- **Workspace dependency preparation.** The release workflow rewrites
+  `workspace:*` dependencies to concrete semver ranges before packaging so the
+  published tarball is valid for npm consumers.
 
-The GitHub Packages mirror job continues to use `npm publish` as planned (no change needed there). Only the final publish steps use npm; the entire build pipeline still runs on Bun.
+Only the final publish step uses npm; the build pipeline still runs on Bun.
 
 ## Rejected alternatives
 
@@ -113,7 +125,8 @@ GitHub Packages requires that npm packages be published under a scope matching t
 This ADR's multi-registry decision is superseded by a stricter release policy:
 publishing must use OpenID Connect trusted publishing and must not depend on
 registry authentication tokens. The active release workflow now publishes only
-to npmjs.org with `npm publish --provenance`, backed by GitHub Actions OIDC.
+to npmjs.org with `npm publish`, backed by GitHub Actions OIDC trusted
+publishing.
 
 The GitHub Packages npm mirror and GHCR Docker image publish paths are disabled
 because they require token-backed registry writes in the current workflow model.
