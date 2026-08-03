@@ -12,7 +12,7 @@ jobs:
         # npm-publish takes 3-10 min; add buffer for CDN propagation
         run: sleep 600
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: "24"
 
