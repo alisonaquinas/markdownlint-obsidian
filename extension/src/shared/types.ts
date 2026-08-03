@@ -24,11 +24,7 @@ export interface ExtensionSettings {
 
 /** Observed availability state for the Flavor Grenade extension. */
 export type DependencyStatus =
-  | "installed-active"
-  | "installed-inactive"
-  | "missing"
-  | "blocked-restricted"
-  | "blocked-virtual";
+  "installed-active" | "installed-inactive" | "missing" | "blocked-restricted" | "blocked-virtual";
 
 /** Dependency state surfaced to eligibility and command reporting. */
 export interface DependencyState {

@@ -8,7 +8,7 @@ The action invokes the npm-distributed `markdownlint-obsidian-cli` through
 ## Usage
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     globs: "**/*.md"
     format: default
@@ -35,7 +35,7 @@ The action invokes the npm-distributed `markdownlint-obsidian-cli` through
 ## SARIF upload recipe
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     format: sarif
   id: lint

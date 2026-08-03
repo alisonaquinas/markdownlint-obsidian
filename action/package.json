@@ -1,6 +1,6 @@
 {
   "name": "markdownlint-obsidian-action",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "GitHub Action wrapper for markdownlint-obsidian",
   "type": "module",

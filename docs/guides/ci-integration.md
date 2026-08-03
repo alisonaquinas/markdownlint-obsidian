@@ -23,7 +23,7 @@ npmjs.org using trusted publishing only.
 Drop this step into any workflow:
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     globs: "**/*.md"
     format: default
@@ -41,7 +41,7 @@ Inputs:
 ### SARIF + code scanning
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   id: lint
   with:
     format: sarif
@@ -57,7 +57,7 @@ Add `markdownlint-obsidian` to `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/alisonaquinas/markdownlint-obsidian
-  rev: v0.8.0
+  rev: v0.9.0
   hooks:
     - id: markdownlint-obsidian
 ```

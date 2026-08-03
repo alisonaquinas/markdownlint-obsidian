@@ -116,7 +116,7 @@ flowchart LR
 <summary>GitHub Actions — lint + upload SARIF to code scanning</summary>
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   id: lint
   with:
     globs: "**/*.md"
@@ -135,7 +135,7 @@ flowchart LR
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/alisonaquinas/markdownlint-obsidian
-  rev: v0.8.0
+  rev: v0.9.0
   hooks:
     - id: markdownlint-obsidian
 ```

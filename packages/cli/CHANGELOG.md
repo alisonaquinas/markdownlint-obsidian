@@ -7,6 +7,44 @@
   }
 } -->
 
+## [1.4.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.3.2...markdownlint-obsidian-cliv1.4.0) (2026-08-03)
+
+### Features
+
+* expose GitLab Code Quality output through the `codeclimate` and
+  `gitlab-code-quality` formatter aliases
+
+### Dependencies
+
+* update `markdownlint-obsidian` to 1.4.0
+
+## [1.3.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.3.1...markdownlint-obsidian-cliv1.3.2) (2026-07-08)
+
+### Dependencies
+
+* update `markdownlint-obsidian` to 1.3.2
+
+## [1.3.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.3.0...markdownlint-obsidian-cliv1.3.1) (2026-07-07)
+
+### Bug Fixes
+
+* restore explicit Markdown-glob linting in repositories without Obsidian markers
+
+### Dependencies
+
+* update `markdownlint-obsidian` to 1.3.1
+
+## [1.3.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.1.2...markdownlint-obsidian-cliv1.3.0) (2026-07-07)
+
+### Features
+
+* honor shared Markdown flavor assignments and ignore rules
+* use Obsidian-compatible fuzzy wikilink resolution by default
+
+### Dependencies
+
+* update `markdownlint-obsidian` to 1.3.0 and refresh CLI dependencies
+
 ## [1.1.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidian-cliv1.1.1...markdownlint-obsidian-cliv1.1.2) (2026-06-09)
 
 ### Dependencies

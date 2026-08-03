@@ -13,10 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-08-03
+
 ### Added
 
-- Added `codeclimate` and `gitlab-code-quality` formatter aliases for GitLab
-  Code Quality report artifacts.
+- Added GitLab Code Quality report output through the `codeclimate` and
+  `gitlab-code-quality` formatter aliases in the core API, CLI, and GitHub
+  Action.
+
+### Changed
+
+- Released the GitHub Action as `0.9.0` and the VS Code extension as `0.8.2`
+  alongside the `1.4.0` core and CLI packages.
+- Advanced published-package dogfood coverage from CLI `1.1.1` to the latest
+  shipped release, `1.3.2`.
+- Refreshed runtime, development, and CI dependencies across the workspace.
 
 ## [1.3.2] - 2026-07-08
 
@@ -265,6 +276,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CLI entrypoint at `bin/markdownlint-obsidian.js`.
   - Architecture policy, roadmap, and design spec under `docs/`.
 
+[unreleased]: https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.4.0...HEAD
+[1.4.0]: https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.3.2...markdownlint-obsidianv1.4.0
 [0.8.0]: https://github.com/alisonaquinas/markdownlint-obsidian/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/alisonaquinas/markdownlint-obsidian/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/alisonaquinas/markdownlint-obsidian/compare/v0.5.0...v0.6.0
