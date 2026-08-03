@@ -50,9 +50,11 @@ export default [
     files: [
       "docs/bdd/steps/file-steps.ts",
       "packages/core/src/infrastructure/rules/standard/registerStandard.ts",
+      "packages/core/src/infrastructure/config/ConfigLoader.ts",
       "packages/core/src/engine/index.ts",
       "packages/cli/src/main.ts",
       "action/src/main.ts",
+      "extension/src/extension.ts",
     ],
     rules: {
       "max-lines": "off",

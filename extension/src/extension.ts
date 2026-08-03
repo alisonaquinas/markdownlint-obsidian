@@ -27,6 +27,7 @@ import type {
   DiagnosticData,
   DocumentSnapshot,
   ExtensionSettings,
+  LintDocumentRequest,
 } from "./shared/types.js";
 
 const engine = new CoreLibraryAdapter();
@@ -143,6 +144,18 @@ class ExtensionRuntime {
   }
 
   private async lint(document: vscode.TextDocument): Promise<void> {
+    const request = this.lintRequest(document);
+    if (request === null) return;
+    const version = document.version;
+    try {
+      const result = await engine.lintDocument(request);
+      this.applyLintResult(document, version, result);
+    } catch (error) {
+      this.handleLintError(document, version, error);
+    }
+  }
+
+  private lintRequest(document: vscode.TextDocument): LintDocumentRequest | null {
     const decision = decideEligibility(
       this.snapshot(document),
       this.settings(document.uri),
@@ -155,31 +168,39 @@ class ExtensionRuntime {
         this.output.appendLine(`${document.uri.toString()}: ${decision.reason}`);
         this.output.show(true);
       }
-      return;
+      return null;
     }
     const root = this.workspaceRoot(document.uri);
-    if (root === null)
-      return this.output.appendLine(`No workspace folder for ${document.uri.toString()}`);
-    const version = document.version;
-    try {
-      const result = await engine.lintDocument({
-        filePath: document.uri.fsPath,
-        text: document.getText(),
-        workspaceRoot: root,
-        configPath: this.settings(document.uri).configPath,
-        allowCustomRules: vscode.workspace.isTrusted,
-      });
-      // Discard stale async results so older lint work cannot overwrite newer diagnostics.
-      if (document.version !== version) return;
-      this.results.set(document.uri.toString(), { documentVersion: version, result });
-      this.diagnostics.set(
-        document.uri,
-        result.errors.map((error) => this.toDiagnostic(error)),
-      );
-    } catch (error) {
-      this.output.appendLine(this.errorMessage(error));
-      if (document.version === version) this.clear(document.uri);
+    if (root === null) {
+      this.output.appendLine(`No workspace folder for ${document.uri.toString()}`);
+      return null;
     }
+    return {
+      filePath: document.uri.fsPath,
+      text: document.getText(),
+      workspaceRoot: root,
+      configPath: this.settings(document.uri).configPath,
+      allowCustomRules: vscode.workspace.isTrusted,
+    };
+  }
+
+  private applyLintResult(
+    document: vscode.TextDocument,
+    version: number,
+    result: LintResult,
+  ): void {
+    // Discard stale async results so older lint work cannot overwrite newer diagnostics.
+    if (document.version !== version) return;
+    this.results.set(document.uri.toString(), { documentVersion: version, result });
+    this.diagnostics.set(
+      document.uri,
+      result.errors.map((error) => this.toDiagnostic(error)),
+    );
+  }
+
+  private handleLintError(document: vscode.TextDocument, version: number, error: unknown): void {
+    this.output.appendLine(this.errorMessage(error));
+    if (document.version === version) this.clear(document.uri);
   }
 
   private async lintWorkspace(): Promise<void> {
