@@ -188,7 +188,7 @@
     "@vscode/vsce": "^3.9.1",
     "esbuild": "^0.28.0",
     "markdown-flavor-detection": "^0.7.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "repository": {
     "type": "git",
