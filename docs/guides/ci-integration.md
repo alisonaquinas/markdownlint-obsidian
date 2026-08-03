@@ -73,35 +73,17 @@ lint:markdown:
   before_script:
     - npm install -g markdownlint-obsidian-cli
   script:
-    - |
-      report=gl-code-quality-report.json
-      lint_status=0
-      markdownlint-obsidian "**/*.md" --output-formatter codeclimate > "$report" || lint_status=$?
-      node -e '
-        const fs = require("node:fs");
-        const path = require("node:path");
-        const file = process.argv[1];
-        const findings = JSON.parse(fs.readFileSync(file, "utf8"));
-        for (const finding of findings) {
-          finding.location.path = path
-            .relative(process.cwd(), finding.location.path)
-            .replaceAll("\\", "/");
-        }
-        fs.writeFileSync(file, JSON.stringify(findings, null, 2));
-      ' "$report"
-      exit "$lint_status"
+    - markdownlint-obsidian "**/*.md" --output-formatter codeclimate > gl-code-quality-report.json
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
 ```
 
 `gitlab-code-quality` is an alias for `codeclimate`. GitLab requires every
-`location.path` to be repository-relative. The formatter converts backslashes
-to `/` and strips a leading `./`, but preserves absolute paths because the
-formatter API has no working-directory context. Core API callers should pass
-relative `LintResult.filePath` values. Current CLI file discovery returns
-absolute paths, so the example relativizes them before GitLab imports the
-artifact. A formatter-context API remains follow-up work.
+`location.path` to be repository-relative. The CLI discovers the Git root and
+passes it to the formatter. Core API callers with absolute
+`LintResult.filePath` values should pass `{ repositoryRoot }` as the
+formatter's second argument.
 
 ## Using Bun in CI
 

@@ -4,8 +4,12 @@
  * @module tests/unit/formatters/CodeClimateFormatter.test
  */
 import { describe, expect, it } from "bun:test";
+import * as path from "node:path";
 import { formatCodeClimate } from "../../../src/infrastructure/formatters/CodeClimateFormatter.js";
-import { getFormatter } from "../../../src/infrastructure/formatters/FormatterRegistry.js";
+import {
+  getFormatter,
+  type FormatterContext,
+} from "../../../src/infrastructure/formatters/FormatterRegistry.js";
 import { makeLintError, type LintError } from "../../../src/domain/linting/LintError.js";
 import { makeLintResult } from "../../../src/domain/linting/LintResult.js";
 
@@ -33,8 +37,14 @@ function makeError(overrides: Partial<LintError> = {}): LintError {
   });
 }
 
-function parse(filePath = "docs/example.md", error = makeError()): CodeClimateIssue[] {
-  return JSON.parse(formatCodeClimate([makeLintResult(filePath, [error])])) as CodeClimateIssue[];
+function parse(
+  filePath = "docs/example.md",
+  error = makeError(),
+  context: FormatterContext = {},
+): CodeClimateIssue[] {
+  return JSON.parse(
+    formatCodeClimate([makeLintResult(filePath, [error])], context),
+  ) as CodeClimateIssue[];
 }
 
 describe("CodeClimateFormatter", () => {
@@ -69,6 +79,21 @@ describe("CodeClimateFormatter", () => {
 
   it("normalizes path separators and strips a leading ./", () => {
     expect(parse(".\\docs\\nested\\example.md")[0]?.location.path).toBe("docs/nested/example.md");
+  });
+
+  it("uses stable relative paths and fingerprints across checkout roots", () => {
+    const firstRoot = path.resolve("checkout-one");
+    const secondRoot = path.resolve("checkout-two");
+    const first = parse(path.join(firstRoot, "docs", "example.md"), makeError(), {
+      repositoryRoot: firstRoot,
+    })[0];
+    const second = parse(path.join(secondRoot, "docs", "example.md"), makeError(), {
+      repositoryRoot: secondRoot,
+    })[0];
+
+    expect(first?.location.path).toBe("docs/example.md");
+    expect(second?.location.path).toBe("docs/example.md");
+    expect(first?.fingerprint).toBe(second?.fingerprint);
   });
 
   it("keeps fingerprints stable for identical input", () => {

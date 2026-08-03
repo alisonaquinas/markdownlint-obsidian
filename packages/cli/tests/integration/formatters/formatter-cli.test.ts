@@ -19,17 +19,24 @@ describe("CLI formatter wiring", () => {
   beforeAll(async () => {
     tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-fmt-"));
     await fs.mkdir(path.join(tmp, ".obsidian"), { recursive: true });
+    await fs.mkdir(path.join(tmp, ".git"), { recursive: true });
+    await fs.mkdir(path.join(tmp, "docs"), { recursive: true });
     await fs.writeFile(path.join(tmp, "broken.md"), "# Broken\n\n[[does-not-exist]]\n");
+    await fs.writeFile(path.join(tmp, "docs", "nested.md"), "# Nested\n\n[[does-not-exist]]\n");
   });
 
   afterAll(async () => {
     await fs.rm(tmp, { recursive: true, force: true });
   });
 
-  async function runCli(formatter: string): Promise<{ stdout: string; code: number }> {
+  async function runCli(
+    formatter: string,
+    cwd = tmp,
+    glob = "broken.md",
+  ): Promise<{ stdout: string; code: number }> {
     try {
-      const { stdout } = await execAsync(BUN, [BIN, "--output-formatter", formatter, "**/*.md"], {
-        cwd: tmp,
+      const { stdout } = await execAsync(BUN, [BIN, "--output-formatter", formatter, glob], {
+        cwd,
       });
       return { stdout, code: 0 };
     } catch (err) {
@@ -87,9 +94,30 @@ describe("CLI formatter wiring", () => {
       expect(issue.check_name).toMatch(/^OFM001\//);
       expect(issue.fingerprint).toMatch(/^[a-f0-9]{64}$/);
       expect(issue.severity).toBe("major");
-      expect(issue.location.path).toEndWith("/broken.md");
+      expect(issue.location.path).toBe("broken.md");
       expect(issue.location.path).not.toContain("\\");
       expect(issue.location.lines.begin).toBeGreaterThan(0);
     });
   }
+
+  it("keeps paths and fingerprints repository-relative from a nested cwd", async () => {
+    const fromRoot = await runCli("codeclimate", tmp, "docs/nested.md");
+    const fromNested = await runCli("codeclimate", path.join(tmp, "docs"), "nested.md");
+    const rootIssue = (
+      JSON.parse(fromRoot.stdout) as Array<{
+        fingerprint: string;
+        location: { path: string };
+      }>
+    )[0];
+    const nestedIssue = (
+      JSON.parse(fromNested.stdout) as Array<{
+        fingerprint: string;
+        location: { path: string };
+      }>
+    )[0];
+
+    expect(rootIssue?.location.path).toBe("docs/nested.md");
+    expect(nestedIssue?.location.path).toBe("docs/nested.md");
+    expect(nestedIssue?.fingerprint).toBe(rootIssue?.fingerprint);
+  });
 });

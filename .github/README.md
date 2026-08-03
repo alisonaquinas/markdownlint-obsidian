@@ -183,7 +183,7 @@ const sarif = formatter(results);
 | `markdownlint-obsidian` | Public API (alias for `/api`) |
 | `markdownlint-obsidian/api` | `LinterConfig`, `LintResult`, helpers |
 | `markdownlint-obsidian/rules` | Built-in rule definitions |
-| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()` |
+| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()`, `findRepositoryRoot()` |
 
 ## Development
 

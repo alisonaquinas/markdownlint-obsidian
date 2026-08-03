@@ -5,13 +5,15 @@
  *
  * Role in system: Infrastructure output adapter registered under `codeclimate` and
  * `gitlab-code-quality`; it converts domain lint findings into GitLab's required report shape
- * without changing domain severity or extending the formatter contract.
+ * without changing domain severity.
  *
  * @module infrastructure/formatters/CodeClimateFormatter
  */
 import { createHash } from "node:crypto";
+import * as path from "node:path";
 import type { LintError } from "../../domain/linting/LintError.js";
 import type { LintResult } from "../../domain/linting/LintResult.js";
+import type { FormatterContext } from "./FormatterRegistry.js";
 
 interface CodeClimateIssue {
   readonly description: string;
@@ -27,15 +29,19 @@ interface CodeClimateIssue {
 /**
  * Format lint results as a pretty-printed GitLab Code Quality JSON array.
  *
- * Paths are separator-normalized and lose a leading `./`. Absolute paths remain absolute
- * because the formatter receives no working-directory context from which to relativize them.
+ * Paths are separator-normalized and lose a leading `./`. When `context.repositoryRoot` is
+ * supplied, absolute paths inside that directory become relative to it.
  *
  * @param results - Per-file lint results.
+ * @param context - Optional invocation context used to relativize file paths.
  * @returns Pretty-printed CodeClimate-style JSON with no byte order mark.
  */
-export function formatCodeClimate(results: readonly LintResult[]): string {
+export function formatCodeClimate(
+  results: readonly LintResult[],
+  context: FormatterContext = {},
+): string {
   const issues = results.flatMap((result) => {
-    const filePath = normalizePath(result.filePath);
+    const filePath = normalizePath(result.filePath, context.repositoryRoot);
     return result.errors.map((error) => toCodeClimateIssue(filePath, error));
   });
   return JSON.stringify(issues, null, 2);
@@ -54,8 +60,16 @@ function toCodeClimateIssue(filePath: string, error: LintError): CodeClimateIssu
   };
 }
 
-function normalizePath(filePath: string): string {
-  return filePath.replaceAll("\\", "/").replace(/^(?:\.\/)+/, "");
+function normalizePath(filePath: string, repositoryRoot?: string): string {
+  const contextualPath = makeContextRelative(filePath, repositoryRoot);
+  return contextualPath.replaceAll("\\", "/").replace(/^(?:\.\/)+/, "");
+}
+
+function makeContextRelative(filePath: string, repositoryRoot?: string): string {
+  if (!repositoryRoot || !path.isAbsolute(filePath)) return filePath;
+  const relativePath = path.relative(repositoryRoot, filePath);
+  const escapesContext = relativePath === ".." || relativePath.startsWith(`..${path.sep}`);
+  return escapesContext || path.isAbsolute(relativePath) ? filePath : relativePath;
 }
 
 function makeFingerprint(filePath: string, error: LintError): string {

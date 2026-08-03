@@ -21,6 +21,7 @@ import { runLint } from "../application/LintUseCase.js";
 import { runFix as runFixUseCase } from "../application/FixUseCase.js";
 import { bootstrapVault } from "../application/VaultBootstrap.js";
 import { makeNodeFsVaultDetector } from "../infrastructure/vault/NodeFsVaultDetector.js";
+import { findGitRoot } from "../infrastructure/vault/GitRootFinder.js";
 import { buildFileIndex } from "../infrastructure/vault/FileIndexBuilder.js";
 import { buildBlockRefIndex } from "../infrastructure/vault/BlockRefIndexBuilder.js";
 import { makeNodeFsExistenceChecker } from "../infrastructure/fs/NodeFsExistenceChecker.js";
@@ -35,13 +36,19 @@ import type { RuleRegistry } from "../domain/linting/RuleRegistry.js";
 import type { VaultIndex } from "../domain/vault/VaultIndex.js";
 import type { BlockRefIndex } from "../domain/vault/BlockRefIndex.js";
 import { makeLintResult } from "../domain/linting/LintResult.js";
-export type { Formatter } from "../infrastructure/formatters/FormatterRegistry.js";
+export type {
+  Formatter,
+  FormatterContext,
+} from "../infrastructure/formatters/FormatterRegistry.js";
 export { getFormatter } from "../infrastructure/formatters/FormatterRegistry.js";
 export { loadConfig } from "../infrastructure/config/ConfigLoader.js";
 export { discoverFiles } from "../infrastructure/discovery/FileDiscovery.js";
 export type { LintResult } from "../domain/linting/LintResult.js";
 export type { FixOutcome } from "../application/FixUseCase.js";
 export type { LinterConfig } from "../domain/config/LinterConfig.js";
+
+/** Find the nearest Git repository root for formatter path normalization. */
+export const findRepositoryRoot = findGitRoot;
 
 /**
  * Options for a lint run.

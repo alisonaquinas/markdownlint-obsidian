@@ -56,9 +56,9 @@ const sarif = formatter(results);
   `markdownlint-obsidian/rules`.
 
 The Code Quality formatter normalizes path separators and strips a leading
-`./`, but it has no working-directory context. Supply repository-relative
-`LintResult.filePath` values when targeting GitLab; absolute paths remain
-absolute.
+`./`. Pass `{ repositoryRoot }` as the formatter's second argument when
+`LintResult.filePath` values may be absolute; paths inside that directory
+become repository-relative for GitLab.
 
 ## Exports
 
@@ -67,7 +67,7 @@ absolute.
 | `markdownlint-obsidian` | Public API (same as `/api`) |
 | `markdownlint-obsidian/api` | `LinterConfig`, `LintResult`, helpers |
 | `markdownlint-obsidian/rules` | Built-in rule definitions |
-| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()` |
+| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()`, `findRepositoryRoot()` |
 
 ## Developing in this monorepo
 
