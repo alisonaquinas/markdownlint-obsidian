@@ -67,4 +67,29 @@ describe("CLI formatter wiring", () => {
     expect(parsed.version).toBe("2.1.0");
     expect(parsed.runs[0]?.results.length).toBeGreaterThan(0);
   });
+
+  for (const formatter of ["codeclimate", "gitlab-code-quality"]) {
+    it(`${formatter} formatter emits a GitLab Code Quality array`, async () => {
+      const { stdout, code } = await runCli(formatter);
+      const parsed = JSON.parse(stdout) as Array<{
+        description: string;
+        check_name: string;
+        fingerprint: string;
+        severity: string;
+        location: { path: string; lines: { begin: number } };
+      }>;
+
+      expect(code).toBe(1);
+      expect(Array.isArray(parsed)).toBe(true);
+      expect(parsed.length).toBeGreaterThan(0);
+      const issue = parsed[0]!;
+      expect(issue.description).toContain("OFM001");
+      expect(issue.check_name).toMatch(/^OFM001\//);
+      expect(issue.fingerprint).toMatch(/^[a-f0-9]{64}$/);
+      expect(issue.severity).toBe("major");
+      expect(issue.location.path).toEndWith("/broken.md");
+      expect(issue.location.path).not.toContain("\\");
+      expect(issue.location.lines.begin).toBeGreaterThan(0);
+    });
+  }
 });

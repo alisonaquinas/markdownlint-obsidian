@@ -65,9 +65,9 @@ fixes, resolves conflicts, and applies them in a single pass. A rule is
 ## Formatter
 
 An output adapter that converts a `LintResult[]` array into a string in one
-of the supported formats: `default` (human-readable), `json`, `junit`, or
-`sarif`. Registered in `FormatterRegistry`; the CLI and engine select one by
-name via `--output-formatter`.
+of the supported formats: `default` (human-readable), `json`, `junit`, `sarif`,
+`codeclimate`, or `gitlab-code-quality`. Registered in `FormatterRegistry`;
+the CLI and engine select one by name via `--output-formatter`.
 
 **See also:** [LintResult](#lintresult),
 [packages/core/src/infrastructure/formatters/](packages/core/src/infrastructure/formatters/)

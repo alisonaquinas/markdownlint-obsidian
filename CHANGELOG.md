@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `codeclimate` and `gitlab-code-quality` formatter aliases for GitLab
+  Code Quality report artifacts.
+
 ## [1.3.2] - 2026-07-08
 
 ### Fixed
