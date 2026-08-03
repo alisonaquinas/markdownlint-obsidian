@@ -64,7 +64,7 @@ export function buildProgram(): Command {
     .option("--no-resolve", "Disable wikilink resolution")
     .option(
       "--output-formatter <name>",
-      "Output formatter (default, json, junit, sarif)",
+      "Output formatter (default, json, junit, sarif, codeclimate, gitlab-code-quality)",
       "default",
     );
   return program;

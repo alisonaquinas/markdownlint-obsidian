@@ -51,6 +51,7 @@ npx markdownlint-obsidian-cli "**/*.md"
 # After a global install or when the CLI is already on PATH.
 markdownlint-obsidian --output-formatter junit "**/*.md" > junit.xml
 markdownlint-obsidian --output-formatter sarif "**/*.md" > report.sarif
+markdownlint-obsidian --output-formatter codeclimate "**/*.md" > gl-code-quality-report.json
 ```
 
 The CLI auto-detects the Obsidian vault root by walking up from the
@@ -104,12 +105,13 @@ for GitLab CI, Jenkins, and Azure Pipelines recipes.
 
 ## Output formatters
 
-| Name      | When to use                                              |
-| --------- | -------------------------------------------------------- |
-| `default` | Human-readable `file:line:col CODE message` lines.       |
-| `json`    | Downstream tooling and custom reporters.                 |
-| `junit`   | Jenkins, GitLab CI, Azure Pipelines test dashboards.     |
-| `sarif`   | GitHub code scanning, SARIF viewers.                     |
+| Name                                  | When to use                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| `default`                             | Human-readable `file:line:col CODE message` lines. |
+| `json`                                | Downstream tooling and custom reporters.           |
+| `junit`                               | CI test dashboards.                                |
+| `sarif`                               | GitHub code scanning, SARIF viewers.               |
+| `codeclimate` / `gitlab-code-quality` | GitLab Code Quality report artifacts.              |
 
 ## Documentation
 

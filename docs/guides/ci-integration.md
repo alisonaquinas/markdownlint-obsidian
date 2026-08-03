@@ -7,7 +7,7 @@ tags:
   - "docs/guides"
 type: "guide"
 status: "current"
-updated: 2026-05-09
+updated: 2026-08-03
 up: "[[README]]"
 ---
 
@@ -34,7 +34,8 @@ Inputs:
 - `globs` — space-separated glob patterns. Default: `**/*.md`.
 - `vault-root` — override auto-detection.
 - `config` — explicit config file path.
-- `format` — one of `default`, `json`, `junit`, `sarif`.
+- `format` — one of `default`, `json`, `junit`, `sarif`, `codeclimate`, or
+  `gitlab-code-quality`.
 - `fail-on-warnings` — treat warnings as failures.
 
 ### SARIF + code scanning
@@ -72,11 +73,17 @@ lint:markdown:
   before_script:
     - npm install -g markdownlint-obsidian-cli
   script:
-    - markdownlint-obsidian "**/*.md" --output-formatter junit > junit.xml
+    - markdownlint-obsidian "**/*.md" --output-formatter codeclimate > gl-code-quality-report.json
   artifacts:
     reports:
-      junit: junit.xml
+      codequality: gl-code-quality-report.json
 ```
+
+`gitlab-code-quality` is an alias for `codeclimate`. GitLab requires every
+`location.path` to be repository-relative. The CLI discovers the Git root and
+passes it to the formatter. Core API callers with absolute
+`LintResult.filePath` values should pass `{ repositoryRoot }` as the
+formatter's second argument.
 
 ## Using Bun in CI
 
@@ -133,9 +140,10 @@ helps editors write the expected line endings before Git sees the file.
 Every formatter is available both from the CLI (`--output-formatter`)
 and every wrapper above (`format:` input, etc.).
 
-| Name      | When to use                                            |
-| --------- | ------------------------------------------------------ |
-| `default` | Human-readable `file:line:col CODE msg` lines.         |
-| `json`    | Downstream tooling, custom reporters.                  |
-| `junit`   | Jenkins, GitLab CI, Azure Pipelines test dashboards.   |
-| `sarif`   | GitHub code scanning, SARIF viewers.                   |
+| Name                                  | When to use                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| `default`                             | Human-readable `file:line:col CODE msg` lines.     |
+| `json`                                | Downstream tooling, custom reporters.              |
+| `junit`                               | CI test dashboards.                                |
+| `sarif`                               | GitHub code scanning, SARIF viewers.               |
+| `codeclimate` / `gitlab-code-quality` | GitLab Code Quality report artifacts.              |

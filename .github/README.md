@@ -58,6 +58,7 @@ npx markdownlint-obsidian-cli "**/*.md"
 markdownlint-obsidian --fix "**/*.md"
 markdownlint-obsidian --output-formatter junit  "**/*.md" > junit.xml
 markdownlint-obsidian --output-formatter sarif  "**/*.md" > report.sarif
+markdownlint-obsidian --output-formatter codeclimate "**/*.md" > gl-code-quality-report.json
 ```
 
 The CLI auto-detects the Obsidian vault root by walking up from the
@@ -96,6 +97,7 @@ flowchart LR
     out2["junit\nCI dashboards"]
     out3["sarif\nGitHub scanning"]
     out4["json\ndownstream tools"]
+    out5["codeclimate\nGitLab quality"]
 
     src --> engine
     engine --> ofm
@@ -105,6 +107,7 @@ flowchart LR
     fmt --> out2
     fmt --> out3
     fmt --> out4
+    fmt --> out5
 ```
 
 ## CI integration
@@ -162,6 +165,7 @@ docker run --rm -v "$(pwd):/workdir" \
 | `json` | Downstream tooling and custom reporters |
 | `junit` | Jenkins, GitLab CI, Azure Pipelines test dashboards |
 | `sarif` | GitHub code scanning, SARIF viewers |
+| `codeclimate` / `gitlab-code-quality` | GitLab Code Quality report artifacts |
 
 ## Programmatic API
 
@@ -179,7 +183,7 @@ const sarif = formatter(results);
 | `markdownlint-obsidian` | Public API (alias for `/api`) |
 | `markdownlint-obsidian/api` | `LinterConfig`, `LintResult`, helpers |
 | `markdownlint-obsidian/rules` | Built-in rule definitions |
-| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()` |
+| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()`, `findRepositoryRoot()` |
 
 ## Development
 

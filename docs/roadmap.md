@@ -39,6 +39,7 @@ working, testable software on its own. Implementation plans live under
 | 13    | [[plans/phase-13-package-split]]         | Split into `markdownlint-obsidian` (library) + `markdownlint-obsidian-cli` (CLI) as Bun workspace monorepo                                    | Complete |
 | 14    | [[plans/phase-14-multi-registry-cd]]     | Multi-registry publishing (npmjs.org, GitHub Packages, ghcr.io) + supply-chain hardening (provenance, cosign, SBOM)                           | Planned  |
 | 15    | [[plans/phase-15-cli2-config-parity]]    | Bring configuration loading, parsing, pointer, inheritance, and grouping behavior to markdownlint-cli2 parity                                  | Planned  |
+| 16    | [[plans/phase-16-code-quality-formatter]] | Add CodeClimate-style JSON output for GitLab Code Quality report artifacts                                                                    | Planned  |
 
 ## Architecture Decision Records
 

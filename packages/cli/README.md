@@ -34,6 +34,7 @@ markdownlint-obsidian --fix-check "**/*.md"
 # Machine-readable output
 markdownlint-obsidian --output-formatter sarif "**/*.md" > report.sarif
 markdownlint-obsidian --output-formatter junit "**/*.md" > junit.xml
+markdownlint-obsidian --output-formatter codeclimate "**/*.md" > gl-code-quality-report.json
 
 # Custom config location
 markdownlint-obsidian --config /path/to/project "**/*.md"
@@ -48,7 +49,7 @@ markdownlint-obsidian --config /path/to/project "**/*.md"
 | `--fix-check` | Dry-run fix mode; report what would change without writing |
 | `--vault-root <path>` | Override auto-detected vault root |
 | `--no-resolve` | Disable vault-wide wikilink and embed resolution |
-| `--output-formatter <name>` | Select `default`, `json`, `junit`, or `sarif` output |
+| `--output-formatter <name>` | Select `default`, `json`, `junit`, `sarif`, `codeclimate`, or `gitlab-code-quality` output |
 
 If you omit glob arguments, the CLI falls back to the configured `globs`
 property from `.obsidian-linter.jsonc`.
