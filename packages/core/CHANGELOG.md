@@ -7,6 +7,45 @@
   }
 } -->
 
+## [1.4.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.3.2...markdownlint-obsidianv1.4.0) (2026-08-03)
+
+### Features
+
+* add GitLab Code Quality output through the `codeclimate` and
+  `gitlab-code-quality` formatter aliases
+
+### Dependencies
+
+* refresh core runtime and development dependencies
+
+## [1.3.2](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.3.1...markdownlint-obsidianv1.3.2) (2026-07-08)
+
+### Bug Fixes
+
+* make overlapping standard Markdown blank-line autofixes converge in one pass
+
+## [1.3.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.3.0...markdownlint-obsidianv1.3.1) (2026-07-07)
+
+### Bug Fixes
+
+* restore explicit Markdown-glob linting in repositories without Obsidian markers
+
+## [1.3.0](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.2.1...markdownlint-obsidianv1.3.0) (2026-07-07)
+
+### Features
+
+* honor shared Markdown flavor assignments and ignore rules
+* default wikilink resolution to Obsidian-compatible fuzzy path matching
+
+### Bug Fixes
+
+* handle escaped wikilink alias separators and path-qualified disambiguation
+* ignore standard Markdown links when validating callout headers
+
+### Dependencies
+
+* refresh core runtime and development dependencies
+
 ## [1.2.1](https://github.com/alisonaquinas/markdownlint-obsidian/compare/markdownlint-obsidianv1.2.0...markdownlint-obsidianv1.2.1) (2026-06-09)
 
 ### Dependencies

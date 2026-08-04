@@ -51,6 +51,7 @@ npx markdownlint-obsidian-cli "**/*.md"
 # After a global install or when the CLI is already on PATH.
 markdownlint-obsidian --output-formatter junit "**/*.md" > junit.xml
 markdownlint-obsidian --output-formatter sarif "**/*.md" > report.sarif
+markdownlint-obsidian --output-formatter codeclimate "**/*.md" > gl-code-quality-report.json
 ```
 
 The CLI auto-detects the Obsidian vault root by walking up from the
@@ -78,7 +79,7 @@ project root.
 ### GitHub Actions
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     globs: "**/*.md"
     format: sarif
@@ -94,7 +95,7 @@ project root.
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/alisonaquinas/markdownlint-obsidian
-  rev: v0.8.0
+  rev: v0.9.0
   hooks:
     - id: markdownlint-obsidian
 ```
@@ -104,12 +105,13 @@ for GitLab CI, Jenkins, and Azure Pipelines recipes.
 
 ## Output formatters
 
-| Name      | When to use                                              |
-| --------- | -------------------------------------------------------- |
-| `default` | Human-readable `file:line:col CODE message` lines.       |
-| `json`    | Downstream tooling and custom reporters.                 |
-| `junit`   | Jenkins, GitLab CI, Azure Pipelines test dashboards.     |
-| `sarif`   | GitHub code scanning, SARIF viewers.                     |
+| Name                                  | When to use                                        |
+| ------------------------------------- | -------------------------------------------------- |
+| `default`                             | Human-readable `file:line:col CODE message` lines. |
+| `json`                                | Downstream tooling and custom reporters.           |
+| `junit`                               | CI test dashboards.                                |
+| `sarif`                               | GitHub code scanning, SARIF viewers.               |
+| `codeclimate` / `gitlab-code-quality` | GitLab Code Quality report artifacts.              |
 
 ## Documentation
 

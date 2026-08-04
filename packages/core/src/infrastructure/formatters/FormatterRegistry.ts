@@ -11,16 +11,24 @@
  * @module infrastructure/formatters/FormatterRegistry
  */
 import { formatDefault } from "./DefaultFormatter.js";
+import { formatCodeClimate } from "./CodeClimateFormatter.js";
 import { formatJson } from "./JsonFormatter.js";
 import { formatJUnit } from "./JUnitFormatter.js";
 import { formatSarif } from "./SarifFormatter.js";
 import type { LintResult } from "../../domain/linting/LintResult.js";
 
+/** Optional context supplied by formatter hosts such as the CLI. */
+export interface FormatterContext {
+  readonly repositoryRoot?: string;
+}
+
 /** Function signature every formatter must honour. */
-export type Formatter = (results: readonly LintResult[]) => string;
+export type Formatter = (results: readonly LintResult[], context?: FormatterContext) => string;
 
 const FORMATTERS: Readonly<Record<string, Formatter>> = Object.freeze({
   default: formatDefault,
+  codeclimate: formatCodeClimate,
+  "gitlab-code-quality": formatCodeClimate,
   json: formatJson,
   junit: formatJUnit,
   sarif: formatSarif,
@@ -29,7 +37,7 @@ const FORMATTERS: Readonly<Record<string, Formatter>> = Object.freeze({
 /**
  * Look up a formatter by name.
  *
- * @param name - Formatter identifier (`"default"`, `"json"`, `"junit"`, `"sarif"`).
+ * @param name - Registered formatter identifier.
  * @returns The matching {@link Formatter}.
  * @throws Error prefixed `OFM901:` when the name is not registered.
  */

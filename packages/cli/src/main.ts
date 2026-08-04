@@ -26,16 +26,20 @@ interface EngineModule {
   readonly fix: typeof fixType;
   readonly getFormatter: typeof getFormatterType;
   readonly loadConfig: typeof loadConfigType;
+  readonly findRepositoryRoot: (startDir: string) => Promise<string | null>;
 }
 
-const { lint, fix, getFormatter, loadConfig } = await loadEngine();
+type ContextualFormatter = Formatter &
+  ((results: readonly LintResult[], context: { readonly repositoryRoot: string }) => string);
+
+const { lint, fix, getFormatter, loadConfig, findRepositoryRoot } = await loadEngine();
 
 async function loadEngine(): Promise<EngineModule> {
   if (shouldLoadSourceEngine()) {
     const sourceEngine = new URL("../../core/src/engine/index.ts", import.meta.url).href;
     return (await import(sourceEngine)) as EngineModule;
   }
-  return import("markdownlint-obsidian/engine") as Promise<EngineModule>;
+  return import("markdownlint-obsidian/engine") as unknown as Promise<EngineModule>;
 }
 
 function shouldLoadSourceEngine(): boolean {
@@ -218,14 +222,19 @@ function resolveFormatter(name: string, sink: OutputSink): Formatter | null {
   }
 }
 
+async function resolveRepositoryRoot(cwd: string): Promise<string> {
+  return (await findRepositoryRoot(cwd)) ?? cwd;
+}
+
 function emitAndExit(
   results: readonly LintResult[],
   formatterName: string,
   sink: OutputSink,
+  repositoryRoot: string,
 ): number {
   const formatter = resolveFormatter(formatterName, sink);
   if (formatter === null) return EXIT_CODES.TOOL_FAILURE;
-  const output = formatter(results);
+  const output = (formatter as ContextualFormatter)(results, { repositoryRoot });
   if (output) sink.writeStdout(output + "\n");
   return results.some((r) => r.hasErrors) ? EXIT_CODES.LINT_ERRORS : EXIT_CODES.CLEAN;
 }
@@ -320,18 +329,20 @@ async function runPipeline(
   }
 
   const engineOptions = buildEngineOptions(globArgs, config, opts, cwd, sink);
-  if (opts.fix || opts.fixCheck) return runFixPipeline(engineOptions, opts, sink);
-  return runLintPipeline(engineOptions, opts, sink);
+  const repositoryRoot = await resolveRepositoryRoot(cwd);
+  if (opts.fix || opts.fixCheck) return runFixPipeline(engineOptions, opts, sink, repositoryRoot);
+  return runLintPipeline(engineOptions, opts, sink, repositoryRoot);
 }
 
 async function runFixPipeline(
   engineOptions: object,
   opts: ParsedOptions,
   sink: OutputSink,
+  repositoryRoot: string,
 ): Promise<CliRunResult> {
   const outcome = await runFixBranch(engineOptions, opts, sink);
   if (outcome instanceof Error) return toolFailure(outcome, sink);
-  const exitCode = emitAndExit(outcome.finalPass, opts.outputFormatter, sink);
+  const exitCode = emitAndExit(outcome.finalPass, opts.outputFormatter, sink, repositoryRoot);
   return makeCliRunResult(exitCode, sink, outcome.finalPass, outcome.firstPass, outcome.filesFixed);
 }
 
@@ -339,10 +350,11 @@ async function runLintPipeline(
   engineOptions: object,
   opts: ParsedOptions,
   sink: OutputSink,
+  repositoryRoot: string,
 ): Promise<CliRunResult> {
   const results = await runLintBranch(engineOptions);
   if (results instanceof Error) return toolFailure(results, sink);
-  const exitCode = emitAndExit(results, opts.outputFormatter, sink);
+  const exitCode = emitAndExit(results, opts.outputFormatter, sink, repositoryRoot);
   return makeCliRunResult(exitCode, sink, results, [], []);
 }
 

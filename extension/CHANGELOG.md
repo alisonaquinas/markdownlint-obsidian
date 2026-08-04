@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.8.2 - 2026-08-03
+
+### Changed
+
+- Bundle `markdownlint-obsidian` 1.4.0 and refresh extension development
+  dependencies.
+
 ## 0.8.1 - 2026-06-09
 
 ### Changed

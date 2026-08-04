@@ -48,10 +48,17 @@ const sarif = formatter(results);
 - `loadConfig(cwd)` loads `.obsidian-linter.jsonc` from the working tree and
   applies defaults.
 - `getFormatter(name)` returns one of the built-in output adapters:
-  `default`, `json`, `junit`, or `sarif`.
+  `default`, `json`, `junit`, `sarif`, `codeclimate`, or
+  `gitlab-code-quality`. The last two names select the same GitLab Code
+  Quality formatter.
 - The public rule-authoring surface lives under
   `markdownlint-obsidian/api`; the built-in rule catalog lives under
   `markdownlint-obsidian/rules`.
+
+The Code Quality formatter normalizes path separators and strips a leading
+`./`. Pass `{ repositoryRoot }` as the formatter's second argument when
+`LintResult.filePath` values may be absolute; paths inside that directory
+become repository-relative for GitLab.
 
 ## Exports
 
@@ -60,7 +67,7 @@ const sarif = formatter(results);
 | `markdownlint-obsidian` | Public API (same as `/api`) |
 | `markdownlint-obsidian/api` | `LinterConfig`, `LintResult`, helpers |
 | `markdownlint-obsidian/rules` | Built-in rule definitions |
-| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()` |
+| `markdownlint-obsidian/engine` | `lint()`, `fix()`, `getFormatter()`, `loadConfig()`, `findRepositoryRoot()` |
 
 ## Developing in this monorepo
 

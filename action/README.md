@@ -8,7 +8,7 @@ The action invokes the npm-distributed `markdownlint-obsidian-cli` through
 ## Usage
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     globs: "**/*.md"
     format: default
@@ -21,7 +21,7 @@ The action invokes the npm-distributed `markdownlint-obsidian-cli` through
 | `globs`            | `**/*.md`   | Space-separated glob patterns to lint.                |
 | `vault-root`       | _(auto)_    | Override auto-detected vault root.                    |
 | `config`           | _(auto)_    | Explicit config file path.                            |
-| `format`           | `default`   | Output formatter: `default`, `json`, `junit`, `sarif`. |
+| `format`           | `default`   | Output formatter: `default`, `json`, `junit`, `sarif`, `codeclimate`, `gitlab-code-quality`. |
 | `fail-on-warnings` | `false`     | Treat warnings as failures.                           |
 
 ## Outputs
@@ -35,7 +35,7 @@ The action invokes the npm-distributed `markdownlint-obsidian-cli` through
 ## SARIF upload recipe
 
 ```yaml
-- uses: alisonaquinas/markdownlint-obsidian/action@v0.8.0
+- uses: alisonaquinas/markdownlint-obsidian/action@v0.9.0
   with:
     format: sarif
   id: lint

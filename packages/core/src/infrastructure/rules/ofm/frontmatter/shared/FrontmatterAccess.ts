@@ -30,13 +30,7 @@ export function getByDotPath(source: unknown, dotPath: string): unknown {
 
 /** Distinct frontmatter value categories used by OFM082/OFM083. */
 export type FrontmatterValueType =
-  | "null"
-  | "string"
-  | "number"
-  | "boolean"
-  | "array"
-  | "object"
-  | "unknown";
+  "null" | "string" | "number" | "boolean" | "array" | "object" | "unknown";
 
 /**
  * Classify an arbitrary frontmatter value into a stable type tag.

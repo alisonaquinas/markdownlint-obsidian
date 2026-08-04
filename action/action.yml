@@ -13,7 +13,7 @@ inputs:
     description: "Explicit config file path"
     required: false
   format:
-    description: "Output formatter: default, json, junit, sarif"
+    description: "Output formatter: default, json, junit, sarif, codeclimate, gitlab-code-quality"
     required: false
     default: "default"
   fail-on-warnings:
