@@ -63,6 +63,23 @@ export interface OFMRule {
   readonly tags: readonly string[];
   readonly severity: "error" | "warning";
   /**
+   * Coordinate space of the `line`/`fix.lineNumber` values this rule emits.
+   *
+   * `"body"` (default): coordinates are relative to the Markdown body,
+   * i.e. `parsed.lines`/`parsed.raw` which EXCLUDE frontmatter. This is
+   * what every extractor-based rule emits — `position.line` comes from
+   * body-relative token scanning. {@link LintUseCase} adds
+   * `parsed.frontmatterEndLine` to translate these to absolute file lines
+   * for display and for {@link applyFixes} (which splices the full raw file).
+   *
+   * `"absolute"`: coordinates already count from the top of the file.
+   * Reserved for frontmatter rules (OFM080-087, OFM066) that address the
+   * frontmatter block directly, where `parsed.frontmatterRaw` lines are
+   * re-offset internally (e.g. `i + 2` to account for the `---` delimiters)
+   * or pinned to line 1. Such rules MUST NOT be shifted again.
+   */
+  readonly coordinateSpace?: "body" | "absolute";
+  /**
    * When `true`, `onError` calls from this rule should include a populated
    * `fix` field wherever the violation's edit location is precisely known.
    * Partial-fix rules that cannot determine exact column offsets for every

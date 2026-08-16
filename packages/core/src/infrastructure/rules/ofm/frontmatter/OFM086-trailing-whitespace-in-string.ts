@@ -25,6 +25,7 @@ export const OFM086Rule: OFMRule = {
   description: "Frontmatter string value has trailing whitespace",
   tags: ["frontmatter", "whitespace"],
   severity: "warning",
+  coordinateSpace: "absolute",
   fixable: true,
   run({ parsed }, onError) {
     // Build a map of top-level key → 1-based absolute line number by scanning

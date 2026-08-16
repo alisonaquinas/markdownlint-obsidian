@@ -32,6 +32,7 @@ export const OFM085Rule: OFMRule = {
   description: "Same frontmatter key declared twice in YAML",
   tags: ["frontmatter"],
   severity: "error",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed }, onError) {
     const raw = parsed.frontmatterRaw;
