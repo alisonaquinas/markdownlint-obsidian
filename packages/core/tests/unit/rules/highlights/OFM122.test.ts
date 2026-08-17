@@ -73,4 +73,10 @@ describe("OFM122 malformed-highlight", () => {
     expect(errors).toHaveLength(1);
     expect(errors[0]?.line).toBe(5);
   });
+
+  it("ignores `==` inside inline data-URI images", async () => {
+    const src = "![](data:text/plain;base64,Tm90IGZvdW5kLg==)\n";
+    const errors = await runRuleOnSource(OFM122Rule, src);
+    expect(errors).toEqual([]);
+  });
 });
