@@ -129,4 +129,22 @@ export default function makeRule() {
     expect(errors).toHaveLength(1);
     expect(errors[0]?.message).toContain("does not export a rule object");
   });
+
+  it("resolves cwd-relative entries against the nearest ancestor config dir when cwd misses", async () => {
+    // Running the CLI from a vault subdirectory must not break customRules
+    // declared relative to the vault config's own directory.
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "ofm-crl-"));
+    try {
+      await fs.mkdir(path.join(root, "sub", "deep"), { recursive: true });
+      await fs.mkdir(path.join(root, ".obsidian-linter-rules"), { recursive: true });
+      await fs.writeFile(path.join(root, ".markdownlint.jsonc"), '{\n  "customRules": [".obsidian-linter-rules/rule.mjs"]\n}\n');
+      await fs.writeFile(path.join(root, ".obsidian-linter-rules", "rule.mjs"), VALID_RULE_SRC);
+      const result = await loadCustomRules([".obsidian-linter-rules/rule.mjs"], path.join(root, "sub", "deep"));
+      expect(result.errors).toEqual([]);
+      expect(result.rules).toHaveLength(1);
+      expect(result.rules[0]?.names).toContain("UNIT001");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
 });
