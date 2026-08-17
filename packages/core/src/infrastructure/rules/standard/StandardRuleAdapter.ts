@@ -27,18 +27,19 @@ export interface StandardRuleDescriptor {
  * Translate a markdownlint {@link FixInfo} into our domain {@link Fix},
  * filling in defaults for any fields the library left absent.
  *
- * Markdownlint uses `deleteCount: -1` as a sentinel for "delete the
- * entire line, including its trailing newline" (see MD012, MD053). Our
- * column-based {@link applyFixes} machinery cannot represent line
- * removal, so we treat the violation as un-fixable and return
- * `undefined`: the diagnostic still surfaces, but no autofix is
- * attached. Without this guard, `makeFix` would throw and the lint pass
- * would surface as `OFM901: Fix.deleteCount must be >= 0` against the
- * file root — issue #28.
  */
 function fixInfoToFix(fi: FixInfo, fallbackLine: number): Fix | undefined {
   const rawDelete = fi.deleteCount ?? 0;
-  if (rawDelete < 0) return undefined;
+  if (rawDelete < 0) {
+    // markdownlint's sentinel for "delete the entire line" (MD012, MD053).
+    return makeFix({
+      lineNumber: fi.lineNumber ?? fallbackLine,
+      editColumn: 1,
+      deleteCount: 0,
+      insertText: "",
+      deleteLine: true,
+    });
+  }
   // markdownlint derives some fixInfo payloads from virtual blockquote
   // lines (markers stripped, lazy continuations renumbered) while the
   // violation lineNumber is raw-file mapped. When the two disagree the

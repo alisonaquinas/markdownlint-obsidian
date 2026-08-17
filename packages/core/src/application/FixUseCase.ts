@@ -77,6 +77,18 @@ export async function runFix(
     const fixes: Fix[] = [];
     for (const e of result.errors) {
       if (e.fix === undefined) continue;
+      if (e.fix.deleteLine === true) {
+        const target = (rawLines[e.fix.lineNumber - 1] ?? "").replace(/\r$/, "");
+        if (target.trim().length > 0) {
+          allConflicts.push({
+            filePath: result.filePath,
+            first: e.fix,
+            second: e.fix,
+            reason: "Line deletion targets a non-blank line (untrusted fix coordinates)",
+          });
+          continue;
+        }
+      }
       if (e.ruleCode === "MD009") {
         const verdict = validateTrailingFix(e.fix, rawLines, result.filePath);
         if (verdict !== null) {

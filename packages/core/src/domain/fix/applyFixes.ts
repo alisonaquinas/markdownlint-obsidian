@@ -32,7 +32,11 @@ export function applyFixes(raw: string, fixes: readonly Fix[], filePath = ""): A
   const conflicts: FixConflict[] = [];
   const byLine = groupByLine(fixes);
 
-  for (const [lineNumber, list] of byLine.entries()) {
+  // Process lines bottom-up: deleting or editing line N shifts every line
+  // after it, so higher lines must be settled first to keep the targets of
+  // the remaining fixes valid.
+  const descending = [...byLine.entries()].sort((a, b) => b[0] - a[0]);
+  for (const [lineNumber, list] of descending) {
     applyLineGroup(lines, lineNumber, list, filePath, conflicts);
   }
 
@@ -56,6 +60,17 @@ function applyLineGroup(
   filePath: string,
   conflicts: FixConflict[],
 ): void {
+  const lineDeleteIdx = list.findIndex((f) => f.deleteLine === true);
+  if (lineDeleteIdx >= 0) {
+    const deleter = list[lineDeleteIdx]!;
+    for (const other of list) {
+      if (other !== deleter) {
+        conflicts.push({ filePath, first: deleter, second: other, reason: `Line deletion vs edit on line ${lineNumber}` });
+      }
+    }
+    lines.splice(lineNumber - 1, 1);
+    return;
+  }
   // Sort descending by editColumn — end-of-line edits first keeps earlier positions valid.
   // For same-column edits, apply replacements/deletions before pure insertions so a
   // line-start blank insertion can compose with an indentation removal at that anchor.

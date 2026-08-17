@@ -157,6 +157,21 @@ describe("engine.fix()", () => {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
   });
+
+  it("collapses multiple blank lines via MD012 line-deletion fixes", async () => {
+    const tmpDir = await makeTmpVault();
+    try {
+      const content = "a\n\n\n\nb\n";
+      const filePath = path.join(tmpDir, "blanks.md");
+      await fs.writeFile(filePath, content);
+      const outcome = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const after = await fs.readFile(filePath, "utf8");
+      expect(after).toBe("a\n\nb\n");
+      expect(outcome.filesFixed).toHaveLength(1);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
 });
 
 function bddListBlock(): string {

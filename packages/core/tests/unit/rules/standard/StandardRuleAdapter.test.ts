@@ -164,7 +164,7 @@ describe("buildStandardRule", () => {
       ruleCode: "MD012",
       line: 5,
     });
-    expect(errors[0]?.fix).toBeUndefined();
+    expect(errors[0]?.fix).toMatchObject({ lineNumber: 5, deleteLine: true });
   });
 
   it("preserves valid fixInfo unchanged even when fixable rules can also emit deleteCount=-1", async () => {
@@ -244,5 +244,26 @@ describe("buildStandardRule", () => {
     const rule = buildStandardRule(descMd009, adapter);
     const errors = await runRuleOnSource(rule, "text\n> \nmore\n");
     expect(errors[0]?.fix).toBeDefined();
+  });
+
+  it("maps markdownlint's deleteCount -1 sentinel to a deleteLine fix", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD012", "no-multiple-blanks"],
+        ruleDescription: "Multiple consecutive blank lines",
+        lineNumber: 4,
+        fixInfo: { lineNumber: 4, deleteCount: -1 },
+      },
+    ]);
+    const descMd012 = {
+      code: "MD012",
+      name: "no-multiple-blanks",
+      description: "Multiple consecutive blank lines",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd012, adapter);
+    const errors = await runRuleOnSource(rule, "a\n\n\n\nb\n");
+    expect(errors[0]?.fix).toMatchObject({ lineNumber: 4, deleteLine: true });
   });
 });
