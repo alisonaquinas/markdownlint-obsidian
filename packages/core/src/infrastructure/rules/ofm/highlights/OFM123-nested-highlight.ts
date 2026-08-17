@@ -10,7 +10,7 @@
  * @module infrastructure/rules/ofm/highlights/OFM123-nested-highlight
  */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
-import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
+import { scannableLines } from "./shared/scannableText.js";
 
 /**
  * Returns true if the line contains a truly nested highlight.
@@ -81,8 +81,9 @@ function hasNestedHighlight(line: string): boolean {
  * Adjacent highlights on the same line (`==a== and ==b==`) are NOT flagged;
  * each forms its own valid, non-overlapping span.
  *
- * Inline backtick code is stripped before scanning so `==` operators inside
- * inline code do not contribute to the check.
+ * Prose lines come from the markdown-it token stream (via {@link
+ * scannableLines}), so `==` inside code blocks, indented code, inline code,
+ * HTML, or link/image destinations never triggers the rule.
  *
  * @see docs/rules/highlights/OFM123.md
  */
@@ -93,19 +94,14 @@ export const OFM123Rule: OFMRule = {
   severity: "error",
   fixable: false,
   run({ parsed }, onError) {
-    let fence: string | null = null;
-    parsed.lines.forEach((line, i) => {
-      const step = updateFence(line, fence);
-      fence = step.fence;
-      if (step.skip) return;
-      const scanned = stripInlineCode(line);
-      if (hasNestedHighlight(scanned)) {
+    for (const [line, text] of scannableLines(parsed.tokens)) {
+      if (hasNestedHighlight(text)) {
         onError({
-          line: i + 1,
+          line,
           column: 1,
           message: "Nested highlight detected",
         });
       }
-    });
+    }
   },
 };

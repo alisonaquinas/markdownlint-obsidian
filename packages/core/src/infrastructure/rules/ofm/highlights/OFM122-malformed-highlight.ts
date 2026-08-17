@@ -11,20 +11,17 @@
  * @module infrastructure/rules/ofm/highlights/OFM122-malformed-highlight
  */
 import type { OFMRule } from "../../../../domain/linting/OFMRule.js";
-import { updateFence, stripInlineCode } from "../shared/fenceStateMachine.js";
+import { scannableLines } from "./shared/scannableText.js";
 
 /**
  * OFM122 — malformed-highlight.
  *
- * Reports lines with an odd number of `==` markers outside fenced code.
- * Each well-formed `==highlight==` span contributes two markers, so an odd
- * count is a reliable signal of an unterminated highlight.
- *
- * Inline backtick code is stripped before counting so prose that references
- * JavaScript's `===` operator does not trip the rule. Fenced code blocks
- * are also skipped. The rule deliberately does not understand
- * `markdown-it`-level inline-code positions; the backtick pre-pass is
- * precise enough for documentation-style writing.
+ * Reports prose lines with an odd number of `==` markers. Each well-formed
+ * `==highlight==` span contributes two markers, so an odd count is a reliable
+ * signal of an unterminated highlight. Prose lines are extracted from the
+ * markdown-it token stream (via {@link scannableLines}), so code blocks,
+ * indented code, inline code, HTML, and link/image destinations never
+ * contribute markers — regardless of stray fence markers in pasted content.
  *
  * @see docs/rules/highlights/OFM122.md
  */
@@ -35,20 +32,15 @@ export const OFM122Rule: OFMRule = {
   severity: "error",
   fixable: false,
   run({ parsed }, onError) {
-    let fence: string | null = null;
-    parsed.lines.forEach((line, i) => {
-      const step = updateFence(line, fence);
-      fence = step.fence;
-      if (step.skip) return;
-      const scanned = stripInlineCode(line);
-      const markers = scanned.match(/==/g);
+    for (const [line, text] of scannableLines(parsed.tokens)) {
+      const markers = text.match(/==/g);
       if (markers !== null && markers.length % 2 !== 0) {
         onError({
-          line: i + 1,
+          line,
           column: 1,
           message: `Unmatched '==' on line (count ${markers.length})`,
         });
       }
-    });
+    }
   },
 };

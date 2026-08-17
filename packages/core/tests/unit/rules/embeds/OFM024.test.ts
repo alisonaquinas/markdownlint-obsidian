@@ -39,4 +39,10 @@ describe("OFM024 disallowed-embed-extension", () => {
     const errors = await runRuleOnSource(OFM024Rule, "![[notes/index]]");
     expect(errors).toEqual([]);
   });
+
+  it("ignores dots inside query strings when classifying the extension", async () => {
+    const src = "![[https://maps.example.com/staticmap?center=38.7%2C-9.154192&key=not-a-google-key&signature=DUMMY_SIGNATURE_000]]\n";
+    const errors = await runRuleOnSource(OFM024Rule, src);
+    expect(errors).toEqual([]);
+  });
 });
