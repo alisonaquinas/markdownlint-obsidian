@@ -9,6 +9,7 @@
  *
  * @module main
  */
+import * as fs from "node:fs";
 import type { Command } from "commander";
 import { buildProgram } from "./args.js";
 import type {
@@ -111,9 +112,21 @@ export interface RunCliOptions {
  */
 export async function main(argv: string[]): Promise<number> {
   const result = await runCli(argv);
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
+  // process.stdout.write is asynchronous; when its buffer exceeds the pipe
+  // capacity (64KB on macOS) the process can exit before draining, silently
+  // truncating large JSON outputs. Write synchronously and loop until every
+  // byte is flushed.
+  if (result.stdout) writeFully(1, result.stdout);
+  if (result.stderr) writeFully(2, result.stderr);
   return result.exitCode;
+}
+
+function writeFully(fd: number, text: string): void {
+  const buffer = Buffer.from(text);
+  let offset = 0;
+  while (offset < buffer.length) {
+    offset += fs.writeSync(fd, buffer, offset, buffer.length - offset);
+  }
 }
 
 /**
@@ -283,6 +296,19 @@ async function runFixBranch(
     for (const conflict of outcome.conflicts) {
       const colA = fmtRange(conflict.first.editColumn, conflict.first.deleteCount);
       const colB = fmtRange(conflict.second.editColumn, conflict.second.deleteCount);
+      if (opts.outputFormatter === "json") {
+        // Machine-readable mirror of the human line: NDJSON on stderr so
+        // stdout stays a single valid JSON document.
+        sink.writeStderr(
+          `${JSON.stringify({
+            filePath: conflict.filePath,
+            reason: conflict.reason,
+            first: conflict.first,
+            second: conflict.second,
+          })}\n`,
+        );
+        continue;
+      }
       sink.writeStderr(
         `[fix-conflict] ${conflict.filePath}: ${conflict.reason} (${colA} vs ${colB})\n`,
       );
