@@ -1,20 +1,19 @@
 /**
- * Purpose: Classify embed nodes by their target file extension into coarse categories used by the OFM020-series rules.
+ * Purpose: Classify embed targets by kind and file extension.
  *
  * Provides: {@link classifyEmbed}, {@link EmbedKind}
  *
- * Role in system: Infrastructure-layer shared utility for OFM020–OFM025 — maps embed target extensions to a taxonomy (markdown, image, video, audio, pdf, unknown) so each rule can decide ownership.
+ * Role in system: Shared classifier for the embed rule family. Extension
+ * extraction only considers the final path segment of the target after
+ * stripping any URL scheme/host, query string, and fragment — dots in host
+ * names or query parameters (map coordinates, base64 signatures) are not
+ * extension separators.
  *
  * @module infrastructure/rules/ofm/embeds/shared/EmbedClassifier
  */
 import type { EmbedNode } from "../../../../../domain/parsing/EmbedNode.js";
 
-/**
- * Coarse taxonomy of embed target types. Used by the OFM020-series rules to
- * decide which rule owns a particular embed (OFM020 for markdown, OFM022 for
- * assets, OFM025 for sizing on non-images, etc.). Anything unrecognised by
- * the extension table is `"unknown"`.
- */
+/** Coarse category of an embed target. */
 export type EmbedKind = "markdown" | "image" | "video" | "audio" | "pdf" | "unknown";
 
 /**
@@ -38,6 +37,21 @@ const BY_EXT: Readonly<Record<string, EmbedKind>> = Object.freeze({
   pdf: "pdf",
 });
 
+const REMOTE_URL = /^[a-z]+:\/\//i;
+
+function extensionOf(target: string): string {
+  let path = REMOTE_URL.test(target)
+    ? target.replace(/^[a-z]+:\/\/[^/#?]+/i, "")
+    : target;
+  path = path.split("?")[0]?.split("#")[0] ?? path;
+  const segment = path.slice(path.lastIndexOf("/") + 1);
+  const dotIdx = segment.lastIndexOf(".");
+  if (dotIdx <= 0) {
+    return "";
+  }
+  return segment.slice(dotIdx + 1).toLowerCase();
+}
+
 /**
  * Classify an {@link EmbedNode} by its target's file extension.
  *
@@ -53,12 +67,9 @@ export function classifyEmbed(embed: EmbedNode): {
   readonly kind: EmbedKind;
   readonly extension: string;
 } {
-  const target = embed.target;
-  const dotIdx = target.lastIndexOf(".");
-  // A dot at position 0 (e.g. `.hidden`) is not a separator.
-  if (dotIdx <= 0) {
+  const ext = extensionOf(embed.target);
+  if (ext === "") {
     return { kind: "markdown", extension: "md" };
   }
-  const ext = target.slice(dotIdx + 1).toLowerCase();
   return { kind: BY_EXT[ext] ?? "unknown", extension: ext };
 }

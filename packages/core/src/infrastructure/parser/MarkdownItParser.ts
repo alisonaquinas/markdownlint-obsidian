@@ -29,6 +29,13 @@ import { extractComments } from "./ofm/CommentExtractor.js";
  */
 export function makeMarkdownItParser(): Parser {
   const md = new MarkdownIt({ html: true, linkify: false });
+  // markdown-it rejects `data:` URIs by default (XSS defence for
+  // renderers). This is a linter, not a renderer: real notes embed inline
+  // data-URI images, and rejecting them misparses those lines as plain
+  // text — their base64 payloads then trip prose rules (e.g. OFM122 on
+  // trailing `==`). Allow data: URIs for parse-accuracy purposes only.
+  const defaultValidateLink = md.validateLink;
+  md.validateLink = (url: string) => url.startsWith("data:") || defaultValidateLink(url);
   return {
     parse(filePath: string, content: string): ParseResult {
       return parseOne(md, filePath, normalizeLineEndings(content));

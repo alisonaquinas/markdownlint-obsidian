@@ -164,7 +164,7 @@ describe("buildStandardRule", () => {
       ruleCode: "MD012",
       line: 5,
     });
-    expect(errors[0]?.fix).toBeUndefined();
+    expect(errors[0]?.fix).toMatchObject({ lineNumber: 5, deleteLine: true });
   });
 
   it("preserves valid fixInfo unchanged even when fixable rules can also emit deleteCount=-1", async () => {
@@ -191,5 +191,79 @@ describe("buildStandardRule", () => {
       deleteCount: 0,
       insertText: "",
     });
+  });
+
+  it("drops the fix when fixInfo.lineNumber disagrees with the violation line (virtual blockquote space)", async () => {
+    // markdownlint computes some fixInfo payloads against virtual
+    // blockquote lines (markers stripped, lazy continuations renumbered)
+    // while the violation lineNumber is raw-file mapped. A diverging fix
+    // line means the fix would splice the wrong line — report only.
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD009", "no-trailing-spaces"],
+        ruleDescription: "Trailing spaces",
+        lineNumber: 4,
+        fixInfo: {
+          lineNumber: 5,
+          editColumn: 2,
+          deleteCount: 1,
+          insertText: "",
+        },
+      },
+    ]);
+    const descMd009 = {
+      code: "MD009",
+      name: "no-trailing-spaces",
+      description: "Trailing spaces",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd009, adapter);
+    const errors = await runRuleOnSource(rule, "> a\n> \nb text\n");
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.fix).toBeUndefined();
+  });
+
+
+  it("keeps MD009 fixes when the deleted span is trailing whitespace", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD009", "no-trailing-spaces"],
+        ruleDescription: "Trailing spaces",
+        lineNumber: 2,
+        fixInfo: { editColumn: 2, deleteCount: 1, insertText: "" },
+      },
+    ]);
+    const descMd009 = {
+      code: "MD009",
+      name: "no-trailing-spaces",
+      description: "Trailing spaces",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd009, adapter);
+    const errors = await runRuleOnSource(rule, "text\n> \nmore\n");
+    expect(errors[0]?.fix).toBeDefined();
+  });
+
+  it("maps markdownlint's deleteCount -1 sentinel to a deleteLine fix", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD012", "no-multiple-blanks"],
+        ruleDescription: "Multiple consecutive blank lines",
+        lineNumber: 4,
+        fixInfo: { lineNumber: 4, deleteCount: -1 },
+      },
+    ]);
+    const descMd012 = {
+      code: "MD012",
+      name: "no-multiple-blanks",
+      description: "Multiple consecutive blank lines",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd012, adapter);
+    const errors = await runRuleOnSource(rule, "a\n\n\n\nb\n");
+    expect(errors[0]?.fix).toMatchObject({ lineNumber: 4, deleteLine: true });
   });
 });

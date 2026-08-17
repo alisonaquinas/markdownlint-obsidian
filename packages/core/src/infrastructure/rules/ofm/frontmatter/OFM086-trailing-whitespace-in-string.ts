@@ -13,10 +13,11 @@ const KEY_LINE = /^([A-Za-z0-9_-]+)\s*:/;
  * spaces or tabs. Marked fixable for the future Phase 9 autofix engine,
  * which will rewrite the YAML in place.
  *
- * Autofix is only emitted for simple top-level scalar values (`path.length === 1`).
- * Nested map values and array elements report the violation without a fix because
- * the `keyLineMap` line number points to the parent key line, not the actual
- * value line — splicing there would corrupt the frontmatter.
+ * Autofix is only emitted for simple top-level scalar values (`path.length === 1`)
+ * whose value can be located on the key's raw line. Nested map values, array
+ * elements, and multi-line scalars report the violation without a fix because
+ * the trailing whitespace does not live on the key line — splicing there would
+ * corrupt the frontmatter.
  *
  * @see docs/rules/frontmatter/OFM086.md
  */
@@ -25,6 +26,7 @@ export const OFM086Rule: OFMRule = {
   description: "Frontmatter string value has trailing whitespace",
   tags: ["frontmatter", "whitespace"],
   severity: "warning",
+  coordinateSpace: "absolute",
   fixable: true,
   run({ parsed }, onError) {
     // Build a map of top-level key → 1-based absolute line number by scanning
@@ -94,9 +96,11 @@ function buildTopLevelFix(
   frontmatterRaw: string | null,
 ): Fix | undefined {
   if (path.length !== 1) return undefined;
+  const editColumn = findTrailingWhitespaceColumn(line, trimmedValue, frontmatterRaw);
+  if (editColumn === null) return undefined;
   return makeFix({
     lineNumber: line,
-    editColumn: findTrailingWhitespaceColumn(line, trimmedValue, frontmatterRaw),
+    editColumn,
     deleteCount: trailingCount,
     insertText: "",
   });
@@ -128,9 +132,9 @@ function findTrailingWhitespaceColumn(
   absoluteLine: number,
   trimmedValue: string,
   frontmatterRaw: string | null,
-): number {
+): number | null {
   const rawLine = rawFrontmatterLine(absoluteLine, frontmatterRaw);
-  if (rawLine === undefined) return 1;
+  if (rawLine === undefined) return null;
   return locateTrailingWhitespaceColumn(rawLine, trimmedValue);
 }
 
@@ -144,7 +148,7 @@ function rawFrontmatterLine(
   return rawLines[absoluteLine - 2];
 }
 
-function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): number {
+function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): number | null {
   if (trimmedValue.length === 0) {
     return findWhitespaceOnlyValueColumn(rawLine);
   }
@@ -153,13 +157,15 @@ function locateTrailingWhitespaceColumn(rawLine: string, trimmedValue: string): 
   const colonIdx = rawLine.indexOf(":");
   const searchFrom = colonIdx === -1 ? 0 : colonIdx + 1;
   const idx = rawLine.indexOf(trimmedValue, searchFrom);
-  return idx === -1 ? 1 : idx + trimmedValue.length + 1;
+  // A miss means the value spans multiple raw lines (multi-line YAML scalar):
+  // the trailing whitespace lives on a later line we cannot locate here.
+  return idx === -1 ? null : idx + trimmedValue.length + 1;
 }
 
-function findWhitespaceOnlyValueColumn(rawLine: string): number {
+function findWhitespaceOnlyValueColumn(rawLine: string): number | null {
   const endIndex = findWhitespaceOnlyValueScanEnd(rawLine);
   const start = findHorizontalWhitespaceRunStart(rawLine, endIndex);
-  return start === endIndex ? 1 : start + 2;
+  return start === endIndex ? null : start + 2;
 }
 
 function findWhitespaceOnlyValueScanEnd(rawLine: string): number {

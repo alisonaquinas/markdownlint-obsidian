@@ -27,6 +27,7 @@ export const OFM081Rule: OFMRule = {
   description: "Frontmatter date field is not a valid ISO-8601 value",
   tags: ["frontmatter", "dates"],
   severity: "error",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed, config }, onError) {
     for (const key of config.frontmatter.dateFields) {

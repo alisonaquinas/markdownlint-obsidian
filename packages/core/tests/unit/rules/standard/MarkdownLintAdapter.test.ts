@@ -57,4 +57,23 @@ describe("MarkdownLintAdapter", () => {
     const results = adapter.runOnce("x.md", "# h\n", { default: true });
     expect(Object.isFrozen(results)).toBe(true);
   });
+
+  it("degrades gracefully when a standard rule crashes: retries without it and reports the skip", () => {
+    // Upstream markdownlint's MD023 throws on tab-indented headings inside
+    // list continuations ("Value of 'range' passed to onError ... is
+    // incorrect"). One throwing rule must not kill the whole MD pass —
+    // the adapter retries with that rule disabled and surfaces a
+    // synthetic skip violation.
+    const adapter = makeMarkdownLintAdapter();
+    const content = "- item one\n\t## Heading inside item\ntrailing   \n";
+    const results = adapter.runOnce("crash.md", content, { default: true, MD023: true });
+    expect(Array.isArray(results)).toBe(true);
+    const skip = results.find((r) => r.ruleNames.includes("MD023") && r.errorDetail?.includes("skipped"));
+    expect(skip).toBeDefined();
+    expect(skip?.lineNumber).toBe(1);
+    // Other rules still ran on the file (MD009 sees the trailing spaces).
+    const md009 = results.find((r) => r.ruleNames.includes("MD009"));
+    expect(md009).toBeDefined();
+    expect(md009?.lineNumber).toBe(3);
+  });
 });

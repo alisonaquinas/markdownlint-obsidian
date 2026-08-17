@@ -26,6 +26,7 @@ export const OFM080Rule: OFMRule = {
   description: "Required frontmatter key is missing",
   tags: ["frontmatter"],
   severity: "error",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed, config }, onError) {
     for (const key of config.frontmatter.required) {

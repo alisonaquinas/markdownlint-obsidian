@@ -27,6 +27,7 @@ export const OFM082Rule: OFMRule = {
   description: "Frontmatter contains a key not present in typeMap",
   tags: ["frontmatter", "schema"],
   severity: "warning",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed, config }, onError) {
     if (config.frontmatter.allowUnknown) return;

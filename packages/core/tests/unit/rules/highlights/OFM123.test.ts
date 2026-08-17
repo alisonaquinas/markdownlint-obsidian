@@ -57,4 +57,15 @@ describe("OFM123 nested-highlight", () => {
     const errors = await runRuleOnSource(OFM123Rule, "==foo ==\n");
     expect(errors).toEqual([]);
   });
+
+  it("ignores `==` banner comments inside fenced yaml after a fence desync", async () => {
+    const src = "```\nPasted output:\n```\n````\n```yaml\n# ========== MODELS ==========\n```\n````\nafter\n";
+    const errors = await runRuleOnSource(OFM123Rule, src);
+    expect(errors).toEqual([]);
+  });
+
+  it("still reports nested highlights in prose", async () => {
+    const errors = await runRuleOnSource(OFM123Rule, "==outer ==inner== text==\n");
+    expect(errors).toHaveLength(1);
+  });
 });

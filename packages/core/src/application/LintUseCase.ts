@@ -12,6 +12,7 @@
 import type { LinterConfig } from "../domain/config/LinterConfig.js";
 import type { LintError } from "../domain/linting/LintError.js";
 import { makeLintError } from "../domain/linting/LintError.js";
+import type { Fix } from "../domain/linting/Fix.js";
 import { makeLintResult, type LintResult } from "../domain/linting/LintResult.js";
 import type { RuleRegistry } from "../domain/linting/RuleRegistry.js";
 import type { Parser } from "../domain/parsing/Parser.js";
@@ -108,6 +109,10 @@ function iterateActiveRules(registry: RuleRegistry, config: LinterConfig): reado
   });
 }
 
+function shiftedFix(fix: Fix, offset: number): Fix {
+  return { ...fix, lineNumber: fix.lineNumber + offset };
+}
+
 async function runRule(
   rule: OFMRule,
   parsed: ParseResult,
@@ -117,6 +122,7 @@ async function runRule(
   fsCheck: FileExistenceChecker,
   errors: LintError[],
 ): Promise<void> {
+  const offset = rule.coordinateSpace === "absolute" ? 0 : parsed.frontmatterEndLine;
   await rule.run(
     { filePath: parsed.filePath, parsed, config, vault, fsCheck, blockRefIndex },
     (partial) => {
@@ -126,11 +132,11 @@ async function runRule(
           ruleCode: rule.names[0] ?? "UNKNOWN",
           ruleName: rule.names[1] ?? rule.names[0] ?? "unknown",
           severity: rule.severity,
-          line: partial.line,
+          line: partial.line + offset,
           column: partial.column,
           message: partial.message,
           fixable: rule.fixable,
-          ...(partial.fix !== undefined ? { fix: partial.fix } : {}),
+          ...(partial.fix !== undefined ? { fix: shiftedFix(partial.fix, offset) } : {}),
         }),
       );
     },

@@ -25,6 +25,7 @@ export const OFM087Rule: OFMRule = {
   description: "Frontmatter tags array contains a non-string entry",
   tags: ["frontmatter", "tags"],
   severity: "error",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed }, onError) {
     const tags = (parsed.frontmatter as { tags?: unknown }).tags;

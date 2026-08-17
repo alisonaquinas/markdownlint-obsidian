@@ -25,6 +25,7 @@ export const OFM066Rule: OFMRule = {
   description: "Tag declared in frontmatter is never used in the body",
   tags: ["tags", "style"],
   severity: "warning",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed }, onError) {
     const fmTags = (parsed.frontmatter as { tags?: unknown }).tags;

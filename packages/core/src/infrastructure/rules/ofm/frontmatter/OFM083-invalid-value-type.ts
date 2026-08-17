@@ -29,6 +29,7 @@ export const OFM083Rule: OFMRule = {
   description: "Frontmatter key has the wrong type per typeMap",
   tags: ["frontmatter", "schema"],
   severity: "error",
+  coordinateSpace: "absolute",
   fixable: false,
   run({ parsed, config }, onError) {
     for (const [key, expected] of Object.entries(config.frontmatter.typeMap)) {

@@ -10,6 +10,7 @@
  *
  * @module infrastructure/config/CustomRuleLoader
  */
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { OFMRule } from "../../domain/linting/OFMRule.js";
@@ -53,12 +54,59 @@ export async function loadCustomRules(
   return { rules, errors };
 }
 
+const CONFIG_FILENAMES: readonly string[] = [
+  ".markdownlint-cli2.jsonc",
+  ".markdownlint-cli2.yaml",
+  ".obsidian-linter.jsonc",
+  ".obsidian-linter.yaml",
+  ".markdownlint.jsonc",
+  ".markdownlint.json",
+  ".markdownlint.yaml",
+  ".markdownlint.yml",
+];
+
+async function exists(p: string): Promise<boolean> {
+  return fs
+    .stat(p)
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * Resolve a customRules entry: absolute entries pass through, relative
+ * entries resolve against `baseDir` first. When that file does not exist
+ * (the CLI was started from a subdirectory of the vault), walk ancestor
+ * directories and anchor on the nearest one holding a known config file —
+ * the directory the entry was actually declared relative to.
+ */
+async function resolveEntry(entry: string, baseDir: string): Promise<string> {
+  if (path.isAbsolute(entry)) return entry;
+  const direct = path.resolve(baseDir, entry);
+  if (await exists(direct)) return direct;
+  let dir = baseDir;
+  while (true) {
+    const parent = path.dirname(dir);
+    if (parent === dir) return direct;
+    dir = parent;
+    let hasConfig = false;
+    for (const name of CONFIG_FILENAMES) {
+      if (await exists(path.join(dir, name))) {
+        hasConfig = true;
+        break;
+      }
+    }
+    if (!hasConfig) continue;
+    const anchored = path.resolve(dir, entry);
+    if (await exists(anchored)) return anchored;
+  }
+}
+
 async function loadSingleRuleEntry(
   entry: string,
   baseDir: string,
 ): Promise<{ readonly rules: OFMRule[] } | { readonly error: CustomRuleLoadError }> {
   try {
-    const absolute = path.isAbsolute(entry) ? entry : path.resolve(baseDir, entry);
+    const absolute = await resolveEntry(entry, baseDir);
     const fileUrl = pathToFileURL(absolute).toString();
     const mod = (await import(fileUrl)) as Record<string, unknown>;
     const candidate = mod.default ?? mod["rules"];

@@ -20,11 +20,21 @@ export interface Fix {
   readonly editColumn: number;
   readonly deleteCount: number;
   readonly insertText: string;
+  /**
+   * Delete the entire line (including its newline) instead of splicing a
+   * column window. Rules whose fix semantics are line removal (MD012's
+   * multiple-blank-lines, MD053) set this; editColumn/deleteCount are then
+   * ignored. A deleteLine fix overlaps every other fix on the same line.
+   */
+  readonly deleteLine?: true;
 }
 
 export function makeFix(fields: Fix): Fix {
   if (fields.lineNumber < 1) throw new Error("Fix.lineNumber must be >= 1");
   if (fields.editColumn < 1) throw new Error("Fix.editColumn must be >= 1");
   if (fields.deleteCount < 0) throw new Error("Fix.deleteCount must be >= 0");
+  if (fields.deleteLine === true && (fields.deleteCount !== 0 || fields.insertText !== "")) {
+    throw new Error("Fix.deleteLine requires deleteCount 0 and empty insertText");
+  }
   return Object.freeze({ ...fields });
 }

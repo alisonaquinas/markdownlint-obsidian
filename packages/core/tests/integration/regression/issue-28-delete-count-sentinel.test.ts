@@ -55,15 +55,15 @@ describe("regression: issue #28 — OFM901 'Fix.deleteCount must be >= 0'", () =
     }
   });
 
-  it("still surfaces the underlying MD012 violation, just without an attached fix", async () => {
+  it("attaches whole-line deletion fixes to the MD012 violations", async () => {
     const tmpDir = await makeTmpVaultWith(MULTI_BLANK);
     try {
       const results = await lint({ globs: ["**/*.md"], cwd: tmpDir });
       const md012 = results[0]!.errors.filter((e) => e.ruleCode === "MD012");
       expect(md012.length).toBeGreaterThan(0);
-      // The deleteCount=-1 sentinel cannot be represented by our column-
-      // based applyFixes machinery, so the violation surfaces fix-less.
-      expect(md012.every((e) => e.fix === undefined)).toBe(true);
+      // The deleteCount=-1 sentinel maps to the deleteLine fix contract;
+      // applyFixes refuses any such fix aimed at a non-blank line.
+      expect(md012.every((e) => e.fix?.deleteLine === true)).toBe(true);
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

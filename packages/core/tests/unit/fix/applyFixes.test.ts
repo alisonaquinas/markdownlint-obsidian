@@ -156,4 +156,17 @@ describe("applyFixes", () => {
     expect(lines[0]).toBe("only one line");
     expect(lines[98]).toBe("x");
   });
+
+  it("deleteLine removes the entire line and conflicts with column edits on it", () => {
+    const raw = "a\n\n\nb\n";
+    const solo = applyFixes(raw, [{ lineNumber: 3, editColumn: 1, deleteCount: 0, insertText: "", deleteLine: true }]);
+    expect(solo.patched).toBe("a\n\nb\n");
+    expect(solo.conflicts).toHaveLength(0);
+    const both = applyFixes(raw, [
+      { lineNumber: 3, editColumn: 1, deleteCount: 0, insertText: "", deleteLine: true },
+      { lineNumber: 3, editColumn: 2, deleteCount: 1, insertText: "x" },
+    ]);
+    expect(both.patched).toBe("a\n\nb\n");
+    expect(both.conflicts).toHaveLength(1);
+  });
 });
