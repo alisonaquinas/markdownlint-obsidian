@@ -85,4 +85,20 @@ describe("OFM086 frontmatter-trailing-whitespace", () => {
       insertText: "",
     });
   });
+
+  it("reports but emits no fix for a multi-line scalar whose trailing whitespace is not on the key line", async () => {
+    // Regression: a multi-line single-quoted scalar
+    // parses to a value ending in a space, but that space lives on a later raw
+    // line. locateTrailingWhitespaceColumn cannot find the value on the key's
+    // raw line; the old `idx === -1 ? 1` fallback produced a fix at
+    // (keyLine, column 1), deleting the first character of the key
+    // ("title" -> "itle") instead of the whitespace.
+    const src = "---\ntype: clipping\ntitle: 'multi line\n\n  ends with space '\n---\nbody";
+    const errors = await runRuleOnSource(OFM086Rule, src);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.ruleCode).toBe("OFM086");
+    expect(errors[0]?.message).toContain("title");
+    expect(errors[0]?.line).toBe(3);
+    expect(errors[0]?.fix).toBeUndefined();
+  });
 });
