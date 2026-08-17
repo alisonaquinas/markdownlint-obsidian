@@ -39,13 +39,31 @@ export interface StandardRuleDescriptor {
 function fixInfoToFix(fi: FixInfo, fallbackLine: number): Fix | undefined {
   const rawDelete = fi.deleteCount ?? 0;
   if (rawDelete < 0) return undefined;
+  // markdownlint derives some fixInfo payloads from virtual blockquote
+  // lines (markers stripped, lazy continuations renumbered) while the
+  // violation lineNumber is raw-file mapped. When the two disagree the
+  // fix would splice a neighbouring line — suppress it and keep the
+  // violation report-only.
+  if (fi.lineNumber !== undefined && fi.lineNumber !== fallbackLine) {
+    return undefined;
+  }
   return makeFix({
-    lineNumber: fi.lineNumber ?? fallbackLine,
+    lineNumber: fallbackLine,
     editColumn: fi.editColumn ?? 1,
     deleteCount: rawDelete,
     insertText: fi.insertText ?? "",
   });
 }
+
+/**
+ * Rules whose fix semantics are strictly "delete trailing whitespace".
+ * markdownlint computes some of their fixInfo payloads against virtual
+ * blockquote lines (lazy continuations renumbered), so violation and fix
+ * can both point one raw line off — deleting the space after the `>`
+ * marker of the NEXT line and corrupting prose. For these rules a fix is
+ * only trusted when its deleted span is whitespace running to end of line.
+ */
+const TRAILING_WHITESPACE_FIX_RULES: ReadonlySet<string> = new Set(["MD009", "MD010", "MD012"]);
 
 /**
  * Translate a {@link StandardViolation} into the payload expected by

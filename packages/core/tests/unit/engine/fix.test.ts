@@ -121,6 +121,42 @@ describe("engine.fix()", () => {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }
   });
+
+  it("applies blockquote marker trailing-space fixes correctly (guard does not over-block)", async () => {
+    // validateTrailingFix in FixUseCase rejects MD009 deletions whose
+    // span is not trailing on the absolute line — the guard that stops
+    // virtual-coordinate corruption ("> the" -> ">the" on the line after
+    // a lazily-continued blockquote marker). Genuine marker fixes
+    // ("> " -> ">") are trailing deletions and must keep flowing.
+    const tmpDir = await makeTmpVault();
+    try {
+      const content = "---\ntitle: t\n---\n> 2025-05-30\n> \n> the best way\n> \n> so I built it\n";
+      const expected = "---\ntitle: t\n---\n> 2025-05-30\n>\n> the best way\n>\n> so I built it\n";
+      const filePath = path.join(tmpDir, "bq.md");
+      await fs.writeFile(filePath, content);
+      const outcome = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const after = await fs.readFile(filePath, "utf8");
+      expect(after).toBe(expected);
+      expect(outcome.filesFixed).toHaveLength(1);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  it("still applies genuine trailing-space fixes", async () => {
+    const tmpDir = await makeTmpVault();
+    try {
+      const content = "plain line with trailing spaces   \n";
+      const filePath = path.join(tmpDir, "plain.md");
+      await fs.writeFile(filePath, content);
+      const outcome = await fix({ globs: ["**/*.md"], cwd: tmpDir });
+      const after = await fs.readFile(filePath, "utf8");
+      expect(after).toBe("plain line with trailing spaces\n");
+      expect(outcome.filesFixed).toHaveLength(1);
+    } finally {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    }
+  });
 });
 
 function bddListBlock(): string {

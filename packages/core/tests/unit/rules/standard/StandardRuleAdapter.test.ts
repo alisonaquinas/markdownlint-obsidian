@@ -192,4 +192,57 @@ describe("buildStandardRule", () => {
       insertText: "",
     });
   });
+
+  it("drops the fix when fixInfo.lineNumber disagrees with the violation line (virtual blockquote space)", async () => {
+    // markdownlint computes some fixInfo payloads against virtual
+    // blockquote lines (markers stripped, lazy continuations renumbered)
+    // while the violation lineNumber is raw-file mapped. A diverging fix
+    // line means the fix would splice the wrong line — report only.
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD009", "no-trailing-spaces"],
+        ruleDescription: "Trailing spaces",
+        lineNumber: 4,
+        fixInfo: {
+          lineNumber: 5,
+          editColumn: 2,
+          deleteCount: 1,
+          insertText: "",
+        },
+      },
+    ]);
+    const descMd009 = {
+      code: "MD009",
+      name: "no-trailing-spaces",
+      description: "Trailing spaces",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd009, adapter);
+    const errors = await runRuleOnSource(rule, "> a\n> \nb text\n");
+    expect(errors).toHaveLength(1);
+    expect(errors[0]?.fix).toBeUndefined();
+  });
+
+
+  it("keeps MD009 fixes when the deleted span is trailing whitespace", async () => {
+    const adapter = stubAdapter([
+      {
+        ruleNames: ["MD009", "no-trailing-spaces"],
+        ruleDescription: "Trailing spaces",
+        lineNumber: 2,
+        fixInfo: { editColumn: 2, deleteCount: 1, insertText: "" },
+      },
+    ]);
+    const descMd009 = {
+      code: "MD009",
+      name: "no-trailing-spaces",
+      description: "Trailing spaces",
+      fixable: true,
+      severity: "warning" as const,
+    };
+    const rule = buildStandardRule(descMd009, adapter);
+    const errors = await runRuleOnSource(rule, "text\n> \nmore\n");
+    expect(errors[0]?.fix).toBeDefined();
+  });
 });
