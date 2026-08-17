@@ -51,17 +51,49 @@ export function makeMarkdownLintAdapter(): MarkdownLintAdapter {
       const cached = cache.get(key);
       if (cached !== undefined) return cached;
 
-      const results = lintSync({
-        strings: { [filePath]: content },
-        config,
-      });
-      const raw = results[filePath] ?? [];
+      let raw: MarkdownLintError[];
+      let skippedRule: string | null = null;
+      try {
+        raw = lintOnce(filePath, content, config);
+      } catch (err) {
+        skippedRule = parseThrowingRule(err);
+        if (skippedRule === null) throw err;
+        raw = lintOnce(filePath, content, { ...config, [skippedRule]: false });
+      }
       const list: StandardViolation[] = raw.map(normalise);
+      if (skippedRule !== null) {
+        list.unshift({
+          ruleNames: [skippedRule],
+          ruleDescription: `${skippedRule} could not run on this file (upstream rule crash)`,
+          lineNumber: 1,
+          errorDetail: `${skippedRule} skipped: rule threw while processing this file`,
+        });
+      }
       const frozen = Object.freeze(list);
       cache.set(key, frozen);
       return frozen;
     },
   };
+}
+
+function lintOnce(filePath: string, content: string, config: Configuration): MarkdownLintError[] {
+  const results = lintSync({
+    strings: { [filePath]: content },
+    config,
+  });
+  return results[filePath] ?? [];
+}
+
+/**
+ * Upstream rules validate their own onError payloads and throw
+ * "Value of 'X' passed to onError by '<RULE>' is incorrect" when a rule
+ * miscomputes one (e.g. MD023 on tab-indented headings inside list
+ * continuations). Extract the rule name so the pass can retry without it.
+ */
+function parseThrowingRule(err: unknown): string | null {
+  const message = err instanceof Error ? err.message : String(err);
+  const match = message.match(/by '([A-Z]+[0-9]+)'/);
+  return match === null ? null : (match[1] ?? null);
 }
 
 type MutableViolation = {
