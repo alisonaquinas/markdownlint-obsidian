@@ -185,7 +185,7 @@
     "@types/node": "^26.0.1",
     "@types/vscode": "^1.118.0",
     "@vscode/test-electron": "^3.0.0",
-    "@vscode/vsce": "^3.9.1",
+    "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.0",
     "markdown-flavor-detection": "^0.7.3",
     "typescript": "^7.0.2"
